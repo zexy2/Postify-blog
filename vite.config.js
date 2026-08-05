@@ -18,8 +18,8 @@ export default defineConfig({
         background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",
-        scope: "/Blog-app-with-React-and-Redux/",
-        start_url: "/Blog-app-with-React-and-Redux/",
+        scope: "/Postify-blog/",
+        start_url: "/Postify-blog/",
         icons: [
           {
             src: "pwa-192x192.png",
@@ -60,7 +60,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: "/Blog-app-with-React-and-Redux/",
+  base: "/Postify-blog/",
   build: {
     outDir: "docs",
     assetsDir: "assets",
