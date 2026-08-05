@@ -145,6 +145,10 @@
   margin-bottom: var(--space-2xl);
 }
 
+.chartSkeleton {
+  min-height: 960px;
+}
+
 .chartCard {
   background: var(--bg-secondary);
   border-radius: var(--radius-xl);

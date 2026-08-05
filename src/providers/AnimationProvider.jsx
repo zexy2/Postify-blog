@@ -4,11 +4,6 @@
  */
 
 import { createContext, useContext, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger);
 
 const AnimationContext = createContext(null);
 
@@ -52,26 +47,8 @@ export default function AnimationProvider({ children }) {
   const contextRef = useRef(null);
 
   useEffect(() => {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReducedMotion) {
-      // Disable all GSAP animations for reduced motion
-      gsap.globalTimeline.timeScale(0);
-      ScrollTrigger.defaults({ markers: false });
-    }
-
-    // Create GSAP context for cleanup
-    contextRef.current = gsap.context(() => {});
-
-    // Refresh ScrollTrigger on route changes
-    ScrollTrigger.refresh();
-
-    return () => {
-      // Kill all ScrollTriggers and GSAP animations
-      contextRef.current?.revert();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
+    contextRef.current = { cleanups: [] };
+    return () => contextRef.current?.cleanups.forEach((cleanup) => cleanup());
   }, []);
 
   // Create scroll-triggered animation
@@ -80,18 +57,11 @@ export default function AnimationProvider({ children }) {
 
     const preset = ANIMATION_PRESETS[animation] || animation;
     
-    gsap.set(element, preset.from);
-    
-    return gsap.to(element, {
-      ...preset.to,
-      scrollTrigger: {
-        trigger: element,
-        start: 'top 85%',
-        end: 'bottom 15%',
-        toggleActions: 'play none none reverse',
-        ...options,
-      },
-    });
+    const nativeAnimation = element.animate(
+      [preset.from, preset.to],
+      { duration: (preset.to.duration || 0.8) * 1000, fill: 'both', ...options }
+    );
+    return nativeAnimation;
   };
 
   // Animate element with preset
@@ -99,8 +69,11 @@ export default function AnimationProvider({ children }) {
     if (!element) return null;
     
     const config = ANIMATION_PRESETS[preset] || preset;
-    gsap.set(element, config.from);
-    return gsap.to(element, { ...config.to, ...options });
+    return element.animate([config.from, config.to], {
+      duration: (config.to.duration || 0.8) * 1000,
+      fill: 'both',
+      ...options,
+    });
   };
 
   // Create staggered animation
@@ -108,23 +81,26 @@ export default function AnimationProvider({ children }) {
     if (!elements?.length) return null;
     
     const config = ANIMATION_PRESETS[preset] || ANIMATION_PRESETS.staggerUp;
-    gsap.set(elements, config.from);
-    return gsap.to(elements, { ...config.to, stagger: staggerTime });
+    return elements.map((element, index) => element.animate([config.from, config.to], {
+      duration: (config.to.duration || 0.6) * 1000,
+      delay: index * staggerTime * 1000,
+      fill: 'both',
+    }));
   };
 
   // Kill specific animation
   const kill = (animation) => {
-    if (animation?.kill) animation.kill();
+    if (animation?.cancel) animation.cancel();
   };
 
   // Refresh all ScrollTriggers
   const refresh = () => {
-    ScrollTrigger.refresh();
+    // Native Web Animations do not require a global refresh.
   };
 
   const value = {
-    gsap,
-    ScrollTrigger,
+    gsap: null,
+    ScrollTrigger: null,
     createScrollTrigger,
     animate,
     stagger,

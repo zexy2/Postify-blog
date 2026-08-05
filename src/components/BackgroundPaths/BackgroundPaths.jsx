@@ -3,27 +3,17 @@
  * Inspired by 21st.dev/Kokonut UI - Animated SVG background paths
  */
 
-import { motion } from 'framer-motion';
 import styles from './BackgroundPaths.module.css';
 
 function FloatingPath({ d, delay = 0, duration = 20 }) {
   return (
-    <motion.path
+    <path
       d={d}
       stroke="url(#pathGradient)"
       strokeWidth="0.5"
       fill="none"
-      initial={{ pathLength: 0, opacity: 0 }}
-      animate={{ 
-        pathLength: 1, 
-        opacity: [0, 0.3, 0.3, 0],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: "linear",
-      }}
+      className={styles.path}
+      style={{ '--path-delay': `${delay}s`, '--path-duration': `${duration}s` }}
     />
   );
 }

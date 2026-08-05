@@ -4,7 +4,6 @@
  */
 
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import Lenis from 'lenis';
 
 const SmoothScrollContext = createContext(null);
 
@@ -21,40 +20,71 @@ export default function SmoothScrollProvider({ children }) {
   const [lenis, setLenis] = useState(null);
 
   useEffect(() => {
-    // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReducedMotion) {
-      return; // Skip smooth scroll for users who prefer reduced motion
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+    const isLowPowerDevice = (navigator.hardwareConcurrency || 8) <= 4;
+    const connection = navigator.connection;
+
+    if (
+      prefersReducedMotion ||
+      isSmallScreen ||
+      isLowPowerDevice ||
+      connection?.saveData ||
+      connection?.effectiveType === '2g' ||
+      connection?.effectiveType === 'slow-2g'
+    ) {
+      return undefined;
     }
 
-    // Initialize Lenis
-    const lenisInstance = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential ease out
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-      infinite: false,
-    });
+    let mounted = true;
+    let lenisInstance;
+    let frameId;
 
-    lenisRef.current = lenisInstance;
-    setLenis(lenisInstance);
+    const initializeLenis = async () => {
+      const [{ default: Lenis }] = await Promise.all([
+        import('lenis'),
+        import('lenis/dist/lenis.css'),
+      ]);
 
-    // Animation frame loop
-    function raf(time) {
-      lenisInstance.raf(time);
-      requestAnimationFrame(raf);
-    }
+      if (!mounted) return;
 
-    requestAnimationFrame(raf);
+      lenisInstance = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+        infinite: false,
+      });
 
-    // Cleanup
+      lenisRef.current = lenisInstance;
+      setLenis(lenisInstance);
+
+      const raf = (time) => {
+        lenisInstance?.raf(time);
+        frameId = window.requestAnimationFrame(raf);
+      };
+
+      frameId = window.requestAnimationFrame(raf);
+    };
+
+    const idleId = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(initializeLenis, { timeout: 2500 })
+      : window.setTimeout(initializeLenis, 1800);
+
     return () => {
-      lenisInstance.destroy();
+      mounted = false;
+      if ('cancelIdleCallback' in window && typeof idleId === 'number') {
+        window.cancelIdleCallback(idleId);
+      } else {
+        window.clearTimeout(idleId);
+      }
+      if (frameId) window.cancelAnimationFrame(frameId);
+      lenisInstance?.destroy();
       lenisRef.current = null;
+      setLenis(null);
     };
   }, []);
 

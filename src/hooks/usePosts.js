@@ -5,7 +5,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
-import { postService, userService } from '../services';
+import postService from '../services/postService';
+import userService from '../services/userService';
 import {
   selectUserPosts,
   addLocalPost,

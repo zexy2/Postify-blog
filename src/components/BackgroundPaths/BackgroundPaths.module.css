@@ -15,3 +15,33 @@
   height: 100%;
   opacity: 0.6;
 }
+
+.path {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  opacity: 0;
+  animation: drawPath var(--path-duration, 20s) linear var(--path-delay, 0s) infinite;
+}
+
+@keyframes drawPath {
+  0% {
+    stroke-dashoffset: 900;
+    opacity: 0;
+  }
+  20%, 75% {
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+  100% {
+    stroke-dashoffset: -900;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
+  .path {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 0.12;
+  }
+}

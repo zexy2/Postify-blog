@@ -5,10 +5,8 @@
 
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useLayoutEffect, Suspense, lazy } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectTheme } from './store/slices/uiSlice';
-import { setUser, setSession, setLoading } from './store/slices/userSlice';
-import { supabaseAuth } from './lib/supabase';
 
 // Layout (keep eager - needed immediately)
 import Header from './components/Header/Header';
@@ -60,42 +58,6 @@ const useIsomorphicLayoutEffect =
 function App() {
   const location = useLocation();
   const theme = useSelector(selectTheme);
-  const dispatch = useDispatch();
-
-  // Initialize auth state on app load
-  useEffect(() => {
-    const initAuth = async () => {
-      dispatch(setLoading(true));
-      try {
-        const { data: { session } } = await supabaseAuth.getSession();
-        if (session) {
-          dispatch(setSession(session));
-          dispatch(setUser(session.user));
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
-
-    initAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabaseAuth.onAuthStateChange(
-      async (event, session) => {
-        if (session) {
-          dispatch(setSession(session));
-          dispatch(setUser(session.user));
-        } else {
-          dispatch(setSession(null));
-          dispatch(setUser(null));
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, [dispatch]);
 
   // Scroll to top on route change
   useIsomorphicLayoutEffect(() => {

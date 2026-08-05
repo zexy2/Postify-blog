@@ -69,7 +69,7 @@ const ErrorFallback = ({ error, resetError }) => {
             <FaRedo />
             {t('error.retry')}
           </button>
-          <a href="/" className={styles.homeButton}>
+          <a href={import.meta.env.BASE_URL} className={styles.homeButton}>
             <FaHome />
             {t('error.home')}
           </a>

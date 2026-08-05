@@ -3,12 +3,11 @@
  * Premium blog homepage with Hero and Bento Grid layout
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { FiPlus, FiSearch, FiArrowRight, FiTrendingUp } from 'react-icons/fi';
-import { motion } from 'framer-motion';
 
 // Components
 import Hero from '../components/Hero';
@@ -29,6 +28,7 @@ const HomePage = () => {
   const { query, debouncedQuery, setQuery } = useSearch();
   const { isAuthenticated } = useSelector((state) => state.user);
   const { bookmarkedIds, toggleBookmark } = useBookmarks();
+  const [visiblePostCount, setVisiblePostCount] = useState(12);
 
   // Filter posts based on search
   const filteredPosts = useMemo(() => {
@@ -50,6 +50,10 @@ const HomePage = () => {
       );
     });
   }, [posts, usersMap, debouncedQuery]);
+
+  useEffect(() => {
+    setVisiblePostCount(12);
+  }, [debouncedQuery]);
 
   // Handle bookmark toggle
   const handleBookmarkToggle = useCallback((post) => {
@@ -117,16 +121,14 @@ const HomePage = () => {
                 { label: t('analytics.totalComments'), value: posts.length * 5, icon: '💬' },
                 { label: t('bookmarks.title'), value: bookmarkedIds.length || '∞', icon: '🔖' },
               ].map((stat, i) => (
-                <motion.div
+                <div
                   key={i}
                   className={styles.statCard}
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
                 >
                   <span className={styles.statIcon}>{stat.icon}</span>
                   <div className={styles.statValue}>{stat.value}</div>
                   <div className={styles.statLabel}>{stat.label}</div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </ScrollReveal>
@@ -196,23 +198,22 @@ const HomePage = () => {
 
         {/* Bento Grid */}
         <BentoGrid 
-          posts={filteredPosts.slice(0, 12)} 
+          posts={filteredPosts.slice(0, visiblePostCount)}
           isLoading={false}
           onBookmarkToggle={handleBookmarkToggle}
           bookmarkedIds={bookmarkedIds}
         />
 
         {/* Load More */}
-        {filteredPosts.length > 12 && (
+        {filteredPosts.length > visiblePostCount && (
           <ScrollReveal animation="fadeUp">
             <div className={styles.loadMore}>
-              <motion.button 
+              <button
                 className={styles.loadMoreButton}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                onClick={() => setVisiblePostCount((count) => count + 12)}
               >
-                {t('common.loadMore')} ({filteredPosts.length - 12} more)
-              </motion.button>
+                {t('common.loadMore')} ({filteredPosts.length - visiblePostCount} more)
+              </button>
             </div>
           </ScrollReveal>
         )}

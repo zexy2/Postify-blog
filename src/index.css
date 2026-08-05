@@ -4,10 +4,11 @@
  * Inspired by landonorris.com aesthetics
  */
 
-/* ========================================
-   Google Fonts - Inter (Linear Style)
-   ======================================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/*
+ * Keep the critical path self-contained. The system stack below avoids a
+ * render-blocking third-party font request on mobile; Inter remains an
+ * optional local font name when it is already installed.
+ */
 
 /* ========================================
    CSS Variables - Design Tokens

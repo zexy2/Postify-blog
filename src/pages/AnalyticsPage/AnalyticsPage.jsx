@@ -4,31 +4,14 @@
  * Enhanced with 21st.dev style components
  */
 
-import React, { useMemo } from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  Legend,
-} from 'recharts';
 import { FiFileText, FiUsers, FiMessageSquare, FiTrendingUp } from 'react-icons/fi';
 import { usePosts } from '../../hooks/usePosts';
-import GlowingCard from '../../components/GlowingCard';
 import styles from './AnalyticsPage.module.css';
 
-// Linear style monochrome colors
-const COLORS = ['#ffffff', '#e5e5e5', '#cccccc', '#b3b3b3', '#999999', '#808080', '#666666', '#4d4d4d', '#333333', '#1a1a1a'];
+const AnalyticsCharts = lazy(() => import('./AnalyticsCharts'));
 
 const StatCard = ({ icon: Icon, label, value, index = 0 }) => (
   <motion.div 
@@ -147,124 +130,9 @@ const AnalyticsPage = () => {
           />
         </div>
 
-        {/* Charts */}
-        <div className={styles.chartsGrid}>
-          {/* Posts by Author - Bar Chart */}
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>{t('analytics.postsByAuthor')}</h3>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.postsByAuthor}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
-                    axisLine={{ stroke: 'var(--border-color)' }}
-                  />
-                  <YAxis
-                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
-                    axisLine={{ stroke: 'var(--border-color)' }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: '8px',
-                    }}
-                  />
-                  <Bar
-                    dataKey="posts"
-                    fill="url(#colorGradient)"
-                    radius={[4, 4, 0, 0]}
-                  />
-                  <defs>
-                    <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="100%" stopColor="#808080" />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Top Authors - Pie Chart */}
-          <div className={styles.chartCard}>
-            <h3 className={styles.chartTitle}>{t('analytics.topAuthors')}</h3>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={stats.topAuthors}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="posts"
-                    label={({ name }) => name}
-                  >
-                    {stats.topAuthors.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: '8px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Posts Over Time - Line Chart */}
-          <div className={`${styles.chartCard} ${styles.wideChart}`}>
-            <h3 className={styles.chartTitle}>{t('analytics.postsOverTime')}</h3>
-            <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={stats.postsOverTime}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
-                    axisLine={{ stroke: 'var(--border-color)' }}
-                  />
-                  <YAxis
-                    tick={{ fill: 'var(--text-secondary)', fontSize: 12 }}
-                    axisLine={{ stroke: 'var(--border-color)' }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: '8px',
-                    }}
-                  />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="posts"
-                    stroke="#ffffff"
-                    strokeWidth={3}
-                    dot={{ fill: '#ffffff', strokeWidth: 2 }}
-                    name="Yazılar"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="views"
-                    stroke="#666666"
-                    strokeWidth={3}
-                    dot={{ fill: '#666666', strokeWidth: 2 }}
-                    name="Görüntüleme"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        <Suspense fallback={<div className={styles.chartSkeleton} aria-label="Loading charts" />}>
+          <AnalyticsCharts stats={stats} />
+        </Suspense>
       </div>
     </div>
   );

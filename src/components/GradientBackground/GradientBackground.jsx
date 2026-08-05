@@ -4,31 +4,117 @@
  * Postify renk paletiyle uyumlu
  */
 
-import React from 'react';
-import { GradFlow } from 'gradflow';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import styles from './GradientBackground.module.css';
 
-const GradientBackground = ({ 
+// GradFlow pulls in OGL and creates a continuously-rendered WebGL canvas. Keep
+// that cost out of the critical path and never start it on constrained devices.
+const LazyGradFlow = lazy(() =>
+  import('gradflow').then(({ GradFlow }) => ({ default: GradFlow }))
+);
+
+const canUseAnimatedGradient = () => {
+  if (typeof window === 'undefined') return false;
+
+  const connection = navigator.connection;
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+  const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+  const isLowPowerDevice = (navigator.hardwareConcurrency || 8) <= 4;
+
+  if (
+    prefersReducedMotion ||
+    isSmallScreen ||
+    isLowPowerDevice ||
+    connection?.saveData ||
+    connection?.effectiveType === 'slow-2g' ||
+    connection?.effectiveType === '2g'
+  ) {
+    return false;
+  }
+
+  try {
+    const canvas = document.createElement('canvas');
+    return Boolean(
+      canvas.getContext('webgl', { failIfMajorPerformanceCaveat: true }) ||
+        canvas.getContext('experimental-webgl', {
+          failIfMajorPerformanceCaveat: true,
+        })
+    );
+  } catch {
+    return false;
+  }
+};
+
+class WebGLFallbackBoundary extends React.Component {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+const GradientBackground = ({
   type = 'silk',
   opacity = 0.4,
   speed = 0.3,
   className = '',
 }) => {
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    if (!canUseAnimatedGradient()) return undefined;
+
+    let mounted = true;
+    const load = () => {
+      if (mounted) setAnimated(true);
+    };
+
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(load, { timeout: 3000 });
+      return () => {
+        mounted = false;
+        window.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = window.setTimeout(load, 2500);
+    return () => {
+      mounted = false;
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
-    <div className={`${styles.container} ${className}`} style={{ opacity }}>
-      <GradFlow
-        config={{
-          // Postify renk paleti - Linear indigo teması
-          color1: '#5e6ad2', // Primary indigo
-          color2: '#8b95e0', // Lighter indigo
-          color3: '#3d4692', // Darker indigo
-          speed: speed,
-          scale: 1.5,
-          type: type,
-          noise: 0.06,
-        }}
-        className={styles.gradient}
-      />
+    <div
+      className={`${styles.container} ${className}`}
+      style={{ opacity }}
+      aria-hidden="true"
+    >
+      <div className={styles.staticGradient} />
+      {animated && (
+        <WebGLFallbackBoundary>
+          <Suspense fallback={null}>
+            <LazyGradFlow
+              config={{
+                color1: '#5e6ad2',
+                color2: '#8b95e0',
+                color3: '#3d4692',
+                speed,
+                scale: 1.5,
+                type,
+                noise: 0.06,
+              }}
+              className={styles.gradient}
+            />
+          </Suspense>
+        </WebGLFallbackBoundary>
+      )}
     </div>
   );
 };

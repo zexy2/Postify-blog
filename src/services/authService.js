@@ -5,8 +5,13 @@
  * Uses Supabase if configured, otherwise falls back to local auth
  */
 
-import { auth, supabase } from "../lib/supabase";
 import { localAuthService } from "./localAuthService";
+
+let supabaseModulePromise;
+const getSupabaseModule = () => {
+  supabaseModulePromise ||= import("../lib/supabase");
+  return supabaseModulePromise;
+};
 
 // Check if Supabase is properly configured
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -32,6 +37,7 @@ export const authService = {
       return localAuthService.register({ email, password, fullName, username });
     }
 
+    const { auth, supabase } = await getSupabaseModule();
     const data = await auth.signUp(email, password, {
       full_name: fullName,
       username,
@@ -59,6 +65,7 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.login({ email, password });
     }
+    const { auth } = await getSupabaseModule();
     return auth.signIn(email, password);
   },
 
@@ -69,6 +76,7 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.loginWithOAuth(provider);
     }
+    const { auth } = await getSupabaseModule();
     return auth.signInWithOAuth(provider);
   },
 
@@ -79,6 +87,7 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.logout();
     }
+    const { auth } = await getSupabaseModule();
     return auth.signOut();
   },
 
@@ -89,6 +98,7 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.getSession();
     }
+    const { auth } = await getSupabaseModule();
     return auth.getSession();
   },
 
@@ -99,6 +109,7 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.getCurrentUser();
     }
+    const { auth } = await getSupabaseModule();
     return auth.getUser();
   },
 
@@ -110,6 +121,7 @@ export const authService = {
       return localAuthService.getProfile(userId);
     }
 
+    const { supabase } = await getSupabaseModule();
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
@@ -132,6 +144,7 @@ export const authService = {
     }
 
     // Update auth metadata
+    const { auth, supabase } = await getSupabaseModule();
     await auth.updateProfile(updates);
 
     // Update profiles table
@@ -156,6 +169,7 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.resetPassword(email);
     }
+    const { auth } = await getSupabaseModule();
     return auth.resetPassword(email);
   },
 
@@ -166,16 +180,18 @@ export const authService = {
     if (authProvider === "local") {
       return localAuthService.updatePassword(newPassword);
     }
+    const { auth } = await getSupabaseModule();
     return auth.updatePassword(newPassword);
   },
 
   /**
    * Subscribe to auth state changes
    */
-  onAuthStateChange: (callback) => {
+  onAuthStateChange: async (callback) => {
     if (authProvider === "local") {
       return localAuthService.onAuthStateChange(callback);
     }
+    const { auth } = await getSupabaseModule();
     return auth.onAuthStateChange(callback);
   },
 };

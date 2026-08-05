@@ -19,7 +19,6 @@
   background: var(--bg-secondary);
   border: none;
   transition: all var(--transition-base);
-  will-change: transform;
 }
 
 /* Gradient border effect */

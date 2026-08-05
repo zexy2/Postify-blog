@@ -4,7 +4,7 @@
  */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { postService } from '../../services';
+import { postService } from '../../services/postService';
 
 // Async thunks
 export const fetchPosts = createAsyncThunk(

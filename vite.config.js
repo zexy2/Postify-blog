@@ -72,7 +72,37 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
-    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+
+          if (id.includes('/gradflow/') || id.includes('/ogl/')) return 'gradient';
+          if (id.includes('/lenis/')) return 'smooth-scroll';
+          if (id.includes('/gsap/')) return 'gsap';
+          if (id.includes('@tiptap') || id.includes('prosemirror')) return 'editor';
+          if (
+            id.includes('/react-markdown/') ||
+            id.includes('/remark-') ||
+            id.includes('/rehype-') ||
+            id.includes('/micromark') ||
+            id.includes('/mdast')
+          ) return 'markdown';
+          if (id.includes('/framer-motion/')) return 'motion';
+          if (id.includes('/@supabase/')) return 'supabase';
+          if (id.includes('/react-icons/')) return 'icons';
+          if (
+            id.includes('/react/') ||
+            id.includes('/react-dom/') ||
+            id.includes('/scheduler/') ||
+            id.includes('/use-sync-external-store/')
+          ) return 'react-vendor';
+
+          return undefined;
+        },
+      },
+    },
+    chunkSizeWarningLimit: 450,
   },
   server: {
     port: 5173,

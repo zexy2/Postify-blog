@@ -4,11 +4,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from './ParallaxImage.module.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function ParallaxImage({
   src,
@@ -30,34 +26,34 @@ export default function ParallaxImage({
     
     if (!container || !image) return;
 
-    // Check for reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReducedMotion) {
-      gsap.set(image, { scale: 1, y: 0 });
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+
+    if (prefersReducedMotion || isSmallScreen) {
+      image.style.transform = 'scale(1) translate3d(0, 0, 0)';
       return;
     }
 
-    // Set initial state
-    gsap.set(image, { scale });
+    let frameId;
+    const update = () => {
+      frameId = undefined;
+      const rect = container.getBoundingClientRect();
+      const progress = (window.innerHeight - rect.top) /
+        (window.innerHeight + rect.height);
+      const offset = (progress - 0.5) * rect.height * speed;
+      image.style.transform = `scale(${scale}) translate3d(0, ${offset}px, 0)`;
+    };
+    const onScroll = () => {
+      if (!frameId) frameId = window.requestAnimationFrame(update);
+    };
 
-    // Create parallax animation
-    const tween = gsap.to(image, {
-      y: () => container.offsetHeight * speed,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: container,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: true,
-      },
-    });
+    image.style.transform = `scale(${scale}) translate3d(0, 0, 0)`;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
 
     return () => {
-      tween.kill();
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.trigger === container) st.kill();
-      });
+      window.removeEventListener('scroll', onScroll);
+      if (frameId) window.cancelAnimationFrame(frameId);
     };
   }, [speed, scale]);
 

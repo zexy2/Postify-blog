@@ -55,30 +55,41 @@ export const useAuth = () => {
       }
     };
 
-    initAuth();
-
-    // Subscribe to auth changes
-    const {
-      data: { subscription },
-    } = authService.onAuthStateChange(async (event, newSession) => {
+    let subscription;
+    const startAuth = async () => {
+      await initAuth();
       if (!isMounted) return;
 
-      if (event === "SIGNED_IN" && newSession) {
-        dispatch(setSession(newSession));
-        const currentUser = await authService.getCurrentUser();
-        if (currentUser) {
-          const profile = await authService.getProfile(currentUser.id);
-          dispatch(setUser({ ...currentUser, profile }));
+      const result = await authService.onAuthStateChange(async (event, newSession) => {
+        if (!isMounted) return;
+
+        if (event === "SIGNED_IN" && newSession) {
+          dispatch(setSession(newSession));
+          const currentUser = await authService.getCurrentUser();
+          if (currentUser) {
+            const profile = await authService.getProfile(currentUser.id);
+            dispatch(setUser({ ...currentUser, profile }));
+          }
+          dispatch(setLoading(false));
+        } else if (event === "SIGNED_OUT") {
+          dispatch(logoutAction());
+          dispatch(setLoading(false));
         }
-        dispatch(setLoading(false));
-      } else if (event === "SIGNED_OUT") {
-        dispatch(logoutAction());
-        dispatch(setLoading(false));
-      }
-    });
+      });
+      subscription = result?.data?.subscription;
+    };
+
+    const idleId = "requestIdleCallback" in window
+      ? window.requestIdleCallback(startAuth, { timeout: 2000 })
+      : window.setTimeout(startAuth, 1200);
 
     return () => {
       isMounted = false;
+      if ("cancelIdleCallback" in window && typeof idleId === "number") {
+        window.cancelIdleCallback(idleId);
+      } else {
+        window.clearTimeout(idleId);
+      }
       subscription?.unsubscribe();
     };
   }, [dispatch]);

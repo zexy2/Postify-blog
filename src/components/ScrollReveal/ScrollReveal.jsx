@@ -3,11 +3,7 @@
  * Reusable wrapper for GSAP scroll-triggered animations
  */
 
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useRef, useState } from 'react';
 
 const ANIMATION_PRESETS = {
   fadeUp: {
@@ -51,51 +47,55 @@ export default function ScrollReveal({
   as: Component = 'div',
 }) {
   const elementRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // These props remain part of the public API for existing callers. The
+  // lightweight observer below intentionally replaces ScrollTrigger here.
+  void start;
+  void end;
+  void scrub;
+  void markers;
 
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
-    // Check for reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReducedMotion) {
-      // Show content immediately
-      gsap.set(element, { opacity: 1, x: 0, y: 0, scale: 1 });
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+
+    if (prefersReducedMotion || isSmallScreen) {
       return;
     }
 
-    const preset = ANIMATION_PRESETS[animation] || ANIMATION_PRESETS.fadeUp;
-
-    // Set initial state
-    gsap.set(element, preset.from);
-
-    // Create animation
-    const tween = gsap.to(element, {
-      ...preset.to,
-      duration,
-      delay,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: element,
-        start,
-        end,
-        scrub,
-        markers,
-        toggleActions: once ? 'play none none none' : 'play none none reverse',
+    setIsVisible(false);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting && once) observer.unobserve(element);
       },
-    });
+      { rootMargin: '0px 0px -15% 0px', threshold: 0.1 }
+    );
+    observer.observe(element);
 
     return () => {
-      tween.kill();
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.trigger === element) st.kill();
-      });
+      observer.disconnect();
     };
   }, [animation, duration, delay, start, end, scrub, markers, once]);
 
+  const preset = ANIMATION_PRESETS[animation] || ANIMATION_PRESETS.fadeUp;
+  const initialTransform = `translate3d(${preset.from.x || 0}px, ${preset.from.y || 0}px, 0) scale(${preset.from.scale || 1})`;
+
   return (
-    <Component ref={elementRef} className={className} style={style}>
+    <Component
+      ref={elementRef}
+      className={className}
+      style={{
+        ...style,
+        opacity: isVisible ? 1 : (preset.from.opacity ?? 1),
+        transform: isVisible ? 'none' : initialTransform,
+        transition: `opacity ${duration}s ease ${delay}s, transform ${duration}s ease ${delay}s`,
+      }}
+    >
       {children}
     </Component>
   );
