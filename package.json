@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://zexy2.github.io/Postify-blog",
+  "homepage": "https://postify.zekiakgul.dev",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

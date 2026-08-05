@@ -18,8 +18,8 @@ export default defineConfig({
         background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",
-        scope: "/Postify-blog/",
-        start_url: "/Postify-blog/",
+        scope: "/",
+        start_url: "/",
         icons: [
           {
             src: "pwa-192x192.png",
@@ -60,7 +60,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: "/Postify-blog/",
+  base: "/",
   build: {
     outDir: "docs",
     assetsDir: "assets",
@@ -79,7 +79,6 @@ export default defineConfig({
 
           if (id.includes('/gradflow/') || id.includes('/ogl/')) return 'gradient';
           if (id.includes('/lenis/')) return 'smooth-scroll';
-          if (id.includes('/gsap/')) return 'gsap';
           if (id.includes('@tiptap') || id.includes('prosemirror')) return 'editor';
           if (
             id.includes('/react-markdown/') ||
