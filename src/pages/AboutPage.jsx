@@ -109,7 +109,7 @@ const AboutPage = () => {
             {t('about.technologies')}
           </h2>
           <div className={styles.techGrid}>
-            {techStack.map((tech, index) => (
+            {techStack.map((tech) => (
               <motion.div
                 key={tech.name}
                 className={styles.techCard}
@@ -134,7 +134,7 @@ const AboutPage = () => {
             {t('about.featuresTitle') || "Features"}
           </h2>
           <div className={styles.featuresGrid}>
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <motion.div
                 key={feature.title}
                 className={styles.featureCard}

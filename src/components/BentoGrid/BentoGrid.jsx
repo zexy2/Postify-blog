@@ -61,7 +61,7 @@ export default function BentoGrid({
       // ScrollTrigger for grid items
       const items = gridRef.current.querySelectorAll('[data-bento-item]');
       
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         gsap.fromTo(
           item,
           { 

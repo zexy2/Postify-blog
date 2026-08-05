@@ -3,7 +3,7 @@
  * TipTap-based rich text editor with formatting tools and AI assistance
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -171,7 +171,6 @@ const RichTextEditor = ({
     acceptSuggestion,
     dismissSuggestion,
     acceptWord,
-    cancelRequest,
   } = useAICompletion(editor);
 
   // Request completion on text change

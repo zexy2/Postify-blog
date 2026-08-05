@@ -50,7 +50,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Provider store={store}>
         <PersistGate loading={<LoadingScreen />} persistor={persistor}>
           <QueryClientProvider client={queryClient}>
-            <BrowserRouter basename="/Blog-app-with-React-and-Redux">
+            <BrowserRouter basename="/Postify-blog">
               <SmoothScrollProvider>
                 <App />
               </SmoothScrollProvider>

@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiPlus, FiBookmark, FiBarChart2, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
 
 import styles from './Header.module.css';
 import { useTheme } from '../../hooks/useTheme';

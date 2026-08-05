@@ -4,7 +4,7 @@
  */
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { setSearchQuery, clearSearch, selectSearchQuery } from '../store/slices/uiSlice';
 import { useDebounce } from './useDebounce';
 

@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Home Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('./');
   });
 
   test('should display the header with logo', async ({ page }) => {
@@ -16,19 +16,19 @@ test.describe('Home Page', () => {
 
   test('should display post cards', async ({ page }) => {
     // Wait for posts to load
-    await page.waitForSelector('[class*="postCard"]', { timeout: 10000 });
+    await page.waitForSelector('[data-bento-item] article', { timeout: 10000 });
     
-    const posts = page.locator('[class*="postCard"]');
+    const posts = page.locator('[data-bento-item] article');
     await expect(posts.first()).toBeVisible();
   });
 
   test('should navigate to post detail on click', async ({ page }) => {
-    await page.waitForSelector('[class*="postCard"]');
+    await page.waitForSelector('[data-bento-item] article');
     
-    const firstPost = page.locator('[class*="postCard"]').first();
-    await firstPost.click();
+    const firstPost = page.locator('[data-bento-item] article').first();
+    await firstPost.locator('a[href*="/posts/"]').first().click();
     
-    await expect(page).toHaveURL(/\/post\/\d+/);
+    await expect(page).toHaveURL(/\/posts\/\d+/);
   });
 
   test('should filter posts with search', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('Home Page', () => {
     await page.waitForTimeout(500); // Debounce delay
     
     // Posts should be filtered
-    await expect(page.locator('[class*="postCard"]')).toBeVisible();
+    await expect(page.locator('[data-bento-item] article')).toBeVisible();
   });
 
   test('should toggle theme', async ({ page }) => {

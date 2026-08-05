@@ -5,6 +5,7 @@
 
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import i18n from '../lib/i18n';
 
 // Mock localStorage
 const localStorageMock = {
@@ -13,7 +14,8 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-global.localStorage = localStorageMock;
+globalThis.localStorage = localStorageMock;
+i18n.changeLanguage('tr');
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -34,7 +36,7 @@ Object.defineProperty(window, 'matchMedia', {
 window.scrollTo = vi.fn();
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),

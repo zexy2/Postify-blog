@@ -72,10 +72,21 @@ describe('PostCard', () => {
   });
 
   it('should show local badge for local posts', () => {
-    const localPost = { ...mockPost, id: 'local-123' };
-    render(<PostCard post={localPost} author={mockAuthor} />);
+    const localPost = { ...mockPost, id: 'local-123', createdBy: 'test-user' };
+    render(<PostCard post={localPost} author={mockAuthor} />, {
+      preloadedState: {
+        user: {
+          user: { id: 'test-user' },
+          session: null,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+          role: 'user',
+        },
+      },
+    });
 
-    expect(screen.getByText('Sizin Yazınız')).toBeInTheDocument();
+    expect(screen.getByText('Yazılarım')).toBeInTheDocument();
   });
 
   it('should return null for missing post', () => {

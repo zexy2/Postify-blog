@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: 'html',
   
   use: {
-    baseURL: 'http://localhost:5173/react-blog-app',
+    baseURL: 'http://localhost:5173/Postify-blog/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
@@ -44,7 +44,7 @@ export default defineConfig({
 
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5173/react-blog-app',
+    url: 'http://localhost:5173/Postify-blog/',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

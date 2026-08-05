@@ -56,7 +56,6 @@ export const GhostTextOverlay = ({
   visible,
   isLoading,
   position,
-  containerRef,
 }) => {
   if (!visible && !isLoading) return null;
 

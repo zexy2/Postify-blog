@@ -32,8 +32,6 @@ export const userKeys = {
 };
 
 export function usePosts() {
-  const queryClient = useQueryClient();
-  const dispatch = useDispatch();
   const userPosts = useSelector(selectUserPosts);
 
   // Fetch all posts with users
@@ -71,7 +69,6 @@ export function usePosts() {
 }
 
 export function usePost(id) {
-  const dispatch = useDispatch();
   const userPosts = useSelector(selectUserPosts);
   
   // Check if it's a user-created post first
@@ -80,10 +77,9 @@ export function usePost(id) {
   const postQuery = useQuery({
     queryKey: postKeys.detail(id),
     queryFn: async () => {
-      const [post, comments, user] = await Promise.all([
+      const [post, comments] = await Promise.all([
         postService.getById(id),
         postService.getComments(id),
-        postService.getById(id).then((p) => userService.getById(p.userId)),
       ]);
       const author = await userService.getById(post.userId);
       return { post, comments, author };

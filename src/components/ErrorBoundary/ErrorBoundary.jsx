@@ -57,7 +57,7 @@ const ErrorFallback = ({ error, resetError }) => {
         <h1 className={styles.title}>{t('error.title')}</h1>
         <p className={styles.message}>{t('error.message')}</p>
         
-        {process.env.NODE_ENV === 'development' && error && (
+        {import.meta.env.DEV && error && (
           <details className={styles.details}>
             <summary>{t('error.details')}</summary>
             <pre className={styles.errorText}>{error.toString()}</pre>

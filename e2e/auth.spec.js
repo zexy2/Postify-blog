@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication', () => {
   test('should display login page', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('./auth/login');
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/login|giriş/i);
     await expect(page.getByLabel(/email/i)).toBeVisible();
@@ -14,14 +14,14 @@ test.describe('Authentication', () => {
   });
 
   test('should display register page', async ({ page }) => {
-    await page.goto('/auth/register');
+    await page.goto('./auth/register');
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/register|kayıt/i);
     await expect(page.getByLabel(/email/i)).toBeVisible();
   });
 
   test('should navigate between login and register', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('./auth/login');
 
     // Click register link
     await page.click('a[href*="register"]');
@@ -33,7 +33,7 @@ test.describe('Authentication', () => {
   });
 
   test('should show validation errors on empty submit', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('./auth/login');
 
     const submitButton = page.getByRole('button', { name: /login|giriş/i });
     await submitButton.click();
@@ -43,7 +43,7 @@ test.describe('Authentication', () => {
   });
 
   test('should have OAuth buttons', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('./auth/login');
 
     await expect(page.getByRole('button', { name: /google/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /github/i })).toBeVisible();

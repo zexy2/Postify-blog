@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      includeAssets: ["pwa-192x192.png", "pwa-512x512.png", "pwa-icon.svg"],
       manifest: {
         name: "Postify Blog",
         short_name: "Postify",

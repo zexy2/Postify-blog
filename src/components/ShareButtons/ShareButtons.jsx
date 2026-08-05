@@ -39,7 +39,7 @@ const ShareButtons = ({ url, title, description, compact = false }) => {
       setCopied(true);
       toast.success(t('share.copied'));
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch {
       toast.error(t('share.copyError'));
     }
   };

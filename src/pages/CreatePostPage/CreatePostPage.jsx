@@ -12,7 +12,6 @@ import { useCreatePost } from '../../hooks/usePosts';
 import { EDITOR_CONFIG } from '../../constants';
 import { 
   selectAIEnabled, 
-  selectGhostCompletionEnabled, 
   toggleAI,
   isAIAvailable 
 } from '../../features/ai-assistant';
@@ -26,7 +25,6 @@ const CreatePostPage = () => {
 
   // AI state
   const aiEnabled = useSelector(selectAIEnabled);
-  const ghostEnabled = useSelector(selectGhostCompletionEnabled);
   const aiAvailable = isAIAvailable();
 
   const [formData, setFormData] = useState({

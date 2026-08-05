@@ -7,13 +7,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FiUsers, FiFileText, FiShield, FiActivity, FiTrash2, FiEdit, FiEye, FiEyeOff } from 'react-icons/fi';
-import { useTranslation } from 'react-i18next';
 import adminService, { USER_ROLES } from '../../services/adminService';
 import { localAuthService } from '../../services/localAuthService';
 import styles from './AdminPage.module.css';
 
 const AdminPage = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   

@@ -2,7 +2,7 @@
 
 A full-stack blog platform built with React 19, Redux Toolkit, and Supabase.
 
-**Demo:** https://zexy2.github.io/Blog-app-with-React-and-Redux
+**Demo:** https://zexy2.github.io/Postify-blog
 
 ## Features
 
@@ -28,8 +28,8 @@ A full-stack blog platform built with React 19, Redux Toolkit, and Supabase.
 ## Getting Started
 
 ```bash
-git clone https://github.com/zexy2/Blog-app-with-React-and-Redux.git
-cd Blog-app-with-React-and-Redux
+git clone https://github.com/zexy2/Postify-blog.git
+cd Postify-blog
 npm install
 cp .env.example .env
 npm run dev

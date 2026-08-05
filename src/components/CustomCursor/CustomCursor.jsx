@@ -3,7 +3,7 @@
  * Premium SVG cursor with hover state transformations
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useSpring, useMotionValue } from 'framer-motion';
 import styles from './CustomCursor.module.css';
 

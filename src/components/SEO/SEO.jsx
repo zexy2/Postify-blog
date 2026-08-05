@@ -21,7 +21,7 @@ const SEO = ({
   const siteTitle = 'Postify Blog';
   const defaultDescription = 'A modern blog application built with React';
   const defaultImage = '/og-image.png';
-  const siteUrl = import.meta.env.VITE_APP_URL || 'https://zexy2.github.io/react-blog-app';
+  const siteUrl = import.meta.env.VITE_APP_URL || 'https://zexy2.github.io/Postify-blog';
 
   const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle;
   const pageDescription = description || defaultDescription;

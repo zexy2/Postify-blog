@@ -6,9 +6,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Post Details', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('[class*="postCard"]');
-    await page.locator('[class*="postCard"]').first().click();
+    await page.goto('./');
+    await page.waitForSelector('[data-bento-item] article');
+    await page.locator('[data-bento-item] article').first().locator('a[href*="/posts/"]').first().click();
   });
 
   test('should display post content', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Post Details', () => {
   });
 
   test('should navigate back to home', async ({ page }) => {
-    await page.click('a[href="/react-blog-app/"]');
-    await expect(page).toHaveURL(/\/react-blog-app\/$/);
+    await page.click('header a[href="/Postify-blog"]');
+    await expect(page).toHaveURL(/\/Postify-blog\/?$/);
   });
 });

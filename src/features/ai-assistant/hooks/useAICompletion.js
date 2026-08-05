@@ -108,8 +108,6 @@ export const useAICompletion = (editor) => {
 
       // Check if cursor is at end of a word/sentence
       const textBeforeCursor = text.slice(0, cursorPosition);
-      const lastChar = textBeforeCursor.slice(-1);
-
       // Trigger after space, punctuation, or at end of line
       if (/[\s.,!?;:\n]$/.test(textBeforeCursor) || cursorPosition === text.length) {
         return true;

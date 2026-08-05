@@ -322,7 +322,7 @@ const postsApi = {
   incrementViews: async (id) => {
     try {
       if (isSupabaseConfigured) {
-        const { data, error } = await supabase.rpc("increment_views", {
+        const { error } = await supabase.rpc("increment_views", {
           post_id: id,
         });
         if (error) {
@@ -386,7 +386,8 @@ const usersApi = {
           return createErrorResponse("User not found", 404);
         }
 
-        const { password, ...safeUser } = user;
+        const safeUser = { ...user };
+        delete safeUser.password;
         return createResponse(safeUser);
       }
     } catch (error) {
@@ -436,7 +437,8 @@ const usersApi = {
         users[index] = { ...users[index], ...updates };
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
 
-        const { password, ...safeUser } = users[index];
+        const safeUser = { ...users[index] };
+        delete safeUser.password;
         return createResponse(safeUser, 200, "Profile updated successfully");
       }
     } catch (error) {

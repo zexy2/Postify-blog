@@ -82,7 +82,7 @@ const AnalyticsPage = () => {
 
     // Simulate posts over time data
     const months = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'];
-    const postsOverTime = months.map((month, index) => ({
+    const postsOverTime = months.map((month) => ({
       name: month,
       posts: Math.floor(posts.length / 6) + Math.floor(Math.random() * 5),
       views: Math.floor(Math.random() * 1000) + 500,
