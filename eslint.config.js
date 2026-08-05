@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'docs']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -23,7 +23,22 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // JSX-only references are not counted by core no-unused-vars without
+      // eslint-plugin-react. Ignore component-style names and motion imports.
+      'react-refresh/only-export-components': 'off',
+      'no-unused-vars': [
+        'error',
+        {
+          varsIgnorePattern: '^(motion|[A-Z_])',
+          argsIgnorePattern: '^[A-Z_]',
+        },
+      ],
+    },
+  },
+  {
+    files: ['playwright.config.js'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
 ])
