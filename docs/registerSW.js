@@ -1,1 +1,1 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Blog-app-with-React-and-Redux/sw.js', { scope: '/Blog-app-with-React-and-Redux/' })})}
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Postify-blog/sw.js', { scope: '/Postify-blog/' })})}
