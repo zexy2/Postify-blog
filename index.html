@@ -2,9 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/react-blog-app/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/Postify-blog/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Postify Blog</title>
+    <!-- Single Page Apps for GitHub Pages redirect handler -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
     <script>
       // Tema kontrolü
       (function() {
@@ -14,14 +27,9 @@
         document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
-    <script type="module" crossorigin src="/react-blog-app/assets/index-CNhHUyCM.js"></script>
-    <link rel="modulepreload" crossorigin href="/react-blog-app/assets/vendor-C5Oi0DLz.js">
-    <link rel="modulepreload" crossorigin href="/react-blog-app/assets/query-CSnZyA0p.js">
-    <link rel="modulepreload" crossorigin href="/react-blog-app/assets/redux-BsMc5M1k.js">
-    <link rel="modulepreload" crossorigin href="/react-blog-app/assets/editor-DxfmOQAJ.js">
-    <link rel="modulepreload" crossorigin href="/react-blog-app/assets/charts-9qgDA9g8.js">
-    <link rel="stylesheet" crossorigin href="/react-blog-app/assets/index-BzFw-A4w.css">
-  <link rel="manifest" href="/react-blog-app/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/react-blog-app/registerSW.js"></script></head>
+    <script type="module" crossorigin src="/Postify-blog/assets/index-CpLTyYLn.js"></script>
+    <link rel="stylesheet" crossorigin href="/Postify-blog/assets/index-C5yA5NVT.css">
+  <link rel="manifest" href="/Postify-blog/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/Postify-blog/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
   </body>
