@@ -1,6 +1,7 @@
 /** Profile service backed by Supabase. */
 
 import { requireSupabase } from '../lib/supabase';
+import { FALLBACK_AUTHOR } from '../content/fallbackPosts';
 
 const PROFILE_FIELDS = 'id, full_name, username, email, avatar_url, bio, role, website, location, created_at';
 
@@ -19,6 +20,8 @@ export const userService = {
   },
 
   getById: async (id) => {
+    if (id === FALLBACK_AUTHOR.id) return FALLBACK_AUTHOR;
+
     const { data, error } = await requireSupabase()
       .from('profiles')
       .select(PROFILE_FIELDS)

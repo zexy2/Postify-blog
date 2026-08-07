@@ -1,11 +1,19 @@
 /**
  * Canonical post service.
  *
- * Every public post is read from Supabase. Local Redux posts are no longer a
- * second content source; mutations write through to the same database.
+ * Supabase is the canonical source. The local catalogue is read-only and is
+ * used only when the public read path is unavailable, so the site remains
+ * useful while a free-tier project wakes up or is temporarily paused.
  */
 
 import { requireSupabase } from '../lib/supabase';
+import {
+  FALLBACK_AUTHOR,
+  getFallbackPost,
+  getFallbackPosts,
+  getFallbackStats,
+  getFallbackUserPosts,
+} from '../content/fallbackPosts';
 
 const POST_FIELDS = [
   'id',
@@ -135,31 +143,43 @@ const getPostRow = async (identifier) => {
 
 export const postService = {
   getAll: async ({ locale = 'tr', search = '' } = {}) => {
-    const client = requireSupabase();
-    let query = client
-      .from('posts')
-      .select(POST_FIELDS)
-      .eq('is_published', true)
-      .order('published_at', { ascending: false });
+    try {
+      const client = requireSupabase();
+      let query = client
+        .from('posts')
+        .select(POST_FIELDS)
+        .eq('is_published', true)
+        .order('published_at', { ascending: false });
 
-    if (search.trim()) {
-      const term = search.trim().replace(/[,()]/g, ' ');
-      query = query.or(`title.ilike.%${term}%,excerpt.ilike.%${term}%,body.ilike.%${term}%`);
+      if (search.trim()) {
+        const term = search.trim().replace(/[,()]/g, ' ');
+        query = query.or(`title.ilike.%${term}%,excerpt.ilike.%${term}%,body.ilike.%${term}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return mapRows(data || [], locale);
+    } catch {
+      // Public reading must not become a blank page when Supabase is asleep.
+      // Mutations below intentionally remain Supabase-only.
+      return getFallbackPosts(locale);
     }
-
-    const { data, error } = await query;
-    if (error) throw error;
-    return mapRows(data || [], locale);
   },
 
   getById: async (identifier, locale = 'tr') => {
-    const row = await getPostRow(identifier);
-    if (!row) return null;
-    const [post] = await mapRows([row], locale);
-    return post;
+    try {
+      const row = await getPostRow(identifier);
+      if (!row) return null;
+      const [post] = await mapRows([row], locale);
+      return post;
+    } catch {
+      return getFallbackPost(identifier, locale);
+    }
   },
 
   getByUserId: async (userId, locale = 'tr') => {
+    if (userId === FALLBACK_AUTHOR.id) return getFallbackUserPosts(userId, locale);
+
     const client = requireSupabase();
     const { data, error } = await client
       .from('posts')
@@ -269,22 +289,26 @@ export const postService = {
   },
 
   getStats: async () => {
-    const client = requireSupabase();
-    const [postsResult, commentsResult, authorsResult] = await Promise.all([
-      client.from('posts').select('id', { count: 'exact', head: true }).eq('is_published', true),
-      client.from('comments').select('id', { count: 'exact', head: true }),
-      client.from('posts').select('author_id').eq('is_published', true),
-    ]);
+    try {
+      const client = requireSupabase();
+      const [postsResult, commentsResult, authorsResult] = await Promise.all([
+        client.from('posts').select('id', { count: 'exact', head: true }).eq('is_published', true),
+        client.from('comments').select('id', { count: 'exact', head: true }),
+        client.from('posts').select('author_id').eq('is_published', true),
+      ]);
 
-    for (const result of [postsResult, commentsResult, authorsResult]) {
-      if (result.error) throw result.error;
+      for (const result of [postsResult, commentsResult, authorsResult]) {
+        if (result.error) throw result.error;
+      }
+
+      return {
+        posts: postsResult.count || 0,
+        comments: commentsResult.count || 0,
+        authors: new Set((authorsResult.data || []).map((row) => row.author_id).filter(Boolean)).size,
+      };
+    } catch {
+      return getFallbackStats();
     }
-
-    return {
-      posts: postsResult.count || 0,
-      comments: commentsResult.count || 0,
-      authors: new Set((authorsResult.data || []).map((row) => row.author_id).filter(Boolean)).size,
-    };
   },
 };
 

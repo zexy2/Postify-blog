@@ -28,6 +28,7 @@ export function usePosts() {
     queryFn: () => postService.getAll({ locale }),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
+    retry: 1,
   });
 
   const posts = postsQuery.data || [];
@@ -43,6 +44,7 @@ export function usePosts() {
     isLoading: postsQuery.isLoading,
     isError: postsQuery.isError,
     error: postsQuery.error,
+    isFallback: posts.some((post) => post.isFallback),
     refetch: postsQuery.refetch,
   };
 }
@@ -55,13 +57,15 @@ export function usePost(identifier) {
     queryFn: () => postService.getById(identifier, locale),
     enabled: Boolean(identifier),
     staleTime: 1000 * 60 * 5,
+    retry: 1,
   });
 
   const commentsQuery = useQuery({
     queryKey: [...postKeys.detail(identifier, locale), 'comments'],
     queryFn: () => postService.getComments(postQuery.data.id),
-    enabled: Boolean(postQuery.data?.id),
+    enabled: Boolean(postQuery.data?.id) && !postQuery.data?.isFallback,
     staleTime: 1000 * 60 * 2,
+    retry: 0,
   });
 
   return {
@@ -69,9 +73,14 @@ export function usePost(identifier) {
     comments: commentsQuery.data || [],
     author: postQuery.data?.author,
     isLoading: postQuery.isLoading,
-    isError: postQuery.isError || commentsQuery.isError,
-    error: postQuery.error || commentsQuery.error,
-    refetch: async () => Promise.all([postQuery.refetch(), commentsQuery.refetch()]),
+    isError: postQuery.isError,
+    error: postQuery.error,
+    commentsUnavailable: Boolean(postQuery.data?.isFallback) || commentsQuery.isError,
+    refetch: async () => {
+      const postResult = await postQuery.refetch();
+      if (postResult.data?.isFallback) return [postResult];
+      return Promise.all([postResult, commentsQuery.refetch()]);
+    },
   };
 }
 

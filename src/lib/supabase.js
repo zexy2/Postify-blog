@@ -1,9 +1,9 @@
 /**
  * Supabase client configuration.
  *
- * Supabase is the only production data and auth source. There is deliberately
- * no placeholder client and no local fallback: a missing configuration must
- * be visible as an actionable error instead of looking like an empty blog.
+ * Supabase remains the production data and auth source. Public post reads have
+ * a separate read-only local catalogue in postService so a missing or paused
+ * project does not turn the public blog into a blank page.
  */
 
 import { createClient } from '@supabase/supabase-js';

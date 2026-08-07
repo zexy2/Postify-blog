@@ -2,6 +2,8 @@
 .loadingSection, .errorSection { padding: var(--space-3xl) 0; }
 .wakeUpMessage { max-width: 640px; margin: 1.5rem auto 0; padding: 1rem 1.25rem; color: var(--text-secondary); background: var(--primary-subtle); border: 1px solid var(--primary-light); border-radius: var(--radius-lg); line-height: 1.5; text-align: center; }
 .wakeUpMessage strong { display: block; margin-bottom: .25rem; color: var(--text-primary); }
+.fallbackNotice { display: flex; flex-wrap: wrap; gap: .35rem .75rem; align-items: baseline; margin-top: -1rem; margin-bottom: var(--space-xl); padding: .85rem 1rem; color: var(--text-secondary); background: var(--primary-subtle); border: 1px solid var(--primary-light); border-radius: var(--radius-md); line-height: 1.5; }
+.fallbackNotice strong { color: var(--text-primary); }
 .errorCard { max-width: 520px; margin: 4rem auto; padding: clamp(1.5rem, 4vw, 3rem); background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); }
 .errorKicker, .sectionEyebrow { color: var(--primary); font-size: var(--text-xs); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .errorCard h1 { margin: .7rem 0; color: var(--text-primary); font-size: var(--text-2xl); }

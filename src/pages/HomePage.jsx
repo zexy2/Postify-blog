@@ -23,7 +23,7 @@ const withTimeout = (promise, milliseconds) => Promise.race([
 
 const HomePage = () => {
   const { t, i18n } = useTranslation();
-  const { posts, isLoading, isError, error, refetch } = usePosts();
+  const { posts, isLoading, isError, error, refetch, isFallback } = usePosts();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { isAuthenticated } = useSelector((state) => state.user);
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
@@ -95,6 +95,7 @@ const HomePage = () => {
 
   const stats = statsQuery.data || { posts: 0, authors: 0, comments: 0 };
   const featuredPost = posts[0];
+  const usingFallback = isFallback || Boolean(statsQuery.data?.isFallback);
 
   return (
     <div className={styles.page}>
@@ -104,6 +105,13 @@ const HomePage = () => {
         onSearchChange={setQuery}
         featuredPost={featuredPost}
       />
+
+      {usingFallback && (
+        <div className={`container ${styles.fallbackNotice}`} role="status">
+          <strong>{t('home.fallbackNotice')}</strong>
+          <span>{t('home.fallbackHint')}</span>
+        </div>
+      )}
 
       {!query && (
         <section className={`container ${styles.statsSection}`} aria-label={t('analytics.title')}>

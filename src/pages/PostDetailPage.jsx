@@ -8,7 +8,7 @@ const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).
 const PostDetailPage = () => {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
-  const { post, comments, isLoading, isError, error, refetch } = usePost(id);
+  const { post, comments, isLoading, isError, error, refetch, commentsUnavailable } = usePost(id);
 
   if (isLoading) {
     return <div className="container" style={{ padding: '5rem 0', color: 'var(--text-secondary)' }}>{t('common.loading')}</div>;
@@ -35,6 +35,11 @@ const PostDetailPage = () => {
       <div style={{ overflow: 'hidden', border: '1px solid var(--border-color)', borderRadius: '16px', background: 'var(--bg-elevated)' }}>
         <img src={post.coverImageUrl} alt="" style={{ display: 'block', width: '100%', maxHeight: '480px', objectFit: 'cover' }} />
         <div style={{ padding: 'clamp(1.5rem, 5vw, 4rem)' }}>
+          {post.isFallback && (
+            <p role="status" style={{ margin: '0 0 1.25rem', padding: '.75rem 1rem', color: 'var(--text-secondary)', background: 'var(--primary-subtle)', border: '1px solid var(--primary-light)', borderRadius: '10px', lineHeight: 1.5 }}>
+              <strong style={{ color: 'var(--text-primary)' }}>{t('home.fallbackNotice')}</strong> {t('home.fallbackHint')}
+            </p>
+          )}
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.8rem', color: 'var(--text-muted)', fontSize: '.85rem' }}>
             <span style={{ color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase' }}>{post.category}</span>
             <span>{publishedDate}</span>
@@ -52,7 +57,7 @@ const PostDetailPage = () => {
 
       <section style={{ marginTop: '2rem', padding: 'clamp(1.25rem, 4vw, 2rem)', border: '1px solid var(--border-color)', borderRadius: '16px', background: 'var(--bg-elevated)' }}>
         <h2 style={{ display: 'flex', alignItems: 'center', gap: '.5rem', margin: '0 0 1.25rem', color: 'var(--text-primary)' }}><FiMessageCircle size={20} /> {t('posts.comments')} ({comments.length})</h2>
-        {comments.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>{t('comments.noComments')}</p> : comments.map((comment) => (
+        {commentsUnavailable ? <p role="status" style={{ color: 'var(--text-muted)' }}>{t('comments.unavailable')}</p> : comments.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>{t('comments.noComments')}</p> : comments.map((comment) => (
           <div key={comment.id} style={{ padding: '1rem 0', borderTop: '1px solid var(--border-color)' }}>
             <strong style={{ color: 'var(--text-primary)' }}>{comment.author?.full_name || comment.author?.username || t('comments.you')}</strong>
             <p style={{ margin: '.4rem 0 0', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{comment.content}</p>

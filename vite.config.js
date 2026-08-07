@@ -40,10 +40,22 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        // Supabase responses stay network-first. Caching API data here can
-        // surface stale or unpublished content after a locale switch.
-        runtimeCaching: [],
+        globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,woff2}"],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/[a-z0-9]+\.supabase\.co\/rest\/v1\/(posts|post_translations)(?:\?.*)?$/,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "postify-public-content-v1",
+              networkTimeoutSeconds: 5,
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: {
+                maxEntries: 40,
+                maxAgeSeconds: 60 * 60 * 24 * 7,
+              },
+            },
+          },
+        ],
       },
     }),
   ],

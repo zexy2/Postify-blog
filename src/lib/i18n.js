@@ -36,6 +36,8 @@ const resources = {
         timeoutHint: "Bağlantıyı kontrol edip tekrar deneyin.",
         noContent: "Henüz yayınlanmış yazı yok.",
         noContentHint: "Supabase’te yayınlanmış içerik bulunduğunda burada görünecek.",
+        fallbackNotice: "Bağlantı geçici olarak yok; son kaydedilen yazılar gösteriliyor.",
+        fallbackHint: "Yorumlar, giriş ve yeni içerik için bağlantının geri gelmesi gerekir.",
       },
       // Common
       common: {
@@ -210,6 +212,7 @@ const resources = {
         confirmDelete: "Yorumu silmek istediğinize emin misiniz?",
         noComments: "Henüz yorum yok. İlk yorumu siz yapın!",
         loginToComment: "Yorum yapmak için giriş yapın",
+        unavailable: "Yorumlar şu anda kullanılamıyor; yazıyı okumaya devam edebilirsiniz.",
         you: "Siz",
       },
       // Upload
@@ -311,6 +314,8 @@ const resources = {
         timeoutHint: "Check the connection and try again.",
         noContent: "No published stories yet.",
         noContentHint: "Published Supabase content will appear here.",
+        fallbackNotice: "The connection is temporarily unavailable; saved stories are shown.",
+        fallbackHint: "Comments, sign-in, and new content need the connection to come back.",
       },
       // Common
       common: {
@@ -486,6 +491,7 @@ const resources = {
         confirmDelete: "Are you sure you want to delete this comment?",
         noComments: "No comments yet. Be the first to comment!",
         loginToComment: "Login to comment",
+        unavailable: "Comments are temporarily unavailable; you can keep reading the story.",
         you: "You",
       },
       // Upload
