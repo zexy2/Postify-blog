@@ -30,7 +30,6 @@ export const ROUTES = {
   BOOKMARKS: '/bookmarks',
   ABOUT: '/about',
   CONTACT: '/contact',
-  ANALYTICS: '/analytics',
 };
 
 export const THEME = {

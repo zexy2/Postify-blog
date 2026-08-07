@@ -26,7 +26,6 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const CreatePostPage = lazy(() => import('./pages/CreatePostPage'));
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage'));
-const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
@@ -116,7 +115,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/analytics" element={<AnalyticsPage />} />
               <Route
                 path="/admin"
                 element={

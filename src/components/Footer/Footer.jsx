@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiGithub } from 'react-icons/fi';
 import styles from './Footer.module.css';
+import BrandMark from '../BrandMark';
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -16,7 +17,10 @@ const Footer = () => {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.intro}>
-          <span className={styles.kicker}>Postify</span>
+          <div className={styles.brandLine}>
+            <BrandMark size="sm" />
+            <span className={styles.kicker}>Postify</span>
+          </div>
           <p>{t('footer.description')}</p>
           <Link to="/" className={styles.exploreLink}>{t('footer.explore')} <FiArrowUpRight size={16} /></Link>
         </div>
@@ -25,7 +29,6 @@ const Footer = () => {
           <Link to="/about">{t('footer.about')}</Link>
           <Link to="/contact">{t('footer.contact')}</Link>
           <Link to="/bookmarks">{t('footer.bookmarks')}</Link>
-          <Link to="/analytics">{t('footer.analytics')}</Link>
           <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
             {t('footer.github')} <FiArrowUpRight size={14} />
           </a>

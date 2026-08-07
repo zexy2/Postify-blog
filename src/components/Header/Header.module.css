@@ -3,7 +3,7 @@
 .logo { flex-shrink: 0; }
 .logo a { display: inline-flex; align-items: center; gap: .55rem; color: var(--text-primary); font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; letter-spacing: -.055em; text-decoration: none; }
 .logo a:hover { color: var(--primary); }
-.logoMark { display: inline-block; width: .65rem; height: .65rem; background: var(--primary); border-radius: 1px; transform: rotate(45deg); }
+.logo a:focus-visible { outline: 2px solid var(--primary); outline-offset: 5px; }
 .navContainer { min-width: 0; display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 1rem; }
 .searchBox { flex: 0 1 270px; }
 .searchBox input { width: 100%; padding: .62rem 1rem; color: var(--text-primary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-full); font: inherit; font-size: var(--text-sm); }

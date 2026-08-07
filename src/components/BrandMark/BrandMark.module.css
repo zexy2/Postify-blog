@@ -1,0 +1,47 @@
+.mark {
+  display: block;
+  flex: 0 0 auto;
+  color: var(--primary);
+  overflow: visible;
+  transition: transform var(--transition-fast);
+}
+
+.mark:hover {
+  transform: translateY(-1px) rotate(-2deg);
+}
+
+.sm {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.md {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.page {
+  fill: currentColor;
+}
+
+.fold {
+  fill: none;
+  stroke: var(--bg-primary);
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-width: 2;
+}
+
+.letter {
+  fill: var(--bg-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark {
+    transition: none;
+  }
+
+  .mark:hover {
+    transform: none;
+  }
+}

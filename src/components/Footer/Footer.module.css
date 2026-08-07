@@ -1,6 +1,7 @@
 .footer { padding: 5rem 0 2rem; background: var(--bg-primary); border-top: 1px solid var(--border-color); }
 .container { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--space-2xl); }
 .intro { display: grid; gap: .8rem; max-width: 500px; padding-bottom: 3rem; }
+.brandLine { display: inline-flex; align-items: center; gap: .55rem; width: fit-content; }
 .kicker, .logo { color: var(--text-primary); font-family: var(--font-display); font-weight: 800; letter-spacing: -.05em; }
 .kicker { font-size: 1.6rem; }
 .intro p { max-width: 42ch; margin: 0; color: var(--text-secondary); }

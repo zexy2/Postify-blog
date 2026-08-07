@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiPlus, FiBookmark, FiBarChart2, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield, FiMoon, FiSun, FiSearch } from 'react-icons/fi';
+import { FiPlus, FiBookmark, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield, FiMoon, FiSun, FiSearch } from 'react-icons/fi';
 
 import styles from './Header.module.css';
 import { useTheme } from '../../hooks/useTheme';
@@ -14,6 +14,7 @@ import { useBookmarks } from '../../hooks/useBookmarks';
 import { useAuth } from '../../hooks/useAuth';
 import LanguageSwitcher from '../LanguageSwitcher';
 import CommandPalette from '../CommandPalette';
+import BrandMark from '../BrandMark';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -73,7 +74,7 @@ const Header = () => {
       <div className={styles.container}>
         <div className={styles.logo}>
           <Link to="/" onClick={closeMenu}>
-            <span className={styles.logoMark} aria-hidden="true" />
+            <BrandMark size="md" />
             Postify
           </Link>
         </div>
@@ -136,16 +137,6 @@ const Header = () => {
                 )}
               </Link>
             )}
-
-            <Link
-              to="/analytics"
-              className={`${styles.iconLink} ${isActive('/analytics') ? styles.active : ''}`}
-              onClick={closeMenu}
-              aria-label={t('nav.analytics')}
-              title={t('nav.analytics')}
-            >
-              <FiBarChart2 size={18} />
-            </Link>
 
             <Link
               to="/about"

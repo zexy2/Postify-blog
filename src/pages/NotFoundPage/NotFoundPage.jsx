@@ -37,9 +37,6 @@ const NotFoundPage = () => {
             <li>
               <Link to="/bookmarks">{t('nav.bookmarks')}</Link>
             </li>
-            <li>
-              <Link to="/analytics">{t('nav.analytics')}</Link>
-            </li>
           </ul>
         </div>
       </div>
