@@ -1,87 +1,86 @@
 /**
- * Supabase Client Configuration
- * 
- * Provides authenticated client for database, auth, and storage operations
+ * Supabase client configuration.
+ *
+ * Supabase is the only production data and auth source. There is deliberately
+ * no placeholder client and no local fallback: a missing configuration must
+ * be visible as an actionable error instead of looking like an empty blog.
  */
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    'Supabase credentials not found. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.'
-  );
-}
+export const hasSupabaseConfig = Boolean(supabaseUrl && supabaseAnonKey);
 
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key',
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true,
-    },
+export const supabase = hasSupabaseConfig
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+      },
+    })
+  : null;
+
+export const requireSupabase = () => {
+  if (!supabase) {
+    throw new Error(
+      'Supabase yapılandırması eksik. VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY tanımlanmalı.',
+    );
   }
-);
 
-/**
- * Auth helpers
- */
+  return supabase;
+};
+
 export const auth = {
   signUp: async (email, password, metadata = {}) => {
-    const { data, error } = await supabase.auth.signUp({
+    const client = requireSupabase();
+    const { data, error } = await client.auth.signUp({
       email,
       password,
-      options: {
-        data: metadata,
-      },
+      options: { data: metadata },
     });
     if (error) throw error;
     return data;
   },
 
   signIn: async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const client = requireSupabase();
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return data;
   },
 
   signInWithOAuth: async (provider) => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const client = requireSupabase();
+    const { data, error } = await client.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
     if (error) throw error;
     return data;
   },
 
   signOut: async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await requireSupabase().auth.signOut();
     if (error) throw error;
   },
 
   getSession: async () => {
-    const { data, error } = await supabase.auth.getSession();
+    const { data, error } = await requireSupabase().auth.getSession();
     if (error) throw error;
     return data.session;
   },
 
   getUser: async () => {
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await requireSupabase().auth.getUser();
     if (error) throw error;
     return data.user;
   },
 
   resetPassword: async (email) => {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { data, error } = await requireSupabase().auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/reset-password`,
     });
     if (error) throw error;
@@ -89,62 +88,50 @@ export const auth = {
   },
 
   updatePassword: async (newPassword) => {
-    const { data, error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
+    const { data, error } = await requireSupabase().auth.updateUser({ password: newPassword });
     if (error) throw error;
     return data;
   },
 
   updateProfile: async (updates) => {
-    const { data, error } = await supabase.auth.updateUser({
-      data: updates,
+    const { data, error } = await requireSupabase().auth.updateUser({ data: updates });
+    if (error) throw error;
+    return data;
+  },
+
+  onAuthStateChange: (callback) => requireSupabase().auth.onAuthStateChange(callback),
+};
+
+export const storage = {
+  upload: async (bucket, path, file, options = {}) => {
+    const { data, error } = await requireSupabase().storage.from(bucket).upload(path, file, {
+      cacheControl: '3600',
+      upsert: false,
+      ...options,
     });
     if (error) throw error;
     return data;
   },
 
-  onAuthStateChange: (callback) => {
-    return supabase.auth.onAuthStateChange(callback);
-  },
-};
-
-/**
- * Storage helpers
- */
-export const storage = {
-  upload: async (bucket, path, file, options = {}) => {
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .upload(path, file, {
-        cacheControl: '3600',
-        upsert: false,
-        ...options,
-      });
-    if (error) throw error;
-    return data;
-  },
-
   getPublicUrl: (bucket, path) => {
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    const { data } = requireSupabase().storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
   },
 
   delete: async (bucket, paths) => {
-    const { data, error } = await supabase.storage.from(bucket).remove(paths);
+    const { data, error } = await requireSupabase().storage.from(bucket).remove(paths);
     if (error) throw error;
     return data;
   },
 
   list: async (bucket, path = '', options = {}) => {
-    const { data, error } = await supabase.storage.from(bucket).list(path, options);
+    const { data, error } = await requireSupabase().storage.from(bucket).list(path, options);
     if (error) throw error;
     return data;
   },
 };
 
-// Aliases for easier imports
-export const supabaseAuth = supabase.auth;
-export const supabaseStorage = supabase.storage;
+export const supabaseAuth = supabase?.auth ?? null;
+export const supabaseStorage = supabase?.storage ?? null;
 
 export default supabase;

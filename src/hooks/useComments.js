@@ -64,7 +64,7 @@ export const useComments = (postId) => {
         content,
         parent_id: parentId,
         created_at: new Date().toISOString(),
-        author: { full_name: 'You', username: 'you' },
+        author: { full_name: t('comments.you'), username: 'you' },
         isOptimistic: true,
       };
 

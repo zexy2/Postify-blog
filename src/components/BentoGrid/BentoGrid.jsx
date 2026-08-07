@@ -6,6 +6,7 @@
 import PostCardFeatured from './PostCardFeatured';
 import PostCardMedium from './PostCardMedium';
 import PostCardCompact from './PostCardCompact';
+import { useTranslation } from 'react-i18next';
 import styles from './BentoGrid.module.css';
 
 export default function BentoGrid({ 
@@ -14,6 +15,7 @@ export default function BentoGrid({
   onBookmarkToggle,
   bookmarkedIds = [],
 }) {
+  const { t } = useTranslation();
   if (isLoading) {
     return (
       <div className={styles.grid}>
@@ -38,7 +40,7 @@ export default function BentoGrid({
   if (!posts.length) {
     return (
       <div className={styles.empty}>
-        <p>No posts found</p>
+        <p>{t('home.noContent')}</p>
       </div>
     );
   }

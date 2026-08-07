@@ -3,19 +3,12 @@
  * Centralized configuration for the entire application
  */
 
-export const API_CONFIG = {
-  BASE_URL: 'https://jsonplaceholder.typicode.com',
-  TIMEOUT: 10000,
-  RETRY_ATTEMPTS: 3,
-};
-
 export const STORAGE_KEYS = {
   THEME: 'postify_theme',
   BOOKMARKS: 'postify_bookmarks',
   USER_PREFERENCES: 'postify_preferences',
   DRAFT_POST: 'postify_draft',
   LANGUAGE: 'postify_language',
-  AUTH_TOKEN: 'postify_auth_token',
 };
 
 export const CACHE_TIME = {

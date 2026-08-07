@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FiUsers, FiFileText, FiShield, FiActivity, FiTrash2, FiEdit, FiEye, FiEyeOff } from 'react-icons/fi';
 import adminService, { USER_ROLES } from '../../services/adminService';
-import { localAuthService } from '../../services/localAuthService';
 import styles from './AdminPage.module.css';
 
 const AdminPage = () => {
@@ -25,8 +24,9 @@ const AdminPage = () => {
   // Check admin access
   useEffect(() => {
     const checkAccess = async () => {
-      const isAdmin = await localAuthService.isAdmin();
-      if (!isAdmin) {
+      try {
+        await adminService.checkAdminAuth();
+      } catch {
         navigate('/');
       }
     };

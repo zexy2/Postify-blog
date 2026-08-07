@@ -4,7 +4,7 @@
  * Handles file uploads with Supabase Storage
  */
 
-import { storage, supabase } from '../lib/supabase';
+import { storage, requireSupabase } from '../lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
 const BUCKET_NAME = 'post-images';
@@ -93,7 +93,7 @@ export const storageService = {
     const publicUrl = storage.getPublicUrl('avatars', filePath);
 
     // Update user profile with new avatar
-    await supabase
+    await requireSupabase()
       .from('profiles')
       .update({ avatar_url: publicUrl })
       .eq('id', userId);

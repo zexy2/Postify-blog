@@ -1,249 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import axios from "axios";
+import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useUser, useUserPosts } from '../hooks/usePosts';
 
 const UserPage = () => {
   const { t } = useTranslation();
   const { id } = useParams();
-  const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: user, isLoading: userLoading } = useUser(id);
+  const { data: posts = [], isLoading: postsLoading } = useUserPosts(id);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        setIsLoading(true);
-        const [userResponse, postsResponse] = await Promise.all([
-          axios.get(`https://jsonplaceholder.typicode.com/users/${id}`),
-          axios.get(`https://jsonplaceholder.typicode.com/users/${id}/posts`),
-        ]);
-
-        setUser(userResponse.data);
-        setPosts(postsResponse.data);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        // Will show empty state
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchUserData();
-    }
-  }, [id]);
-
-  if (isLoading) {
-    return (
-      <div className="container" style={{ marginTop: 32, marginBottom: 32 }}>
-        <div
-          style={{
-            textAlign: "center",
-            padding: "40px 20px",
-            color: "var(--text-secondary)",
-            background: "var(--bg-secondary)",
-            borderRadius: "10px",
-            margin: "20px auto",
-            maxWidth: "400px",
-            boxShadow: "0 2px 12px var(--shadow-color)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: "500",
-              marginBottom: "10px",
-            }}
-          >
-            {t('common.loadingAuthor')}
-          </div>
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              margin: "10px auto",
-              border: "3px solid var(--text-muted)",
-              borderTop: "3px solid var(--text-primary)",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-            }}
-          />
-        </div>
-        <style>
-          {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-        </style>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="container" style={{ marginTop: 32, marginBottom: 32 }}>
-        <div
-          style={{
-            textAlign: "center",
-            padding: "40px 20px",
-            color: "var(--text-secondary)",
-            background: "var(--bg-secondary)",
-            borderRadius: "10px",
-          }}
-        >
-          <h2 style={{ color: "var(--text-primary)", marginBottom: "16px" }}>
-            {t('common.authorNotFound')}
-          </h2>
-          <p>{t('errors.userNotFound')}</p>
-        </div>
-      </div>
-    );
-  }
+  if (userLoading) return <div className="container" style={{ padding: '5rem 1rem', color: 'var(--text-secondary)' }}>{t('common.loadingAuthor')}</div>;
+  if (!user) return <div className="container" style={{ padding: '5rem 1rem' }}><h1 style={{ color: 'var(--text-primary)' }}>{t('common.authorNotFound')}</h1><p style={{ color: 'var(--text-secondary)' }}>{t('errors.userNotFound')}</p></div>;
 
   return (
-    <div className="container" style={{ marginTop: 32, marginBottom: 32 }}>
-      {/* Yazar Profil Kartı */}
-      <div
-        style={{
-          background: "var(--bg-secondary)",
-          borderRadius: "18px",
-          boxShadow: "0 2px 12px var(--shadow-color)",
-          padding: "32px",
-          marginBottom: "32px",
-          textAlign: "center",
-        }}
-      >
-        {/* Avatar */}
-        <div
-          style={{
-            width: "100px",
-            height: "100px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #007bff 60%, #00c6ff 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#fff",
-            fontSize: "2.5rem",
-            fontWeight: "bold",
-            margin: "0 auto 20px",
-          }}
-        >
-          {user.name[0].toUpperCase()}
-        </div>
-
-        {/* Yazar Adı */}
-        <h1
-          style={{
-            fontSize: "2.5rem",
-            fontWeight: "800",
-            color: "var(--text-primary)",
-            marginBottom: "16px",
-            lineHeight: "1.2",
-          }}
-        >
-          {user.name}
-        </h1>
-
-        {/* Kullanıcı Bilgileri */}
-        <div
-          style={{
-            display: "grid",
-            gap: "16px",
-            maxWidth: "600px",
-            margin: "0 auto",
-            color: "var(--text-secondary)",
-          }}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "auto 1fr",
-              gap: "8px",
-              alignItems: "center",
-              fontSize: "1.1rem",
-              textAlign: "left",
-            }}
-          >
-            <strong style={{ color: "var(--text-primary)" }}>
-              {t('auth.username')}:
-            </strong>
-            <span>{user.username}</span>
-
-            <strong style={{ color: "var(--text-primary)" }}>Email:</strong>
-            <a
-              href={`mailto:${user.email}`}
-              style={{ color: "#007bff", textDecoration: "none" }}
-            >
-              {user.email}
-            </a>
-
-            <strong style={{ color: "var(--text-primary)" }}>{t('user.address')}:</strong>
-            <span>{user.address?.city}</span>
-
-            <strong style={{ color: "var(--text-primary)" }}>Website:</strong>
-            <a
-              href={`https://${user.website}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#007bff", textDecoration: "none" }}
-            >
-              {user.website}
-            </a>
+    <main className="container" style={{ maxWidth: '900px', padding: '4rem 1rem 5rem' }}>
+      <header style={{ paddingBottom: '2rem', borderBottom: '1px solid var(--border-color)' }}>
+        <span style={{ display: 'grid', width: '4rem', height: '4rem', placeItems: 'center', color: '#fff', background: 'var(--primary)', borderRadius: '50%', fontWeight: 800 }}>{(user.name || 'P')[0].toUpperCase()}</span>
+        <h1 style={{ margin: '1rem 0 .4rem', color: 'var(--text-primary)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', letterSpacing: '-.06em' }}>{user.name}</h1>
+        {user.username && <p style={{ margin: 0, color: 'var(--text-muted)' }}>@{user.username}</p>}
+        {user.bio && <p style={{ maxWidth: '600px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{user.bio}</p>}
+      </header>
+      <section style={{ paddingTop: '2rem' }}>
+        <h2 style={{ color: 'var(--text-primary)' }}>{t('user.posts')} ({posts.length})</h2>
+        {postsLoading ? <p style={{ color: 'var(--text-secondary)' }}>{t('common.loading')}</p> : posts.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>{t('home.noContent')}</p> : (
+          <div style={{ display: 'grid', gap: '1rem', marginTop: '1rem' }}>
+            {posts.map((post) => <Link key={post.id} to={`/posts/${post.slug || post.id}`} style={{ padding: '1.2rem', color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '10px', textDecoration: 'none' }}><strong>{post.title}</strong><span style={{ display: 'block', marginTop: '.4rem', color: 'var(--text-secondary)' }}>{post.excerpt}</span></Link>)}
           </div>
-        </div>
-      </div>
-
-      {/* Yazarın Yazıları */}
-      <h2
-        style={{
-          fontSize: "1.8rem",
-          fontWeight: "700",
-          color: "var(--text-primary)",
-          marginBottom: "24px",
-          textAlign: "center",
-        }}
-      >
-        {user.name} - {t('user.posts')} ({posts.length})
-      </h2>
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {posts.map((post) => (
-          <div
-            key={post.id}
-            style={{
-              background: "var(--bg-secondary)",
-              padding: "24px",
-              borderRadius: "12px",
-              boxShadow: "0 2px 8px var(--shadow-color)",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "1.4rem",
-                fontWeight: "700",
-                color: "var(--text-primary)",
-                marginBottom: "12px",
-              }}
-            >
-              {post.title}
-            </h3>
-            <p
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "1.1rem",
-                lineHeight: "1.6",
-                margin: 0,
-              }}
-            >
-              {post.body}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
+        )}
+      </section>
+    </main>
   );
 };
 

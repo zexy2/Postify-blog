@@ -1,40 +1,18 @@
-/**
- * PostCardCompact
- * Small typography-focused post card for Bento Grid
- */
-
 import { Link } from 'react-router-dom';
-import { FiBookmark } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
+import { FiArrowUpRight, FiBookmark } from 'react-icons/fi';
 import styles from './PostCards.module.css';
 
 export default function PostCardCompact({ post, isBookmarked, onBookmarkToggle }) {
-  const { id, title, userId } = post;
-
-  // Generate tag based on post ID for visual variety
-  const tags = ['Tech', 'Design', 'Code', 'Web', 'React', 'CSS', 'UX', 'Dev'];
-  const tag = tags[id % tags.length];
+  const { t } = useTranslation();
+  const href = `/posts/${post.slug || post.id}`;
 
   return (
     <article className={`${styles.card} ${styles.compact}`}>
       <div className={styles.compactContent}>
-        <div className={styles.compactHeader}>
-          <span className={styles.tag}>{tag}</span>
-          <button
-            className={`${styles.bookmarkBtn} ${styles.tiny} ${isBookmarked ? styles.bookmarked : ''}`}
-            onClick={() => onBookmarkToggle?.(post)}
-            aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-          >
-            <FiBookmark size={14} />
-          </button>
-        </div>
-        
-        <Link to={`/posts/${id}`} className={styles.titleLink}>
-          <h4 className={styles.compactTitle}>{title}</h4>
-        </Link>
-        
-        <div className={styles.compactFooter}>
-          <span className={styles.author}>User {userId}</span>
-        </div>
+        <div className={styles.compactHeader}><span className={styles.category}>{post.category}</span><button type="button" className={`${styles.bookmarkBtn} ${isBookmarked ? styles.bookmarked : ''}`} onClick={() => onBookmarkToggle?.(post)} aria-label={isBookmarked ? t('bookmarks.removeFromBookmarks') : t('bookmarks.addToBookmarks')}><FiBookmark size={15} /></button></div>
+        <Link to={href} className={styles.titleLink}><h4 className={styles.compactTitle}>{post.title}</h4></Link>
+        <span className={styles.compactFooter}>{post.author?.name || 'Postify Editor'} <FiArrowUpRight size={14} /></span>
       </div>
     </article>
   );

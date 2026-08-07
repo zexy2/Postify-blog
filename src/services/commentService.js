@@ -4,14 +4,14 @@
  * Handles all comment operations with Supabase
  */
 
-import { supabase } from '../lib/supabase';
+import { requireSupabase } from '../lib/supabase';
 
 export const commentService = {
   /**
    * Get all comments for a post with nested replies
    */
   getByPostId: async (postId) => {
-    const { data, error } = await supabase
+    const { data, error } = await requireSupabase()
       .from('comments')
       .select(`
         *,
@@ -33,11 +33,11 @@ export const commentService = {
    * Create a new comment
    */
   create: async ({ postId, content, parentId = null }) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await requireSupabase().auth.getUser();
     
     if (!user) throw new Error('Must be logged in to comment');
 
-    const { data, error } = await supabase
+    const { data, error } = await requireSupabase()
       .from('comments')
       .insert({
         post_id: postId,
@@ -59,11 +59,11 @@ export const commentService = {
    * Update a comment
    */
   update: async (commentId, content) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await requireSupabase().auth.getUser();
     
     if (!user) throw new Error('Must be logged in to update comment');
 
-    const { data, error } = await supabase
+    const { data, error } = await requireSupabase()
       .from('comments')
       .update({
         content,
@@ -86,11 +86,11 @@ export const commentService = {
    * Delete a comment
    */
   delete: async (commentId) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await requireSupabase().auth.getUser();
     
     if (!user) throw new Error('Must be logged in to delete comment');
 
-    const { error } = await supabase
+    const { error } = await requireSupabase()
       .from('comments')
       .delete()
       .eq('id', commentId)
@@ -104,7 +104,7 @@ export const commentService = {
    * Get comment count for a post
    */
   getCount: async (postId) => {
-    const { count, error } = await supabase
+    const { count, error } = await requireSupabase()
       .from('comments')
       .select('*', { count: 'exact', head: true })
       .eq('post_id', postId);
@@ -117,11 +117,11 @@ export const commentService = {
    * Like a comment
    */
   like: async (commentId) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await requireSupabase().auth.getUser();
     
     if (!user) throw new Error('Must be logged in to like');
 
-    const { data, error } = await supabase
+    const { data, error } = await requireSupabase()
       .from('comment_likes')
       .insert({
         comment_id: commentId,
@@ -144,11 +144,11 @@ export const commentService = {
    * Unlike a comment
    */
   unlike: async (commentId) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await requireSupabase().auth.getUser();
     
     if (!user) throw new Error('Must be logged in to unlike');
 
-    const { error } = await supabase
+    const { error } = await requireSupabase()
       .from('comment_likes')
       .delete()
       .eq('comment_id', commentId)

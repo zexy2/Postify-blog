@@ -57,28 +57,28 @@ jobs:
         run: npm ci
 
       # Deploying without Supabase credentials would publish a build that
-      # cannot reach its backend, so the deploy is skipped (not failed) until
-      # the repository secrets are configured.
+      # Frontend Supabase values are public runtime configuration. They are
+      # stored as repository Actions variables, not secrets.
       - name: Check deploy prerequisites
         id: prereq
         env:
-          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
         run: |
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning title=Deploy skipped::Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Settings > Secrets and variables > Actions to enable automatic deployment."
+            echo "::warning title=Deploy skipped::Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Settings > Secrets and variables > Actions > Variables to enable automatic deployment."
           fi
 
       - name: Build
         if: steps.prereq.outputs.ready == 'true'
         run: npm run build
         env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_APP_URL: https://zexy2.github.io/Postify-blog
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_APP_URL: https://postify.zekiakgul.dev
           VITE_APP_NAME: Postify Blog
 
       - name: Deploy to GitHub Pages

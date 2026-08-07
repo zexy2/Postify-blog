@@ -14,12 +14,6 @@ const ContactPage = () => {
       href: "https://github.com/zexy2",
     },
     {
-      type: "linkedin",
-      label: "LinkedIn",
-      value: "Zeki Akgül",
-      href: "https://www.linkedin.com/in/zeki-akgül",
-    },
-    {
       type: "email",
       label: t('contact.email') || "Email",
       value: "zekiakgul09@gmail.com",

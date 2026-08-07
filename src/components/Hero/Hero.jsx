@@ -1,86 +1,53 @@
-/**
- * Hero Component
- * Premium hero section with animated background paths
- * Inspired by 21st.dev components
- */
-
-import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import BackgroundPaths from '../BackgroundPaths';
-import TextReveal from '../TextReveal';
+import { Link } from 'react-router-dom';
+import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
 import styles from './Hero.module.css';
 
-export default function Hero({ 
-  title, 
-  subtitle, 
+export default function Hero({
   showSearch = true,
   searchValue = '',
   onSearchChange,
+  featuredPost,
 }) {
   const { t } = useTranslation();
-  const heroRef = useRef(null);
-  const searchRef = useRef(null);
-
-  useEffect(() => {
-    // Simple CSS-based fade-in
-    if (searchRef.current) {
-      searchRef.current.style.opacity = '1';
-      searchRef.current.style.transform = 'translateY(0)';
-    }
-  }, [title]);
 
   return (
-    <section ref={heroRef} className={styles.hero}>
-      {/* Animated background paths - 21st.dev style */}
-      <BackgroundPaths />
-      
-      {/* Static gradient mesh background */}
+    <section className={styles.hero}>
       <div className={styles.gradientMesh} aria-hidden="true" />
-
-      {/* Content */}
       <div className={styles.content}>
-        <h1 className={styles.title}>
-          <TextReveal text={title || t('home.title', 'Postify')} />
-        </h1>
-        
-        <p className={styles.subtitle}>
-          {subtitle || t('home.subtitle', 'Discover stories, insights, and ideas')}
-        </p>
-
-        {showSearch && (
-          <div
-            ref={searchRef} 
-            className={styles.searchWrapper}
-          >
-            <div className={styles.searchContainer}>
-              <svg 
-                className={styles.searchIcon} 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
+        <div className={styles.copy}>
+          <span className={styles.eyebrow}>{t('home.eyebrow')}</span>
+          <h1 className={styles.title}>{t('home.title')}</h1>
+          <p className={styles.subtitle}>{t('home.subtitle')}</p>
+          {showSearch && (
+            <label className={styles.searchContainer}>
+              <FiSearch className={styles.searchIcon} aria-hidden="true" />
               <input
-                type="text"
+                type="search"
                 className={styles.searchInput}
-                placeholder={t('home.searchPlaceholder', 'Search posts...')}
+                placeholder={t('home.searchPlaceholder')}
                 value={searchValue}
-                onChange={(e) => onSearchChange?.(e.target.value)}
-                aria-label={t('home.searchLabel', 'Search posts')}
+                onChange={(event) => onSearchChange?.(event.target.value)}
+                aria-label={t('home.searchLabel')}
               />
-            </div>
-          </div>
-        )}
-      </div>
+            </label>
+          )}
+        </div>
 
-      {/* Scroll indicator */}
-      <div className={styles.scrollIndicator} aria-hidden="true">
-        <div className={styles.scrollLine} />
+        {featuredPost && (
+          <Link to={`/posts/${featuredPost.slug || featuredPost.id}`} className={styles.featured}>
+            <img src={featuredPost.coverImageUrl} alt="" className={styles.featuredImage} loading="eager" />
+            <span className={styles.featuredOverlay} />
+            <span className={styles.featuredContent}>
+              <span className={styles.featuredLabel}>{t('home.featured')}</span>
+              <strong>{featuredPost.title}</strong>
+              <span className={styles.featuredMeta}>
+                {featuredPost.category} · {featuredPost.readingTime} {t('common.minutes')}
+                <FiArrowUpRight size={16} />
+              </span>
+            </span>
+          </Link>
+        )}
       </div>
     </section>
   );

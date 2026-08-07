@@ -14,8 +14,10 @@ import {
   selectBookmarkedPosts,
 } from '../store/slices/bookmarksSlice';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export function useBookmarks() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const bookmarkedIds = useSelector(selectBookmarkedIds);
   const bookmarkedPosts = useSelector(selectBookmarkedPosts);
@@ -31,36 +33,36 @@ export function useBookmarks() {
       dispatch(toggleBookmark({ id: postId, postData }));
       
       if (wasBookmarked) {
-        toast.success('Favorilerden kaldırıldı');
+        toast.success(t('success.bookmarkRemoved'));
       } else {
-        toast.success('Favorilere eklendi');
+        toast.success(t('success.bookmarkAdded'));
       }
     },
-    [dispatch, bookmarkedIds]
+    [dispatch, bookmarkedIds, t]
   );
 
   const add = useCallback(
     (postId, postData = null) => {
       if (!bookmarkedIds.includes(postId)) {
         dispatch(addBookmark({ id: postId, postData }));
-        toast.success('Favorilere eklendi');
+        toast.success(t('success.bookmarkAdded'));
       }
     },
-    [dispatch, bookmarkedIds]
+    [dispatch, bookmarkedIds, t]
   );
 
   const remove = useCallback(
     (postId) => {
       dispatch(removeBookmark(postId));
-      toast.success('Favorilerden kaldırıldı');
+      toast.success(t('success.bookmarkRemoved'));
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const clearAll = useCallback(() => {
     dispatch(clearAllBookmarks());
-    toast.success('Tüm favoriler temizlendi');
-  }, [dispatch]);
+    toast.success(t('bookmarks.clearAll'));
+  }, [dispatch, t]);
 
   // Get bookmarked posts as array
   const bookmarkedPostsList = useMemo(() => {

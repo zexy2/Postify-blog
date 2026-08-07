@@ -5,7 +5,7 @@
 
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiGithub, FiTwitter, FiLinkedin } from 'react-icons/fi';
+import { FiGithub } from 'react-icons/fi';
 import styles from './Footer.module.css';
 
 const Footer = () => {
@@ -18,41 +18,34 @@ const Footer = () => {
         <div className={styles.grid}>
           {/* Features Column */}
           <div className={styles.column}>
-            <h4>{t('footer.features', 'Features')}</h4>
-            <Link to="/">{t('footer.blog', 'Blog')}</Link>
-            <Link to="/bookmarks">{t('footer.bookmarks', 'Bookmarks')}</Link>
-            <Link to="/analytics">{t('footer.analytics', 'Analytics')}</Link>
+            <h4>{t('footer.features')}</h4>
+            <Link to="/">{t('footer.blog')}</Link>
+            <Link to="/bookmarks">{t('footer.bookmarks')}</Link>
+            <Link to="/analytics">{t('footer.analytics')}</Link>
           </div>
 
           {/* Product Column */}
           <div className={styles.column}>
-            <h4>{t('footer.product', 'Product')}</h4>
-            <Link to="/posts/create">{t('footer.create', 'Create Post')}</Link>
-            <Link to="/">{t('footer.explore', 'Explore')}</Link>
-            <Link to="/">{t('footer.trending', 'Trending')}</Link>
+            <h4>{t('footer.product')}</h4>
+            <Link to="/posts/create">{t('footer.create')}</Link>
+            <Link to="/">{t('footer.explore')}</Link>
           </div>
 
           {/* Company Column */}
           <div className={styles.column}>
-            <h4>{t('footer.company', 'Company')}</h4>
-            <Link to="/about">{t('footer.about', 'About')}</Link>
-            <Link to="/contact">{t('footer.contact', 'Contact')}</Link>
-            <a href="https://github.com/zexy2" target="_blank" rel="noopener noreferrer">
-              {t('footer.careers', 'Careers')}
+            <h4>{t('footer.company')}</h4>
+            <Link to="/about">{t('footer.about')}</Link>
+            <Link to="/contact">{t('footer.contact')}</Link>
+            <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
+              {t('footer.github')}
             </a>
           </div>
 
           {/* Connect Column */}
           <div className={styles.column}>
-            <h4>{t('footer.connect', 'Connect')}</h4>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              Twitter
-            </a>
-            <a href="https://github.com/zexy2" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              LinkedIn
+            <h4>{t('footer.connect')}</h4>
+            <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
+              {t('footer.github')}
             </a>
           </div>
         </div>
@@ -62,18 +55,12 @@ const Footer = () => {
           <span className={styles.logo}>Postify</span>
           
           <div className={styles.social}>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-              <FiTwitter size={18} />
-            </a>
-            <a href="https://github.com/zexy2" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
               <FiGithub size={18} />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-              <FiLinkedin size={18} />
             </a>
           </div>
           
-          <span className={styles.copyright}>© {currentYear} Postify</span>
+          <span className={styles.copyright}>© {currentYear} Postify · {t('footer.copyright')}</span>
         </div>
       </div>
     </footer>

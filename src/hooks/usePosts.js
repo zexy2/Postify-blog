@@ -1,30 +1,18 @@
 /**
- * usePosts Hook
- * Centralized hook for post operations with React Query
+ * Supabase-backed post queries and mutations.
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useDispatch, useSelector } from 'react-redux';
-import postService from '../services/postService';
-import userService from '../services/userService';
-import {
-  selectUserPosts,
-  addLocalPost,
-  updateLocalPost,
-  deleteLocalPost,
-} from '../store/slices/postsSlice';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { v4 as uuidv4 } from 'uuid';
+import postService from '../services/postService';
 
-// Query keys factory
 export const postKeys = {
   all: ['posts'],
-  lists: () => [...postKeys.all, 'list'],
-  list: (filters) => [...postKeys.lists(), filters],
+  lists: (locale) => [...postKeys.all, 'list', locale],
   details: () => [...postKeys.all, 'detail'],
-  detail: (id) => [...postKeys.details(), id],
-  comments: (id) => [...postKeys.detail(id), 'comments'],
-  user: (userId) => [...postKeys.all, 'user', userId],
+  detail: (identifier, locale) => [...postKeys.details(), identifier, locale],
+  user: (userId, locale) => [...postKeys.all, 'user', userId, locale],
 };
 
 export const userKeys = {
@@ -33,35 +21,25 @@ export const userKeys = {
 };
 
 export function usePosts() {
-  const userPosts = useSelector(selectUserPosts);
-
-  // Fetch all posts with users
+  const { i18n } = useTranslation();
+  const locale = i18n.language.startsWith('en') ? 'en' : 'tr';
   const postsQuery = useQuery({
-    queryKey: postKeys.lists(),
-    queryFn: async () => {
-      const [posts, users] = await Promise.all([
-        postService.getAll(),
-        userService.getAll(),
-      ]);
-
-      const usersMap = users.reduce((acc, user) => {
-        acc[user.id] = user;
-        return acc;
-      }, {});
-
-      return { posts, users, usersMap };
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 30, // 30 minutes
+    queryKey: postKeys.lists(locale),
+    queryFn: () => postService.getAll({ locale }),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 
-  // Combined posts (user-created + API posts)
-  const allPosts = [...userPosts, ...(postsQuery.data?.posts || [])];
+  const posts = postsQuery.data || [];
+  const usersMap = posts.reduce((map, post) => {
+    if (post.author) map[post.author.id] = post.author;
+    return map;
+  }, {});
 
   return {
-    posts: allPosts,
-    users: postsQuery.data?.users || [],
-    usersMap: postsQuery.data?.usersMap || {},
+    posts,
+    users: Object.values(usersMap),
+    usersMap,
     isLoading: postsQuery.isLoading,
     isError: postsQuery.isError,
     error: postsQuery.error,
@@ -69,51 +47,41 @@ export function usePosts() {
   };
 }
 
-export function usePost(id) {
-  const userPosts = useSelector(selectUserPosts);
-  
-  // Check if it's a user-created post first
-  const localPost = userPosts.find((p) => p.id === id);
-
+export function usePost(identifier) {
+  const { i18n } = useTranslation();
+  const locale = i18n.language.startsWith('en') ? 'en' : 'tr';
   const postQuery = useQuery({
-    queryKey: postKeys.detail(id),
-    queryFn: async () => {
-      const [post, comments] = await Promise.all([
-        postService.getById(id),
-        postService.getComments(id),
-      ]);
-      const author = await userService.getById(post.userId);
-      return { post, comments, author };
-    },
-    enabled: !localPost && !!id,
+    queryKey: postKeys.detail(identifier, locale),
+    queryFn: () => postService.getById(identifier, locale),
+    enabled: Boolean(identifier),
     staleTime: 1000 * 60 * 5,
   });
 
-  if (localPost) {
-    return {
-      post: localPost,
-      comments: [],
-      author: { id: 'local', name: 'Siz', username: 'you' },
-      isLoading: false,
-      isError: false,
-    };
-  }
+  const commentsQuery = useQuery({
+    queryKey: [...postKeys.detail(identifier, locale), 'comments'],
+    queryFn: () => postService.getComments(postQuery.data.id),
+    enabled: Boolean(postQuery.data?.id),
+    staleTime: 1000 * 60 * 2,
+  });
 
   return {
-    post: postQuery.data?.post,
-    comments: postQuery.data?.comments || [],
+    post: postQuery.data,
+    comments: commentsQuery.data || [],
     author: postQuery.data?.author,
     isLoading: postQuery.isLoading,
-    isError: postQuery.isError,
-    error: postQuery.error,
+    isError: postQuery.isError || commentsQuery.isError,
+    error: postQuery.error || commentsQuery.error,
+    refetch: async () => Promise.all([postQuery.refetch(), commentsQuery.refetch()]),
   };
 }
 
 export function useUserPosts(userId) {
+  const { i18n } = useTranslation();
+  const locale = i18n.language.startsWith('en') ? 'en' : 'tr';
   return useQuery({
-    queryKey: postKeys.user(userId),
-    queryFn: () => postService.getByUserId(userId),
-    enabled: !!userId,
+    queryKey: postKeys.user(userId, locale),
+    queryFn: () => postService.getByUserId(userId, locale),
+    enabled: Boolean(userId),
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -121,96 +89,41 @@ export function useUserPosts(userId) {
 export function useUser(userId) {
   return useQuery({
     queryKey: userKeys.detail(userId),
-    queryFn: () => userService.getById(userId),
-    enabled: !!userId,
+    queryFn: () => import('../services/userService').then(({ default: service }) => service.getById(userId)),
+    enabled: Boolean(userId),
     staleTime: 1000 * 60 * 10,
   });
 }
 
 export function useCreatePost() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-
   return useMutation({
-    mutationFn: async (postData) => {
-      // Simulate API call
-      const response = await postService.create(postData);
-      return response;
+    mutationFn: postService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postKeys.all });
+      toast.success(t('success.postCreated'));
     },
-    onMutate: async (newPost) => {
-      // Optimistic update - add post immediately
-      const optimisticPost = {
-        ...newPost,
-        id: `local-${uuidv4()}`,
-        createdAt: new Date().toISOString(),
-        isLocal: true,
-      };
-      
-      dispatch(addLocalPost(optimisticPost));
-      toast.success('Post oluşturuldu!');
-      
-      return { optimisticPost };
-    },
-    onError: (error, variables, context) => {
-      // Rollback on error
-      if (context?.optimisticPost) {
-        dispatch(deleteLocalPost(context.optimisticPost.id));
-      }
-      toast.error('Post oluşturulamadı');
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: postKeys.lists() });
-    },
+    onError: (error) => toast.error(error.message || t('auth.registerError')),
   });
 }
 
 export function useUpdatePost() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-
   return useMutation({
-    mutationFn: async ({ id, data }) => {
-      if (String(id).startsWith('local-')) {
-        // Local post - just update Redux
-        return { id, ...data };
-      }
-      return postService.update(id, data);
-    },
-    onMutate: async ({ id, data }) => {
-      dispatch(updateLocalPost({ id, data }));
-      toast.success('Post güncellendi!');
-    },
-    onError: () => {
-      toast.error('Post güncellenemedi');
-    },
-    onSettled: (data, error, { id }) => {
-      queryClient.invalidateQueries({ queryKey: postKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: postKeys.lists() });
-    },
+    mutationFn: ({ id, data }) => postService.update(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: postKeys.all }),
+    onError: (error) => toast.error(error.message || t('success.postUpdated')),
   });
 }
 
 export function useDeletePost() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-
   return useMutation({
-    mutationFn: async (id) => {
-      if (String(id).startsWith('local-')) {
-        return id;
-      }
-      await postService.delete(id);
-      return id;
-    },
-    onMutate: async (id) => {
-      dispatch(deleteLocalPost(id));
-      toast.success('Post silindi!');
-    },
-    onError: () => {
-      toast.error('Post silinemedi');
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: postKeys.lists() });
-    },
+    mutationFn: postService.delete,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: postKeys.all }),
+    onError: (error) => toast.error(error.message || t('success.postDeleted')),
   });
 }

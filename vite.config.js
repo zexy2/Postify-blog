@@ -41,22 +41,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/jsonplaceholder\.typicode\.com\/.*/i,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24, // 24 hours
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-        ],
+        // Supabase responses stay network-first. Caching API data here can
+        // surface stale or unpublished content after a locale switch.
+        runtimeCaching: [],
       },
     }),
   ],

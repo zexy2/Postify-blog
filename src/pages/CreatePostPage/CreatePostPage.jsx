@@ -18,7 +18,7 @@ import {
 import styles from './CreatePostPage.module.css';
 
 const CreatePostPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const createPost = useCreatePost();
@@ -26,6 +26,7 @@ const CreatePostPage = () => {
   // AI state
   const aiEnabled = useSelector(selectAIEnabled);
   const aiAvailable = isAIAvailable();
+  const currentUser = useSelector((state) => state.user.user);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -82,7 +83,8 @@ const CreatePostPage = () => {
         title: formData.title.trim(),
         body: formData.body.trim(),
         bodyHtml: formData.bodyHtml,
-        userId: 1, // Mock user ID
+        authorId: currentUser?.id,
+        locale: i18n.language?.startsWith('en') ? 'en' : 'tr',
       });
 
       navigate('/');
@@ -105,7 +107,7 @@ const CreatePostPage = () => {
         <header className={styles.header}>
           <h1 className={styles.title}>{t('posts.createPost')}</h1>
           <p className={styles.subtitle}>
-            Düşüncelerinizi paylaşın, deneyimlerinizi aktarın
+            {t('posts.createSubtitle')}
           </p>
         </header>
 
@@ -121,7 +123,7 @@ const CreatePostPage = () => {
               id="title"
               value={formData.title}
               onChange={handleTitleChange}
-              placeholder="Yazınız için etkileyici bir başlık..."
+              placeholder={t('posts.titlePlaceholder')}
               className={`${styles.input} ${errors.title ? styles.inputError : ''}`}
               maxLength={EDITOR_CONFIG.MAX_TITLE_LENGTH}
             />
@@ -157,7 +159,7 @@ const CreatePostPage = () => {
             <RichTextEditor
               content=""
               onChange={handleEditorChange}
-              placeholder="İçeriğinizi buraya yazın... Markdown desteklenir."
+              placeholder={t('posts.bodyPlaceholder')}
               minHeight={300}
               maxHeight={600}
             />
@@ -186,12 +188,12 @@ const CreatePostPage = () => {
               {createPost.isPending ? (
                 <>
                   <span className={styles.spinner} />
-                  Yayınlanıyor...
+                  {t('posts.publishing')}
                 </>
               ) : (
                 <>
                   <span>✨</span>
-                  Yayınla
+                  {t('posts.publish')}
                 </>
               )}
             </button>

@@ -86,14 +86,6 @@ const AboutPage = () => {
               >
                 GitHub
               </a>
-              <a
-                href="https://www.linkedin.com/in/zeki-akgül"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-              >
-                LinkedIn
-              </a>
             </div>
           </div>
         </motion.div>
@@ -148,26 +140,6 @@ const AboutPage = () => {
           </div>
         </motion.section>
 
-        {/* Stats */}
-        <motion.div
-          className={styles.statsSection}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>100+</div>
-            <div className={styles.statLabel}>{t('about.stats.commits') || "Commits"}</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>15+</div>
-            <div className={styles.statLabel}>{t('about.stats.components') || "Components"}</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>2</div>
-            <div className={styles.statLabel}>{t('about.stats.languages') || "Languages"}</div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );
