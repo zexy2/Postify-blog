@@ -1,44 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { FiArrowRight, FiPlus, FiSearch } from 'react-icons/fi';
-import { useQuery } from '@tanstack/react-query';
+import { FiSearch } from 'react-icons/fi';
 import Hero from '../components/Hero';
 import BentoGrid from '../components/BentoGrid';
+import CategoryNav from '../components/CategoryNav';
+import EditorialFeed from '../components/EditorialFeed';
+import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
 import { useBookmarks } from '../hooks/useBookmarks';
-import postService from '../services/postService';
-import { getFallbackStats } from '../content/fallbackPosts';
 import styles from './HomePage.module.css';
-
-const withTimeout = (promise, milliseconds) => Promise.race([
-  promise,
-  new Promise((_, reject) => setTimeout(() => {
-    const error = new Error('CONTENT_TIMEOUT');
-    error.code = 'CONTENT_TIMEOUT';
-    reject(error);
-  }, milliseconds)),
-]);
 
 const HomePage = () => {
   const { t, i18n } = useTranslation();
   const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
   const { query, debouncedQuery, setQuery } = useSearch();
-  const { isAuthenticated } = useSelector((state) => state.user);
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
   const [showWakeUp, setShowWakeUp] = useState(false);
   const [visiblePostCount, setVisiblePostCount] = useState(9);
-
-  const statsQuery = useQuery({
-    queryKey: ['post-stats'],
-    queryFn: () => withTimeout(postService.getStats(), 12000),
-    staleTime: 1000 * 60 * 10,
-    retry: 0,
-    initialData: getFallbackStats(),
-    initialDataUpdatedAt: 0,
-  });
+  const [activeCategory, setActiveCategory] = useState('all');
 
   useEffect(() => {
     if (!isLoading && !(isFetching && isFallback)) return undefined;
@@ -46,21 +26,39 @@ const HomePage = () => {
     return () => window.clearTimeout(timer);
   }, [isFetching, isFallback, isLoading]);
 
-  useEffect(() => setVisiblePostCount(9), [debouncedQuery, i18n.language]);
+  useEffect(() => {
+    setVisiblePostCount(9);
+  }, [debouncedQuery, i18n.language]);
+
+  useEffect(() => setActiveCategory('all'), [i18n.language]);
+
+  const categories = useMemo(
+    () => [...new Set(posts.map((post) => post.category).filter(Boolean))],
+    [posts],
+  );
 
   const filteredPosts = useMemo(() => {
     const normalizedQuery = debouncedQuery.trim().toLocaleLowerCase(i18n.language);
-    if (!normalizedQuery) return posts;
+    return posts.filter((post) => {
+      const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
+      if (!matchesCategory) return false;
+      if (!normalizedQuery) return true;
 
-    return posts.filter((post) => [
+      return [
       post.title,
       post.excerpt,
       post.body,
       post.category,
       post.author?.name,
       post.author?.username,
-    ].filter(Boolean).some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery)));
-  }, [debouncedQuery, i18n.language, posts]);
+      ].filter(Boolean).some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery));
+    });
+  }, [activeCategory, debouncedQuery, i18n.language, posts]);
+
+  const hasSearch = query.trim().length > 0;
+  const displayPosts = hasSearch || activeCategory !== 'all' || filteredPosts.length < 2
+    ? filteredPosts
+    : filteredPosts.slice(1);
 
   if (isLoading) {
     return (
@@ -96,13 +94,13 @@ const HomePage = () => {
     );
   }
 
-  const stats = statsQuery.data || { posts: 0, authors: 0, comments: 0 };
   const featuredPost = posts[0];
-  const usingFallback = isFallback || Boolean(statsQuery.data?.isFallback);
-  const checkingLiveContent = isFetching || statsQuery.isFetching;
+  const usingFallback = isFallback;
+  const checkingLiveContent = isFetching;
 
   return (
     <div className={styles.page}>
+      <SEO title={t('home.title')} description={t('home.subtitle')} />
       <Hero
         showSearch
         searchValue={query}
@@ -117,59 +115,38 @@ const HomePage = () => {
         </div>
       )}
 
-      {!query && (
-        <section className={`container ${styles.statsSection}`} aria-label={t('analytics.title')}>
-          <div className={styles.statsGrid}>
-            <div className={styles.statCard}><strong>{stats.posts}</strong><span>{t('analytics.totalPosts')}</span></div>
-            <div className={styles.statCard}><strong>{stats.authors}</strong><span>{t('analytics.totalAuthors')}</span></div>
-            <div className={styles.statCard}><strong>{stats.comments}</strong><span>{t('analytics.totalComments')}</span></div>
-          </div>
-        </section>
-      )}
-
-      {!query && (
-        <section className={`container ${styles.ctaSection}`}>
-          <div className={styles.ctaWrapper}>
-            <Link to={isAuthenticated ? '/posts/create' : '/auth/register'} className={styles.ctaPrimary}>
-              {isAuthenticated ? <FiPlus size={18} /> : null}
-              {isAuthenticated ? t('posts.createPost') : t('auth.register')}
-              <FiArrowRight size={18} />
-            </Link>
-            <Link to="/about" className={styles.ctaSecondary}>{t('nav.about')}</Link>
-          </div>
-        </section>
-      )}
+      <CategoryNav categories={categories} activeCategory={activeCategory} onChange={setActiveCategory} />
 
       <section className={`container ${styles.postsSection}`}>
         <div className={styles.sectionHeader}>
           <div>
-            <span className={styles.sectionEyebrow}>{query ? t('home.searchLabel') : t('home.latest')}</span>
+            <span className={styles.sectionEyebrow}>{hasSearch ? t('home.searchLabel') : t('home.latest')}</span>
             <h2 className={styles.sectionTitle}>
-              {query ? <><FiSearch size={22} /> “{query}”</> : t('home.latest')}
+              {hasSearch ? <><FiSearch size={22} /> “{query}”</> : activeCategory !== 'all' ? activeCategory : t('home.latest')}
             </h2>
             <p className={styles.sectionSubtitle}>{t('home.resultCount', { count: filteredPosts.length })}</p>
           </div>
         </div>
 
-        {filteredPosts.length === 0 ? (
+        {displayPosts.length === 0 ? (
           <div className={styles.noResults}>
             <FiSearch size={36} />
-            <h3>{query ? t('common.noResults') : t('home.noContent')}</h3>
-            <p>{query ? `${t('common.noResultsFor')}: “${query}”` : t('home.noContentHint')}</p>
-            {query && <button type="button" onClick={() => setQuery('')}>{t('home.clearSearch')}</button>}
+            <h3>{hasSearch || activeCategory !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
+            <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : t('home.noContentHint')}</p>
+            {(hasSearch || activeCategory !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); }}>{t('home.clearFilters')}</button>}
           </div>
         ) : (
-          <BentoGrid
-            posts={filteredPosts.slice(0, visiblePostCount)}
+          <EditorialFeed
+            posts={displayPosts.slice(0, visiblePostCount)}
             onBookmarkToggle={(post) => toggleBookmark(post.id, post)}
             bookmarkedIds={bookmarkedIds}
           />
         )}
 
-        {filteredPosts.length > visiblePostCount && (
+        {displayPosts.length > visiblePostCount && (
           <div className={styles.loadMore}>
             <button type="button" className={styles.loadMoreButton} onClick={() => setVisiblePostCount((count) => count + 9)}>
-              {t('common.loadMore')} ({filteredPosts.length - visiblePostCount})
+              {t('common.loadMore')} ({displayPosts.length - visiblePostCount})
             </button>
           </div>
         )}

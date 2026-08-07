@@ -1,4 +1,4 @@
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--space-lg); }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 2.75rem) 1.5rem; }
 .item { min-width: 0; }
 .featured { grid-column: span 7; grid-row: span 2; }
 .medium { grid-column: span 5; }
@@ -11,6 +11,6 @@
 .skeletonTitle { width: 75%; height: 24px; margin-bottom: 1rem; border-radius: 4px; }
 .skeletonText { width: 100%; height: 14px; margin-bottom: .6rem; border-radius: 4px; }
 @keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
-@media (max-width: 900px) { .featured { grid-column: span 12; } .medium { grid-column: span 6; } .compact { grid-column: span 4; } }
+@media (max-width: 900px) { .featured { grid-column: span 7; } .medium { grid-column: span 5; } .compact { grid-column: span 6; } }
 @media (max-width: 600px) { .grid { grid-template-columns: 1fr; gap: 1rem; } .featured, .medium, .compact { grid-column: span 1; } }
 @media (prefers-reduced-motion: reduce) { .skeletonImage, .skeletonTitle, .skeletonText { animation: none; } }

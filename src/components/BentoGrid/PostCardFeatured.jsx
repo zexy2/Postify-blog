@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiBookmark, FiClock, FiMessageCircle } from 'react-icons/fi';
 import styles from './PostCards.module.css';
+import ContentImage from '../ContentImage/ContentImage';
 
 export default function PostCardFeatured({ post, isBookmarked, onBookmarkToggle }) {
   const { t } = useTranslation();
@@ -10,7 +11,12 @@ export default function PostCardFeatured({ post, isBookmarked, onBookmarkToggle 
   return (
     <article className={`${styles.card} ${styles.featured}`}>
       <Link to={href} className={styles.imageLink}>
-        <img src={post.coverImageUrl} alt="" className={styles.featuredImage} loading="eager" />
+        <ContentImage
+          src={post.coverImageUrl}
+          alt={post.coverImageAlt || post.title}
+          className={styles.featuredImage}
+          loading="eager"
+        />
       </Link>
       <div className={styles.featuredContent}>
         <div className={styles.meta}>

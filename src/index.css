@@ -16,43 +16,43 @@
 
 :root {
   /* Colors - Light Theme (Linear Style) */
-  --bg-primary: #ffffff;
-  --bg-secondary: #fafafa;
-  --bg-tertiary: #f5f5f5;
-  --bg-elevated: #ffffff;
-  --bg-hover: #f0f0f0;
-  --bg-active: #e5e5e5;
+  --bg-primary: #fbfaf7;
+  --bg-secondary: #f3f0e9;
+  --bg-tertiary: #e9e5dc;
+  --bg-elevated: #fffdfa;
+  --bg-hover: #eeebe4;
+  --bg-active: #e4dfd6;
   --bg-glass: rgba(255, 255, 255, 0.85);
   --bg-glass-strong: rgba(255, 255, 255, 0.98);
-  
-  --text-primary: #171717;
-  --text-secondary: #525252;
-  --text-muted: #a3a3a3;
+
+  --text-primary: #1b1917;
+  --text-secondary: #5d5953;
+  --text-muted: #847d74;
   --text-disabled: #d4d4d4;
   --text-inverse: #fafafa;
-  --text-link: #5e6ad2;
+  --text-link: #a64225;
   
   --border-color: rgba(0, 0, 0, 0.08);
   --border-strong: rgba(0, 0, 0, 0.14);
   --border-subtle: rgba(0, 0, 0, 0.05);
-  --border-focus: rgba(94, 106, 210, 0.5);
+  --border-focus: rgba(179, 79, 45, 0.5);
   --divider: rgba(0, 0, 0, 0.06);
   
   /* Primary Accent — Linear Indigo */
-  --primary: #5e6ad2;
-  --primary-hover: #4e5abc;
-  --primary-active: #3d4692;
-  --primary-muted: #4a54a8;
-  --primary-light: rgba(94, 106, 210, 0.12);
-  --primary-subtle: rgba(94, 106, 210, 0.06);
-  --primary-dark: #3d4692;
-  
-  --secondary: #5e6ad2;
-  --secondary-hover: #4e5abc;
-  --secondary-active: #3d4692;
-  --secondary-muted: #4a54a8;
-  --secondary-light: rgba(94, 106, 210, 0.12);
-  --secondary-subtle: rgba(94, 106, 210, 0.06);
+  --primary: #b34f2d;
+  --primary-hover: #963e23;
+  --primary-active: #7b321d;
+  --primary-muted: #9f4628;
+  --primary-light: rgba(179, 79, 45, 0.14);
+  --primary-subtle: rgba(179, 79, 45, 0.07);
+  --primary-dark: #7b321d;
+
+  --secondary: #b34f2d;
+  --secondary-hover: #963e23;
+  --secondary-active: #7b321d;
+  --secondary-muted: #9f4628;
+  --secondary-light: rgba(179, 79, 45, 0.14);
+  --secondary-subtle: rgba(179, 79, 45, 0.07);
   
   --accent: #525252;
   --accent-hover: #404040;
@@ -94,8 +94,7 @@
   --gradient-secondary: linear-gradient(135deg, #5e6ad2 0%, #3d4692 100%);
   --gradient-subtle: linear-gradient(135deg, rgba(94, 106, 210, 0.04) 0%, rgba(94, 106, 210, 0.02) 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
-  --gradient-mesh: radial-gradient(at 30% 20%, rgba(94, 106, 210, 0.03) 0px, transparent 50%),
-                   radial-gradient(at 70% 80%, rgba(94, 106, 210, 0.02) 0px, transparent 50%);
+  --gradient-mesh: none;
   
   /* Shadows */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -130,13 +129,13 @@
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
+  --radius-xl: 10px;
+  --radius-2xl: 14px;
   --radius-full: 9999px;
   
   /* Typography - Linear Style (Inter only) */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Iowan Old Style', 'Baskerville', 'Times New Roman', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   
   --text-xs: 0.75rem;
@@ -147,7 +146,7 @@
   --text-2xl: 1.5rem;
   --text-3xl: 2rem;
   --text-4xl: 2.5rem;
-  --text-5xl: 3.5rem;
+  --text-5xl: 3.75rem;
   --text-6xl: 4.5rem;
   --text-7xl: 6rem;
   
@@ -167,7 +166,7 @@
   --header-height: 72px;
   
   /* Container - Linear Style */
-  --container-max: 1200px;
+  --container-max: 1180px;
   --container-narrow: 680px;
 }
 
@@ -201,7 +200,7 @@
   --text-muted: #5c5f66;           /* Muted */
   --text-disabled: #3d3d3f;        /* Disabled */
   --text-inverse: #000000;         /* On light bg */
-  --text-link: #5e6ad2;            /* Links — Linear indigo */
+  --text-link: #f08a67;            /* Editorial coral */
   
   /* ═══════════════════════════════════════
      BORDER & DIVIDER
@@ -210,30 +209,30 @@
   --border-color: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
   --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-focus: rgba(94, 106, 210, 0.6);
+  --border-focus: rgba(240, 138, 103, 0.6);
   --divider: rgba(255, 255, 255, 0.06);
   
   /* ═══════════════════════════════════════
      PRIMARY ACCENT — Linear Indigo
      Muted, professional, single color
      ═══════════════════════════════════════ */
-  --primary: #5e6ad2;              /* Linear's signature indigo */
-  --primary-hover: #7b84e0;        /* Hover — slightly brighter */
-  --primary-active: #4e5abc;       /* Active/pressed */
-  --primary-muted: #4a54a8;        /* Subdued */
-  --primary-light: rgba(94, 106, 210, 0.12);
-  --primary-subtle: rgba(94, 106, 210, 0.06);
-  --primary-dark: #3d4692;         /* Dark variant */
+  --primary: #f08a67;              /* Editorial coral */
+  --primary-hover: #ffad8d;        /* Hover — slightly brighter */
+  --primary-active: #d86f4f;       /* Active/pressed */
+  --primary-muted: #c96a4e;        /* Subdued */
+  --primary-light: rgba(240, 138, 103, 0.16);
+  --primary-subtle: rgba(240, 138, 103, 0.08);
+  --primary-dark: #b9553a;         /* Dark variant */
   
   /* ═══════════════════════════════════════
      SECONDARY — Same as primary (monochrome)
      ═══════════════════════════════════════ */
-  --secondary: #5e6ad2;
-  --secondary-hover: #7b84e0;
-  --secondary-active: #4e5abc;
-  --secondary-muted: #4a54a8;
-  --secondary-light: rgba(94, 106, 210, 0.12);
-  --secondary-subtle: rgba(94, 106, 210, 0.06);
+  --secondary: #f08a67;
+  --secondary-hover: #ffad8d;
+  --secondary-active: #d86f4f;
+  --secondary-muted: #c96a4e;
+  --secondary-light: rgba(240, 138, 103, 0.16);
+  --secondary-subtle: rgba(240, 138, 103, 0.08);
   
   /* ═══════════════════════════════════════
      ACCENT — Neutral gray (no extra color)
@@ -353,8 +352,7 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background: var(--bg-primary);
-  background-image: var(--gradient-mesh);
-  background-attachment: fixed;
+  background-image: none;
   min-height: 100vh;
   overflow-x: hidden;
   transition: background-color var(--transition-base), color var(--transition-base);

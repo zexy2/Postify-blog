@@ -49,6 +49,41 @@ export const commentService = {
   },
 
   /**
+   * Public, read-only comment list for the article page.
+   *
+   * Keep this query flat: the nested comments/profiles/likes embed is
+   * ambiguous in the current Supabase schema and returns HTTP 300.
+   */
+  getPublicByPostId: async (postId) => {
+    const client = requireSupabase();
+    const { data, error } = await client
+      .from('comments')
+      .select('id, content, created_at, author_id')
+      .eq('post_id', postId)
+      .is('parent_id', null)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const comments = data || [];
+    const authorIds = [...new Set(comments.map((comment) => comment.author_id).filter(Boolean))];
+    if (!authorIds.length) return comments;
+
+    const { data: profiles, error: profileError } = await client
+      .from('profiles')
+      .select('id, full_name, username')
+      .in('id', authorIds);
+
+    if (profileError) return comments;
+
+    const authors = new Map((profiles || []).map((profile) => [String(profile.id), profile]));
+    return comments.map((comment) => ({
+      ...comment,
+      author: authors.get(String(comment.author_id)) || null,
+    }));
+  },
+
+  /**
    * Create a new comment
    */
   create: async ({ postId, content, parentId = null }) => {

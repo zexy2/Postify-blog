@@ -88,6 +88,7 @@ const LoginPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder={t('auth.emailPlaceholder')}
+                autoComplete="email"
                 className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                 disabled={isLoading}
               />
@@ -108,6 +109,7 @@ const LoginPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder={t('auth.passwordPlaceholder')}
+                autoComplete="current-password"
                 className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
                 disabled={isLoading}
               />
@@ -115,7 +117,7 @@ const LoginPage = () => {
                 type="button"
                 className={styles.passwordToggle}
                 onClick={() => setShowPassword(!showPassword)}
-                tabIndex={-1}
+                aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
@@ -136,10 +138,10 @@ const LoginPage = () => {
           <span>{t('auth.orContinueWith')}</span>
         </div>
 
-        <div className={styles.oauthButtons}>
+        <div className={styles.socialButtons}>
           <button
             type="button"
-            className={`${styles.oauthButton} ${styles.google}`}
+            className={`${styles.socialButton} ${styles.google}`}
             onClick={() => handleOAuthLogin('google')}
             disabled={isLoading}
           >
@@ -148,7 +150,7 @@ const LoginPage = () => {
           </button>
           <button
             type="button"
-            className={`${styles.oauthButton} ${styles.github}`}
+            className={`${styles.socialButton} ${styles.github}`}
             onClick={() => handleOAuthLogin('github')}
             disabled={isLoading}
           >

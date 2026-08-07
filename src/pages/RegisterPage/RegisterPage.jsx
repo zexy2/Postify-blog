@@ -106,6 +106,7 @@ const RegisterPage = () => {
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder={t('auth.fullNamePlaceholder')}
+                  autoComplete="name"
                   className={`${styles.input} ${errors.fullName ? styles.inputError : ''}`}
                   disabled={isLoading}
                 />
@@ -126,6 +127,7 @@ const RegisterPage = () => {
                   value={formData.username}
                   onChange={handleChange}
                   placeholder={t('auth.usernamePlaceholder')}
+                  autoComplete="username"
                   className={`${styles.input} ${styles.inputWithPrefix} ${
                     errors.username ? styles.inputError : ''
                   }`}
@@ -149,6 +151,7 @@ const RegisterPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder={t('auth.emailPlaceholder')}
+                autoComplete="email"
                 className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                 disabled={isLoading}
               />
@@ -169,6 +172,7 @@ const RegisterPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder={t('auth.passwordPlaceholder')}
+                autoComplete="new-password"
                 className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
                 disabled={isLoading}
               />
@@ -176,7 +180,7 @@ const RegisterPage = () => {
                 type="button"
                 className={styles.passwordToggle}
                 onClick={() => setShowPassword(!showPassword)}
-                tabIndex={-1}
+                aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
@@ -197,6 +201,7 @@ const RegisterPage = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder={t('auth.confirmPasswordPlaceholder')}
+                autoComplete="new-password"
                 className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
                 disabled={isLoading}
               />
@@ -215,10 +220,10 @@ const RegisterPage = () => {
           <span>{t('auth.orContinueWith')}</span>
         </div>
 
-        <div className={styles.oauthButtons}>
+        <div className={styles.socialButtons}>
           <button
             type="button"
-            className={`${styles.oauthButton} ${styles.google}`}
+            className={`${styles.socialButton} ${styles.google}`}
             onClick={() => handleOAuthLogin('google')}
             disabled={isLoading}
           >
@@ -227,7 +232,7 @@ const RegisterPage = () => {
           </button>
           <button
             type="button"
-            className={`${styles.oauthButton} ${styles.github}`}
+            className={`${styles.socialButton} ${styles.github}`}
             onClick={() => handleOAuthLogin('github')}
             disabled={isLoading}
           >

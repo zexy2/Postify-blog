@@ -29,7 +29,32 @@ const POST_FIELDS = [
   'is_published',
   'created_at',
   'published_at',
+  'updated_at',
 ].join(',');
+
+const LOCAL_POST_IMAGES = new Set([
+  'ai-muhendisligi.webp',
+  'web-standartlari.webp',
+  'frontend-performansi.webp',
+  'urun-tasarimi.webp',
+  'edge-mimarileri.webp',
+  'gelistirici-akisi.webp',
+  'teknik-yazarlik.webp',
+  'urun-telemetrisi.webp',
+]);
+
+export const normalizeCoverImageUrl = (value) => {
+  const source = String(value || '').trim();
+  if (!source) return '/images/posts/frontend-performansi.webp';
+
+  const filename = source.split('/').pop()?.toLowerCase() || '';
+  if (!/\.(jpe?g|png)$/i.test(filename)) return source;
+
+  const webpFilename = filename.replace(/\.(jpe?g|png)$/i, '.webp');
+  return LOCAL_POST_IMAGES.has(webpFilename)
+    ? `/images/posts/${webpFilename}`
+    : source;
+};
 
 const toAuthor = (profile) => {
   if (!profile) return null;
@@ -96,7 +121,8 @@ const normalizePost = (row, translation, author, commentCount = 0) => ({
   excerpt: translation?.excerpt || row.excerpt || '',
   body: translation?.body || row.body || '',
   bodyHtml: translation?.body_html || row.body_html || '',
-  coverImageUrl: row.cover_image_url || '',
+    coverImageUrl: normalizeCoverImageUrl(row.cover_image_url),
+    coverImageAlt: translation?.title || row.title || row.category || 'Postify yazısı',
   category: row.category || 'Web geliştirme',
   readingTime: Number(row.reading_time) || 1,
   authorId: row.author_id,
@@ -109,6 +135,7 @@ const normalizePost = (row, translation, author, commentCount = 0) => ({
   isPublished: row.is_published !== false,
   createdAt: row.created_at,
   publishedAt: row.published_at || row.created_at,
+  updatedAt: row.updated_at || row.published_at || row.created_at,
   commentCount,
 });
 
@@ -285,7 +312,7 @@ export const postService = {
 
   getComments: async (postId) => {
     const { commentService } = await import('./commentService');
-    return commentService.getByPostId(postId);
+    return commentService.getPublicByPostId(postId);
   },
 
   getStats: async () => {

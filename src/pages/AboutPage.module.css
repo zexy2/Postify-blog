@@ -1,286 +1,36 @@
-/* AboutPage.module.css - Modern About Page Styles */
-
-.aboutPage {
-  min-height: calc(100vh - 80px);
-  padding: 4rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* Hero Section */
-.hero {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.heroTitle {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.heroSubtitle {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.7;
-}
-
-/* Developer Card */
-.developerCard {
-  background: var(--bg-secondary);
-  border-radius: 24px;
-  padding: 3rem;
-  margin-bottom: 3rem;
-  border: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.developerCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--accent-color), transparent);
-}
-
-.avatarWrapper {
-  flex-shrink: 0;
-}
-
-.avatar {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-color), var(--bg-primary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: var(--bg-primary);
-  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
-}
-
-[data-theme="light"] .avatar {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.developerInfo {
-  flex: 1;
-}
-
-.developerName {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-}
-
-.developerRole {
-  font-size: 1.1rem;
-  color: var(--accent-color);
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.developerBio {
-  color: var(--text-secondary);
-  line-height: 1.7;
-  font-size: 1.05rem;
-}
-
-.socialLinks {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.socialLink {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  background: var(--bg-primary);
-  border-radius: 12px;
-  color: var(--text-primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border: 1px solid var(--border-color);
-}
-
-.socialLink:hover {
-  background: var(--accent-color);
-  color: var(--bg-primary);
-  transform: translateY(-2px);
-  border-color: var(--accent-color);
-}
-
-.socialIcon {
-  font-size: 1.2rem;
-}
-
-/* Tech Stack Section */
-.techSection {
-  margin-bottom: 3rem;
-}
-
-.sectionTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.sectionIcon {
-  font-size: 1.75rem;
-}
-
-.techGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-}
-
-.techCard {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 1.5rem;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.techCard:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent-color);
-  box-shadow: 0 8px 24px rgba(0, 255, 136, 0.1);
-}
-
-[data-theme="light"] .techCard:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.techIcon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.techName {
-  font-weight: 600;
-  color: var(--text-primary);
-  font-size: 1rem;
-}
-
-.techDesc {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: 0.25rem;
-}
-
-/* Features Section */
-.featuresSection {
-  margin-bottom: 3rem;
-}
-
-.featuresGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.featureCard {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 2rem;
-  transition: all 0.3s ease;
-}
-
-.featureCard:hover {
-  border-color: var(--accent-color);
-}
-
-.featureIcon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.featureTitle {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.featureDesc {
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-/* Stats Section */
-.statsSection {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.statCard {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 2rem;
-  text-align: center;
-}
-
-.statNumber {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
-.statLabel {
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .developerCard {
-    flex-direction: column;
-    text-align: center;
-    padding: 2rem;
-  }
-
-  .socialLinks {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .techGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.aboutPage { min-height: 100vh; padding: clamp(3rem, 8vw, 6rem) 0 5rem; }
+.container { max-width: 960px; margin: 0 auto; padding: 0 var(--space-2xl); }
+.hero { max-width: 650px; margin-bottom: clamp(3rem, 7vw, 5.5rem); }
+.eyebrow { display: block; margin-bottom: .8rem; color: var(--primary); font-size: var(--text-xs); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.heroTitle { margin: 0 0 1rem; color: var(--text-primary); font-size: clamp(3rem, 8vw, 6rem); letter-spacing: -.08em; line-height: .95; }
+.heroSubtitle { max-width: 58ch; margin: 0; color: var(--text-secondary); font-size: 1.15rem; line-height: 1.65; }
+.profile { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 2rem; align-items: start; padding: 2rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.avatar { display: grid; width: 104px; height: 104px; place-items: center; color: #fff; background: var(--primary); border-radius: 50%; font-size: 2rem; font-weight: 800; letter-spacing: -.06em; }
+.profileKicker { margin: 0 0 .4rem; color: var(--text-muted); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .1em; }
+.profile h2 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -.06em; }
+.role { margin: .4rem 0 1rem; color: var(--primary); font-weight: 700; }
+.bio { max-width: 58ch; margin: 0 0 1rem; color: var(--text-secondary); line-height: 1.7; }
+.inlineLink, .returnLink { display: inline-flex; align-items: center; gap: .35rem; color: var(--text-primary); font-size: var(--text-sm); font-weight: 700; }
+.inlineLink:hover, .returnLink:hover { color: var(--primary); }
+.section { padding-top: clamp(3rem, 7vw, 5rem); }
+.sectionHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.sectionHeading .eyebrow { margin: 0; }
+.sectionHeading h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -.05em; }
+.techList { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border-color); }
+.techItem { display: grid; gap: .35rem; padding: 1rem 1rem 1rem 0; border-bottom: 1px solid var(--border-color); }
+.techItem strong { color: var(--text-primary); }
+.techItem span { color: var(--text-muted); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .08em; }
+.featureList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; border-top: 1px solid var(--border-color); }
+.featureItem { padding: 1.25rem 0; border-bottom: 1px solid var(--border-color); }
+.featureItem h3 { margin: 0 0 .4rem; color: var(--text-primary); font-size: 1.05rem; }
+.featureItem p { max-width: 38ch; margin: 0; color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; }
+.returnLink { margin-top: 3rem; }
+@media (max-width: 640px) {
+  .container { padding: 0 1rem; }
+  .profile { grid-template-columns: 1fr; gap: 1rem; }
+  .avatar { width: 72px; height: 72px; font-size: 1.35rem; }
+  .sectionHeading { display: block; }
+  .sectionHeading .eyebrow { margin-bottom: .5rem; }
+  .techList { grid-template-columns: repeat(2, 1fr); }
+  .featureList { grid-template-columns: 1fr; }
 }

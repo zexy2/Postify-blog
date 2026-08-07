@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiBookmark, FiClock } from 'react-icons/fi';
 import styles from './PostCards.module.css';
+import ContentImage from '../ContentImage/ContentImage';
 
 export default function PostCardMedium({ post, isBookmarked, onBookmarkToggle }) {
   const { t } = useTranslation();
@@ -9,7 +10,14 @@ export default function PostCardMedium({ post, isBookmarked, onBookmarkToggle })
 
   return (
     <article className={`${styles.card} ${styles.medium}`}>
-      <Link to={href} className={styles.imageLink}><img src={post.coverImageUrl} alt="" className={styles.cardImage} loading="lazy" /></Link>
+      <Link to={href} className={styles.imageLink}>
+        <ContentImage
+          src={post.coverImageUrl}
+          alt={post.coverImageAlt || post.title}
+          className={styles.cardImage}
+          loading="lazy"
+        />
+      </Link>
       <div className={styles.mediumContent}>
         <div className={styles.meta}><span className={styles.category}>{post.category}</span><span><FiClock size={13} /> {post.readingTime} {t('common.minutes')}</span></div>
         <Link to={href} className={styles.titleLink}><h3 className={styles.mediumTitle}>{post.title}</h3></Link>

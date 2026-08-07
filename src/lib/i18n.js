@@ -23,6 +23,7 @@ const resources = {
       },
       home: {
         eyebrow: "Küratörlü teknoloji notları",
+        edition: "Bağımsız teknoloji dergisi",
         title: "Daha iyi ürünler için net fikirler.",
         subtitle: "Yapay zekâdan frontend performansına: işe yarayan teknik düşünceleri, gerçek deneyimlerle birlikte okuyun.",
         searchPlaceholder: "Yazılarda ara...",
@@ -39,6 +40,18 @@ const resources = {
         fallbackNotice: "Bağlantı geçici olarak yok; son kaydedilen yazılar gösteriliyor.",
         fallbackChecking: "Kayıtlı yazılar hazır; canlı içerik kontrol ediliyor.",
         fallbackHint: "Yorumlar, giriş ve yeni içerik için bağlantının geri gelmesi gerekir.",
+        categoriesLabel: "Konu başlıkları",
+        allCategories: "Tümü",
+        noCategoryResults: "Bu başlık altında henüz yayınlanmış yazı yok.",
+        clearFilters: "Filtreleri temizle",
+      },
+      search: {
+        title: "Yazılarda ara",
+        hint: "Başlık, kategori veya yazar ile keşfet",
+        placeholder: "Ne okumak istiyorsun?",
+        results: "Arama sonuçları",
+        navigate: "Gezerken yaz",
+        open: "Ara",
       },
       // Common
       common: {
@@ -66,7 +79,12 @@ const resources = {
         comments: "yorum",
         read: "Oku",
         clearSearch: "Aramayı temizle",
+        copyLink: "Linki kopyala",
+        linkCopied: "Link kopyalandı",
         toggleMenu: "Menüyü aç/kapat",
+        closeMenu: "Menüyü kapat",
+        closeSearch: "Aramayı kapat",
+        toggleLanguage: "Dili değiştir",
       },
       // Posts
       posts: {
@@ -89,6 +107,16 @@ const resources = {
         addComment: "Yorum Ekle",
         publishedAt: "Yayınlanma",
         readingTime: "dk okuma",
+      },
+      article: {
+        updated: "Güncellendi",
+        editor: "Postify Editör",
+        readingProgress: "Okuma ilerlemesi",
+        tools: "Yazı araçları",
+        discussion: "Okur notları",
+        moreStories: "Diğer yazılar",
+        older: "Daha eski",
+        newer: "Daha yeni",
       },
       // Bookmarks
       bookmarks: {
@@ -127,8 +155,20 @@ const resources = {
         description:
           "Postify Blog, modern web teknolojileri ile geliştirilmiş, profesyonel bir blog platformudur.",
         technologies: "Kullanılan Teknolojiler",
-        features: "Özellikler",
         projectOwner: "Proje sahibi",
+        bio: "Postify; teknoloji, ürün ve geliştirici deneyimi üzerine kısa, uygulanabilir notlar yayınlayan bağımsız bir editoryal alan.",
+        role: "Ürün odaklı full-stack geliştirici",
+        featuresTitle: "Postify nasıl çalışır?",
+        features: {
+          blog: "Editoryal yazılar",
+          blogDesc: "AI, frontend, performans ve ürün kararlarını sade teknik anlatılarla keşfedin.",
+          auth: "Kişisel akış",
+          authDesc: "Yazıları kaydedin, yorumlayın ve kendi notlarınızı yayınlayın.",
+          theme: "Okuma modu",
+          themeDesc: "Açık veya koyu temada dikkati içeriğe bırakın.",
+          i18n: "İki dil",
+          i18nDesc: "Aynı fikri Türkçe veya İngilizce okuyun.",
+        },
       },
       // Contact
       contact: {
@@ -201,6 +241,8 @@ const resources = {
         logoutSuccess: "Başarıyla çıkış yapıldı",
         resetPasswordSent: "Şifre sıfırlama e-postası gönderildi",
         profileUpdated: "Profil güncellendi",
+        showPassword: "Şifreyi göster",
+        hidePassword: "Şifreyi gizle",
       },
       // Comments
       comments: {
@@ -219,6 +261,7 @@ const resources = {
         unavailable: "Yorumlar şu anda kullanılamıyor; yazıyı okumaya devam edebilirsiniz.",
         likeError: "Yorum beğenisi güncellenemedi.",
         you: "Siz",
+        reader: "Postify okuru",
       },
       // Upload
       upload: {
@@ -288,6 +331,7 @@ const resources = {
         contact: "İletişim",
         connect: "Bağlantı",
         github: "GitHub",
+        description: "Teknoloji, ürün ve geliştirici deneyimi üzerine kısa editoryal notlar.",
         copyright: "Tüm hakları saklıdır.",
       },
     },
@@ -306,6 +350,7 @@ const resources = {
       },
       home: {
         eyebrow: "Curated technology notes",
+        edition: "Independent technology journal",
         title: "Clear ideas for better products.",
         subtitle: "From AI to frontend performance: practical technical thinking, grounded in real product work.",
         searchPlaceholder: "Search the journal...",
@@ -322,6 +367,18 @@ const resources = {
         fallbackNotice: "The connection is temporarily unavailable; saved stories are shown.",
         fallbackChecking: "Saved stories are ready; checking the live content connection.",
         fallbackHint: "Comments, sign-in, and new content need the connection to come back.",
+        categoriesLabel: "Topics",
+        allCategories: "All",
+        noCategoryResults: "No published stories are available in this topic yet.",
+        clearFilters: "Clear filters",
+      },
+      search: {
+        title: "Search the journal",
+        hint: "Explore by title, topic, or author",
+        placeholder: "What do you want to read?",
+        results: "Search results",
+        navigate: "Type to navigate",
+        open: "Search",
       },
       // Common
       common: {
@@ -349,7 +406,12 @@ const resources = {
         comments: "comments",
         read: "Read",
         clearSearch: "Clear search",
+        copyLink: "Copy link",
+        linkCopied: "Link copied",
         toggleMenu: "Toggle menu",
+        closeMenu: "Close menu",
+        closeSearch: "Close search",
+        toggleLanguage: "Change language",
       },
       // Posts
       posts: {
@@ -372,6 +434,16 @@ const resources = {
         addComment: "Add Comment",
         publishedAt: "Published",
         readingTime: "min read",
+      },
+      article: {
+        updated: "Updated",
+        editor: "Postify Editor",
+        readingProgress: "Reading progress",
+        tools: "Story tools",
+        discussion: "Reader notes",
+        moreStories: "More stories",
+        older: "Older",
+        newer: "Newer",
       },
       // Bookmarks
       bookmarks: {
@@ -410,8 +482,20 @@ const resources = {
         description:
           "Postify Blog is a professional blog platform built with modern web technologies.",
         technologies: "Technologies Used",
-        features: "Features",
         projectOwner: "Project owner",
+        bio: "Postify is an independent editorial space for short, practical notes on technology, products, and developer experience.",
+        role: "Product-minded full-stack developer",
+        featuresTitle: "How Postify works",
+        features: {
+          blog: "Editorial stories",
+          blogDesc: "Explore AI, frontend, performance, and product decisions through clear technical writing.",
+          auth: "Personal flow",
+          authDesc: "Save stories, join the discussion, and publish your own notes.",
+          theme: "Reading modes",
+          themeDesc: "Keep attention on the content in light or dark mode.",
+          i18n: "Two languages",
+          i18nDesc: "Read the same ideas in Turkish or English.",
+        },
       },
       // Contact
       contact: {
@@ -485,6 +569,8 @@ const resources = {
         logoutSuccess: "Logged out successfully",
         resetPasswordSent: "Password reset email sent",
         profileUpdated: "Profile updated",
+        showPassword: "Show password",
+        hidePassword: "Hide password",
       },
       // Comments
       comments: {
@@ -503,6 +589,7 @@ const resources = {
         unavailable: "Comments are temporarily unavailable; you can keep reading the story.",
         likeError: "The comment like could not be updated.",
         you: "You",
+        reader: "Postify reader",
       },
       // Upload
       upload: {
@@ -573,6 +660,7 @@ const resources = {
         contact: "Contact",
         connect: "Connect",
         github: "GitHub",
+        description: "Short editorial notes on technology, products, and developer experience.",
         copyright: "All rights reserved.",
       },
     },

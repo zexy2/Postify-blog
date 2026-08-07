@@ -8,22 +8,9 @@
 }
 
 /* Toggle Button */
-.button {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
+.button { display: inline-flex; align-items: center; gap: .4rem; min-width: 3.4rem; justify-content: center; padding: .55rem .65rem; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast); }
 
-.button:hover {
-  border-color: var(--primary);
-  background: var(--bg-tertiary);
-}
+.button:hover { color: var(--text-primary); border-color: var(--primary); background: var(--bg-tertiary); }
 
 .flag {
   font-size: 1.25rem;
@@ -41,6 +28,8 @@
   font-size: var(--text-sm);
   font-weight: 300;
 }
+
+.languageCode { font-size: var(--text-xs); font-weight: 800; letter-spacing: .08em; }
 
 /* Simple inline version */
 .inline {

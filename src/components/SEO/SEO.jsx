@@ -19,8 +19,8 @@ const SEO = ({
   noIndex = false,
 }) => {
   const siteTitle = 'Postify Blog';
-  const defaultDescription = 'A modern blog application built with React';
-  const defaultImage = '/og-image.png';
+  const defaultDescription = 'Postify; teknoloji, ürün ve geliştirici deneyimi üzerine kısa editoryal notlar.';
+  const defaultImage = '/images/posts/ai-muhendisligi.webp';
   const siteUrl = import.meta.env.VITE_APP_URL || 'https://postify.zekiakgul.dev';
 
   const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle;
@@ -53,7 +53,7 @@ const SEO = ({
       name: siteTitle,
       logo: {
         '@type': 'ImageObject',
-        url: `${siteUrl}/logo.png`,
+        url: `${siteUrl}/images/posts/ai-muhendisligi.webp`,
       },
     },
   };

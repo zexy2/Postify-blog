@@ -14,9 +14,9 @@ export default defineConfig({
         name: "Postify Blog",
         short_name: "Postify",
         description:
-          "Modern blog platformu - React, Redux Toolkit ve TanStack Query ile geliştirilmiş",
-        theme_color: "#007bff",
-        background_color: "#ffffff",
+          "Teknoloji, ürün ve geliştirici deneyimi üzerine kısa editoryal notlar.",
+        theme_color: "#b34f2d",
+        background_color: "#fbfaf7",
         display: "standalone",
         orientation: "portrait",
         scope: "/",
@@ -42,6 +42,13 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,woff2}"],
+        globIgnores: [
+          "**/editor-*.js",
+          "**/markdown-*.js",
+          "**/AnalyticsCharts-*.js",
+          "**/motion-*.js",
+          "**/gradient-*.js",
+        ],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/[a-z0-9]+\.supabase\.co\/rest\/v1\/(posts|post_translations)(?:\?.*)?$/,
@@ -66,6 +73,11 @@ export default defineConfig({
     assetsDir: "assets",
     sourcemap: false,
     minify: "terser",
+    modulePreload: {
+      resolveDependencies: (_filename, deps) => deps.filter((dependency) => (
+        !/\/(editor|markdown|AnalyticsCharts|motion|gradient)-/.test(dependency)
+      )),
+    },
     terserOptions: {
       compress: {
         drop_console: true,
@@ -80,13 +92,6 @@ export default defineConfig({
           if (id.includes('/gradflow/') || id.includes('/ogl/')) return 'gradient';
           if (id.includes('/lenis/')) return 'smooth-scroll';
           if (id.includes('@tiptap') || id.includes('prosemirror')) return 'editor';
-          if (
-            id.includes('/react-markdown/') ||
-            id.includes('/remark-') ||
-            id.includes('/rehype-') ||
-            id.includes('/micromark') ||
-            id.includes('/mdast')
-          ) return 'markdown';
           if (id.includes('/framer-motion/')) return 'motion';
           if (id.includes('/@supabase/')) return 'supabase';
           if (id.includes('/react-icons/')) return 'icons';

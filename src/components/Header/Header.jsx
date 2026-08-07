@@ -3,41 +3,77 @@
  * Main navigation header with search, theme toggle, and language switcher
  */
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiPlus, FiBookmark, FiBarChart2, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield } from 'react-icons/fi';
+import { FiPlus, FiBookmark, FiBarChart2, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield, FiMoon, FiSun, FiSearch } from 'react-icons/fi';
 
 import styles from './Header.module.css';
 import { useTheme } from '../../hooks/useTheme';
-import { useSearch } from '../../hooks/useSearch';
 import { useBookmarks } from '../../hooks/useBookmarks';
 import { useAuth } from '../../hooks/useAuth';
 import LanguageSwitcher from '../LanguageSwitcher';
+import CommandPalette from '../CommandPalette';
 
 const Header = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
 
   const { theme, toggle: toggleTheme } = useTheme();
-  const { query, setQuery } = useSearch();
   const { bookmarksCount } = useBookmarks();
   const { isAuthenticated, user, logout: handleLogout } = useAuth();
 
   const isAdmin = user?.profile?.role === 'admin';
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => setIsMenuOpen((open) => !open);
   const closeMenu = () => setIsMenuOpen(false);
+  const closeCommand = useCallback(() => setIsCommandOpen(false), []);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setIsCommandOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleShortcut = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setIsCommandOpen(true);
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleShortcut);
+    return () => document.removeEventListener('keydown', handleShortcut);
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMenuOpen]);
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className={styles.header}>
+    <>
+      <header className={styles.header}>
       <div className={styles.container}>
         <div className={styles.logo}>
           <Link to="/" onClick={closeMenu}>
-            <span className={styles.logoIcon}>📝</span>
+            <span className={styles.logoMark} aria-hidden="true" />
             Postify
           </Link>
         </div>
@@ -46,22 +82,26 @@ const Header = () => {
           className={`${styles.menuButton} ${isMenuOpen ? styles.open : ''}`}
           onClick={toggleMenu}
           aria-label={t('common.toggleMenu')}
+          aria-expanded={isMenuOpen}
+          aria-controls="primary-navigation"
         >
           <span></span>
           <span></span>
           <span></span>
         </button>
 
-        <div className={`${styles.navContainer} ${isMenuOpen ? styles.open : ''}`}>
-          {/* Search Box */}
-          <div className={styles.searchBox}>
-            <input
-              type="text"
-              placeholder={`🔍 ${t('common.searchPosts')}`}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
+        {isMenuOpen && <button type="button" className={styles.menuBackdrop} onClick={closeMenu} aria-label={t('common.closeMenu')} />}
+        <div id="primary-navigation" className={`${styles.navContainer} ${isMenuOpen ? styles.open : ''}`}>
+          <button
+            type="button"
+            className={styles.searchTrigger}
+            onClick={() => { closeMenu(); setIsCommandOpen(true); }}
+            aria-label={t('search.open')}
+          >
+            <FiSearch size={16} />
+            <span>{t('search.open')}</span>
+            <kbd>⌘K</kbd>
+          </button>
 
           {/* Navigation Links */}
           <nav className={styles.navLinks}>
@@ -101,6 +141,8 @@ const Header = () => {
               to="/analytics"
               className={`${styles.iconLink} ${isActive('/analytics') ? styles.active : ''}`}
               onClick={closeMenu}
+              aria-label={t('nav.analytics')}
+              title={t('nav.analytics')}
             >
               <FiBarChart2 size={18} />
             </Link>
@@ -171,18 +213,28 @@ const Header = () => {
                 rel="noopener noreferrer"
                 className={styles.githubButton}
                 onClick={closeMenu}
+                aria-label="GitHub"
+                title="GitHub"
               >
                 <FiGithub size={18} />
               </a>
 
-              <button onClick={toggleTheme} className={styles.themeToggle}>
-                {theme === 'light' ? '🌙' : '🌞'}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className={styles.themeToggle}
+                aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
+                title={theme === 'light' ? t('theme.dark') : t('theme.light')}
+              >
+                {theme === 'light' ? <FiMoon size={17} /> : <FiSun size={17} />}
               </button>
             </div>
           </nav>
         </div>
       </div>
-    </header>
+      </header>
+      <CommandPalette open={isCommandOpen} onClose={closeCommand} />
+    </>
   );
 };
 

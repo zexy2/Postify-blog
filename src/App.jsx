@@ -13,7 +13,6 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
-import GradientBackground from './components/GradientBackground';
 
 // Critical pages - eager load
 import HomePage from './pages/HomePage';
@@ -77,12 +76,8 @@ function App() {
         style={{
           minHeight: '100vh',
           position: 'relative',
-          overflow: 'hidden',
         }}
       >
-        {/* Animated Gradient Background */}
-        <GradientBackground type="silk" opacity={0.35} speed={0.25} />
-        
         <Header />
         <main
           style={{

@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './ReadingProgress.module.css';
 
 export default function ReadingProgress({ 
@@ -11,6 +12,7 @@ export default function ReadingProgress({
   color = 'var(--primary)',
   height = 3,
 }) {
+  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
 
   const calculateProgress = useCallback(() => {
@@ -68,7 +70,7 @@ export default function ReadingProgress({
       aria-valuenow={Math.round(progress)}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-label="Reading progress"
+      aria-label={t('article.readingProgress')}
     >
       <div 
         className={styles.bar}

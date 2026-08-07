@@ -21,12 +21,13 @@ export const userKeys = {
   detail: (id) => [...userKeys.all, id],
 };
 
-export function usePosts() {
+export function usePosts({ enabled = true } = {}) {
   const { i18n } = useTranslation();
   const locale = i18n.language.startsWith('en') ? 'en' : 'tr';
   const postsQuery = useQuery({
     queryKey: postKeys.lists(locale),
     queryFn: () => postService.getAll({ locale }),
+    enabled,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
     retry: 1,

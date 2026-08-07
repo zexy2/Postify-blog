@@ -6,11 +6,17 @@ const requireSupabase = vi.fn(() => {
 
 vi.mock('../lib/supabase', () => ({ requireSupabase }));
 
-const { default: postService } = await import('./postService');
+const { default: postService, normalizeCoverImageUrl } = await import('./postService');
 
 describe('postService public fallback', () => {
   beforeEach(() => {
     requireSupabase.mockClear();
+  });
+
+  it('maps legacy local jpg covers to shipped webp assets', () => {
+    expect(normalizeCoverImageUrl('/images/posts/ai-muhendisligi.jpg')).toBe('/images/posts/ai-muhendisligi.webp');
+    expect(normalizeCoverImageUrl('/images/posts/frontend-performansi.jpeg')).toBe('/images/posts/frontend-performansi.webp');
+    expect(normalizeCoverImageUrl('/remote/cover.jpg')).toBe('/remote/cover.jpg');
   });
 
   it('keeps the public list available when Supabase is unavailable', async () => {
@@ -31,4 +37,3 @@ describe('postService public fallback', () => {
     expect(stats).toEqual({ posts: 8, authors: 1, comments: 0, isFallback: true });
   });
 });
-
