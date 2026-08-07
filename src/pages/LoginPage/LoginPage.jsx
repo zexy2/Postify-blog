@@ -5,7 +5,7 @@
  */
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaGoogle, FaGithub, FaEye, FaEyeSlash, FaEnvelope, FaLock } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
@@ -14,6 +14,8 @@ import styles from './LoginPage.module.css';
 const LoginPage = () => {
   const { t } = useTranslation();
   const { login, loginWithOAuth, isLoading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const registered = searchParams.get('registered') === '1';
 
   const [formData, setFormData] = useState({
     email: '',
@@ -65,6 +67,12 @@ const LoginPage = () => {
           <h1 className={styles.title}>{t('auth.login')}</h1>
           <p className={styles.subtitle}>{t('auth.loginSubtitle')}</p>
         </div>
+
+        {registered && (
+          <p className={styles.confirmationMessage} role="status">
+            {t('auth.emailConfirmationHint')}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>

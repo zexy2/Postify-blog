@@ -15,7 +15,7 @@ const FALLBACK_CATALOG = [
     id: 'fallback-ai-muhendisligi',
     slug: 'ai-muhendisligi',
     category: 'Yapay zekâ',
-    coverImageUrl: '/images/posts/ai-muhendisligi.jpg',
+    coverImageUrl: '/images/posts/ai-muhendisligi.webp',
     readingTime: 6,
     publishedAt: '2026-08-07T00:00:00.000Z',
     translations: {
@@ -43,7 +43,7 @@ Good AI product work starts with measurable value, controlled failure, and a cle
     id: 'fallback-web-standartlari',
     slug: 'web-standartlari',
     category: 'Web geliştirme',
-    coverImageUrl: '/images/posts/web-standartlari.jpg',
+    coverImageUrl: '/images/posts/web-standartlari.webp',
     readingTime: 5,
     publishedAt: '2026-08-06T00:00:00.000Z',
     translations: {
@@ -71,7 +71,7 @@ Standards reduce surprises. That pays off in performance, testing, and the cost 
     id: 'fallback-frontend-performansi',
     slug: 'frontend-performansi',
     category: 'Frontend',
-    coverImageUrl: '/images/posts/frontend-performansi.jpg',
+    coverImageUrl: '/images/posts/frontend-performansi.webp',
     readingTime: 7,
     publishedAt: '2026-08-05T00:00:00.000Z',
     translations: {
@@ -99,7 +99,7 @@ Measure on a real device, a real network, and a repeatable user flow. Good perfo
     id: 'fallback-urun-tasarimi',
     slug: 'urun-tasarimi',
     category: 'Ürün tasarımı',
-    coverImageUrl: '/images/posts/urun-tasarimi.jpg',
+    coverImageUrl: '/images/posts/urun-tasarimi.webp',
     readingTime: 5,
     publishedAt: '2026-08-04T00:00:00.000Z',
     translations: {
@@ -127,7 +127,7 @@ Good defaults do not restrict people. They move attention to the work that matte
     id: 'fallback-edge-mimarileri',
     slug: 'edge-mimarileri',
     category: 'Mimari',
-    coverImageUrl: '/images/posts/edge-mimarileri.jpg',
+    coverImageUrl: '/images/posts/edge-mimarileri.webp',
     readingTime: 6,
     publishedAt: '2026-08-03T00:00:00.000Z',
     translations: {
@@ -155,7 +155,7 @@ Edge is an architectural response to a specific bottleneck, not a default techno
     id: 'fallback-gelistirici-akisi',
     slug: 'gelistirici-akisi',
     category: 'Geliştirici araçları',
-    coverImageUrl: '/images/posts/gelistirici-akisi.jpg',
+    coverImageUrl: '/images/posts/gelistirici-akisi.webp',
     readingTime: 4,
     publishedAt: '2026-08-02T00:00:00.000Z',
     translations: {
@@ -183,7 +183,7 @@ Automation earns its value by producing repeatable evidence, not just by being f
     id: 'fallback-teknik-yazarlik',
     slug: 'teknik-yazarlik',
     category: 'Teknik iletişim',
-    coverImageUrl: '/images/posts/teknik-yazarlik.jpg',
+    coverImageUrl: '/images/posts/teknik-yazarlik.webp',
     readingTime: 4,
     publishedAt: '2026-08-01T00:00:00.000Z',
     translations: {
@@ -211,7 +211,7 @@ Clarity is not less detail. It is putting detail in the right order.`,
     id: 'fallback-urun-telemetrisi',
     slug: 'urun-telemetrisi',
     category: 'Ürün analitiği',
-    coverImageUrl: '/images/posts/urun-telemetrisi.jpg',
+    coverImageUrl: '/images/posts/urun-telemetrisi.webp',
     readingTime: 5,
     publishedAt: '2026-07-31T00:00:00.000Z',
     translations: {
@@ -277,4 +277,3 @@ export const getFallbackStats = () => ({
   comments: 0,
   isFallback: true,
 });
-

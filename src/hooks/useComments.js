@@ -156,6 +156,9 @@ export const useComments = (postId) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
     },
+    onError: (err) => {
+      toast.error(err.message || t('comments.likeError'));
+    },
   });
 
   return {

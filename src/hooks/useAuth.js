@@ -18,6 +18,13 @@ import {
   logout as logoutAction,
 } from "../store/slices/userSlice";
 
+const getAuthErrorMessage = (error, fallback, t) => {
+  if (error?.code === 'email_not_confirmed' || /email not confirmed/i.test(error?.message || '')) {
+    return t('auth.emailNotConfirmed');
+  }
+  return error?.message || fallback;
+};
+
 export const useAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -103,14 +110,16 @@ export const useAuth = () => {
         dispatch(setLoading(true));
         dispatch(setError(null));
 
-        await authService.register({ email, password, fullName, username });
+        const registration = await authService.register({ email, password, fullName, username });
 
-        toast.success(t("auth.registerSuccess"));
-        navigate("/auth/login");
+        toast.success(registration.needsEmailConfirmation
+          ? t("auth.registerConfirmationRequired")
+          : t("auth.registerSuccess"));
+        navigate(registration.needsEmailConfirmation ? "/auth/login?registered=1" : "/auth/login");
 
         return { success: true };
       } catch (err) {
-        const message = err.message || t("auth.registerError");
+        const message = getAuthErrorMessage(err, t("auth.registerError"), t);
         dispatch(setError(message));
         toast.error(message);
         return { success: false, error: message };
@@ -147,7 +156,7 @@ export const useAuth = () => {
 
         return { success: true };
       } catch (err) {
-        const message = err.message || t("auth.loginError");
+        const message = getAuthErrorMessage(err, t("auth.loginError"), t);
         dispatch(setError(message));
         toast.error(message);
         return { success: false, error: message };

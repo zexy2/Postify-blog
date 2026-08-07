@@ -11,14 +11,17 @@ export const commentService = {
    * Get all comments for a post with nested replies
    */
   getByPostId: async (postId) => {
-    const { data, error } = await requireSupabase()
+    const client = requireSupabase();
+    const { data, error } = await client
       .from('comments')
       .select(`
         *,
         author:profiles(id, full_name, username, avatar_url),
+        likes:comment_likes(user_id),
         replies:comments(
           *,
-          author:profiles(id, full_name, username, avatar_url)
+          author:profiles(id, full_name, username, avatar_url),
+          likes:comment_likes(user_id)
         )
       `)
       .eq('post_id', postId)
@@ -26,7 +29,23 @@ export const commentService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+
+    let currentUserId = null;
+    try {
+      const { data: authData } = await client.auth.getUser();
+      currentUserId = authData.user?.id || null;
+    } catch {
+      // Public comment reading must still work if the auth refresh endpoint is unavailable.
+    }
+
+    const addLikeState = (comment) => ({
+      ...comment,
+      likes_count: comment.likes?.length || 0,
+      liked: Boolean(currentUserId && comment.likes?.some((like) => like.user_id === currentUserId)),
+      replies: (comment.replies || []).map(addLikeState),
+    });
+
+    return (data || []).map(addLikeState);
   },
 
   /**

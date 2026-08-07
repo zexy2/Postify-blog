@@ -197,7 +197,7 @@ export const postService = {
     bodyHtml = '',
     excerpt = '',
     category = 'Web geliştirme',
-    coverImageUrl = '/images/posts/frontend-performansi.jpg',
+    coverImageUrl = '/images/posts/frontend-performansi.webp',
     readingTime = 4,
     slug,
     locale = 'tr',

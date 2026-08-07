@@ -17,10 +17,10 @@ import GradientBackground from './components/GradientBackground';
 
 // Critical pages - eager load
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 
 // Lazy loaded pages for better performance
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const PostDetailPage = lazy(() => import('./pages/PostDetailPage'));
 const UserPage = lazy(() => import('./pages/UserPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));

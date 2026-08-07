@@ -80,6 +80,14 @@ export const storageService = {
    * Upload avatar image
    */
   uploadAvatar: async (file, userId) => {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      throw new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.');
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error('File size exceeds 5MB limit.');
+    }
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
@@ -93,10 +101,11 @@ export const storageService = {
     const publicUrl = storage.getPublicUrl('avatars', filePath);
 
     // Update user profile with new avatar
-    await requireSupabase()
+    const { error } = await requireSupabase()
       .from('profiles')
       .update({ avatar_url: publicUrl })
       .eq('id', userId);
+    if (error) throw error;
 
     return publicUrl;
   },

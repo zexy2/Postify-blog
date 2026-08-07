@@ -37,6 +37,7 @@ const resources = {
         noContent: "Henüz yayınlanmış yazı yok.",
         noContentHint: "Supabase’te yayınlanmış içerik bulunduğunda burada görünecek.",
         fallbackNotice: "Bağlantı geçici olarak yok; son kaydedilen yazılar gösteriliyor.",
+        fallbackChecking: "Kayıtlı yazılar hazır; canlı içerik kontrol ediliyor.",
         fallbackHint: "Yorumlar, giriş ve yeni içerik için bağlantının geri gelmesi gerekir.",
       },
       // Common
@@ -193,6 +194,9 @@ const resources = {
         loginSuccess: "Başarıyla giriş yapıldı",
         loginError: "Giriş yapılamadı",
         registerSuccess: "Kayıt başarılı! E-postanızı kontrol edin",
+        registerConfirmationRequired: "Kayıt tamamlandı. Giriş yapmadan önce e-postanızı doğrulayın.",
+        emailConfirmationHint: "Doğrulama bağlantısı e-posta adresinize gönderildi. Bağlantıyı açtıktan sonra giriş yapabilirsiniz.",
+        emailNotConfirmed: "Önce e-posta adresinizi doğrulayın; yeni bağlantı için kayıt e-postanızı kontrol edin.",
         registerError: "Kayıt olunamadı",
         logoutSuccess: "Başarıyla çıkış yapıldı",
         resetPasswordSent: "Şifre sıfırlama e-postası gönderildi",
@@ -213,6 +217,7 @@ const resources = {
         noComments: "Henüz yorum yok. İlk yorumu siz yapın!",
         loginToComment: "Yorum yapmak için giriş yapın",
         unavailable: "Yorumlar şu anda kullanılamıyor; yazıyı okumaya devam edebilirsiniz.",
+        likeError: "Yorum beğenisi güncellenemedi.",
         you: "Siz",
       },
       // Upload
@@ -315,6 +320,7 @@ const resources = {
         noContent: "No published stories yet.",
         noContentHint: "Published Supabase content will appear here.",
         fallbackNotice: "The connection is temporarily unavailable; saved stories are shown.",
+        fallbackChecking: "Saved stories are ready; checking the live content connection.",
         fallbackHint: "Comments, sign-in, and new content need the connection to come back.",
       },
       // Common
@@ -472,6 +478,9 @@ const resources = {
         loginSuccess: "Logged in successfully",
         loginError: "Login failed",
         registerSuccess: "Registration successful! Check your email",
+        registerConfirmationRequired: "Registration complete. Confirm your email before signing in.",
+        emailConfirmationHint: "A confirmation link was sent to your email. Open it, then sign in.",
+        emailNotConfirmed: "Confirm your email address first, then try signing in again.",
         registerError: "Registration failed",
         logoutSuccess: "Logged out successfully",
         resetPasswordSent: "Password reset email sent",
@@ -492,6 +501,7 @@ const resources = {
         noComments: "No comments yet. Be the first to comment!",
         loginToComment: "Login to comment",
         unavailable: "Comments are temporarily unavailable; you can keep reading the story.",
+        likeError: "The comment like could not be updated.",
         you: "You",
       },
       // Upload

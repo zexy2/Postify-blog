@@ -36,7 +36,7 @@ export default function Hero({
 
         {featuredPost && (
           <Link to={`/posts/${featuredPost.slug || featuredPost.id}`} className={styles.featured}>
-            <img src={featuredPost.coverImageUrl} alt="" className={styles.featuredImage} loading="eager" />
+            <img src={featuredPost.coverImageUrl} alt="" className={styles.featuredImage} loading="eager" fetchPriority="high" decoding="async" />
             <span className={styles.featuredOverlay} />
             <span className={styles.featuredContent}>
               <span className={styles.featuredLabel}>{t('home.featured')}</span>

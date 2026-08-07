@@ -10,6 +10,7 @@ import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
 import { useBookmarks } from '../hooks/useBookmarks';
 import postService from '../services/postService';
+import { getFallbackStats } from '../content/fallbackPosts';
 import styles from './HomePage.module.css';
 
 const withTimeout = (promise, milliseconds) => Promise.race([
@@ -23,7 +24,7 @@ const withTimeout = (promise, milliseconds) => Promise.race([
 
 const HomePage = () => {
   const { t, i18n } = useTranslation();
-  const { posts, isLoading, isError, error, refetch, isFallback } = usePosts();
+  const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { isAuthenticated } = useSelector((state) => state.user);
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
@@ -35,13 +36,15 @@ const HomePage = () => {
     queryFn: () => withTimeout(postService.getStats(), 12000),
     staleTime: 1000 * 60 * 10,
     retry: 0,
+    initialData: getFallbackStats(),
+    initialDataUpdatedAt: 0,
   });
 
   useEffect(() => {
-    if (!isLoading) return undefined;
+    if (!isLoading && !(isFetching && isFallback)) return undefined;
     const timer = window.setTimeout(() => setShowWakeUp(true), 3000);
     return () => window.clearTimeout(timer);
-  }, [isLoading]);
+  }, [isFetching, isFallback, isLoading]);
 
   useEffect(() => setVisiblePostCount(9), [debouncedQuery, i18n.language]);
 
@@ -96,6 +99,7 @@ const HomePage = () => {
   const stats = statsQuery.data || { posts: 0, authors: 0, comments: 0 };
   const featuredPost = posts[0];
   const usingFallback = isFallback || Boolean(statsQuery.data?.isFallback);
+  const checkingLiveContent = isFetching || statsQuery.isFetching;
 
   return (
     <div className={styles.page}>
@@ -108,7 +112,7 @@ const HomePage = () => {
 
       {usingFallback && (
         <div className={`container ${styles.fallbackNotice}`} role="status">
-          <strong>{t('home.fallbackNotice')}</strong>
+          <strong>{t(checkingLiveContent ? 'home.fallbackChecking' : 'home.fallbackNotice')}</strong>
           <span>{t('home.fallbackHint')}</span>
         </div>
       )}

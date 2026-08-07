@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import postService from '../services/postService';
+import { getFallbackPost, getFallbackPosts } from '../content/fallbackPosts';
 
 export const postKeys = {
   all: ['posts'],
@@ -29,6 +30,8 @@ export function usePosts() {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
     retry: 1,
+    initialData: () => getFallbackPosts(locale),
+    initialDataUpdatedAt: 0,
   });
 
   const posts = postsQuery.data || [];
@@ -42,6 +45,7 @@ export function usePosts() {
     users: Object.values(usersMap),
     usersMap,
     isLoading: postsQuery.isLoading,
+    isFetching: postsQuery.isFetching,
     isError: postsQuery.isError,
     error: postsQuery.error,
     isFallback: posts.some((post) => post.isFallback),
@@ -58,6 +62,8 @@ export function usePost(identifier) {
     enabled: Boolean(identifier),
     staleTime: 1000 * 60 * 5,
     retry: 1,
+    initialData: () => getFallbackPost(identifier, locale) || undefined,
+    initialDataUpdatedAt: 0,
   });
 
   const commentsQuery = useQuery({

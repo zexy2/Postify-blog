@@ -16,14 +16,13 @@ export const authService = {
       username,
     });
 
-    if (data.user) {
-      const { error } = await requireSupabase()
-        .from('profiles')
-        .upsert(profileFor({ id: data.user.id, email, fullName, username }), { onConflict: 'id' });
-      if (error) throw error;
-    }
-
-    return data;
+    // The database trigger creates the profile from auth metadata. When email
+    // confirmation is enabled there is no authenticated client session yet,
+    // so a client-side profiles upsert would fail with RLS.
+    return {
+      ...data,
+      needsEmailConfirmation: Boolean(data.user && !data.session),
+    };
   },
 
   login: ({ email, password }) => auth.signIn(email, password),
@@ -33,12 +32,34 @@ export const authService = {
   getCurrentUser: () => auth.getUser(),
 
   getProfile: async (userId) => {
-    const { data, error } = await requireSupabase()
+    const client = requireSupabase();
+    const { data, error } = await client
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
     if (error) throw error;
+
+    if (!data) {
+      const { data: authData, error: authError } = await client.auth.getUser();
+      if (authError) throw authError;
+      if (authData.user?.id === userId) {
+        const metadata = authData.user.user_metadata || {};
+        const { data: createdProfile, error: createError } = await client
+          .from('profiles')
+          .upsert(profileFor({
+            id: userId,
+            email: authData.user.email || '',
+            fullName: metadata.full_name || metadata.name || '',
+            username: metadata.username || '',
+          }), { onConflict: 'id' })
+          .select()
+          .single();
+        if (createError) throw createError;
+        return createdProfile;
+      }
+    }
+
     return data;
   },
 
