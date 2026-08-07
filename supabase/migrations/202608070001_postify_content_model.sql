@@ -1,6 +1,5 @@
 -- Postify canonical content model.
--- This migration is intentionally prepared locally. Apply it only after the
--- existing Supabase project DNS/API has been verified.
+-- Apply after the Postify base schema migration has completed.
 
 create extension if not exists pgcrypto;
 

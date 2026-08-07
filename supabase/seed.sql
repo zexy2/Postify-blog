@@ -1,13 +1,8 @@
 -- Postify curated seed content.
--- Run after the migration and after at least one editor profile exists.
-
-do $$
-begin
-  if not exists (select 1 from public.profiles limit 1) then
-    raise exception 'Seed requires an existing profile/editor account';
-  end if;
-end
-$$;
+-- Run after the base and content-model migrations.
+-- If no profile exists yet, posts are published with a null author_id and the
+-- UI presents the honest fallback name "Postify Editor". A later signup can
+-- create a real profile without blocking the initial editorial launch.
 
 with editor as (
   select id from public.profiles order by created_at nulls last limit 1
@@ -47,8 +42,8 @@ with editor as (
       'Telemetri tasarımında ilk refleks bütün tıklamaları toplamaktır. Oysa çok sayıda olay, doğru sorular cevaplanmadığında yalnızca gürültü üretir.\n\nÖnce ürün hipotezini yazın, sonra ölçümün karar üzerindeki etkisini tanımlayın. Kimlik, saklama süresi ve erişim izinleri de ölçüm planının bir parçasıdır.\n\nİyi analitik sistem pazarlama raporunu değil, ekip içindeki belirsizliği azaltır; ürünün hangi noktada zorlandığını gösterir ve bir sonraki deneyi netleştirir.')
 )
 insert into public.posts (slug, title, body, excerpt, category, cover_image_url, reading_time, author_id, is_published, published_at)
-select seed.slug, seed.title, seed.body, seed.excerpt, seed.category, seed.cover_image_url, seed.reading_time, editor.id, true, now()
-from seed cross join editor
+select seed.slug, seed.title, seed.body, seed.excerpt, seed.category, seed.cover_image_url, seed.reading_time, (select id from editor), true, now()
+from seed
 on conflict (slug) do update set
   title = excluded.title,
   body = excluded.body,
