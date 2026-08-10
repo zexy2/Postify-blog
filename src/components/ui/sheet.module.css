@@ -1,0 +1,139 @@
+.sheetOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-dropdown) + 20);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.sheetContent {
+  position: fixed;
+  z-index: calc(var(--z-dropdown) + 30);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sheetContent.top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: max-content;
+  max-height: 80vh;
+  border-bottom: 1px solid var(--border-color);
+  animation: slideInDown 0.25s ease-out forwards;
+}
+
+.sheetContent.bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: max-content;
+  max-height: 80vh;
+  border-top: 1px solid var(--border-color);
+  animation: slideInUp 0.25s ease-out forwards;
+}
+
+.sheetContent.left {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 85vw;
+  max-width: 380px;
+  border-right: 1px solid var(--border-color);
+  animation: slideInLeft 0.25s ease-out forwards;
+}
+
+.sheetContent.right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 85vw;
+  max-width: 380px;
+  border-left: 1px solid var(--border-color);
+  animation: slideInRight 0.25s ease-out forwards;
+}
+
+.sheetCloseButton {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.sheetCloseButton:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  transform: scale(1.05);
+}
+
+.sheetHeader {
+  padding: 1.5rem 1.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sheetTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sheetDescription {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.sheetFooter {
+  padding: 1rem 1.5rem 1.5rem;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
