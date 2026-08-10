@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiGithub, FiZap, FiCode, FiGlobe, FiLayers, FiCpu, FiShield, FiSmartphone, FiDatabase } from 'react-icons/fi';
 import SEO from '../components/SEO';
 import GlowingCard from '../components/GlowingCard/GlowingCard';
+import { Testimonial } from '../components/ui/design-testimonial';
 import styles from './AboutPage.module.css';
 
 const AboutPage = () => {
@@ -73,7 +74,7 @@ const AboutPage = () => {
           </div>
         </header>
 
-        {/* Founder Profile Card */}
+        {/* 2. Founder Profile Bento Card with 21st.dev Spotlight */}
         <section className={styles.section}>
           <GlowingCard
             glowColor="color-mix(in srgb, var(--primary) 20%, transparent)"
@@ -112,6 +113,11 @@ const AboutPage = () => {
               </div>
             </div>
           </GlowingCard>
+        </section>
+
+        {/* Testimonials Showcase Section */}
+        <section className={styles.section}>
+          <Testimonial />
         </section>
 
         {/* Tech Stack Cards */}
