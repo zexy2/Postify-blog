@@ -421,7 +421,7 @@ const Header = () => {
       <div className={styles.container}>
         <div className={styles.logoSection}>
           <Link to="/" className={styles.logo} aria-label="Postify Home" onClick={closeMenu}>
-            <BrandMark size="sm" />
+            <BrandMark size="md" />
             <span className={styles.logoText}>Postify</span>
           </Link>
         </div>
