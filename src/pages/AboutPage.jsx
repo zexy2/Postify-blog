@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiArrowUpRight, FiGithub, FiZap, FiCode, FiGlobe, FiLayers, FiCpu, FiShield, FiSmartphone, FiDatabase } from 'react-icons/fi';
+import { FiArrowUpRight, FiGithub, FiZap, FiCode, FiGlobe, FiLayers, FiCpu, FiDatabase } from 'react-icons/fi';
 import SEO from '../components/SEO';
 import GlowingCard from '../components/GlowingCard/GlowingCard';
 import { Testimonial } from '../components/ui/design-testimonial';
@@ -29,30 +29,11 @@ const AboutPage = () => {
       icon: <FiLayers className={styles.techIcon} />,
     },
     {
-      name: 'i18next Localization',
-      tag: 'Internationalization',
-      desc: 'Full Turkish and English language switching with instant dynamic state.',
+      name: 'i18next & Offline PWA',
+      tag: 'Experience',
+      desc: 'Multilingual Turkish/English localization with offline Service Worker caching.',
       icon: <FiGlobe className={styles.techIcon} />,
     },
-    {
-      name: 'Progressive Web App',
-      tag: 'Offline Experience',
-      desc: 'Service Worker offline caching, background sync, and instant PWA installability.',
-      icon: <FiSmartphone className={styles.techIcon} />,
-    },
-    {
-      name: 'TanStack Query v5',
-      tag: 'State Management',
-      desc: 'Intelligent caching, automatic refetching, and optimistic UI updates.',
-      icon: <FiZap className={styles.techIcon} />,
-    },
-  ];
-
-  const features = [
-    { key: 'blog', icon: <FiZap /> },
-    { key: 'auth', icon: <FiShield /> },
-    { key: 'theme', icon: <FiLayers /> },
-    { key: 'i18n', icon: <FiGlobe /> },
   ];
 
   return (
@@ -60,7 +41,7 @@ const AboutPage = () => {
       <SEO title={t('about.title')} description={t('about.description')} />
 
       <div className={styles.container}>
-        {/* Hero Header Section */}
+        {/* 1. Hero Header Section */}
         <header className={styles.heroCard}>
           <span className={styles.eyebrow}>Postify Journal</span>
           <h1 className={styles.heroTitle}>{t('about.title')}</h1>
@@ -74,7 +55,7 @@ const AboutPage = () => {
           </div>
         </header>
 
-        {/* 2. Founder Profile Bento Card with 21st.dev Spotlight */}
+        {/* 2. Founder Profile Bento Card */}
         <section className={styles.section}>
           <GlowingCard
             glowColor="color-mix(in srgb, var(--primary) 20%, transparent)"
@@ -115,12 +96,12 @@ const AboutPage = () => {
           </GlowingCard>
         </section>
 
-        {/* Testimonials Showcase Section */}
+        {/* 3. Testimonials Showcase Section */}
         <section className={styles.section}>
           <Testimonial />
         </section>
 
-        {/* Tech Stack Cards */}
+        {/* 4. Streamlined Architecture Stack */}
         <section className={styles.section}>
           <div className={styles.sectionHeading}>
             <div>
@@ -146,26 +127,6 @@ const AboutPage = () => {
                   <p className={styles.techDesc}>{tech.desc}</p>
                 </div>
               </GlowingCard>
-            ))}
-          </div>
-        </section>
-
-        {/* Platform Features Grid */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeading}>
-            <div>
-              <span className={styles.eyebrow}>Capabilities</span>
-              <h2>{t('about.featuresTitle')}</h2>
-            </div>
-          </div>
-
-          <div className={styles.featureGrid}>
-            {features.map(({ key, icon }) => (
-              <div key={key} className={styles.featureCard}>
-                <div className={styles.featureIcon}>{icon}</div>
-                <h3 className={styles.featureTitle}>{t(`about.features.${key}`)}</h3>
-                <p className={styles.featureDesc}>{t(`about.features.${key}Desc`)}</p>
-              </div>
             ))}
           </div>
         </section>
