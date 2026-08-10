@@ -29,10 +29,6 @@ const Footer = () => {
                   <FiGithub size={16} />
                   <span>GitHub</span>
                 </a>
-                <span className={styles.socialBadge}>
-                  <FiGlobe size={16} />
-                  <span>Istanbul, TR</span>
-                </span>
               </div>
             </div>
 
