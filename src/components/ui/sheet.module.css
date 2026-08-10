@@ -1,7 +1,7 @@
 .sheetOverlay {
   position: fixed;
   inset: 0;
-  z-index: calc(var(--z-dropdown) + 20);
+  z-index: calc(var(--z-modal) + 20);
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -10,7 +10,7 @@
 
 .sheetContent {
   position: fixed;
-  z-index: calc(var(--z-dropdown) + 30);
+  z-index: calc(var(--z-modal) + 30);
   display: flex;
   flex-direction: column;
   background: var(--bg-primary);

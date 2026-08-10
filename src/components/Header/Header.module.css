@@ -70,7 +70,7 @@
 @media (max-width: 1024px) { .searchBox { flex-basis: 210px; } .navLinks > a:not(.createButton):not(.iconLink) { display: none; } }
 @media (max-width: 768px) {
   .container { padding: 0 1.25rem; }
-  .menuButton { display: flex; position: relative; z-index: calc(var(--z-dropdown) + 2); border-radius: var(--radius-full); }
+  .menuButton { display: flex; position: relative; z-index: calc(var(--z-modal) + 35); border-radius: var(--radius-full); }
   .menuBackdrop { 
     position: fixed; 
     inset: var(--header-height) 0 0 0; 
