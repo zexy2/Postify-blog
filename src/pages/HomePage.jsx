@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { FiSearch } from 'react-icons/fi';
 import Hero from '../components/Hero';
 import BentoGrid from '../components/BentoGrid';
@@ -14,12 +15,32 @@ import styles from './HomePage.module.css';
 
 const HomePage = () => {
   const { t, i18n } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category');
   const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
   const [showWakeUp, setShowWakeUp] = useState(false);
   const [visiblePostCount, setVisiblePostCount] = useState(9);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
+
+  useEffect(() => {
+    if (categoryParam) {
+      setActiveCategory(categoryParam);
+    } else {
+      setActiveCategory('all');
+    }
+  }, [categoryParam]);
+
+  const handleCategoryChange = (category) => {
+    setActiveCategory(category);
+    if (category === 'all') {
+      searchParams.delete('category');
+      setSearchParams(searchParams, { replace: true });
+    } else {
+      setSearchParams({ category }, { replace: true });
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && !(isFetching && isFallback)) return undefined;
@@ -31,8 +52,6 @@ const HomePage = () => {
     setVisiblePostCount(9);
   }, [debouncedQuery, i18n.language]);
 
-  useEffect(() => setActiveCategory('all'), [i18n.language]);
-
   const categories = useMemo(
     () => [...new Set(posts.map((post) => post.category).filter(Boolean))],
     [posts],
@@ -41,7 +60,9 @@ const HomePage = () => {
   const filteredPosts = useMemo(() => {
     const normalizedQuery = debouncedQuery.trim().toLocaleLowerCase(i18n.language);
     return posts.filter((post) => {
-      const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
+      const matchesCategory =
+        activeCategory === 'all' ||
+        post.category?.toLowerCase() === activeCategory.toLowerCase();
       if (!matchesCategory) return false;
       if (!normalizedQuery) return true;
 
@@ -117,7 +138,7 @@ const HomePage = () => {
         </div>
       )}
 
-      <CategoryNav categories={categories} activeCategory={activeCategory} onChange={setActiveCategory} />
+      <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
       <section className={`container ${styles.postsSection}`}>
         <div className={styles.sectionHeader}>
