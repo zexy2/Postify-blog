@@ -93,25 +93,6 @@ const Header = () => {
 
         {isMenuOpen && <button type="button" className={styles.menuBackdrop} onClick={closeMenu} aria-label={t('common.closeMenu')} />}
         <div id="primary-navigation" className={`${styles.navContainer} ${isMenuOpen ? styles.open : ''}`}>
-          {/* 21st.dev Style Top Banner */}
-          <div className={styles.mobileMenuHeaderCard}>
-            <div className={styles.mobileMenuBadge}>✨ POSTIFY EDITORIAL</div>
-            <h3 className={styles.mobileMenuCardTitle}>{t('about.title', 'Modern Teknoloji & Tasarım Dergisi')}</h3>
-            <p className={styles.mobileMenuCardDesc}>{t('home.subtitle', 'Güncel makaleleri, rehberleri ve analizleri keşfedin.')}</p>
-
-            <div className={styles.mobileMenuTopics}>
-              {['AI', 'Frontend', 'Design', 'Supabase'].map((topic) => (
-                <Link
-                  key={topic}
-                  to="/"
-                  className={styles.mobileTopicTag}
-                  onClick={closeMenu}
-                >
-                  #{topic}
-                </Link>
-              ))}
-            </div>
-          </div>
 
           <button
             type="button"
