@@ -1,4 +1,5 @@
 .header { position: sticky; top: 0; z-index: var(--z-sticky); background: color-mix(in srgb, var(--bg-primary) 94%, transparent); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(16px); }
+.headerMenuOpen { z-index: calc(var(--z-modal) + 50) !important; }
 .container { max-width: var(--container-max); height: var(--header-height); display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; margin: 0 auto; padding: 0 var(--space-lg); }
 .logo { flex-shrink: 0; }
 .logo a { display: inline-flex; align-items: center; gap: .55rem; color: var(--text-primary); font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; letter-spacing: -.055em; text-decoration: none; }

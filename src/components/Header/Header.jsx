@@ -415,7 +415,7 @@ const Header = () => {
   );
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${isMenuOpen ? styles.headerMenuOpen : ''}`}>
       <CommandPalette open={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
 
       <div className={styles.container}>

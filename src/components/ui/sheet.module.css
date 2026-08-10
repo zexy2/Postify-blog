@@ -1,6 +1,6 @@
 .sheetOverlay {
   position: fixed;
-  inset: 0;
+  inset: var(--header-height) 0 0 0;
   z-index: calc(var(--z-modal) + 20);
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
