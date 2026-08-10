@@ -6,4 +6,13 @@
 .item { flex: 0 0 auto; padding: .45rem .7rem; color: var(--text-secondary); border-radius: var(--radius-full); font-size: var(--text-sm); white-space: nowrap; }
 .item:hover { color: var(--text-primary); background: var(--bg-secondary); }
 .item.active { color: var(--primary); background: var(--primary-subtle); font-weight: 800; }
-@media (max-width: 640px) { .inner { display: block; padding: .8rem 1rem; } .label { display: block; margin-bottom: .45rem; } .items { width: calc(100vw - 2rem); } }
+@media (max-width: 640px) { 
+  .inner { display: block; padding: .8rem 1rem; } 
+  .label { display: block; margin-bottom: .45rem; } 
+  .items { 
+    width: 100%; 
+    padding-right: 1.5rem;
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  } 
+}

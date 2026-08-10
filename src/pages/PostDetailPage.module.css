@@ -48,5 +48,47 @@
 .adjacentLink:hover { color: var(--primary); }
 .newer { text-align: right; }
 .newer span { text-align: right; }
-@media (max-width: 780px) { .articleLayout { display: block; } .rail { position: static; flex-direction: row; align-items: center; margin-bottom: 1.25rem; } .railRule, .railStat { display: none; } .articleShell { margin: 0; } .coverImage { aspect-ratio: 1.45 / 1; } .articleContent { padding: 1.5rem 1rem 2.5rem; } .title { font-size: clamp(2.5rem, 12vw, 4rem); } .body { padding-top: 2rem; } .body > div { font-size: 1.04rem; line-height: 1.8; } .commentsSection, .adjacent { margin-left: 0; margin-right: 0; } }
+.mobileActionBar { display: none; }
+@media (max-width: 780px) { 
+  .articleLayout { display: block; } 
+  .rail { position: static; flex-direction: row; align-items: center; margin-bottom: 1.25rem; } 
+  .railRule, .railStat { display: none; } 
+  .articleShell { margin: 0; } 
+  .coverImage { aspect-ratio: 1.45 / 1; } 
+  .articleContent { padding: 1.5rem 1rem 2.5rem; } 
+  .title { font-size: clamp(2.5rem, 12vw, 4rem); } 
+  .body { padding-top: 2rem; } 
+  .body > div { font-size: 1.04rem; line-height: 1.8; } 
+  .commentsSection, .adjacent { margin-left: 0; margin-right: 0; } 
+  .mobileActionBar {
+    position: fixed;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .45rem .85rem;
+    background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+    border: 1px solid var(--border-color);
+    border-radius: 99px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .mobileActionBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .65rem;
+    color: var(--text-primary);
+    border-radius: 99px;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .mobileActionBtn:hover { background: var(--bg-hover); }
+}
 @media (max-width: 520px) { .sectionHeading { align-items: start; flex-direction: column; } .adjacent { grid-template-columns: 1fr; } .newer { text-align: left; } .newer span { text-align: left; } }
+

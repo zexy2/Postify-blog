@@ -40,6 +40,7 @@
   .searchBox { width: 100%; margin-bottom: 1.25rem; }
   .searchBox input { padding: .8rem 1rem; border-radius: var(--radius-md); }
   .searchTrigger { width: 100%; justify-content: flex-start; margin-bottom: 1.25rem; padding: .8rem 1rem; }
+  .searchTrigger kbd { display: none; }
   .navLinks { display: flex; flex-direction: column; align-items: stretch; gap: .4rem; }
   .navLinks a, .navLinks > a:not(.createButton):not(.iconLink) { display: flex; justify-content: center; padding: .8rem 1rem; background: var(--bg-secondary); }
   .actions { justify-content: center; margin: 1rem 0 0; padding: 1rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }

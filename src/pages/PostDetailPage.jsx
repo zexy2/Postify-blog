@@ -142,7 +142,7 @@ const PostDetailPage = () => {
             </article>
           </div>
 
-          <section className={styles.commentsSection}>
+          <section className={styles.commentsSection} id="comments-section">
             <div className={styles.sectionHeading}>
               <div>
                 <span className={styles.sectionEyebrow}>{t('article.discussion')}</span>
@@ -168,6 +168,20 @@ const PostDetailPage = () => {
               </Link> : <span />}
             </nav>
           )}
+        </div>
+
+        {/* Mobile Sticky Thumb-Zone Action Bar */}
+        <div className={styles.mobileActionBar} aria-label={t('article.tools')}>
+          <Link to="/" className={styles.mobileActionBtn} aria-label={t('common.back')}>
+            <FiArrowLeft size={18} />
+          </Link>
+          <a href="#comments-section" className={styles.mobileActionBtn} aria-label={t('posts.comments')}>
+            <FiMessageCircle size={18} />
+            <small>{comments.length}</small>
+          </a>
+          <div className={styles.mobileShareWrap}>
+            <CopyLinkButton url={pageUrl} />
+          </div>
         </div>
       </div>
     </>
