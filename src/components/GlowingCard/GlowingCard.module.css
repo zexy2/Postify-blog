@@ -1,11 +1,7 @@
-/**
- * GlowingCard Styles
- * Inspired by 21st.dev Aceternity UI
- */
-
 .glowingCard {
   position: relative;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
@@ -13,26 +9,38 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
-  transition: background 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    var(--glow-color, rgba(255, 255, 255, 0.1)),
+    transparent 40%
+  );
+}
+
+.glowingCard:hover .glowEffect {
+  opacity: 1;
 }
 
 .borderGlow {
   position: absolute;
-  inset: 0;
+  inset: -1px;
   pointer-events: none;
-  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.15),
+    transparent 40%
+  );
+}
+
+.glowingCard:hover .borderGlow {
+  opacity: 1;
 }
 
 .content {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   height: 100%;
-  background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Hover state */
-.glowingCard:hover .content {
-  border-color: rgba(255, 255, 255, 0.12);
 }

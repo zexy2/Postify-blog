@@ -1,112 +1,30 @@
-/**
- * CustomCursor Styles
- */
-
 .cursor {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
+  top: -6px;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border-radius: 50%;
   pointer-events: none;
   z-index: 99999;
-  mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
+  will-change: transform;
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease, width 0.2s ease, height 0.2s ease;
+  box-shadow: 0 0 10px var(--primary);
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  background: #ffffff;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.cursor.hovering {
+  width: 28px;
+  height: 28px;
+  top: -14px;
+  left: -14px;
+  background: color-mix(in srgb, var(--primary) 25%, transparent);
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 
-.ring {
-  width: 60px;
-  height: 60px;
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-}
-
-.text {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.trailer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 99998;
-  transform: translate(-50%, -50%);
-}
-
-/* Hovering state */
-.hovering .dot {
-  opacity: 0;
-}
-
-/* Hide default cursor when custom cursor is active */
-:global(body:has(.cursor)) {
-  cursor: none;
-}
-
-:global(body:has(.cursor) *) {
-  cursor: none !important;
-}
-
-/* Dark mode adjustments */
-[data-theme='dark'] .dot {
-  background: var(--primary);
-}
-
-[data-theme='dark'] .ring {
-  border-color: var(--primary);
-  background: rgba(0, 255, 136, 0.1);
-}
-
-[data-theme='dark'] .text {
-  color: var(--primary);
-}
-
-[data-theme='dark'] .trailer {
-  border-color: rgba(0, 255, 136, 0.3);
-}
-
-/* Reduced motion - disable custom cursor */
-@media (prefers-reduced-motion: reduce) {
-  .cursor,
-  .trailer {
-    display: none;
-  }
-}
-
-/* Touch devices - hide cursor */
-@media (hover: none) {
-  .cursor,
-  .trailer {
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .cursor {
     display: none;
   }
 }
