@@ -38,8 +38,21 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    closeMenu();
-  }, [location.pathname, closeMenu]);
+    setIsMenuOpen(false);
+    setIsCommandOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleShortcut = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setIsCommandOpen(true);
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleShortcut);
+    return () => document.removeEventListener('keydown', handleShortcut);
+  }, []);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -193,7 +206,7 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
+      <CommandPalette open={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
 
       <div className={styles.container}>
         <div className={styles.logoSection}>
