@@ -240,6 +240,21 @@ export function Testimonial() {
             </div>
           </div>
         </div>
+
+        {/* Bottom ticker - subtle repeating company names */}
+        <div className={styles.bottomTicker}>
+          <motion.div
+            className={styles.tickerTrack}
+            animate={{ x: [0, -1000] }}
+            transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+          >
+            {[...Array(10)].map((_, i) => (
+              <span key={i} className={styles.tickerItem}>
+                {testimonials.map((t) => t.company).join(" • ")} •
+              </span>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -195,6 +195,30 @@
   z-index: 10;
 }
 
+.bottomTicker {
+  position: absolute;
+  bottom: -1rem;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.tickerTrack {
+  display: flex;
+  white-space: nowrap;
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+}
+
+.tickerItem {
+  margin: 0 2rem;
+}
+
 @media (max-width: 640px) {
   .mainFlex {
     flex-direction: column;
