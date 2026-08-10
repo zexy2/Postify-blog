@@ -7,8 +7,8 @@ const PROFILE_FIELDS = 'id, full_name, username, email, avatar_url, bio, role, w
 
 const normalizeProfile = (profile) => profile && ({
   ...profile,
-  name: profile.full_name || profile.username || 'Postify Editor',
-  fullName: profile.full_name || profile.username || 'Postify Editor',
+  name: profile.full_name || profile.username || 'Postify Editör',
+  fullName: profile.full_name || profile.username || 'Postify Editör',
   avatarUrl: profile.avatar_url || null,
 });
 
@@ -20,14 +20,19 @@ export const userService = {
   },
 
   getById: async (id) => {
-    if (id === FALLBACK_AUTHOR.id) return FALLBACK_AUTHOR;
+    if (!id || id === FALLBACK_AUTHOR.id || id === 'postify' || id === 'editor' || id === 'fallback-editor') {
+      return FALLBACK_AUTHOR;
+    }
+
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (!isUuid) return FALLBACK_AUTHOR;
 
     const { data, error } = await requireSupabase()
       .from('profiles')
       .select(PROFILE_FIELDS)
       .eq('id', id)
       .maybeSingle();
-    if (error) throw error;
+    if (error || !data) return FALLBACK_AUTHOR;
     return normalizeProfile(data);
   },
 };

@@ -146,23 +146,13 @@ const PostDetailPage = () => {
                 {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>}
 
                 <div className={styles.authorBar}>
-                  {author?.id ? (
-                    <Link to={`/users/${author.id}`} className={styles.author}>
-                      <span className={styles.avatar}>{initials(author?.name)}</span>
-                      <div className={styles.authorInfo}>
-                        <strong>{author?.name}</strong>
-                        <small>@{author?.username || 'postify'}</small>
-                      </div>
-                    </Link>
-                  ) : (
-                    <div className={styles.author}>
-                      <span className={styles.avatar}>{initials(author?.name)}</span>
-                      <div className={styles.authorInfo}>
-                        <strong>{author?.name || t('article.editor')}</strong>
-                        <small>@{author?.username || 'postify'}</small>
-                      </div>
+                  <Link to={`/users/${author?.id || 'fallback-editor'}`} className={styles.author} title={author?.name || t('article.editor')}>
+                    <span className={styles.avatar}>{initials(author?.name || t('article.editor'))}</span>
+                    <div className={styles.authorInfo}>
+                      <strong>{author?.name || t('article.editor')}</strong>
+                      <small>@{author?.username || 'postify'}</small>
                     </div>
-                  )}
+                  </Link>
                 </div>
               </header>
 

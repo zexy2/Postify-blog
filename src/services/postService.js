@@ -205,7 +205,8 @@ export const postService = {
   },
 
   getByUserId: async (userId, locale = 'tr') => {
-    if (userId === FALLBACK_AUTHOR.id) return getFallbackUserPosts(userId, locale);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+    if (!userId || userId === FALLBACK_AUTHOR.id || !isUuid) return getFallbackUserPosts(userId, locale);
 
     const client = requireSupabase();
     const { data, error } = await client
