@@ -12,37 +12,37 @@ const AboutPage = () => {
     {
       name: 'React 19 & Vite',
       tag: 'Core UI',
-      desc: 'En son React 19 mimarisi ve Vite ile anlık geliştirme ve ultra hızlı bundle optimizasyonu.',
+      desc: 'Modern component architecture with Instant HMR and bundle optimization.',
       icon: <FiCpu className={styles.techIcon} />,
     },
     {
       name: 'Supabase Data & Auth',
       tag: 'Backend',
-      desc: 'PostgreSQL tabanlı güvenli veritabanı, Row Level Security (RLS) ve kimlik doğrulama.',
+      desc: 'PostgreSQL database with Row Level Security (RLS) and OAuth authentication.',
       icon: <FiDatabase className={styles.techIcon} />,
     },
     {
       name: 'CSS Modules & Motion',
       tag: 'Design System',
-      desc: 'Sıfır ek kütüphane bağımlılığı ile Vanilla CSS, mikro-animasyonlar ve tam tema desteği.',
+      desc: 'Vanilla CSS token architecture with micro-interactions and dark/light themes.',
       icon: <FiLayers className={styles.techIcon} />,
     },
     {
-      name: 'i18next Multi-Language',
-      tag: 'Localization',
-      desc: 'Tam Türkçe ve İngilizce dil desteği, anlık dinamik dil değişimi ve yerelleştirme.',
+      name: 'i18next Localization',
+      tag: 'Internationalization',
+      desc: 'Full Turkish and English language switching with instant dynamic state.',
       icon: <FiGlobe className={styles.techIcon} />,
     },
     {
       name: 'Progressive Web App',
-      tag: 'Offline PWA',
-      desc: 'Service Worker ile çevrimdışı erişim, otomatik arka plan önbellekleme ve PWA kurulumu.',
+      tag: 'Offline Experience',
+      desc: 'Service Worker offline caching, background sync, and instant PWA installability.',
       icon: <FiSmartphone className={styles.techIcon} />,
     },
     {
       name: 'TanStack Query v5',
-      tag: 'State & Cache',
-      desc: 'Akıllı veritabanı sorgulama, otomatik önbellekleme ve iyimser (optimistic) UI yönetimi.',
+      tag: 'State Management',
+      desc: 'Intelligent caching, automatic refetching, and optimistic UI updates.',
       icon: <FiZap className={styles.techIcon} />,
     },
   ];
@@ -59,33 +59,30 @@ const AboutPage = () => {
       <SEO title={t('about.title')} description={t('about.description')} />
 
       <div className={styles.container}>
-        {/* 1. Hero Header Section */}
+        {/* Hero Header Section */}
         <header className={styles.heroCard}>
-          <span className={styles.eyebrow}>
-            <FiZap size={13} /> Postify Independent Journal
-          </span>
+          <span className={styles.eyebrow}>Postify Journal</span>
           <h1 className={styles.heroTitle}>{t('about.title')}</h1>
           <p className={styles.heroSubtitle}>{t('about.description')}</p>
 
-          {/* Quick Metrics Bar */}
           <div className={styles.metricsBar}>
-            <span className={styles.metricBadge}>✦ %100 Açık Kaynak</span>
-            <span className={styles.metricBadge}>⚡ React 19 & Supabase</span>
-            <span className={styles.metricBadge}>🔥 PWA Çevrimdışı Desteği</span>
-            <span className={styles.metricBadge}>🌍 TR / EN Çoklu Dil</span>
+            <span className={styles.metricBadge}>100% Open Source</span>
+            <span className={styles.metricBadge}>React 19 & Supabase</span>
+            <span className={styles.metricBadge}>Offline PWA</span>
+            <span className={styles.metricBadge}>Multilingual TR / EN</span>
           </div>
         </header>
 
-        {/* 2. Founder Profile Bento Card with 21st.dev Spotlight */}
+        {/* Founder Profile Card */}
         <section className={styles.section}>
           <GlowingCard
-            glowColor="color-mix(in srgb, var(--primary) 22%, transparent)"
+            glowColor="color-mix(in srgb, var(--primary) 20%, transparent)"
             borderRadius="20px"
           >
             <div className={styles.profileCard}>
               <div className={styles.avatarWrapper}>
                 <span className={styles.avatar}>ZA</span>
-                <span className={styles.avatarBadge} title="Proje Sahibi & Geliştirici" />
+                <span className={styles.avatarBadge} title="Project Owner" />
               </div>
 
               <div className={styles.profileContent}>
@@ -105,11 +102,11 @@ const AboutPage = () => {
                     className={styles.socialBtn}
                   >
                     <FiGithub size={16} />
-                    <span>GitHub Profil ↗</span>
+                    <span>GitHub Profile <FiArrowUpRight size={14} /></span>
                   </a>
                   <Link to="/" className={styles.socialBtnOutline}>
-                    <span>Yayınları İncele</span>
-                    <FiArrowUpRight size={15} />
+                    <span>Browse Journal</span>
+                    <FiArrowUpRight size={14} />
                   </Link>
                 </div>
               </div>
@@ -117,11 +114,11 @@ const AboutPage = () => {
           </GlowingCard>
         </section>
 
-        {/* 3. Technology Stack Bento Cards */}
+        {/* Tech Stack Cards */}
         <section className={styles.section}>
           <div className={styles.sectionHeading}>
             <div>
-              <span className={styles.eyebrow}>Teknoloji Mimarisi</span>
+              <span className={styles.eyebrow}>Architecture</span>
               <h2>{t('about.technologies')}</h2>
             </div>
           </div>
@@ -130,7 +127,7 @@ const AboutPage = () => {
             {techStack.map((tech) => (
               <GlowingCard
                 key={tech.name}
-                glowColor="color-mix(in srgb, var(--primary) 18%, transparent)"
+                glowColor="color-mix(in srgb, var(--primary) 15%, transparent)"
                 borderRadius="16px"
                 className={styles.techCardWrapper}
               >
@@ -147,11 +144,11 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* 4. Platform Capabilities Grid */}
+        {/* Platform Features Grid */}
         <section className={styles.section}>
           <div className={styles.sectionHeading}>
             <div>
-              <span className={styles.eyebrow}>Platform Özellikleri</span>
+              <span className={styles.eyebrow}>Capabilities</span>
               <h2>{t('about.featuresTitle')}</h2>
             </div>
           </div>
@@ -167,11 +164,11 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* Return Button */}
+        {/* Return Link */}
         <div className={styles.returnWrapper}>
           <Link to="/" className={styles.returnLink}>
             <span>{t('home.latest')}</span>
-            <FiArrowUpRight size={18} />
+            <FiArrowUpRight size={16} />
           </Link>
         </div>
       </div>
