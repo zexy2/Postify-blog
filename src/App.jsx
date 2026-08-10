@@ -3,7 +3,7 @@
  * Main application component with routing
  */
 
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useLayoutEffect, Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { selectTheme } from './store/slices/uiSlice';
@@ -89,6 +89,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/auth/login" element={<LoginPage />} />
               <Route path="/auth/register" element={<RegisterPage />} />
+              <Route path="/auth/callback" element={<Navigate to="/" replace />} />
               <Route
                 path="/posts/create"
                 element={

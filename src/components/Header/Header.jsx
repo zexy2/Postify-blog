@@ -362,27 +362,6 @@ const Header = () => {
 
       {/* 4. Bottom Footer & Actions */}
       <div className={styles.mobileDrawerFooter}>
-        <div className={styles.mobileAuthAction}>
-          {isAuthenticated ? (
-            <button
-              onClick={() => { handleLogout(); closeMenu(); }}
-              className={styles.mobileLogoutButton}
-            >
-              <FiLogOut size={17} />
-              <span>{t('auth.logout')}</span>
-            </button>
-          ) : (
-            <Link
-              to="/auth/login"
-              className={styles.mobileLoginButton}
-              onClick={closeMenu}
-            >
-              <FiLogIn size={17} />
-              <span>{t('auth.login')}</span>
-            </Link>
-          )}
-        </div>
-
         <div className={styles.mobileUtilsCluster}>
           <div className={styles.mobileLangWrap}>
             <LanguageSwitcher />
@@ -409,6 +388,27 @@ const Header = () => {
           >
             {theme === 'light' ? <FiMoon size={18} /> : <FiSun size={18} />}
           </button>
+        </div>
+
+        <div className={styles.mobileAuthAction}>
+          {isAuthenticated ? (
+            <button
+              onClick={() => { handleLogout(); closeMenu(); }}
+              className={styles.mobileLogoutButton}
+            >
+              <FiLogOut size={18} />
+              <span>{t('auth.logout')}</span>
+            </button>
+          ) : (
+            <Link
+              to="/auth/login"
+              className={styles.mobileLoginButton}
+              onClick={closeMenu}
+            >
+              <FiLogIn size={18} />
+              <span>{t('auth.login')}</span>
+            </Link>
+          )}
         </div>
       </div>
     </div>
