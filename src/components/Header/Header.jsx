@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiPlus, FiBookmark, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield, FiMoon, FiSun, FiSearch } from 'react-icons/fi';
+import { FiPlus, FiBookmark, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield, FiMoon, FiSun, FiSearch, FiHome, FiInfo, FiMail } from 'react-icons/fi';
 
 import styles from './Header.module.css';
 import { useTheme } from '../../hooks/useTheme';
@@ -108,10 +108,11 @@ const Header = () => {
           <nav className={styles.navLinks}>
             <Link
               to="/"
-              className={isActive('/') ? styles.active : ''}
+              className={`${styles.navItem} ${isActive('/') ? styles.active : ''}`}
               onClick={closeMenu}
             >
-              {t('nav.home')}
+              <FiHome size={17} className={styles.navIcon} />
+              <span>{t('nav.home')}</span>
             </Link>
 
             {isAuthenticated && (
@@ -140,18 +141,20 @@ const Header = () => {
 
             <Link
               to="/about"
-              className={isActive('/about') ? styles.active : ''}
+              className={`${styles.navItem} ${isActive('/about') ? styles.active : ''}`}
               onClick={closeMenu}
             >
-              {t('nav.about')}
+              <FiInfo size={17} className={styles.navIcon} />
+              <span>{t('nav.about')}</span>
             </Link>
 
             <Link
               to="/contact"
-              className={isActive('/contact') ? styles.active : ''}
+              className={`${styles.navItem} ${isActive('/contact') ? styles.active : ''}`}
               onClick={closeMenu}
             >
-              {t('nav.contact')}
+              <FiMail size={17} className={styles.navIcon} />
+              <span>{t('nav.contact')}</span>
             </Link>
 
             {/* Actions */}
