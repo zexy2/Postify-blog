@@ -258,14 +258,6 @@ const Header = () => {
             <span className={styles.mobileGuestTitle}>Postify'a Hoş Geldiniz</span>
             <span className={styles.mobileGuestDesc}>Yazıları kaydetmek ve paylaşmak için giriş yapın</span>
           </div>
-          <Link
-            to="/auth/login"
-            className={styles.mobileGuestLoginBtn}
-            onClick={closeMenu}
-          >
-            <FiLogIn size={16} />
-            <span>{t('auth.login')}</span>
-          </Link>
         </div>
       )}
 
