@@ -204,6 +204,216 @@ const Header = () => {
     </>
   );
 
+  const renderMobileNav = () => (
+    <div className={styles.mobileDrawerContainer}>
+      {/* 1. Quick Search Trigger */}
+      <div className={styles.mobileSearchWrapper}>
+        <button
+          type="button"
+          className={styles.mobileSearchTrigger}
+          onClick={() => { closeMenu(); setIsCommandOpen(true); }}
+          aria-label={t('search.open')}
+        >
+          <FiSearch size={18} className={styles.mobileSearchIcon} />
+          <span className={styles.mobileSearchPlaceholder}>{t('search.open')}...</span>
+          <kbd className={styles.mobileSearchKbd}>⌘K</kbd>
+        </button>
+      </div>
+
+      {/* 2. User Profile Card or Login CTA Banner */}
+      {isAuthenticated && user ? (
+        <div className={styles.mobileProfileCard}>
+          <div className={styles.mobileAvatar}>
+            {user?.user_metadata?.avatar_url ? (
+              <img src={user.user_metadata.avatar_url} alt={user?.user_metadata?.full_name || 'User'} />
+            ) : (
+              <FiUser size={18} />
+            )}
+          </div>
+          <div className={styles.mobileUserInfo}>
+            <span className={styles.mobileUserName}>
+              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || t('user.profile')}
+            </span>
+            <span className={styles.mobileUserEmail}>{user?.email}</span>
+          </div>
+          <Link
+            to="/profile"
+            className={styles.mobileProfileBtn}
+            onClick={closeMenu}
+          >
+            Profil
+          </Link>
+        </div>
+      ) : (
+        <div className={styles.mobileGuestBanner}>
+          <div className={styles.mobileGuestInfo}>
+            <span className={styles.mobileGuestTitle}>Postify'a Hoş Geldiniz</span>
+            <span className={styles.mobileGuestDesc}>Yazıları kaydetmek ve paylaşmak için giriş yapın</span>
+          </div>
+          <Link
+            to="/auth/login"
+            className={styles.mobileGuestLoginBtn}
+            onClick={closeMenu}
+          >
+            <FiLogIn size={16} />
+            <span>{t('auth.login')}</span>
+          </Link>
+        </div>
+      )}
+
+      {/* 3. Navigation Links List */}
+      <div className={styles.mobileNavSection}>
+        <span className={styles.mobileSectionLabel}>NAVİGASYON</span>
+        <nav className={styles.mobileNavList}>
+          <Link
+            to="/"
+            className={`${styles.mobileNavItem} ${isActive('/') ? styles.mobileActive : ''}`}
+            onClick={closeMenu}
+          >
+            <div className={styles.mobileIconWrapper}>
+              <FiHome size={18} />
+            </div>
+            <div className={styles.mobileNavContent}>
+              <span className={styles.mobileNavTitle}>{t('nav.home')}</span>
+              <span className={styles.mobileNavDesc}>Ana Sayfa ve Akış</span>
+            </div>
+          </Link>
+
+          {isAuthenticated && (
+            <Link
+              to="/posts/create"
+              className={`${styles.mobileNavItem} ${styles.mobileCreatePostItem} ${isActive('/posts/create') ? styles.mobileActive : ''}`}
+              onClick={closeMenu}
+            >
+              <div className={`${styles.mobileIconWrapper} ${styles.createIconWrapper}`}>
+                <FiPlus size={18} />
+              </div>
+              <div className={styles.mobileNavContent}>
+                <span className={styles.mobileNavTitle}>{t('nav.createPost')}</span>
+                <span className={styles.mobileNavDesc}>Yeni Yazı Paylaş</span>
+              </div>
+            </Link>
+          )}
+
+          {isAuthenticated && (
+            <Link
+              to="/bookmarks"
+              className={`${styles.mobileNavItem} ${isActive('/bookmarks') ? styles.mobileActive : ''}`}
+              onClick={closeMenu}
+            >
+              <div className={styles.mobileIconWrapper}>
+                <FiBookmark size={18} />
+              </div>
+              <div className={styles.mobileNavContent}>
+                <span className={styles.mobileNavTitle}>Yer İşaretleri</span>
+                <span className={styles.mobileNavDesc}>Kaydedilen İçerikler</span>
+              </div>
+              {bookmarksCount > 0 && (
+                <span className={styles.mobileCountBadge}>{bookmarksCount}</span>
+              )}
+            </Link>
+          )}
+
+          <Link
+            to="/about"
+            className={`${styles.mobileNavItem} ${isActive('/about') ? styles.mobileActive : ''}`}
+            onClick={closeMenu}
+          >
+            <div className={styles.mobileIconWrapper}>
+              <FiInfo size={18} />
+            </div>
+            <div className={styles.mobileNavContent}>
+              <span className={styles.mobileNavTitle}>{t('nav.about')}</span>
+              <span className={styles.mobileNavDesc}>Hakkımızda ve Detaylar</span>
+            </div>
+          </Link>
+
+          <Link
+            to="/contact"
+            className={`${styles.mobileNavItem} ${isActive('/contact') ? styles.mobileActive : ''}`}
+            onClick={closeMenu}
+          >
+            <div className={styles.mobileIconWrapper}>
+              <FiMail size={18} />
+            </div>
+            <div className={styles.mobileNavContent}>
+              <span className={styles.mobileNavTitle}>{t('nav.contact')}</span>
+              <span className={styles.mobileNavDesc}>İletişime Geçin</span>
+            </div>
+          </Link>
+
+          {isAuthenticated && isAdmin && (
+            <Link
+              to="/admin"
+              className={`${styles.mobileNavItem} ${styles.mobileAdminNavItem} ${isActive('/admin') ? styles.mobileActive : ''}`}
+              onClick={closeMenu}
+            >
+              <div className={`${styles.mobileIconWrapper} ${styles.adminIconWrapper}`}>
+                <FiShield size={18} />
+              </div>
+              <div className={styles.mobileNavContent}>
+                <span className={styles.mobileNavTitle}>{t('nav.admin', 'Admin Panel')}</span>
+                <span className={styles.mobileNavDesc}>Yönetici Kontrolleri</span>
+              </div>
+            </Link>
+          )}
+        </nav>
+      </div>
+
+      {/* 4. Bottom Footer & Actions */}
+      <div className={styles.mobileDrawerFooter}>
+        <div className={styles.mobileAuthAction}>
+          {isAuthenticated ? (
+            <button
+              onClick={() => { handleLogout(); closeMenu(); }}
+              className={styles.mobileLogoutButton}
+            >
+              <FiLogOut size={17} />
+              <span>{t('auth.logout')}</span>
+            </button>
+          ) : (
+            <Link
+              to="/auth/login"
+              className={styles.mobileLoginButton}
+              onClick={closeMenu}
+            >
+              <FiLogIn size={17} />
+              <span>{t('auth.login')}</span>
+            </Link>
+          )}
+        </div>
+
+        <div className={styles.mobileUtilsCluster}>
+          <div className={styles.mobileLangWrap}>
+            <LanguageSwitcher />
+          </div>
+
+          <a
+            href="https://github.com/zexy2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.mobileUtilIconBtn}
+            onClick={closeMenu}
+            aria-label="GitHub"
+            title="GitHub"
+          >
+            <FiGithub size={18} />
+          </a>
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className={styles.mobileUtilIconBtn}
+            aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
+            title={theme === 'light' ? t('theme.dark') : t('theme.light')}
+          >
+            {theme === 'light' ? <FiMoon size={18} /> : <FiSun size={18} />}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <header className={styles.header}>
       <CommandPalette open={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
@@ -233,11 +443,11 @@ const Header = () => {
         </div>
 
         {/* Shadcn UI Sheet Drawer for Mobile */}
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen} modal={true}>
           <SheetContent side="right" className={styles.shadcnSheetContent}>
             <SheetTitle className="sr-only">Navigasyon Menüsü</SheetTitle>
             <div className={styles.shadcnSheetBody}>
-              {renderNavContent(true)}
+              {renderMobileNav()}
             </div>
           </SheetContent>
         </Sheet>

@@ -55,27 +55,14 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: 85vw;
-  max-width: 380px;
-  border-left: 1px solid var(--border-color);
+  width: 100vw;
+  max-width: 100vw;
+  border-left: none;
   animation: slideInRight 0.25s ease-out forwards;
 }
 
 .sheetCloseButton {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  display: none;
 }
 
 .sheetCloseButton:hover {

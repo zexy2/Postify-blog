@@ -15,8 +15,45 @@
 .navLinks a { display: inline-flex; align-items: center; gap: .4rem; padding: .55rem .65rem; color: var(--text-secondary); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 600; text-decoration: none; white-space: nowrap; }
 .navLinks a:hover, .navLinks a.active { color: var(--text-primary); background: var(--bg-hover); }
 .navLinks a.active { box-shadow: inset 0 -2px var(--primary); }
-.createButton, .loginButton { color: #fff !important; background: var(--primary) !important; }
-.createButton:hover, .loginButton:hover { background: var(--primary-hover) !important; }
+.createButton { 
+  color: #fff !important; 
+  background: var(--primary) !important; 
+  border-radius: var(--radius-full);
+}
+.createButton:hover { 
+  background: var(--primary-hover) !important; 
+}
+
+.loginButton {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  padding: 0.52rem 1.15rem !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 85%, #000) 100%) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent) !important;
+  border-radius: 9999px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 10px rgba(184, 76, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 92%, #fff) 0%, var(--primary) 100%) !important;
+  transform: translateY(-1.5px) scale(1.02) !important;
+  box-shadow: 0 6px 18px rgba(184, 76, 42, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.loginButton:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: 0 2px 6px rgba(184, 76, 42, 0.2) !important;
+}
 .iconLink, .adminLink, .githubButton, .logoutButton, .themeToggle { display: inline-flex !important; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; padding: 0 !important; color: var(--text-secondary) !important; background: transparent; border: 0; border-radius: var(--radius-md); cursor: pointer; }
 .iconLink:hover, .githubButton:hover, .logoutButton:hover, .themeToggle:hover { color: var(--text-primary) !important; background: var(--bg-hover); }
 .adminLink { color: #b45309 !important; background: rgba(245, 158, 11, .12); }
@@ -63,7 +100,7 @@
   }
   .searchTrigger:active { transform: scale(0.98); }
   .searchTrigger kbd { display: none; }
-  .navLinks { display: flex; flex-direction: column; align-items: stretch; gap: 1rem; margin: auto 0; }
+  .navLinks { display: flex; flex-direction: column; align-items: stretch; gap: 1rem; margin: 0; }
   .navLinks a, .navItem { 
     display: flex !important; 
     align-items: center !important; 
@@ -94,7 +131,7 @@
     justify-content: space-between; 
     align-items: center;
     gap: 0.75rem;
-    margin-top: 0; 
+    margin-top: auto; 
     padding: 1.25rem 0.25rem 0; 
     border-top: 1px solid var(--border-color); 
     border-left: 0; 
@@ -143,11 +180,17 @@
 }
 
 .shadcnSheetContent {
-  padding: 2.25rem 1.25rem 2rem !important;
-  width: 85vw !important;
-  max-width: 360px !important;
-  background: var(--bg-primary) !important;
-  border-left: 1px solid var(--border-color) !important;
+  top: var(--header-height) !important;
+  height: calc(100dvh - var(--header-height)) !important;
+  padding: 1rem 1.25rem 1.5rem !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  background: color-mix(in srgb, var(--bg-primary) 96%, transparent) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-left: none !important;
+  border-top: 1px solid var(--border-color) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
 }
 
 .shadcnSheetBody {
@@ -155,6 +198,8 @@
   flex-direction: column;
   height: 100%;
   justify-content: flex-start;
+  gap: 1rem;
+  overflow: hidden;
 }
 
 @media (min-width: 769px) {
@@ -162,4 +207,422 @@
     display: flex !important;
   }
 }
+
+/* ========================================
+   Mobile Navigation Drawer (Ultra Modern)
+   ======================================== */
+
+.mobileDrawerContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.25rem 0;
+  gap: 1.15rem;
+  overflow: hidden;
+}
+
+/* 1. Mobile Search */
+.mobileSearchWrapper {
+  width: 100%;
+}
+
+.mobileSearchTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.mobileSearchTrigger:hover, .mobileSearchTrigger:active {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border-color: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.mobileSearchIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.mobileSearchPlaceholder {
+  flex: 1;
+  text-align: left;
+}
+
+.mobileSearchKbd {
+  padding: 0.2rem 0.45rem;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* 2. Mobile User Profile Card */
+.mobileProfileCard {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-elevated) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.mobileAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--radius-full);
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.mobileAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobileUserInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.mobileUserName {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileUserEmail {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileProfileBtn {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobileProfileBtn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+/* 2.5 Mobile Guest Login CTA Banner */
+.mobileGuestBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary-subtle) 60%, var(--bg-secondary)) 0%, var(--bg-elevated) 100%);
+  border: 1px solid color-mix(in srgb, var(--primary-light) 60%, var(--border-color));
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 16px rgba(179, 79, 45, 0.06);
+}
+
+.mobileGuestInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.mobileGuestTitle {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mobileGuestDesc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileGuestLoginBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  background: var(--primary) !important;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(179, 79, 45, 0.3);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.mobileGuestLoginBtn:hover {
+  background: var(--primary-hover) !important;
+  transform: translateY(-1px);
+}
+
+/* 3. Mobile Navigation List */
+.mobileNavSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.mobileSectionLabel {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding-left: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+.mobileNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.mobileNavItem {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobileNavItem:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  transform: translateX(4px);
+}
+
+.mobileNavItem:active {
+  transform: scale(0.98);
+}
+
+.mobileNavItem.mobileActive {
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, color-mix(in srgb, var(--primary-subtle) 80%, var(--bg-elevated)) 100%);
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(179, 79, 45, 0.08);
+}
+
+.mobileNavItem.mobileActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 4px;
+  background: var(--primary);
+  border-radius: 0 4px 4px 0;
+}
+
+.mobileIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.mobileNavItem:hover .mobileIconWrapper,
+.mobileNavItem.mobileActive .mobileIconWrapper {
+  color: var(--primary);
+  background: var(--primary-light);
+  border-color: transparent;
+}
+
+.createIconWrapper {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.adminIconWrapper {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
+.mobileNavContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.mobileNavTitle {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.mobileNavItem.mobileActive .mobileNavTitle {
+  color: var(--primary);
+}
+
+.mobileNavDesc {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+}
+
+/* 4. Mobile Drawer Footer */
+.mobileDrawerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.85rem;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+}
+
+.mobileFooterAuth {
+  flex: 1;
+}
+
+.mobileLoginButton,
+.mobileLogoutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.7rem 1.1rem;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobileLoginButton {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(179, 79, 45, 0.25);
+}
+
+.mobileLoginButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(179, 79, 45, 0.35);
+}
+
+.mobileLogoutButton {
+  color: var(--error) !important;
+  background: var(--error-light) !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+}
+
+.mobileLogoutButton:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+}
+
+.mobileUtilsCluster {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobileLangWrap {
+  display: flex;
+  align-items: center;
+}
+
+.mobileUtilIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.mobileUtilIconBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
 
