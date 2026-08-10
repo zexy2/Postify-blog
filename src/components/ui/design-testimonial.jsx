@@ -1,31 +1,41 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import styles from './design-testimonial.module.css';
 
-const testimonials = [
-  {
-    quote: "Transformed our entire creative process overnight.",
-    author: "Sarah Chen",
-    role: "Design Director",
-    company: "Linear",
-  },
-  {
-    quote: "The most elegant solution we've ever implemented.",
-    author: "Marcus Webb",
-    role: "Creative Lead",
-    company: "Vercel",
-  },
-  {
-    quote: "Pure craftsmanship in every single detail.",
-    author: "Elena Frost",
-    role: "Head of Product",
-    company: "Stripe",
-  },
-];
-
 export function Testimonial() {
+  const { i18n } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
+
+  const isTr = i18n.language === 'tr';
+
+  const testimonials = [
+    {
+      quote: isTr
+        ? "Modern web mimarisi ve yüksek performanslı okuma deneyimi sunan bağımsız teknoloji dergisi."
+        : "An independent tech journal offering modern web architecture and high-performance reading experience.",
+      author: "Zeki Akgül",
+      role: isTr ? "Proje Kurucusu & Yazılım Mimarı" : "Project Founder & Software Architect",
+      company: "Postify Core",
+    },
+    {
+      quote: isTr
+        ? "Yapay zekâdan frontend performansına kadar her makalede derinlemesine pratik mühendislik notları."
+        : "In-depth practical engineering notes in every article, from AI models to frontend web performance.",
+      author: "Postify Editorial",
+      role: isTr ? "İçerik & Dergi Ekibi" : "Content & Editorial Team",
+      company: "Postify Journal",
+    },
+    {
+      quote: isTr
+        ? "%100 Açık kaynak ruhu, çevrimdışı PWA erişimi ve modern tasarım sistemleriyle geliştirildi."
+        : "Built with 100% open source spirit, offline PWA access, and state-of-the-art design systems.",
+      author: "Open Source Community",
+      role: isTr ? "Geliştirici Topluluğu" : "Developer Community",
+      company: "Postify Engine",
+    },
+  ];
 
   // Mouse position for magnetic effect
   const mouseX = useMotionValue(0);
@@ -91,7 +101,7 @@ export function Testimonial() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Testimonials
+              POSTIFY JOURNAL
             </motion.span>
 
             {/* Vertical progress line */}
@@ -241,7 +251,7 @@ export function Testimonial() {
           </div>
         </div>
 
-        {/* Bottom ticker - subtle repeating company names */}
+        {/* Bottom ticker - Postify brand ticker */}
         <div className={styles.bottomTicker}>
           <motion.div
             className={styles.tickerTrack}
