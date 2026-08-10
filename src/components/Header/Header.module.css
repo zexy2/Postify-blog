@@ -99,7 +99,7 @@
     transition: border-color 0.2s ease, transform 0.2s ease;
   }
   .searchTrigger:active { transform: scale(0.98); }
-  .searchTrigger kbd { display: none; }
+  .searchTrigger kbd, .searchKbd { display: none !important; }
   .navLinks { display: flex; flex-direction: column; align-items: stretch; gap: 1rem; margin: 0; }
   .navLinks a, .navItem { 
     display: flex !important; 

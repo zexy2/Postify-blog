@@ -68,6 +68,15 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  const [shortcutLabel, setShortcutLabel] = useState('⌘K');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+      setShortcutLabel(isMac ? '⌘K' : 'Ctrl K');
+    }
+  }, []);
+
   const renderNavContent = (isMobile = false) => (
     <>
       <button
@@ -78,7 +87,7 @@ const Header = () => {
       >
         <FiSearch size={16} />
         <span>{t('search.open')}</span>
-        <kbd>⌘K</kbd>
+        <kbd className={styles.searchKbd}>{shortcutLabel}</kbd>
       </button>
 
       {/* Navigation Links */}
@@ -216,7 +225,6 @@ const Header = () => {
         >
           <FiSearch size={18} className={styles.mobileSearchIcon} />
           <span className={styles.mobileSearchPlaceholder}>{t('search.open')}...</span>
-          <kbd className={styles.mobileSearchKbd}>⌘K</kbd>
         </button>
       </div>
 
