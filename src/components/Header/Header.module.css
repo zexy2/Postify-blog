@@ -80,13 +80,13 @@
   }
   .searchTrigger:active { transform: scale(0.98); }
   .searchTrigger kbd { display: none; }
-  .navLinks { display: flex; flex-direction: column; align-items: stretch; gap: .75rem; }
+  .navLinks { display: flex; flex-direction: column; align-items: stretch; gap: 1rem; margin: auto 0; }
   .navLinks a, .navItem { 
     display: flex !important; 
     align-items: center !important; 
     justify-content: flex-start !important; 
     gap: .85rem !important; 
-    padding: 1rem 1.25rem !important; 
+    padding: 1.1rem 1.25rem !important; 
     color: var(--text-primary) !important;
     background: var(--bg-secondary) !important; 
     border: 1px solid var(--border-color) !important;
@@ -111,7 +111,7 @@
     justify-content: space-between; 
     align-items: center;
     gap: 0.75rem;
-    margin: auto 0 0; 
+    margin-top: 0; 
     padding: 1.25rem 0.25rem 0; 
     border-top: 1px solid var(--border-color); 
     border-left: 0; 

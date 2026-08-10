@@ -157,74 +157,74 @@ const Header = () => {
               <FiMail size={17} className={styles.navIcon} />
               <span>{t('nav.contact')}</span>
             </Link>
-
-            {/* Actions */}
-            <div className={styles.actions}>
-              {/* Auth Links */}
-              {isAuthenticated ? (
-                <>
-                  {isAdmin && (
-                    <Link
-                      to="/admin"
-                      className={`${styles.adminLink} ${isActive('/admin') ? styles.active : ''}`}
-                      onClick={closeMenu}
-                      title={t('nav.admin', 'Admin')}
-                    >
-                      <FiShield size={18} />
-                    </Link>
-                  )}
-                  <Link
-                    to="/profile"
-                    className={`${styles.iconLink} ${isActive('/profile') ? styles.active : ''}`}
-                    onClick={closeMenu}
-                    title={user?.user_metadata?.full_name || t('user.profile')}
-                  >
-                    <FiUser size={18} />
-                  </Link>
-                  <button
-                    onClick={() => { handleLogout(); closeMenu(); }}
-                    className={styles.logoutButton}
-                    title={t('auth.logout')}
-                  >
-                    <FiLogOut size={18} />
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/auth/login"
-                  className={styles.loginButton}
-                  onClick={closeMenu}
-                >
-                  <FiLogIn size={16} />
-                  {t('auth.login')}
-                </Link>
-              )}
-
-              <LanguageSwitcher />
-
-              <a
-                href="https://github.com/zexy2"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.githubButton}
-                onClick={closeMenu}
-                aria-label="GitHub"
-                title="GitHub"
-              >
-                <FiGithub size={18} />
-              </a>
-
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className={styles.themeToggle}
-                aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
-                title={theme === 'light' ? t('theme.dark') : t('theme.light')}
-              >
-                {theme === 'light' ? <FiMoon size={17} /> : <FiSun size={17} />}
-              </button>
-            </div>
           </nav>
+
+          {/* Actions */}
+          <div className={styles.actions}>
+            {/* Auth Links */}
+            {isAuthenticated ? (
+              <>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className={`${styles.adminLink} ${isActive('/admin') ? styles.active : ''}`}
+                    onClick={closeMenu}
+                    title={t('nav.admin', 'Admin')}
+                  >
+                    <FiShield size={18} />
+                  </Link>
+                )}
+                <Link
+                  to="/profile"
+                  className={`${styles.iconLink} ${isActive('/profile') ? styles.active : ''}`}
+                  onClick={closeMenu}
+                  title={user?.user_metadata?.full_name || t('user.profile')}
+                >
+                  <FiUser size={18} />
+                </Link>
+                <button
+                  onClick={() => { handleLogout(); closeMenu(); }}
+                  className={styles.logoutButton}
+                  title={t('auth.logout')}
+                >
+                  <FiLogOut size={18} />
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/auth/login"
+                className={styles.loginButton}
+                onClick={closeMenu}
+              >
+                <FiLogIn size={16} />
+                {t('auth.login')}
+              </Link>
+            )}
+
+            <LanguageSwitcher />
+
+            <a
+              href="https://github.com/zexy2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.githubButton}
+              onClick={closeMenu}
+              aria-label="GitHub"
+              title="GitHub"
+            >
+              <FiGithub size={18} />
+            </a>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className={styles.themeToggle}
+              aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
+              title={theme === 'light' ? t('theme.dark') : t('theme.light')}
+            >
+              {theme === 'light' ? <FiMoon size={17} /> : <FiSun size={17} />}
+            </button>
+          </div>
         </div>
       </div>
       </header>
