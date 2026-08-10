@@ -1,20 +1,11 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiArrowUpRight, FiGithub, FiMail, FiMessageSquare, FiSend, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { FiArrowUpRight, FiGithub, FiMail, FiMessageSquare, FiClock } from 'react-icons/fi';
 import SEO from '../components/SEO';
 import GlowingCard from '../components/GlowingCard/GlowingCard';
 import styles from './ContactPage.module.css';
 
 const ContactPage = () => {
   const { t } = useTranslation();
-  const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formState.email || !formState.message) return;
-    setSubmitted(true);
-  };
 
   return (
     <main className={styles.contactPage}>
@@ -104,81 +95,6 @@ const ContactPage = () => {
             </div>
           </GlowingCard>
         </div>
-
-        {/* 3. Interactive Contact Form */}
-        <section className={styles.formSection}>
-          <div className={styles.formHeader}>
-            <span className={styles.eyebrow}>Mesaj Gönderin</span>
-            <h2>İletişim Formu</h2>
-          </div>
-
-          {submitted ? (
-            <div className={styles.successNotice} role="status">
-              <FiCheckCircle size={18} />
-              <span>Mesajınız başarıyla iletildi. En kısa sürede sizinle iletişime geçilecektir!</span>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className={styles.formGrid}>
-              <div className={styles.formGroup}>
-                <label htmlFor="contact-name" className={styles.label}>Adınız</label>
-                <input
-                  id="contact-name"
-                  type="text"
-                  required
-                  placeholder="Ad Soyad"
-                  className={styles.input}
-                  value={formState.name}
-                  onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="contact-email" className={styles.label}>E-Posta Adresiniz</label>
-                <input
-                  id="contact-email"
-                  type="email"
-                  required
-                  placeholder="ornek@domain.com"
-                  className={styles.input}
-                  value={formState.email}
-                  onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                />
-              </div>
-
-              <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                <label htmlFor="contact-subject" className={styles.label}>Konu</label>
-                <input
-                  id="contact-subject"
-                  type="text"
-                  placeholder="Örn: Proje / Geri bildirim"
-                  className={styles.input}
-                  value={formState.subject}
-                  onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
-                />
-              </div>
-
-              <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                <label htmlFor="contact-message" className={styles.label}>Mesajınız</label>
-                <textarea
-                  id="contact-message"
-                  required
-                  rows={4}
-                  placeholder="Mesajınızı yazın..."
-                  className={styles.textarea}
-                  value={formState.message}
-                  onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                />
-              </div>
-
-              <div className={styles.fullWidth}>
-                <button type="submit" className={styles.submitBtn}>
-                  <span>Gönder</span>
-                  <FiSend size={15} />
-                </button>
-              </div>
-            </form>
-          )}
-        </section>
       </div>
     </main>
   );
