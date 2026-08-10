@@ -17,41 +17,62 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
   const renderMeta = (post) => (
     <div className={styles.meta}>
       <span className={styles.category}>{post.category}</span>
+      <span>•</span>
       <span>{formatDate(post.publishedAt, i18n.language)}</span>
       <span className={styles.readTime}><FiClock size={13} /> {post.readingTime} {t('common.minutes')}</span>
     </div>
   );
 
   return (
-    <div className={styles.feed}>
-      <article className={styles.lead}>
-        <Link to={`/posts/${lead.slug || lead.id}`} className={styles.leadImageLink}>
-          <ContentImage src={lead.coverImageUrl} alt={lead.coverImageAlt || lead.title} className={styles.leadImage} loading="lazy" />
-        </Link>
-        <div className={styles.leadCopy}>
-          {renderMeta(lead)}
-          <Link to={`/posts/${lead.slug || lead.id}`} className={styles.titleLink}>
-            <h3>{lead.title}</h3>
+    <div className={styles.feedContainer}>
+      {/* 1. Hero Featured Lead Post */}
+      {lead && (
+        <article className={styles.heroLead}>
+          <Link to={`/posts/${lead.slug || lead.id}`} className={styles.heroImageLink}>
+            <ContentImage src={lead.coverImageUrl} alt={lead.coverImageAlt || lead.title} className={styles.heroImage} loading="lazy" />
           </Link>
-          <p>{lead.excerpt}</p>
-          <Link to={`/posts/${lead.slug || lead.id}`} className={styles.readLink}>{t('common.readMore')} <FiArrowUpRight size={16} /></Link>
-        </div>
-      </article>
+          <div className={styles.heroContent}>
+            {renderMeta(lead)}
+            <Link to={`/posts/${lead.slug || lead.id}`} className={styles.titleLink}>
+              <h3 className={styles.heroTitle}>{lead.title}</h3>
+            </Link>
+            <p className={styles.heroExcerpt}>{lead.excerpt}</p>
+            <div className={styles.heroFooter}>
+              <Link to={`/posts/${lead.slug || lead.id}`} className={styles.readLink}>
+                {t('common.readMore')} <FiArrowUpRight size={16} />
+              </Link>
+              <button
+                type="button"
+                className={`${styles.bookmark} ${bookmarkedIds.includes(lead.id) ? styles.bookmarked : ''}`}
+                onClick={() => onBookmarkToggle?.(lead)}
+                aria-label={t('bookmarks.addToBookmarks')}
+              >
+                <FiBookmark size={16} />
+              </button>
+            </div>
+          </div>
+        </article>
+      )}
 
-      <div className={styles.list}>
+      {/* 2. Balanced 3-Column Responsive Grid for Remaining Posts */}
+      <div className={styles.grid}>
         {rest.map((post) => {
           const isBookmarked = bookmarkedIds.includes(post.id);
           return (
-            <article className={styles.row} key={post.id}>
-              <Link to={`/posts/${post.slug || post.id}`} className={styles.rowImageLink}>
-                <ContentImage src={post.coverImageUrl} alt={post.coverImageAlt || post.title} className={styles.rowImage} loading="lazy" />
+            <article className={styles.card} key={post.id}>
+              <Link to={`/posts/${post.slug || post.id}`} className={styles.cardImageLink}>
+                <ContentImage src={post.coverImageUrl} alt={post.coverImageAlt || post.title} className={styles.cardImage} loading="lazy" />
               </Link>
-              <div className={styles.rowCopy}>
+              <div className={styles.cardBody}>
                 {renderMeta(post)}
-                <Link to={`/posts/${post.slug || post.id}`} className={styles.titleLink}><h4>{post.title}</h4></Link>
-                <p>{post.excerpt}</p>
-                <div className={styles.rowFooter}>
-                  <Link to={`/posts/${post.slug || post.id}`} className={styles.readLink}>{t('common.readMore')} <FiArrowUpRight size={15} /></Link>
+                <Link to={`/posts/${post.slug || post.id}`} className={styles.titleLink}>
+                  <h4 className={styles.cardTitle}>{post.title}</h4>
+                </Link>
+                <p className={styles.cardExcerpt}>{post.excerpt}</p>
+                <div className={styles.cardFooter}>
+                  <Link to={`/posts/${post.slug || post.id}`} className={styles.readLink}>
+                    {t('common.readMore')} <FiArrowUpRight size={15} />
+                  </Link>
                   <button
                     type="button"
                     className={`${styles.bookmark} ${isBookmarked ? styles.bookmarked : ''}`}

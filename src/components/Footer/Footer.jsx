@@ -1,11 +1,6 @@
-/**
- * Footer Component
- * Linear App style 4-column footer
- */
-
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiArrowUpRight, FiGithub } from 'react-icons/fi';
+import { FiArrowUpRight, FiGithub, FiArrowUp, FiGlobe } from 'react-icons/fi';
 import styles from './Footer.module.css';
 import BrandMark from '../BrandMark';
 
@@ -13,32 +8,95 @@ const Footer = () => {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.intro}>
-          <div className={styles.brandLine}>
-            <BrandMark size="sm" />
-            <span className={styles.kicker}>Postify</span>
+        {/* Top Section: Brand Statement & Columns */}
+        <div className={styles.topSection}>
+          <div className={styles.brandCol}>
+            <Link to="/" className={styles.brandLink}>
+              <BrandMark size="md" />
+              <span className={styles.brandTitle}>Postify</span>
+            </Link>
+            <p className={styles.brandDesc}>{t('footer.description', 'Teknoloji, yazılım mimarisi ve ürün tasarımı üzerine bağımsız dijital yayın.')}</p>
+            <div className={styles.socialBadges}>
+              <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" className={styles.socialBadge} title="GitHub">
+                <FiGithub size={16} />
+                <span>GitHub</span>
+              </a>
+              <span className={styles.socialBadge}>
+                <FiGlobe size={16} />
+                <span>Istanbul, TR</span>
+              </span>
+            </div>
           </div>
-          <p>{t('footer.description')}</p>
-          <Link to="/" className={styles.exploreLink}>{t('footer.explore')} <FiArrowUpRight size={16} /></Link>
+
+          <div className={styles.columnsGroup}>
+            <div className={styles.col}>
+              <h4 className={styles.colTitle}>Navigasyon</h4>
+              <ul className={styles.colList}>
+                <li><Link to="/">{t('nav.home')}</Link></li>
+                <li><Link to="/about">{t('nav.about')}</Link></li>
+                <li><Link to="/contact">{t('nav.contact')}</Link></li>
+                <li><Link to="/bookmarks">{t('nav.bookmarks', 'Yer İşaretleri')}</Link></li>
+              </ul>
+            </div>
+
+            <div className={styles.col}>
+              <h4 className={styles.colTitle}>Kategoriler</h4>
+              <ul className={styles.colList}>
+                <li><Link to="/?category=Frontend">#Frontend</Link></li>
+                <li><Link to="/?category=AI">#AI & Yapay Zeka</Link></li>
+                <li><Link to="/?category=Design">#Ürün Tasarımı</Link></li>
+                <li><Link to="/?category=Altyapı">#Sistem Altyapısı</Link></li>
+              </ul>
+            </div>
+
+            <div className={styles.col}>
+              <h4 className={styles.colTitle}>Kaynaklar</h4>
+              <ul className={styles.colList}>
+                <li>
+                  <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
+                    Açık Kaynak <FiArrowUpRight size={13} />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">
+                    Supabase Docs <FiArrowUpRight size={13} />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
+                    React 19 <FiArrowUpRight size={13} />
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div className={styles.links}>
-          <Link to="/about">{t('footer.about')}</Link>
-          <Link to="/contact">{t('footer.contact')}</Link>
-          <Link to="/bookmarks">{t('footer.bookmarks')}</Link>
-          <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
-            {t('footer.github')} <FiArrowUpRight size={14} />
-          </a>
-        </div>
+        {/* Bottom Bar: Copyright & Scroll to Top */}
+        <div className={styles.bottomBar}>
+          <div className={styles.copyGroup}>
+            <span className={styles.copyBrand}>Postify</span>
+            <span className={styles.copyDot}>•</span>
+            <span className={styles.copyright}>© {currentYear} Postify Blog. {t('footer.copyright', 'Tüm hakları saklıdır.')}</span>
+          </div>
 
-        {/* Bottom Section */}
-        <div className={styles.bottom}>
-          <span className={styles.logo}>Postify</span>
-          <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" className={styles.github} aria-label="GitHub"><FiGithub size={17} /></a>
-          <span className={styles.copyright}>© {currentYear} Postify · {t('footer.copyright')}</span>
+          <button
+            type="button"
+            className={styles.scrollTopBtn}
+            onClick={scrollToTop}
+            aria-label="Başa Dön"
+            title="Başa Dön"
+          >
+            <span>Başa Dön</span>
+            <FiArrowUp size={16} />
+          </button>
         </div>
       </div>
     </footer>
