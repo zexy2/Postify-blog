@@ -5,6 +5,7 @@ import Hero from '../components/Hero';
 import BentoGrid from '../components/BentoGrid';
 import CategoryNav from '../components/CategoryNav';
 import EditorialFeed from '../components/EditorialFeed';
+import MarqueeBanner from '../components/MarqueeBanner/MarqueeBanner';
 import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
@@ -107,6 +108,7 @@ const HomePage = () => {
         onSearchChange={setQuery}
         featuredPost={featuredPost}
       />
+      <MarqueeBanner />
 
       {usingFallback && (
         <div className={`container ${styles.fallbackNotice}`} role="status">
