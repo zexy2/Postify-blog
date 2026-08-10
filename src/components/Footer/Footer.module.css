@@ -1,8 +1,18 @@
+.footerStickyWrapper {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  overflow: hidden;
+  clip-path: inset(0 0 0 0);
+  background: var(--bg-secondary);
+}
+
 .footer {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
-  padding: 4rem 0 2.5rem;
-  margin-top: clamp(4rem, 8vw, 7rem);
+  padding: 4rem 0 2rem;
+  position: relative;
 }
 
 .container {
@@ -11,7 +21,7 @@
   padding: 0 var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: 3.5rem;
+  gap: 2.5rem;
 }
 
 /* Top Section */
@@ -134,13 +144,36 @@ a.socialBadge:hover {
   transform: translateX(2px);
 }
 
+/* Giant Display Typography Banner */
+.displayBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0 0.5rem;
+  user-select: none;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.displayTitle {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 15vw, 13rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--text-primary) 12%, transparent) 0%, color-mix(in srgb, var(--text-primary) 2%, transparent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
+
 /* Bottom Bar */
 .bottomBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding-top: 2rem;
+  padding-top: 1.75rem;
   border-top: 1px solid var(--border-color);
 }
 
@@ -203,6 +236,9 @@ a.socialBadge:hover {
   .columnsGroup {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2rem 1.5rem;
+  }
+  .displayTitle {
+    font-size: clamp(3rem, 16vw, 6rem);
   }
   .bottomBar {
     flex-direction: column;

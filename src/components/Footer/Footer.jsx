@@ -13,93 +13,100 @@ const Footer = () => {
   };
 
   return (
-    <footer className={styles.footer}>
-      <div className={styles.container}>
-        {/* Top Section: Brand Statement & Columns */}
-        <div className={styles.topSection}>
-          <div className={styles.brandCol}>
-            <Link to="/" className={styles.brandLink}>
-              <BrandMark size="md" />
-              <span className={styles.brandTitle}>Postify</span>
-            </Link>
-            <p className={styles.brandDesc}>{t('footer.description', 'Teknoloji, yazılım mimarisi ve ürün tasarımı üzerine bağımsız dijital yayın.')}</p>
-            <div className={styles.socialBadges}>
-              <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" className={styles.socialBadge} title="GitHub">
-                <FiGithub size={16} />
-                <span>GitHub</span>
-              </a>
-              <span className={styles.socialBadge}>
-                <FiGlobe size={16} />
-                <span>Istanbul, TR</span>
-              </span>
+    <div className={styles.footerStickyWrapper}>
+      <footer className={styles.footer}>
+        <div className={styles.container}>
+          {/* Top Section: Brand Statement & Columns */}
+          <div className={styles.topSection}>
+            <div className={styles.brandCol}>
+              <Link to="/" className={styles.brandLink}>
+                <BrandMark size="md" />
+                <span className={styles.brandTitle}>Postify</span>
+              </Link>
+              <p className={styles.brandDesc}>{t('footer.description', 'Teknoloji, yazılım mimarisi ve ürün tasarımı üzerine bağımsız dijital yayın.')}</p>
+              <div className={styles.socialBadges}>
+                <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" className={styles.socialBadge} title="GitHub">
+                  <FiGithub size={16} />
+                  <span>GitHub</span>
+                </a>
+                <span className={styles.socialBadge}>
+                  <FiGlobe size={16} />
+                  <span>Istanbul, TR</span>
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.columnsGroup}>
+              <div className={styles.col}>
+                <h4 className={styles.colTitle}>Navigasyon</h4>
+                <ul className={styles.colList}>
+                  <li><Link to="/">{t('nav.home')}</Link></li>
+                  <li><Link to="/about">{t('nav.about')}</Link></li>
+                  <li><Link to="/contact">{t('nav.contact')}</Link></li>
+                  <li><Link to="/bookmarks">{t('nav.bookmarks', 'Yer İşaretleri')}</Link></li>
+                </ul>
+              </div>
+
+              <div className={styles.col}>
+                <h4 className={styles.colTitle}>Kategoriler</h4>
+                <ul className={styles.colList}>
+                  <li><Link to="/?category=Frontend">#Frontend</Link></li>
+                  <li><Link to="/?category=AI">#AI & Yapay Zeka</Link></li>
+                  <li><Link to="/?category=Design">#Ürün Tasarımı</Link></li>
+                  <li><Link to="/?category=Altyapı">#Sistem Altyapısı</Link></li>
+                </ul>
+              </div>
+
+              <div className={styles.col}>
+                <h4 className={styles.colTitle}>Kaynaklar</h4>
+                <ul className={styles.colList}>
+                  <li>
+                    <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
+                      Açık Kaynak <FiArrowUpRight size={13} />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">
+                      Supabase Docs <FiArrowUpRight size={13} />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
+                      React 19 <FiArrowUpRight size={13} />
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
-          <div className={styles.columnsGroup}>
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>Navigasyon</h4>
-              <ul className={styles.colList}>
-                <li><Link to="/">{t('nav.home')}</Link></li>
-                <li><Link to="/about">{t('nav.about')}</Link></li>
-                <li><Link to="/contact">{t('nav.contact')}</Link></li>
-                <li><Link to="/bookmarks">{t('nav.bookmarks', 'Yer İşaretleri')}</Link></li>
-              </ul>
+          {/* Giant Awwwards-Style Display Typography Banner */}
+          <div className={styles.displayBanner}>
+            <span className={styles.displayTitle}>POSTIFY</span>
+          </div>
+
+          {/* Bottom Bar: Copyright & Scroll to Top */}
+          <div className={styles.bottomBar}>
+            <div className={styles.copyGroup}>
+              <span className={styles.copyBrand}>Postify</span>
+              <span className={styles.copyDot}>•</span>
+              <span className={styles.copyright}>© {currentYear} Postify Blog. {t('footer.copyright', 'Tüm hakları saklıdır.')}</span>
             </div>
 
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>Kategoriler</h4>
-              <ul className={styles.colList}>
-                <li><Link to="/?category=Frontend">#Frontend</Link></li>
-                <li><Link to="/?category=AI">#AI & Yapay Zeka</Link></li>
-                <li><Link to="/?category=Design">#Ürün Tasarımı</Link></li>
-                <li><Link to="/?category=Altyapı">#Sistem Altyapısı</Link></li>
-              </ul>
-            </div>
-
-            <div className={styles.col}>
-              <h4 className={styles.colTitle}>Kaynaklar</h4>
-              <ul className={styles.colList}>
-                <li>
-                  <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
-                    Açık Kaynak <FiArrowUpRight size={13} />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">
-                    Supabase Docs <FiArrowUpRight size={13} />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-                    React 19 <FiArrowUpRight size={13} />
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <button
+              type="button"
+              className={styles.scrollTopBtn}
+              onClick={scrollToTop}
+              aria-label="Başa Dön"
+              title="Başa Dön"
+            >
+              <span>Başa Dön</span>
+              <FiArrowUp size={16} />
+            </button>
           </div>
         </div>
-
-        {/* Bottom Bar: Copyright & Scroll to Top */}
-        <div className={styles.bottomBar}>
-          <div className={styles.copyGroup}>
-            <span className={styles.copyBrand}>Postify</span>
-            <span className={styles.copyDot}>•</span>
-            <span className={styles.copyright}>© {currentYear} Postify Blog. {t('footer.copyright', 'Tüm hakları saklıdır.')}</span>
-          </div>
-
-          <button
-            type="button"
-            className={styles.scrollTopBtn}
-            onClick={scrollToTop}
-            aria-label="Başa Dön"
-            title="Başa Dön"
-          >
-            <span>Başa Dön</span>
-            <FiArrowUp size={16} />
-          </button>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 };
 
