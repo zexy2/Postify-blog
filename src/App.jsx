@@ -20,6 +20,7 @@ import HomePage from './pages/HomePage';
 // Lazy loaded pages for better performance
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'));
 const PostDetailPage = lazy(() => import('./pages/PostDetailPage'));
 const UserPage = lazy(() => import('./pages/UserPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
@@ -92,7 +93,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/auth/login" element={<LoginPage />} />
               <Route path="/auth/register" element={<RegisterPage />} />
-              <Route path="/auth/callback" element={<Navigate to="/" replace />} />
+              <Route path="/auth/callback" element={<AuthCallbackPage />} />
               <Route
                 path="/posts/create"
                 element={

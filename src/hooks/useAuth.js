@@ -65,64 +65,64 @@ export const useAuth = () => {
    */
   useEffect(() => {
     let isMounted = true;
+    let subscription;
+
+    const hydrateUser = async (session) => {
+      if (!session || !isMounted) return;
+
+      dispatch(setSession(session));
+
+      try {
+        const currentUser = await authService.getCurrentUser();
+        if (!currentUser || !isMounted) return;
+
+        const profile = await authService.getProfile(currentUser.id);
+        if (isMounted) {
+          dispatch(setUser({ ...currentUser, profile }));
+        }
+      } catch (err) {
+        // Session remains valid even when profile hydration is unavailable.
+        console.error("Auth profile hydration error:", err);
+      }
+    };
+
+    const handleAuthStateChange = (event, newSession) => {
+      if (!isMounted) return;
+
+      if (event === "SIGNED_OUT") {
+        dispatch(logoutAction());
+        dispatch(setLoading(false));
+        return;
+      }
+
+      if (newSession) {
+        // Do not await profile queries inside Supabase's auth callback.
+        void hydrateUser(newSession).finally(() => {
+          if (isMounted) dispatch(setLoading(false));
+        });
+      }
+    };
 
     const initAuth = async () => {
       try {
+        // Subscribe before reading the session so post-OAuth SIGNED_IN cannot
+        // be missed while Supabase is processing the callback URL.
+        const result = await authService.onAuthStateChange(handleAuthStateChange);
+        subscription = result?.data?.subscription;
+
         const currentSession = await authService.getSession();
-
-        if (currentSession && isMounted) {
-          dispatch(setSession(currentSession));
-          const currentUser = await authService.getCurrentUser();
-
-          if (currentUser && isMounted) {
-            const profile = await authService.getProfile(currentUser.id);
-            dispatch(setUser({ ...currentUser, profile }));
-          }
-        }
+        if (currentSession) await hydrateUser(currentSession);
       } catch (err) {
         console.error("Auth init error:", err);
       } finally {
-        if (isMounted) {
-          dispatch(setLoading(false));
-        }
+        if (isMounted) dispatch(setLoading(false));
       }
     };
 
-    let subscription;
-    const startAuth = async () => {
-      await initAuth();
-      if (!isMounted) return;
-
-      const result = await authService.onAuthStateChange(async (event, newSession) => {
-        if (!isMounted) return;
-
-        if (event === "SIGNED_IN" && newSession) {
-          dispatch(setSession(newSession));
-          const currentUser = await authService.getCurrentUser();
-          if (currentUser) {
-            const profile = await authService.getProfile(currentUser.id);
-            dispatch(setUser({ ...currentUser, profile }));
-          }
-          dispatch(setLoading(false));
-        } else if (event === "SIGNED_OUT") {
-          dispatch(logoutAction());
-          dispatch(setLoading(false));
-        }
-      });
-      subscription = result?.data?.subscription;
-    };
-
-    const idleId = "requestIdleCallback" in window
-      ? window.requestIdleCallback(startAuth, { timeout: 2000 })
-      : window.setTimeout(startAuth, 1200);
+    void initAuth();
 
     return () => {
       isMounted = false;
-      if ("cancelIdleCallback" in window && typeof idleId === "number") {
-        window.cancelIdleCallback(idleId);
-      } else {
-        window.clearTimeout(idleId);
-      }
       subscription?.unsubscribe();
     };
   }, [dispatch]);
