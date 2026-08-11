@@ -338,7 +338,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-padding-top: calc(var(--header-height) + var(--space-lg));
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
