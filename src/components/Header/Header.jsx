@@ -77,7 +77,7 @@ const Header = () => {
     }
   }, []);
 
-  const renderNavContent = (isMobile = false) => (
+  const renderNavContent = () => (
     <>
       <button
         type="button"
@@ -439,7 +439,7 @@ const Header = () => {
 
         {/* Desktop Inline Navigation */}
         <div className={`${styles.navContainer} ${styles.desktopNav}`}>
-          {renderNavContent(false)}
+          {renderNavContent()}
         </div>
 
         {/* Shadcn UI Sheet Drawer for Mobile */}

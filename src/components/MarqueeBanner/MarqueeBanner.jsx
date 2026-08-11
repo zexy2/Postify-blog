@@ -1,10 +1,7 @@
-import { useTranslation } from 'react-i18next';
 import { FiZap, FiStar, FiSearch, FiCode, FiGlobe } from 'react-icons/fi';
 import styles from './MarqueeBanner.module.css';
 
 const MarqueeBanner = () => {
-  const { t } = useTranslation();
-
   const items = [
     { icon: <FiZap className={styles.icon} />, text: 'Frontend & Web Performance' },
     { icon: <FiStar className={styles.icon} />, text: 'Curated Technology Notes' },
