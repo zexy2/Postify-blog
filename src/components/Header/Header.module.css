@@ -1,5 +1,5 @@
 .header { position: sticky; top: 0; z-index: var(--z-sticky); background: color-mix(in srgb, var(--bg-primary) 94%, transparent); border-bottom: 1px solid var(--border-color); backdrop-filter: blur(16px); }
-.headerMenuOpen { z-index: calc(var(--z-modal) + 50) !important; }
+.headerMenuOpen { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; z-index: calc(var(--z-modal) + 100) !important; background: var(--bg-primary) !important; }
 .container { max-width: var(--container-max); height: var(--header-height); display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; margin: 0 auto; padding: 0 var(--space-lg); }
 .logoSection {
   display: flex;
