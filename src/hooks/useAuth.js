@@ -35,6 +35,32 @@ export const useAuth = () => {
   );
 
   /**
+   * Catch and clean up OAuth URL error query parameters (e.g. from Google login failure)
+   */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+
+    const error = urlParams.get('error') || hashParams.get('error');
+    const errorDescription = urlParams.get('error_description') || hashParams.get('error_description');
+
+    if (error || errorDescription) {
+      const cleanDesc = errorDescription
+        ? decodeURIComponent(errorDescription).replace(/\+/g, ' ')
+        : t('auth.oauthError', 'Google girişinde bir doğrulama hatası oluştu.');
+
+      console.warn('OAuth Auth Error:', error, cleanDesc);
+      toast.error(`Giriş Yapılamadı: ${cleanDesc}`, { duration: 6000 });
+
+      // Clean up raw error query and hash params from browser address bar
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }, [t]);
+
+  /**
    * Initialize auth state on mount
    */
   useEffect(() => {
