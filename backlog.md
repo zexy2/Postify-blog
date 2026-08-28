@@ -77,5 +77,5 @@
 ## Actionability
 - [x] Turn article verification steps into a version-scoped interactive runbook
 - [x] Add copy actions for fenced code examples with clipboard fallback
-- [ ] Add explicit command/output blocks that can attach an expected result to an automatic verifier
+- [x] Bind displayed automatic-verification code, expected output, actual output and code hash to one release contract
 - [ ] Sync personal runbook progress to account state only after a reviewed persistence model exists

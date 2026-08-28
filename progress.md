@@ -214,3 +214,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Production network probing found one remaining avoidable Supabase 400 after the schema-capability fix: a missing fallback slug was retried against the UUID `posts.id` column.
 - Added a strict UUID guard so non-UUID slugs never enter the ID lookup path.
 - Current verification on the combined main + Action Runbook baseline: 20 unit/integration files / 81 tests PASS; lint/build/artifact smoke PASS; Chromium 22/22 PASS.
+
+## 2026-08-28 — Verification Contract V2
+- Removed verifier/article code duplication for the first Postify Verified Node.js example. The article now renders the exact code stored in the verification manifest.
+- The release verifier fails if an automatic verification manifest entry cannot find a matching article or if the article no longer contains the exact executed code.
+- Verification artifacts now expose the actual Node runtime version, expected stdout, actual stdout, SHA-256 of the executed code, policy id and `articleContractMatched` state.
+- Added `node-deterministic-v1` release policy: narrow checked-in snippets reject external packages, dynamic imports, network APIs, filesystem builtins, process execution APIs, eval/Function and non-output process access. Execution remains explicitly documented as checked-in child-process execution, not a security sandbox.
+- Full gate: 22 test files / 89 tests PASS, deterministic verifier/article contract PASS, lint/build/smoke PASS, Chromium 22/22 PASS.

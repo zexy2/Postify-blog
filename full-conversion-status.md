@@ -39,6 +39,11 @@
 - Current frontend is backward-compatible with the old production Supabase schema through an explicit backend capability artifact.
 - Full repository migration chain + storage bootstrap + RLS/privacy assertions PASS on PostgreSQL 16.
 - Raw community evidence and revision snapshots are private; public views expose aggregates/sanitized history only.
-- Browser suite is now a CI deploy gate (20 scenarios locally green).
+- Browser suite is a CI + production deploy gate (22 scenarios green, including Action Runbook and executable verification contract).
 - Main entry performance budget: 294,024 bytes current, 320,000-byte release ceiling.
 - Items 29–31 and final completion remain intentionally open until authenticated production Supabase owner access is available and the real migration/post-migration smoke is executed.
+
+## Post-plan product hardening — 2026-08-28
+- Automatic verification now binds the displayed article code to the exact executed manifest contract; artifacts include actual runtime/output and code hash.
+- `node-deterministic-v1` rejects unsupported package/network/filesystem/process capabilities at release-gate policy level and is explicitly not described as a security sandbox.
+- Article verification steps are now an evidence-version-scoped Action Runbook with durable device-local progress and code-copy actions.

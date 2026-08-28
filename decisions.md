@@ -149,3 +149,13 @@
 **Decision:** After a slug lookup misses, query `posts.id` only when the identifier is a syntactically valid UUID.
 
 **Why:** Postgres/Supabase correctly rejects a non-UUID string against a UUID column with HTTP 400. Fallback/local catalogue slugs are normal product identifiers, so the client should not create a predictable backend error before falling back.
+
+## 2026-08-28 — Displayed automatic-verification code must equal executed code
+**Decision:** Automatically verified examples use the verification manifest as the single source for the code shown in the article and the code executed by the release gate. A mismatch fails verification.
+
+**Why:** A green badge is meaningless if the reader sees different code from what the verifier executed. The verification artifact now carries actual runtime/output plus a code hash so provenance is inspectable.
+
+## 2026-08-28 — Checked-in execution policy is not called a sandbox
+**Decision:** The first automatic verifier is described as policy-limited checked-in Node execution, not isolated/sandboxed execution. The release gate statically rejects unsupported package/network/filesystem/process capabilities and applies code-size, output and timeout limits.
+
+**Why:** Trust copy must reflect the real security boundary. Arbitrary or untrusted user code remains unsupported until OS/container-level isolation is deliberately designed.
