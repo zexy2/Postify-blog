@@ -249,3 +249,16 @@
     justify-content: center;
   }
 }
+
+/* UI V2 quiet 404 */
+.container { min-height: calc(100vh - var(--header-height)); padding: clamp(3rem,8vw,7rem) 1rem; overflow: visible; }
+.container::before, .container::after { display: none; }
+.content { max-width: 640px; animation: none; }
+.errorCode { margin-bottom: .75rem; color: var(--primary); background: none; -webkit-text-fill-color: currentColor; font-family: var(--font-display); font-size: clamp(5rem,18vw,9rem); font-weight: 700; animation: none; }
+.illustration { display: none; }
+.title { margin: 0 0 .65rem; font-family: var(--font-display); font-size: clamp(2rem,5vw,3.5rem); font-weight: 700; letter-spacing: -.04em; }
+.message { max-width: 46ch; margin: 0 auto 1.5rem; font-size: 1rem; }
+.homeButton, .backButton { min-height: 42px; padding: .65rem .9rem; border-radius: var(--radius-md); box-shadow: none; transform: none; }
+.homeButton { color: var(--bg-primary); background: var(--text-primary); }
+.homeButton:hover { transform: none; box-shadow: none; opacity: .9; }
+.suggestions { margin-top: 2rem; padding: 1.25rem 0 0; background: transparent; border: 0; border-top: 1px solid var(--border-color); border-radius: 0; }
