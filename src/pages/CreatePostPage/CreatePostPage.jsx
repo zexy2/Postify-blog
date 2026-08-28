@@ -13,6 +13,7 @@ import { EDITOR_CONFIG } from '../../constants';
 import { getWritingStarter, getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
 import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draftStorage';
 import { getPublishReadiness } from '../../lib/publishReadiness';
+import { useKnowledgeBackendStatus } from '../../hooks/useKnowledge';
 import { getWritingMetrics } from '../../lib/writingMetrics';
 import { 
   selectAIEnabled, 
@@ -29,6 +30,8 @@ const CreatePostPage = () => {
   const dispatch = useDispatch();
   const createPost = useCreatePost();
   const updatePost = useUpdatePost();
+  const knowledgeBackend = useKnowledgeBackendStatus();
+  const knowledgeBackendReady = knowledgeBackend.data?.ready === true;
   const { post: editingPost } = usePost(id);
 
   // AI state
@@ -48,7 +51,12 @@ const CreatePostPage = () => {
     outcome: '',
     testedAt: '',
     environment: '',
+    prerequisites: '',
     verificationSteps: '',
+    caveats: '',
+    sources: '',
+    staleAfterDays: '180',
+    revisionReason: '',
   }));
   const [errors, setErrors] = useState({});
   const [isDirty, setIsDirty] = useState(false);
@@ -70,7 +78,12 @@ const CreatePostPage = () => {
       outcome: editingPost.outcome || editingPost.excerpt || '',
       testedAt: editingPost.evidence?.testedAt ? editingPost.evidence.testedAt.slice(0, 10) : '',
       environment: (editingPost.evidence?.environment || []).join(' · '),
+      prerequisites: (editingPost.evidence?.prerequisites || []).join('\n'),
       verificationSteps: (editingPost.evidence?.verificationSteps || []).join('\n'),
+      caveats: (editingPost.evidence?.caveats || []).join('\n'),
+      sources: (editingPost.evidence?.sources || []).join('\n'),
+      staleAfterDays: String(editingPost.evidence?.staleAfterDays || 180),
+      revisionReason: '',
     });
   }, [editingPost, initialDraft?.formData, isDirty, isEdit]);
 
@@ -133,6 +146,10 @@ const CreatePostPage = () => {
     e.preventDefault();
 
     if (!validateForm()) return;
+    if (!knowledgeBackendReady) {
+      setErrors((prev) => ({ ...prev, backend: i18n.language?.startsWith('en') ? 'Verified publishing is waiting for the production knowledge backend upgrade. Your local draft is safe.' : 'Doğrulanmış yayınlama production bilgi backend yükseltmesini bekliyor. Yerel taslağın güvende.' }));
+      return;
+    }
 
     try {
       const payload = {
@@ -147,16 +164,16 @@ const CreatePostPage = () => {
           level: formData.testedAt && formData.environment.trim() && formData.verificationSteps.trim() ? 'author-tested' : 'unverified',
           testedAt: formData.testedAt ? `${formData.testedAt}T12:00:00.000Z` : null,
           environment: formData.environment.split(/[·,\n]/).map((item) => item.trim()).filter(Boolean),
-          prerequisites: editingPost?.evidence?.prerequisites || [],
+          prerequisites: formData.prerequisites.split('\n').map((item) => item.trim()).filter(Boolean),
           verificationSteps: formData.verificationSteps.split('\n').map((item) => item.trim()).filter(Boolean),
-          caveats: editingPost?.evidence?.caveats || [],
-          sources: editingPost?.evidence?.sources || [],
-          staleAfterDays: editingPost?.evidence?.staleAfterDays || 180,
+          caveats: formData.caveats.split('\n').map((item) => item.trim()).filter(Boolean),
+          sources: formData.sources.split('\n').map((item) => item.trim()).filter(Boolean),
+          staleAfterDays: Number(formData.staleAfterDays) || 180,
           version: editingPost?.evidence?.version || 1,
         },
       };
       if (isEdit) {
-        await updatePost.mutateAsync({ id, data: { ...payload, revisionReason: 'Author edited content or evidence' } });
+        await updatePost.mutateAsync({ id, data: { ...payload, revisionReason: formData.revisionReason.trim() || 'Author edited content or evidence' } });
       } else {
         await createPost.mutateAsync(payload);
       }
@@ -202,7 +219,7 @@ const CreatePostPage = () => {
                 <span className={styles.formatEyebrow}>{i18n.language?.startsWith('en') ? 'Writing mode' : 'Yazı biçimi'}</span>
                 <h2 id="post-format-heading">{i18n.language?.startsWith('en') ? 'What should this help someone do?' : 'Bu içerik birine ne yaptıracak?'}</h2>
               </div>
-              <span className={styles.formatHint}>{i18n.language?.startsWith('en') ? 'Not saved to the database yet' : 'Henüz veritabanına kaydedilmez'}</span>
+              <span className={styles.formatHint}>{i18n.language?.startsWith('en') ? 'Structured practical knowledge' : 'Yapılandırılmış uygulanabilir bilgi'}</span>
             </div>
             <div className={styles.formatGrid} role="group" aria-label={i18n.language?.startsWith('en') ? 'Content format' : 'İçerik biçimi'}>
               {writingTemplates.map((template) => (
@@ -266,10 +283,26 @@ const CreatePostPage = () => {
           </div>
 
           <section className={styles.evidenceFields} aria-labelledby="evidence-fields-title">
-            <div><span className={styles.formatEyebrow}>{i18n.language?.startsWith('en') ? 'Evidence' : 'Kanıt'}</span><h2 id="evidence-fields-title">{i18n.language?.startsWith('en') ? 'What did you actually test?' : 'Gerçekte neyi test ettin?'}</h2><p>{i18n.language?.startsWith('en') ? 'These fields stay in the local draft in V1; production persistence waits for the reviewed schema.' : 'Bu alanlar V1’de yerel taslakta kalır; production kaydı onaylı şema sonrasına bırakıldı.'}</p></div>
+            <div>
+              <span className={styles.formatEyebrow}>{i18n.language?.startsWith('en') ? 'Evidence' : 'Kanıt'}</span>
+              <h2 id="evidence-fields-title">{i18n.language?.startsWith('en') ? 'What did you actually test?' : 'Gerçekte neyi test ettin?'}</h2>
+              <p>{knowledgeBackendReady
+                ? (i18n.language?.startsWith('en') ? 'Evidence will be persisted with this knowledge unit.' : 'Kanıt bu bilgi birimiyle kalıcı olarak kaydedilecek.')
+                : (i18n.language?.startsWith('en') ? 'Keep drafting locally. Publishing evidence activates automatically after the production backend upgrade.' : 'Taslağa yerel olarak devam et. Kanıt yayınlama production backend yükseltmesinden sonra otomatik açılacak.')}</p>
+            </div>
             <label>{i18n.language?.startsWith('en') ? 'Expected outcome' : 'Beklenen sonuç'}<input value={formData.outcome || ''} onChange={handleEvidenceChange('outcome')} placeholder={i18n.language?.startsWith('en') ? 'After this, the reader can…' : 'Bunun sonunda okuyucu…'} /></label>
-            <div className={styles.evidenceGrid}><label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label><label>{i18n.language?.startsWith('en') ? 'Environment / versions' : 'Ortam / sürümler'}<input value={formData.environment || ''} onChange={handleEvidenceChange('environment')} placeholder="Node 22 · React 19" /></label></div>
-            <label>{i18n.language?.startsWith('en') ? 'Verification steps' : 'Doğrulama adımları'}<textarea rows="3" value={formData.verificationSteps || ''} onChange={handleEvidenceChange('verificationSteps')} placeholder={i18n.language?.startsWith('en') ? 'One check per line' : 'Her satıra bir kontrol'} /></label>
+            <div className={styles.evidenceGrid}>
+              <label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label>
+              <label>{i18n.language?.startsWith('en') ? 'Environment / versions' : 'Ortam / sürümler'}<input value={formData.environment || ''} onChange={handleEvidenceChange('environment')} placeholder="Node 22 · React 19" /></label>
+            </div>
+            <label>{i18n.language?.startsWith('en') ? 'Prerequisites' : 'Ön koşullar'}<textarea rows="3" value={formData.prerequisites || ''} onChange={handleEvidenceChange('prerequisites')} placeholder={i18n.language?.startsWith('en') ? 'One prerequisite per line' : 'Her satıra bir ön koşul'} /></label>
+            <label>{i18n.language?.startsWith('en') ? 'Verification steps' : 'Doğrulama adımları'}<textarea rows="4" value={formData.verificationSteps || ''} onChange={handleEvidenceChange('verificationSteps')} placeholder={i18n.language?.startsWith('en') ? 'One check per line' : 'Her satıra bir kontrol'} /></label>
+            <label>{i18n.language?.startsWith('en') ? 'Known caveats / failure conditions' : 'Bilinen sınırlar / hata koşulları'}<textarea rows="3" value={formData.caveats || ''} onChange={handleEvidenceChange('caveats')} placeholder={i18n.language?.startsWith('en') ? 'Where should a reader not trust this blindly?' : 'Okuyucu bunu hangi durumda körü körüne uygulamamalı?'} /></label>
+            <label>{i18n.language?.startsWith('en') ? 'Sources / evidence URLs' : 'Kaynaklar / kanıt URL’leri'}<textarea rows="3" value={formData.sources || ''} onChange={handleEvidenceChange('sources')} placeholder="https://…" /></label>
+            <div className={styles.evidenceGrid}>
+              <label>{i18n.language?.startsWith('en') ? 'Re-check after' : 'Tekrar kontrol süresi'}<select value={formData.staleAfterDays || '180'} onChange={handleEvidenceChange('staleAfterDays')}><option value="30">30 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="90">90 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="180">180 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="365">365 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option></select></label>
+              {isEdit && <label>{i18n.language?.startsWith('en') ? 'What changed?' : 'Ne değişti?'}<input value={formData.revisionReason || ''} onChange={handleEvidenceChange('revisionReason')} placeholder={i18n.language?.startsWith('en') ? 'Updated for Node 22 / fixed step 3' : 'Node 22 için güncellendi / 3. adım düzeltildi'} /></label>}
+            </div>
           </section>
 
           {/* Content Editor */}
@@ -325,12 +358,14 @@ const CreatePostPage = () => {
             <ul className={styles.readinessList}>
               {publishReadiness.checks.map((check) => {
                 const labels = i18n.language?.startsWith('en')
-                  ? { title: 'Clear title', substance: 'Enough substance', structure: 'Scannable structure', outcome: 'Concrete outcome', environment: 'Test environment', verification: 'Verification evidence' }
-                  : { title: 'Net başlık', substance: 'Yeterli içerik', structure: 'Taranabilir yapı', outcome: 'Somut sonuç', environment: 'Test ortamı', verification: 'Doğrulama kanıtı' };
+                  ? { title: 'Clear title', substance: 'Enough substance', structure: 'Scannable structure', outcome: 'Concrete outcome', environment: 'Test environment', verification: 'Verification evidence', provenance: 'Source or caveat' }
+                  : { title: 'Net başlık', substance: 'Yeterli içerik', structure: 'Taranabilir yapı', outcome: 'Somut sonuç', environment: 'Test ortamı', verification: 'Doğrulama kanıtı', provenance: 'Kaynak veya sınır' };
                 return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
               })}
             </ul>
           </aside>
+
+          {errors.backend && <p className={styles.backendNotice} role="status">{errors.backend}</p>}
 
           {/* Actions */}
           <div className={styles.actions}>
@@ -344,7 +379,7 @@ const CreatePostPage = () => {
             <button
               type="submit"
               className={styles.submitButton}
-              disabled={createPost.isPending || updatePost.isPending}
+              disabled={createPost.isPending || updatePost.isPending || !knowledgeBackendReady}
             >
               {createPost.isPending || updatePost.isPending ? (
                 <>
@@ -359,6 +394,7 @@ const CreatePostPage = () => {
               )}
             </button>
           </div>
+          {!knowledgeBackendReady && <p id="verified-publish-status" className={styles.backendStatus}>{i18n.language?.startsWith('en') ? 'Drafting and autosave work now; verified publishing activates after the production schema migration.' : 'Taslak ve otomatik kayıt çalışıyor; doğrulanmış yayınlama production şema migration’ından sonra açılacak.'}</p>}
         </form>
       </div>
     </div>

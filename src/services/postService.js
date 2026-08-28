@@ -7,6 +7,7 @@
  */
 
 import { requireSupabase } from '../lib/supabase';
+import { getKnowledgeBackendStatus } from '../lib/knowledgeBackendStatus';
 import {
   FALLBACK_AUTHOR,
   getFallbackPost,
@@ -15,7 +16,7 @@ import {
   getFallbackUserPosts,
 } from '../content/fallbackPosts';
 
-const POST_FIELDS = [
+const LEGACY_POST_FIELDS = [
   'id',
   'slug',
   'title',
@@ -30,6 +31,10 @@ const POST_FIELDS = [
   'created_at',
   'published_at',
   'updated_at',
+].join(',');
+
+const POST_FIELDS = [
+  LEGACY_POST_FIELDS,
   'content_type',
   'outcome',
   'evidence_status',
@@ -42,6 +47,31 @@ const POST_FIELDS = [
   'sources',
   'evidence_version',
 ].join(',');
+
+export const isKnowledgeSchemaMissing = (error) => {
+  if (!error) return false;
+  const code = String(error.code || '');
+  const message = String(error.message || '').toLowerCase();
+  return ['42703', '42P01', '42883', 'PGRST202', 'PGRST204', 'PGRST205'].includes(code)
+    || message.includes('post_evidence_summary')
+    || message.includes('evidence_status')
+    || message.includes('content_type')
+    || message.includes('capture_post_revision')
+    || message.includes('reverify_post');
+};
+
+const knowledgeSchemaPendingError = (cause) => {
+  const error = new Error('Verified Knowledge backend upgrade is pending. Public reading remains available; evidence writes will activate after the production migration.');
+  error.code = 'KNOWLEDGE_SCHEMA_PENDING';
+  error.cause = cause;
+  return error;
+};
+
+const runCompatiblePostQuery = async (queryFactory) => {
+  let result = await queryFactory(POST_FIELDS);
+  if (isKnowledgeSchemaMissing(result?.error)) result = await queryFactory(LEGACY_POST_FIELDS);
+  return result;
+};
 
 const LOCAL_POST_IMAGES = new Set([
   'ai-muhendisligi.webp',
@@ -110,7 +140,10 @@ const getAuthors = async (client, authorIds) => {
 
 const getEvidenceSummaries = async (client, postIds) => {
   if (!postIds.length) return new Map();
+  const backend = await getKnowledgeBackendStatus();
+  if (!backend.ready) return new Map();
   const { data, error } = await client.from('post_evidence_summary').select('*').in('post_id', postIds);
+  if (isKnowledgeSchemaMissing(error)) return new Map();
   if (error) throw error;
   return new Map((data || []).map((item) => [String(item.post_id), item]));
 };
@@ -193,11 +226,11 @@ const mapRows = async (rows, locale) => {
 
 const getPostRow = async (identifier) => {
   const client = requireSupabase();
-  const bySlug = await client.from('posts').select(POST_FIELDS).eq('slug', identifier).maybeSingle();
+  const bySlug = await runCompatiblePostQuery((fields) => client.from('posts').select(fields).eq('slug', identifier).maybeSingle());
   if (bySlug.error) throw bySlug.error;
   if (bySlug.data) return bySlug.data;
 
-  const byId = await client.from('posts').select(POST_FIELDS).eq('id', identifier).maybeSingle();
+  const byId = await runCompatiblePostQuery((fields) => client.from('posts').select(fields).eq('id', identifier).maybeSingle());
   if (byId.error) throw byId.error;
   return byId.data;
 };
@@ -206,18 +239,21 @@ export const postService = {
   getAll: async ({ locale = 'tr', search = '' } = {}) => {
     try {
       const client = requireSupabase();
-      let query = client
-        .from('posts')
-        .select(POST_FIELDS)
-        .eq('is_published', true)
-        .order('published_at', { ascending: false });
+      const runQuery = (fields) => {
+        let query = client
+          .from('posts')
+          .select(fields)
+          .eq('is_published', true)
+          .order('published_at', { ascending: false });
 
-      if (search.trim()) {
-        const term = search.trim().replace(/[,()]/g, ' ');
-        query = query.or(`title.ilike.%${term}%,excerpt.ilike.%${term}%,body.ilike.%${term}%`);
-      }
+        if (search.trim()) {
+          const term = search.trim().replace(/[,()]/g, ' ');
+          query = query.or(`title.ilike.%${term}%,excerpt.ilike.%${term}%,body.ilike.%${term}%`);
+        }
+        return query;
+      };
 
-      const { data, error } = await query;
+      const { data, error } = await runCompatiblePostQuery(runQuery);
       if (error) throw error;
       return mapRows(data || [], locale);
     } catch {
@@ -243,12 +279,12 @@ export const postService = {
     if (!userId || userId === FALLBACK_AUTHOR.id || !isUuid) return getFallbackUserPosts(userId, locale);
 
     const client = requireSupabase();
-    const { data, error } = await client
+    const { data, error } = await runCompatiblePostQuery((fields) => client
       .from('posts')
-      .select(POST_FIELDS)
+      .select(fields)
       .eq('author_id', userId)
       .eq('is_published', true)
-      .order('published_at', { ascending: false });
+      .order('published_at', { ascending: false }));
     if (error) throw error;
     return mapRows(data || [], locale);
   },
@@ -305,6 +341,7 @@ export const postService = {
       })
       .select(POST_FIELDS)
       .single();
+    if (isKnowledgeSchemaMissing(error)) throw knowledgeSchemaPendingError(error);
     if (error) throw error;
 
     const { error: translationError } = await client.from('post_translations').insert({
@@ -323,6 +360,7 @@ export const postService = {
   update: async (id, data) => {
     const client = requireSupabase();
     const { error: revisionError } = await client.rpc('capture_post_revision', { target_post_id: id, revision_reason: data.revisionReason || 'Content/evidence update' });
+    if (isKnowledgeSchemaMissing(revisionError)) throw knowledgeSchemaPendingError(revisionError);
     if (revisionError) throw revisionError;
     const { locale = 'tr', ...postData } = data;
     delete postData.revisionReason;
@@ -351,6 +389,7 @@ export const postService = {
 
     if (Object.keys(updates).length > 1) {
       const { error } = await client.from('posts').update(updates).eq('id', id);
+      if (isKnowledgeSchemaMissing(error)) throw knowledgeSchemaPendingError(error);
       if (error) throw error;
     }
 

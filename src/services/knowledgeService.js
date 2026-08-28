@@ -31,13 +31,13 @@ export const knowledgeService = {
   },
   getFailures: async (postId,{limit=20}={}) => {
     const client=requireSupabase();
-    const {data,error}=await client.from('post_failure_reports').select('id,environment,note,updated_at').eq('post_id',postId).order('updated_at',{ascending:false}).limit(limit);
+    const {data,error}=await client.from('post_failure_reports').select('post_id,failure_count,last_failure_at').eq('post_id',postId).limit(Math.min(limit,1));
     if(error) throw error;
     return data || [];
   },
   getRevisions: async (postId) => {
     const client=requireSupabase();
-    const {data,error}=await client.from('post_revisions').select('id,revision_number,reason,snapshot,created_at').eq('post_id',postId).order('revision_number',{ascending:false});
+    const {data,error}=await client.from('post_revision_history').select('id,revision_number,reason,created_at').eq('post_id',postId).order('revision_number',{ascending:false});
     if(error) throw error;
     return data || [];
   },

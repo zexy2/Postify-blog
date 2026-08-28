@@ -5,7 +5,7 @@
  */
 
 import { Helmet } from 'react-helmet-async';
-import { absoluteAssetUrl, canonicalizeUrl } from '../../lib/seoUtils';
+import { absoluteAssetUrl, canonicalizeUrl, sanitizeHttpUrls } from '../../lib/seoUtils';
 
 const SEO = ({
   title,
@@ -31,6 +31,7 @@ const SEO = ({
   const pageImage = absoluteAssetUrl(image || defaultImage, siteUrl);
   const rawPageUrl = url || (typeof window !== 'undefined' ? window.location.href : siteUrl);
   const pageUrl = canonicalizeUrl(rawPageUrl, siteUrl);
+  const safeCitations = sanitizeHttpUrls(citations);
 
   // JSON-LD structured data
   const structuredData = {
@@ -53,7 +54,7 @@ const SEO = ({
     ...(modifiedTime && {
       dateModified: modifiedTime,
     }),
-    ...(citations.length > 0 && { citation: citations }),
+    ...(safeCitations.length > 0 && { citation: safeCitations }),
     publisher: {
       '@type': 'Organization',
       name: siteTitle,

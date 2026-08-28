@@ -23,6 +23,8 @@ const [{ data: posts, error: postsError }, { data: summaries, error: summaryErro
 ]);
 
 if (isSchemaPending(postsError) || isSchemaPending(summaryError)) {
+  await mkdir('docs', { recursive: true });
+  await writeFile('docs/knowledge-backend-status.json', `${JSON.stringify({ schemaVersion: 1, ready: false, mode: 'supabase-schema-pending', checkedAt: new Date().toISOString() }, null, 2)}\n`);
   console.warn('::warning title=Verified Knowledge production schema pending::Keeping build-generated fallback knowledge artifacts until the production migration is applied.');
   process.exit(0);
 }
@@ -83,4 +85,5 @@ for (const post of posts || []) {
     count += 1;
   }
 }
+await writeFile('docs/knowledge-backend-status.json', `${JSON.stringify({ schemaVersion: 1, ready: true, mode: 'supabase', checkedAt: new Date().toISOString(), exportedArtifacts: count }, null, 2)}\n`);
 console.log(`Supabase knowledge export PASS: ${count} artifact(s)`);

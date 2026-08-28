@@ -8,6 +8,8 @@ export function getPublishReadiness({
   testedAt = '',
   environment = '',
   verificationSteps = '',
+  caveats = '',
+  sources = '',
 } = {}) {
   const normalizedTitle = title.trim();
   const normalizedBody = body.trim();
@@ -21,6 +23,7 @@ export function getPublishReadiness({
     { id: 'outcome', passed: outcome.trim().length >= 12 },
     { id: 'environment', passed: environment.trim().length >= 3 },
     { id: 'verification', passed: testedAt.trim().length > 0 && verificationSteps.trim().length >= 12 },
+    { id: 'provenance', passed: sources.trim().length > 0 || caveats.trim().length >= 12 },
   ];
   const passedCount = checks.filter((check) => check.passed).length;
 

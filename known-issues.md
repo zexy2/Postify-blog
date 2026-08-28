@@ -1,11 +1,12 @@
 # Postify Known Issues
 
 ## Current
-- Oracle host has no global Node/npm runtime; deterministic verification uses `node:20-alpine` Docker.
-- Playwright dependencies exist, but a real browser-engine E2E suite has not yet been executed in this environment; current browser-facing validation uses production builds plus Vite preview HTTP smoke checks.
-- Explicit structured metadata (content type, outcome, prerequisites, environment/version, sources, revision history) is not persisted yet because Supabase migrations remain intentionally deferred.
-- Existing visual code outside the primary homepage/article/create flow still contains legacy trend-oriented components and can be simplified incrementally.
-- Current production hosting is GitHub Pages. The Oracle workspace still has no direct GitHub HTTPS credential, but connected GitHub write access is now available and should be used for branch/PR/release operations.
+- Production Supabase has not yet received the Verified Knowledge migration chain (`202608280900` + `202608281320`). Until owner management access is available, production intentionally advertises `knowledge-backend-status.json` as not ready and uses local-only evidence/shelf/gap fallback behavior.
+- GitHub Pages direct deep-link HTTP requests still return the platform's initial 404 before the checked-in SPA fallback restores the browser route. Real Chromium navigation is green, but HTTP status semantics remain a hosting limitation.
+- Automatic `Postify verified` currently supports only checked-in deterministic Node.js snippets. Arbitrary user code, network access, package installation, shell execution and external-service verification remain intentionally unsupported.
+- Screenshot/pixel-diff visual baselines are not committed; browser QA validates functional layout, accessibility, overflow and interaction invariants instead of pixel identity.
+- Browserslist compatibility data reports as roughly 8 months old during build; this is maintenance debt, not a release blocker.
+- The Oracle host has no global Node/npm runtime; deterministic verification uses Dockerized Node/Playwright toolchains.
 
 ## Resolved in 2026-08-28 loop
 - `package.json` now provides the documented `npm test` command.

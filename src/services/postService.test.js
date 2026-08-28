@@ -37,3 +37,12 @@ describe('postService public fallback', () => {
     expect(stats).toEqual({ posts: 9, authors: 1, comments: 0, isFallback: true });
   });
 });
+
+describe('Verified Knowledge schema compatibility', () => {
+  it('recognizes additive-schema absence without treating unrelated errors as migration state', async () => {
+    const { isKnowledgeSchemaMissing } = await import('./postService');
+    expect(isKnowledgeSchemaMissing({ code: '42703', message: 'column evidence_status does not exist' })).toBe(true);
+    expect(isKnowledgeSchemaMissing({ code: 'PGRST205', message: 'post_evidence_summary missing' })).toBe(true);
+    expect(isKnowledgeSchemaMissing({ code: '42501', message: 'permission denied' })).toBe(false);
+  });
+});

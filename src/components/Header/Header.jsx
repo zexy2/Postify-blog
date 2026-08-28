@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -21,9 +21,12 @@ import { useTheme } from '../../hooks/useTheme';
 import { useBookmarks } from '../../hooks/useBookmarks';
 import { useAuth } from '../../hooks/useAuth';
 import LanguageSwitcher from '../LanguageSwitcher';
-import CommandPalette from '../CommandPalette';
 import BrandMark from '../BrandMark';
-import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
+const Sheet = lazy(() => import('../ui/sheet').then((module) => ({ default: module.Sheet })));
+const SheetContent = lazy(() => import('../ui/sheet').then((module) => ({ default: module.SheetContent })));
+const SheetTitle = lazy(() => import('../ui/sheet').then((module) => ({ default: module.SheetTitle })));
+
+const CommandPalette = lazy(() => import('../CommandPalette'));
 
 const Header = () => {
   const { t, i18n } = useTranslation();
@@ -73,7 +76,7 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <CommandPalette open={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
+      {isCommandOpen && <Suspense fallback={null}><CommandPalette open onClose={() => setIsCommandOpen(false)} /></Suspense>}
 
       <div className={styles.container}>
         <Link to="/" className={styles.logo} aria-label="Postify" onClick={closeMenu}>
@@ -135,10 +138,11 @@ const Header = () => {
           <span /><span /><span />
         </button>
 
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen} modal>
-          <SheetContent side="right" className={styles.sheet}>
-            <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
-            <div className={styles.mobilePanel}>
+        {isMenuOpen && <Suspense fallback={null}>
+          <Sheet open onOpenChange={setIsMenuOpen} modal>
+            <SheetContent side="right" className={styles.sheet}>
+              <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
+              <div className={styles.mobilePanel}>
               <div className={styles.mobileTop}>
                 <Link to="/" className={styles.logo} onClick={closeMenu}>
                   <BrandMark size="md" /><span>Postify</span>
@@ -179,9 +183,10 @@ const Header = () => {
                   </Link>
                 )}
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </Suspense>}
       </div>
     </header>
   );

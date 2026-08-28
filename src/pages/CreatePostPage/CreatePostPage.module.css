@@ -605,3 +605,6 @@
 .evidenceFields input,.evidenceFields textarea { width:100%; padding:.75rem .8rem; color:var(--text-primary); background:var(--bg-primary); border:1px solid var(--border-strong); border-radius:var(--radius-md); font:inherit; }
 .evidenceGrid { display:grid; grid-template-columns:1fr 2fr; gap:1rem; }
 @media(max-width:640px){.evidenceGrid{grid-template-columns:1fr}}
+.evidenceFields select { width:100%; min-height:44px; padding:.75rem .8rem; color:var(--text-primary); background:var(--bg-primary); border:1px solid var(--border-strong); border-radius:var(--radius-md); font:inherit; }
+.backendNotice,.backendStatus { margin:.5rem 0; color:var(--text-muted); font-size:.78rem; line-height:1.5; }
+.backendNotice { padding:.75rem 0; border-block:1px solid var(--border-color); color:var(--text-secondary); }

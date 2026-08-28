@@ -6,7 +6,7 @@
 
 import { Component } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaExclamationTriangle, FaRedo, FaHome } from 'react-icons/fa';
+import { FiAlertTriangle, FiRefreshCw, FiHome } from 'react-icons/fi';
 import styles from './ErrorBoundary.module.css';
 
 class ErrorBoundaryClass extends Component {
@@ -53,7 +53,7 @@ const ErrorFallback = ({ error, resetError }) => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <FaExclamationTriangle className={styles.icon} />
+        <FiAlertTriangle className={styles.icon} />
         <h1 className={styles.title}>{t('error.title')}</h1>
         <p className={styles.message}>{t('error.message')}</p>
         
@@ -66,11 +66,11 @@ const ErrorFallback = ({ error, resetError }) => {
 
         <div className={styles.actions}>
           <button onClick={resetError} className={styles.retryButton}>
-            <FaRedo />
+            <FiRefreshCw />
             {t('error.retry')}
           </button>
           <a href={import.meta.env.BASE_URL} className={styles.homeButton}>
-            <FaHome />
+            <FiHome />
             {t('error.home')}
           </a>
         </div>

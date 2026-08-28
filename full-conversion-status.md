@@ -34,3 +34,11 @@
 32. [ ] Final product differentiation audit
 33. [x] Architecture/decision/progress/rollback docs
 34. [ ] Final completion declaration
+
+## Pre-migration hardening checkpoint — 2026-08-28
+- Current frontend is backward-compatible with the old production Supabase schema through an explicit backend capability artifact.
+- Full repository migration chain + storage bootstrap + RLS/privacy assertions PASS on PostgreSQL 16.
+- Raw community evidence and revision snapshots are private; public views expose aggregates/sanitized history only.
+- Browser suite is now a CI deploy gate (20 scenarios locally green).
+- Main entry performance budget: 294,024 bytes current, 320,000-byte release ceiling.
+- Items 29–31 and final completion remain intentionally open until authenticated production Supabase owner access is available and the real migration/post-migration smoke is executed.

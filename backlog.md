@@ -10,27 +10,27 @@
 
 ## Next — Author value
 - [x] Structured editor templates: Guide / Decision / Explainer / Field Note
-- [ ] Explicit outcome, prerequisites, environment/version and key takeaways fields
+- [x] Explicit outcome, prerequisites, environment/version, verification, caveats and source fields
 - [x] Draft quality checklist before publish
 - [x] Local draft autosave/restore
 - [x] Reader filter by content format
 - [x] Repeatable test/lint/build/smoke release gate
 - [ ] Markdown import/export and canonical URL support
-- [ ] Revision history / changelog model
+- [x] Revision history / changelog model
 
 - [x] Reader table of contents for structured articles
 - [x] Quick-read discovery filter
 
 ## Later — Network value
-- [ ] “Worked for me” with environment/version context
+- [x] “Worked for me” with environment/version context
 - [ ] Suggested corrections / patch-style contributions
 - [ ] Follow authors/topics
 - [ ] Personalized reading queue
-- [~] Source/reference blocks and freshness reminders (URL-derived reference display shipped; persistent structured sources still deferred)
-- [ ] AEO/structured data and clean Markdown representation
+- [x] Structured source/reference blocks and freshness reminders
+- [x] AEO/structured data + machine-readable knowledge JSON/llms.txt
 
 ## Deferred until value is proven
-- [ ] Supabase schema migration for the structured fields
+- [~] Apply the reviewed Supabase structured-evidence migration to production (schema authored/tested; owner access pending)
 - [ ] Monetization and paid publications
 - [ ] Recommendation ranking at scale
 
@@ -42,7 +42,7 @@
 
 ## Final validation follow-up
 - [x] Verify GitHub Pages SPA fallback artifact and current product identity in the release gate
-- [ ] Add a real browser-engine E2E check for direct deep-link navigation and responsive critical flows
+- [x] Add a real browser-engine E2E check for direct deep-link navigation and responsive critical flows
 
 ## UI V2 follow-up
 - [x] Flatten feed/category navigation and strengthen editorial hierarchy
@@ -60,11 +60,11 @@
 - [ ] Run a content/copy pass on remaining authenticated-only surfaces with real production data once Supabase production work is allowed
 
 ## Verified Knowledge — backend phase
-- [ ] Design/review Supabase schema for evidence snapshots, verification runs, user confirmations, failure reports and revisions
-- [ ] Threat model and rate-limit community confirmations before showing aggregate success rates
-- [ ] Build sandboxed automatic verification for a narrow supported runtime before introducing “Postify verified”
+- [x] Design/review Supabase schema for evidence snapshots, user confirmations, failure aggregates and revisions
+- [x] Threat-model core confirmation abuse/privacy boundaries; self-confirmation/duplicate inflation/raw cross-user reads blocked by RLS
+- [x] Build a narrow deterministic Node.js automatic verification runtime before introducing “Postify verified”
 - [ ] Add dependency release monitoring and evidence invalidation after backend model exists
-- [ ] Add revision history and evidence diff once immutable snapshots are persisted
+- [x] Add revision history model with private immutable snapshots and sanitized public changelog
 - [ ] Add grounded Ask Postify/API/MCP only after provenance/freshness data is durable
 
 ## Verified Knowledge expansion after full conversion
