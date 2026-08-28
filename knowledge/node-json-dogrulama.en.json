@@ -1,34 +1,42 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-node-json-dogrulama",
+  "id": "19f9c5ba-19b7-4ee4-942b-f1b922c7f4d7",
   "slug": "node-json-dogrulama",
   "locale": "en",
   "title": "Verify a Node.js example by running it, not by saying it should work",
   "outcome": "Node.js içinde gelen JSON verisini parse edip beklenen yapıyı assertion ile doğrulamak.",
-  "contentType": null,
+  "body": "## Problem\nCode samples are usually only read. Here a small deterministic Node.js example is actually executed and its expected output is checked.\n\n## Code\n\n```js\nimport assert from 'node:assert/strict';\nconst payload = '{\"ok\":true,\"items\":[1,2,3]}';\nconst parsed = JSON.parse(payload);\nassert.equal(parsed.ok, true);\nassert.deepEqual(parsed.items, [1,2,3]);\nprocess.stdout.write('PASS');\n```\n\n## Verification\nDuring the build Postify runs the exact code displayed above under the deterministic release policy in a Node.js child process. Expected stdout is exactly `PASS`. If it differs, the release gate fails. The “Postify verified” label is derived only when this displayed code exactly matches the checked-in release artifact.",
+  "contentType": "guide",
   "category": "Node.js",
-  "publishedAt": "2026-08-28T00:00:00.000Z",
-  "updatedAt": "2026-08-28T00:00:00.000Z",
+  "publishedAt": "2026-08-28T15:56:43.061044+00:00",
+  "updatedAt": "2026-08-28T15:56:43.061044+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 90,
-    "environment": [
+    "environment": [],
+    "prerequisites": [
       "Node.js 20+"
     ],
-    "prerequisites": [
-      "Node.js 20 veya daha yeni bir sürüm"
-    ],
     "verificationSteps": [
-      "Kodu Node.js ile çalıştır",
-      "Çıktının PASS olduğunu doğrula"
+      "Yerelde / locally: node node-json-parse-v1.mjs → stdout PASS"
     ],
     "caveats": [
-      "Otomatik doğrulama yalnız aşağıdaki checked-in deterministik Node.js örneğini kapsar. Release politikası dış paket, ağ, dosya sistemi ve process API’lerini reddeder; bu bir güvenlik sandbox’ı değildir."
+      "Deterministic checked-in code only; no external packages, network, filesystem or process APIs."
     ],
     "sources": [
       "https://nodejs.org/api/assert.html"
     ],
+    "version": 1,
+    "community": {
+      "post_id": "19f9c5ba-19b7-4ee4-942b-f1b922c7f4d7",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    },
     "automaticVerification": {
       "id": "node-json-parse-v1",
       "postSlug": "node-json-dogrulama",
@@ -41,14 +49,13 @@
       "reproduceCommand": "node node-json-parse-v1.mjs",
       "artifactSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
       "executionMode": "generated-artifact-file",
-      "verifiedAt": "2026-08-28T15:34:51.455Z",
-      "durationMs": 37,
+      "verifiedAt": "2026-08-28T16:04:36.215Z",
+      "durationMs": 42,
       "expectedStdout": "PASS",
       "actualStdout": "PASS",
       "codeSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
       "articleContractMatched": true
     }
   },
-  "body": "## Problem\nCode samples are usually only read. Here a small deterministic Node.js example is actually executed and its expected output is checked.\n\n## Code\n\n```js\nimport assert from 'node:assert/strict';\nconst payload = '{\"ok\":true,\"items\":[1,2,3]}';\nconst parsed = JSON.parse(payload);\nassert.equal(parsed.ok, true);\nassert.deepEqual(parsed.items, [1,2,3]);\nprocess.stdout.write('PASS');\n```\n\n## Verification\nDuring the build Postify runs the exact code displayed above in a Node.js child process. Expected stdout is exactly PASS. If it differs, the release gate fails. The “Postify verified” claim therefore comes from the same execution contract the reader can inspect.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/node-json-dogrulama"
 }

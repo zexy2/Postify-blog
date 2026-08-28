@@ -28,7 +28,8 @@
       "failed_count": 0,
       "environment_count": 0,
       "last_community_check_at": null
-    }
+    },
+    "automaticVerification": null
   },
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/web-standartlari"
 }
