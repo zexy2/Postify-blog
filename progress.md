@@ -214,3 +214,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Production network probing found one remaining avoidable Supabase 400 after the schema-capability fix: a missing fallback slug was retried against the UUID `posts.id` column.
 - Added a strict UUID guard so non-UUID slugs never enter the ID lookup path.
 - Current verification on the combined main + Action Runbook baseline: 20 unit/integration files / 81 tests PASS; lint/build/artifact smoke PASS; Chromium 22/22 PASS.
+
+## 2026-08-28 — Production migration runner prepared
+- Added a manual-only Supabase production migration workflow pinned to CLI 2.116.0 and project `fuiwcrqmxndguxymwoin`.
+- The workflow validates owner credentials, links the exact project, lists remote migration history, performs a dry-run without `--include-all`, and refuses apply unless the exact production confirmation is supplied.
+- Successful apply re-reads migration history, probes the three new public evidence views with the production publishable key, then triggers the full main CI/deploy/production-browser pipeline.
+- No production migration is performed by normal push/PR events.
