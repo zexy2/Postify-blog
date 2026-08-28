@@ -230,11 +230,15 @@ const mapRows = async (rows, locale) => {
   ));
 };
 
+export const isUuidPostIdentifier = (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value));
+
 const getPostRow = async (identifier) => {
   const client = requireSupabase();
   const bySlug = await runCompatiblePostQuery((fields) => client.from('posts').select(fields).eq('slug', identifier).maybeSingle());
   if (bySlug.error) throw bySlug.error;
   if (bySlug.data) return bySlug.data;
+
+  if (!isUuidPostIdentifier(identifier)) return null;
 
   const byId = await runCompatiblePostQuery((fields) => client.from('posts').select(fields).eq('id', identifier).maybeSingle());
   if (byId.error) throw byId.error;

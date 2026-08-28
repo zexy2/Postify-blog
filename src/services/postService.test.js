@@ -6,7 +6,7 @@ const requireSupabase = vi.fn(() => {
 
 vi.mock('../lib/supabase', () => ({ requireSupabase }));
 
-const { default: postService, normalizeCoverImageUrl, getPostFieldsForCapability } = await import('./postService');
+const { default: postService, normalizeCoverImageUrl, getPostFieldsForCapability, isUuidPostIdentifier } = await import('./postService');
 
 describe('postService public fallback', () => {
   beforeEach(() => {
@@ -44,6 +44,12 @@ describe('Verified Knowledge schema compatibility', () => {
     expect(getPostFieldsForCapability(false)).not.toContain('content_type');
     expect(getPostFieldsForCapability(true)).toContain('evidence_status');
     expect(getPostFieldsForCapability(true)).toContain('content_type');
+  });
+
+
+  it('never sends a non-UUID slug to the UUID id lookup path', () => {
+    expect(isUuidPostIdentifier('node-json-dogrulama')).toBe(false);
+    expect(isUuidPostIdentifier('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')).toBe(true);
   });
 
   it('recognizes additive-schema absence without treating unrelated errors as migration state', async () => {

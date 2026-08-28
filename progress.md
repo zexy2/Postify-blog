@@ -209,3 +209,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Added copyable fenced code blocks with language labels and a clipboard fallback when the modern Clipboard API is denied.
 - Added keyboard-operable runbook checkboxes, progress semantics, reset, mobile layout, reduced-motion behavior, and clear local-only trust copy.
 - Verification baseline: 20 test files / 80 tests PASS, lint/build/smoke PASS, Chromium product suite 22/22 PASS.
+
+## 2026-08-28 — Production read noise hardening
+- Production network probing found one remaining avoidable Supabase 400 after the schema-capability fix: a missing fallback slug was retried against the UUID `posts.id` column.
+- Added a strict UUID guard so non-UUID slugs never enter the ID lookup path.
+- Current verification on the combined main + Action Runbook baseline: 20 unit/integration files / 81 tests PASS; lint/build/artifact smoke PASS; Chromium 22/22 PASS.

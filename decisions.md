@@ -144,3 +144,8 @@
 **Decision:** A completed Action Runbook never grants `Postify verified`, `Author tested`, or community confirmation. It only offers the reader a direct path to report Worked/Didn't Work.
 
 **Why:** Personal task completion is not independent proof. Keeping those trust states separate preserves the evidence model while still making content actionable.
+
+## 2026-08-28 — Never send slugs through UUID post lookup
+**Decision:** After a slug lookup misses, query `posts.id` only when the identifier is a syntactically valid UUID.
+
+**Why:** Postgres/Supabase correctly rejects a non-UUID string against a UUID column with HTTP 400. Fallback/local catalogue slugs are normal product identifiers, so the client should not create a predictable backend error before falling back.
