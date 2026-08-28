@@ -99,3 +99,30 @@ test.describe('Verified Knowledge V1', () => {
     await expect(page.getByRole('button', { name: /bu çözüme ihtiyacım var|i need this solution/i })).toBeVisible();
   });
 });
+
+test.describe('Verified Knowledge execution', () => {
+  test('automatic verification is visible only for a passed execution artifact', async ({ page }) => {
+    await page.goto('/posts/node-json-dogrulama');
+    await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
+    await expect(page.getByText(/execution passed|çalıştırma geçti/i)).toBeVisible();
+    await expect(page.getByText(/Node 20\+/i)).toBeVisible();
+  });
+
+  test('machine readable verification and knowledge artifacts are shipped', async ({ request }) => {
+    const run = await request.get('/verification-runs.json');
+    expect(run.ok()).toBeTruthy();
+    const runJson = await run.json();
+    expect(runJson.runs['node-json-parse-v1'].status).toBe('passed');
+    const knowledge = await request.get('/knowledge/node-json-dogrulama.tr.json');
+    expect(knowledge.ok()).toBeTruthy();
+    const artifact = await knowledge.json();
+    expect(artifact.evidence.automaticVerification.status).toBe('passed');
+  });
+
+  test('postify verified discovery filter resolves to genuinely executed knowledge', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: /postify verified/i }).click();
+    await expect(page.getByRole('heading', { name: /Node.js örneğini|Verify a Node.js example/i })).toBeVisible();
+  });
+
+});

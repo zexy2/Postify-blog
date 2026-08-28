@@ -30,6 +30,17 @@ const POST_FIELDS = [
   'created_at',
   'published_at',
   'updated_at',
+  'content_type',
+  'outcome',
+  'evidence_status',
+  'tested_at',
+  'stale_after_days',
+  'environment',
+  'prerequisites',
+  'verification_steps',
+  'caveats',
+  'sources',
+  'evidence_version',
 ].join(',');
 
 const LOCAL_POST_IMAGES = new Set([
@@ -97,6 +108,13 @@ const getAuthors = async (client, authorIds) => {
   return new Map((data || []).map((profile) => [String(profile.id), toAuthor(profile)]));
 };
 
+const getEvidenceSummaries = async (client, postIds) => {
+  if (!postIds.length) return new Map();
+  const { data, error } = await client.from('post_evidence_summary').select('*').in('post_id', postIds);
+  if (error) throw error;
+  return new Map((data || []).map((item) => [String(item.post_id), item]));
+};
+
 const getCommentCounts = async (client, postIds) => {
   if (!postIds.length) return new Map();
 
@@ -114,7 +132,7 @@ const getCommentCounts = async (client, postIds) => {
   }, new Map());
 };
 
-const normalizePost = (row, translation, author, commentCount = 0) => ({
+const normalizePost = (row, translation, author, commentCount = 0, evidenceSummary = null) => ({
   id: row.id,
   slug: row.slug,
   title: translation?.title || row.title || '',
@@ -136,6 +154,20 @@ const normalizePost = (row, translation, author, commentCount = 0) => ({
   createdAt: row.created_at,
   publishedAt: row.published_at || row.created_at,
   updatedAt: row.updated_at || row.published_at || row.created_at,
+  contentType: row.content_type || undefined,
+  outcome: row.outcome || translation?.excerpt || row.excerpt || '',
+  evidence: {
+    level: row.evidence_status || 'unverified',
+    testedAt: row.tested_at || null,
+    staleAfterDays: Number(row.stale_after_days) || 180,
+    environment: Array.isArray(row.environment) ? row.environment : [],
+    prerequisites: Array.isArray(row.prerequisites) ? row.prerequisites : [],
+    verificationSteps: Array.isArray(row.verification_steps) ? row.verification_steps : [],
+    caveats: Array.isArray(row.caveats) ? row.caveats : [],
+    sources: Array.isArray(row.sources) ? row.sources : [],
+    version: Number(row.evidence_version) || 1,
+  },
+  evidenceSummary,
   commentCount,
 });
 
@@ -143,10 +175,11 @@ const mapRows = async (rows, locale) => {
   const client = requireSupabase();
   const postIds = rows.map((row) => row.id);
   const authorIds = [...new Set(rows.map((row) => row.author_id).filter(Boolean).map(String))];
-  const [translations, authors, commentCounts] = await Promise.all([
+  const [translations, authors, commentCounts, evidenceSummaries] = await Promise.all([
     getTranslations(client, postIds, locale),
     getAuthors(client, authorIds),
     getCommentCounts(client, postIds),
+    getEvidenceSummaries(client, postIds),
   ]);
 
   return rows.map((row) => normalizePost(
@@ -154,6 +187,7 @@ const mapRows = async (rows, locale) => {
     translations.get(String(row.id)),
     authors.get(String(row.author_id)),
     commentCounts.get(String(row.id)) || 0,
+    evidenceSummaries.get(String(row.id)) || null,
   ));
 };
 
@@ -229,6 +263,9 @@ export const postService = {
     readingTime = 4,
     slug,
     locale = 'tr',
+    contentType = 'guide',
+    outcome = '',
+    evidence = {},
   }) => {
     const client = requireSupabase();
     const { data: authData, error: authError } = await client.auth.getUser();
@@ -255,6 +292,16 @@ export const postService = {
         author_id: authData.user.id,
         is_published: true,
         published_at: new Date().toISOString(),
+        content_type: contentType,
+        outcome,
+        evidence_status: evidence.level || 'unverified',
+        tested_at: evidence.testedAt || null,
+        stale_after_days: evidence.staleAfterDays || 180,
+        environment: evidence.environment || [],
+        prerequisites: evidence.prerequisites || [],
+        verification_steps: evidence.verificationSteps || [],
+        caveats: evidence.caveats || [],
+        sources: evidence.sources || [],
       })
       .select(POST_FIELDS)
       .single();
@@ -275,7 +322,10 @@ export const postService = {
 
   update: async (id, data) => {
     const client = requireSupabase();
+    const { error: revisionError } = await client.rpc('capture_post_revision', { target_post_id: id, revision_reason: data.revisionReason || 'Content/evidence update' });
+    if (revisionError) throw revisionError;
     const { locale = 'tr', ...postData } = data;
+    delete postData.revisionReason;
     const updates = {
       ...(postData.excerpt !== undefined && { excerpt: postData.excerpt }),
       ...(postData.body !== undefined && { body: postData.body }),
@@ -283,6 +333,19 @@ export const postService = {
       ...(postData.category !== undefined && { category: postData.category }),
       ...(postData.coverImageUrl !== undefined && { cover_image_url: postData.coverImageUrl }),
       ...(postData.readingTime !== undefined && { reading_time: postData.readingTime }),
+      ...(postData.contentType !== undefined && { content_type: postData.contentType }),
+      ...(postData.outcome !== undefined && { outcome: postData.outcome }),
+      ...(postData.evidence !== undefined && {
+        evidence_status: postData.evidence.level || 'unverified',
+        tested_at: postData.evidence.testedAt || null,
+        stale_after_days: postData.evidence.staleAfterDays || 180,
+        environment: postData.evidence.environment || [],
+        prerequisites: postData.evidence.prerequisites || [],
+        verification_steps: postData.evidence.verificationSteps || [],
+        caveats: postData.evidence.caveats || [],
+        sources: postData.evidence.sources || [],
+        evidence_version: postData.evidence.version || 1,
+      }),
       updated_at: new Date().toISOString(),
     };
 

@@ -22,7 +22,7 @@ describe('postService public fallback', () => {
   it('keeps the public list available when Supabase is unavailable', async () => {
     const posts = await postService.getAll({ locale: 'en' });
 
-    expect(posts).toHaveLength(8);
+    expect(posts).toHaveLength(9);
     expect(posts[0].isFallback).toBe(true);
     expect(posts[0].title).toBe('An AI feature is a system, not a model call');
   });
@@ -33,7 +33,7 @@ describe('postService public fallback', () => {
     const stats = await postService.getStats();
 
     expect(post.isFallback).toBe(true);
-    expect(authorPosts).toHaveLength(8);
-    expect(stats).toEqual({ posts: 8, authors: 1, comments: 0, isFallback: true });
+    expect(authorPosts).toHaveLength(9);
+    expect(stats).toEqual({ posts: 9, authors: 1, comments: 0, isFallback: true });
   });
 });

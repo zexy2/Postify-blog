@@ -4,6 +4,7 @@ import { FiArrowUpRight, FiBookmark, FiClock } from 'react-icons/fi';
 import ContentImage from '../ContentImage/ContentImage';
 import { getPostPresentation } from '../../lib/postPresentation';
 import EvidenceBadge from '../EvidenceBadge';
+import { summarizeCommunityEvidence } from '../../lib/communityEvidence';
 import styles from './EditorialFeed.module.css';
 
 const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
@@ -13,6 +14,7 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
 
   const renderMeta = (post) => {
     const presentation = getPostPresentation(post, i18n.language);
+    const community = summarizeCommunityEvidence(post.evidenceSummary || {});
     return (
       <div className={styles.meta}>
         <span className={styles.type}>{presentation.typeLabel}</span>
@@ -22,6 +24,7 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
         )}
         <span className={styles.readTime}><FiClock size={12} /> {post.readingTime} {t('common.minutes')}</span>
         <EvidenceBadge post={post} compact />
+        {community.total > 0 && <span className={styles.communityEvidence}>{community.canShowRate ? `${community.successRate}% ${i18n.language?.startsWith('en') ? 'worked' : 'çalıştı'}` : `${community.total} ${i18n.language?.startsWith('en') ? 'confirmations' : 'doğrulama'}`}</span>}
       </div>
     );
   };

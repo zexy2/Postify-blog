@@ -1,0 +1,2 @@
+# Verified Knowledge migration rollback
+The migration is additive. Application rollback requires only deploying the previous frontend. Database rollback should normally leave the additive columns/tables in place to avoid data loss. If a full destructive rollback is ever required, export `post_confirmations`, `post_revisions`, `knowledge_gaps`, `knowledge_gap_requests`, and `user_knowledge_shelf` first, then drop the helper functions/view/tables and finally the added `posts` columns. Do not do this as an incident first response.

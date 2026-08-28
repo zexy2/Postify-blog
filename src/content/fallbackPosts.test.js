@@ -12,8 +12,8 @@ describe('fallback public catalogue', () => {
     const turkishPosts = getFallbackPosts('tr');
     const englishPosts = getFallbackPosts('en');
 
-    expect(turkishPosts).toHaveLength(8);
-    expect(englishPosts).toHaveLength(8);
+    expect(turkishPosts).toHaveLength(9);
+    expect(englishPosts).toHaveLength(9);
     expect(turkishPosts.every((post) => post.isFallback && post.coverImageUrl && post.slug)).toBe(true);
     expect(englishPosts[0].title).toBe('An AI feature is a system, not a model call');
     expect(turkishPosts[0].author.id).toBe(FALLBACK_AUTHOR.id);
@@ -25,8 +25,8 @@ describe('fallback public catalogue', () => {
   });
 
   it('provides honest fallback stats and author posts', () => {
-    expect(getFallbackStats()).toEqual({ posts: 8, authors: 1, comments: 0, isFallback: true });
-    expect(getFallbackUserPosts(FALLBACK_AUTHOR.id, 'en')).toHaveLength(8);
+    expect(getFallbackStats()).toEqual({ posts: 9, authors: 1, comments: 0, isFallback: true });
+    expect(getFallbackUserPosts(FALLBACK_AUTHOR.id, 'en')).toHaveLength(9);
     expect(getFallbackUserPosts('another-user', 'en')).toEqual([]);
   });
 });

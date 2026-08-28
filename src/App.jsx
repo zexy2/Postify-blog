@@ -31,6 +31,7 @@ const BookmarksPage = lazy(() => import('./pages/BookmarksPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
+const KnowledgeDashboardPage = lazy(() => import('./pages/KnowledgeDashboardPage'));
 
 // Loading spinner component
 const PageLoader = () => (
@@ -136,6 +137,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/knowledge"
+                element={
+                  <ProtectedRoute>
+                    <KnowledgeDashboardPage />
                   </ProtectedRoute>
                 }
               />

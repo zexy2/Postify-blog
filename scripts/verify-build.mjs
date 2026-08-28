@@ -4,6 +4,8 @@ const required = [
   'docs/index.html',
   'docs/404.html',
   'docs/llms.txt',
+  'docs/verification-runs.json',
+  'docs/knowledge/node-json-dogrulama.tr.json',
   'docs/manifest.webmanifest',
   'docs/sw.js',
   'docs/registerSW.js',

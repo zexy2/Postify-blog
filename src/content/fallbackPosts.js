@@ -316,6 +316,69 @@ Good telemetry does more than produce reports. It makes team discussions more co
       },
     },
   },
+  {
+    id: 'fallback-node-json-dogrulama',
+    slug: 'node-json-dogrulama',
+    category: 'Node.js',
+    coverImageUrl: '/images/posts/gelistirici-akisi.webp',
+    readingTime: 4,
+    publishedAt: '2026-08-28T00:00:00.000Z',
+    outcome: 'Node.js içinde gelen JSON verisini parse edip beklenen yapıyı assertion ile doğrulamak.',
+    autoVerificationId: 'node-json-parse-v1',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 90,
+      environment: ['Node.js 20+'],
+      prerequisites: ['Node.js 20 veya daha yeni bir sürüm'],
+      verificationSteps: ['Kodu Node.js ile çalıştır', 'Çıktının PASS olduğunu doğrula'],
+      caveats: ['Otomatik doğrulama yalnız aşağıdaki deterministik Node.js örneğini kapsar; harici servis veya ağ davranışını doğrulamaz.'],
+      sources: ['https://nodejs.org/api/assert.html'],
+    },
+    translations: {
+      tr: {
+        title: 'Node.js örneğini “çalışmalı” diye değil, çalıştırarak doğrula',
+        excerpt: 'Postify’ın ilk otomatik doğrulanabilir örneği: JSON parse ve assertion adımlarını gerçek Node.js runtime’ında çalıştır.',
+        body: `## Problem
+Kod örnekleri çoğu teknik yazıda yalnızca okunur. Bu rehberde küçük ama deterministik bir Node.js örneğini gerçekten çalıştırıp beklenen çıktıyı doğruluyoruz.
+
+## Kod
+
+\`\`\`js
+import assert from 'node:assert/strict';
+const payload = '{"ok":true,"items":[1,2,3]}';
+const parsed = JSON.parse(payload);
+assert.equal(parsed.ok, true);
+assert.deepEqual(parsed.items, [1,2,3]);
+process.stdout.write('PASS');
+\`\`\`
+
+## Doğrulama
+Build sırasında Postify aynı kodu izole bir child process içinde Node.js ile çalıştırır. Çıktı tam olarak PASS değilse release gate başarısız olur. Bu nedenle bu örnekte “Postify doğruladı” ifadesi gerçek bir execution sonucuna dayanır.`,
+      },
+      en: {
+        title: 'Verify a Node.js example by running it, not by saying it should work',
+        excerpt: 'Postify’s first automatically verifiable example runs JSON parsing and assertions in a real Node.js runtime.',
+        body: `## Problem
+Code samples are usually only read. Here a small deterministic Node.js example is actually executed and its expected output is checked.
+
+## Code
+
+\`\`\`js
+import assert from 'node:assert/strict';
+const payload = '{"ok":true,"items":[1,2,3]}';
+const parsed = JSON.parse(payload);
+assert.equal(parsed.ok, true);
+assert.deepEqual(parsed.items, [1,2,3]);
+process.stdout.write('PASS');
+\`\`\`
+
+## Verification
+During the build Postify runs the same checked-in code in a Node.js child process. If stdout is not exactly PASS, the release gate fails. The “Postify verified” claim for this example therefore comes from a real execution result.`,
+      },
+    },
+  },
+
 ];
 
 const localize = (post, locale) => {
@@ -339,6 +402,7 @@ const localize = (post, locale) => {
     updatedAt: post.publishedAt,
     commentCount: 0,
     evidence: post.evidence || null,
+    autoVerificationId: post.autoVerificationId || null,
     outcome: post.outcome || translation.excerpt,
     isFallback: true,
     source: 'local-fallback',

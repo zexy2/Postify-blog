@@ -21,8 +21,6 @@ const ProtectedRoute = ({ children }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Debug
-  console.log('ProtectedRoute:', { isAuthenticated, isLoading, user: !!user, timedOut });
 
   // If still loading and not timed out, show spinner
   if (isLoading && !timedOut && !user) {

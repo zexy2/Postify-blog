@@ -36,3 +36,7 @@
 - Structured evidence entered in the authoring UI is draft-only in V1; the current production Supabase schema has no reviewed evidence columns and no migration was performed.
 - Worked/Didn't work, action shelf and Knowledge Gap data are device-local only. They are intentionally not presented as community totals.
 - Automatic `Postify verified` execution, cross-user evidence aggregation, anti-abuse/reputation, dependency release monitoring and revision history require backend/security/schema work and remain deferred.
+
+## Production DB credential boundary — 2026-08-28
+- The repository/server has public frontend Supabase Action secrets but no database password/service-role/project-management credential and no linked Supabase CLI session. The Verified Knowledge migration is fully authored and PostgreSQL/RLS tested, but must not be falsely reported as applied to production until an authenticated project-owner migration channel is available.
+- The first automatic verifier intentionally supports only checked-in deterministic Node.js snippets. Networked code, package installation, shell access, arbitrary user code and external services remain unsupported rather than being given a misleading verification badge.
