@@ -10,6 +10,8 @@ import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { getPostReadingMinutes, getPostType } from '../lib/postPresentation';
+import { getKnowledgeEvidence } from '../lib/knowledgeEvidence';
+import { addKnowledgeGap } from '../lib/localKnowledgeState';
 import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
 
@@ -19,6 +21,7 @@ const HomePage = () => {
   const categoryParam = searchParams.get('category');
   const typeParam = searchParams.get('type');
   const readingParam = searchParams.get('reading');
+  const freshnessParam = searchParams.get('freshness');
   const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
@@ -27,6 +30,8 @@ const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
   const [activeType, setActiveType] = useState(typeParam || 'all');
   const [readingFilter, setReadingFilter] = useState(readingParam === 'quick' ? 'quick' : 'all');
+  const [freshnessFilter, setFreshnessFilter] = useState(freshnessParam === 'current' ? 'current' : 'all');
+  const [gapSaved, setGapSaved] = useState(false);
 
   useEffect(() => {
     setActiveCategory(categoryParam || 'all');
@@ -35,7 +40,8 @@ const HomePage = () => {
   useEffect(() => {
     setActiveType(typeParam || 'all');
     setReadingFilter(readingParam === 'quick' ? 'quick' : 'all');
-  }, [readingParam, typeParam]);
+    setFreshnessFilter(freshnessParam === 'current' ? 'current' : 'all');
+  }, [freshnessParam, readingParam, typeParam]);
 
   const updateFilterParam = (key, value) => {
     const nextParams = new URLSearchParams(searchParams);
@@ -54,6 +60,8 @@ const HomePage = () => {
     updateFilterParam('type', type);
   };
 
+  const handleFreshnessChange = () => { const next=freshnessFilter==='current'?'all':'current'; setFreshnessFilter(next); updateFilterParam('freshness', next); };
+
   const handleReadingChange = () => {
     const next = readingFilter === 'quick' ? 'all' : 'quick';
     setReadingFilter(next);
@@ -68,7 +76,7 @@ const HomePage = () => {
 
   useEffect(() => {
     setVisiblePostCount(9);
-  }, [activeCategory, activeType, debouncedQuery, i18n.language, readingFilter]);
+  }, [activeCategory, activeType, debouncedQuery, freshnessFilter, i18n.language, readingFilter]);
 
   const contentTypes = useMemo(() => getWritingTemplates(i18n.language), [i18n.language]);
 
@@ -84,17 +92,19 @@ const HomePage = () => {
       const matchesType = activeType === 'all' || getPostType(post) === activeType;
       const readingMinutes = getPostReadingMinutes(post);
       const matchesReading = readingFilter === 'all' || (readingMinutes !== null && readingMinutes <= 5);
-      if (!matchesCategory || !matchesType || !matchesReading) return false;
+      const freshness = getKnowledgeEvidence(post).freshness;
+      const matchesFreshness = freshnessFilter === 'all' || freshness === 'current';
+      if (!matchesCategory || !matchesType || !matchesReading || !matchesFreshness) return false;
       if (!normalizedQuery) return true;
 
       return [post.title, post.excerpt, post.body, post.category, post.author?.name, post.author?.username]
         .filter(Boolean)
         .some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery));
     });
-  }, [activeCategory, activeType, debouncedQuery, i18n.language, posts, readingFilter]);
+  }, [activeCategory, activeType, debouncedQuery, freshnessFilter, i18n.language, posts, readingFilter]);
 
   const hasSearch = query.trim().length > 0;
-  const displayPosts = hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' || filteredPosts.length < 2
+  const displayPosts = hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' || freshnessFilter !== 'all' || filteredPosts.length < 2
     ? filteredPosts
     : filteredPosts.slice(1);
   const featuredPost = posts[0];
@@ -173,6 +183,9 @@ const HomePage = () => {
             </button>
           ))}
           <span className={styles.filterDivider} aria-hidden="true" />
+          <button type="button" className={freshnessFilter === 'current' ? styles.typeFilterActive : ''} aria-pressed={freshnessFilter === 'current'} onClick={handleFreshnessChange}>
+            {i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt'}
+          </button>
           <button
             type="button"
             className={readingFilter === 'quick' ? styles.typeFilterActive : ''}
@@ -197,7 +210,8 @@ const HomePage = () => {
             <FiSearch size={32} />
             <h3>{hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
             <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : activeType !== 'all' ? (i18n.language?.startsWith('en') ? 'No stories match this format yet.' : 'Bu biçimde eşleşen yazı henüz yok.') : readingFilter !== 'all' ? (i18n.language?.startsWith('en') ? 'No quick reads match these filters yet.' : 'Bu filtrelerde kısa okuma bulunamadı.') : t('home.noContentHint')}</p>
-            {(hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); setActiveType('all'); setReadingFilter('all'); setSearchParams({}, { replace: true }); }}>{t('home.clearFilters')}</button>}
+            {hasSearch && <button type="button" disabled={gapSaved} onClick={() => { addKnowledgeGap(window.localStorage, query); setGapSaved(true); }}>{gapSaved ? (i18n.language?.startsWith('en') ? 'Need saved on this device' : 'İhtiyaç bu cihaza kaydedildi') : (i18n.language?.startsWith('en') ? 'I need this solution' : 'Bu çözüme ihtiyacım var')}</button>}
+            {(hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' || freshnessFilter !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); setActiveType('all'); setReadingFilter('all'); setFreshnessFilter('all'); setSearchParams({}, { replace: true }); }}>{t('home.clearFilters')}</button>}
           </div>
         ) : (
           <EditorialFeed

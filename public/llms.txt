@@ -1,0 +1,17 @@
+# Postify
+
+> Verified knowledge for developers: practical technical writing with explicit evidence and freshness signals.
+
+## Trust semantics
+- `Author tested` means the author claims to have tested the guidance in the displayed environment. It is not an independent Postify execution.
+- Device-local `Worked / Didn't work` feedback is personal V1 evidence and is never presented as a community aggregate.
+- `Postify verified` is intentionally not used until a real sandboxed execution system exists.
+
+## Content types
+- Guide: accomplish a concrete task.
+- Decision note: compare choices and trade-offs.
+- Explainer: understand a concept.
+- Field note: report lessons from real work.
+
+## Canonical site
+https://postify.zekiakgul.dev/

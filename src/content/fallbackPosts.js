@@ -18,6 +18,17 @@ const FALLBACK_CATALOG = [
     coverImageUrl: '/images/posts/ai-muhendisligi.webp',
     readingTime: 6,
     publishedAt: '2026-08-07T00:00:00.000Z',
+    outcome: 'AI özelliğini model çağrısı yerine ölçülebilir ve güvenli bir ürün sistemi olarak tasarlamak.',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 120,
+      environment: ['Postify ürün incelemesi', 'React 19', 'Vite 7'],
+      prerequisites: ['Bir AI özelliği için ölçülebilir kullanıcı sonucunu tanımlamış olmak'],
+      verificationSteps: ['Başarı metriğini model seçmeden önce yaz', 'Hatalı çıktı için geri alma veya insan onayı yolu tanımla', 'Model değişse bile ürün sözleşmesinin aynı kaldığını kontrol et'],
+      caveats: ['Bu içerik bir model benchmarkı veya sağlayıcı karşılaştırması değildir.'],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'AI özelliği değil, iyi tasarlanmış bir sistemdir',
@@ -46,6 +57,16 @@ Good AI product work starts with measurable value, controlled failure, and a cle
     coverImageUrl: '/images/posts/web-standartlari.webp',
     readingTime: 5,
     publishedAt: '2026-08-06T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Web standartları kontrol listesi'],
+      prerequisites: ['Semantik HTML', 'Klavye erişimi', 'Görünür focus'],
+      verificationSteps: ['Kritik akışı yalnızca klavyeyle tamamla', 'Başlık hiyerarşisini ve form etiketlerini kontrol et'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'Web standartları hızdan önce gelir',
@@ -74,6 +95,16 @@ Standards reduce surprises. That pays off in performance, testing, and the cost 
     coverImageUrl: '/images/posts/frontend-performansi.webp',
     readingTime: 7,
     publishedAt: '2026-08-05T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Frontend performans incelemesi'],
+      prerequisites: ['Mobil viewport', 'Gerçek kullanıcı akışı'],
+      verificationSteps: ['İlk ekranı ve temel etkileşimi ölç', 'Layout shift ve gereksiz JavaScript yükünü kontrol et'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'Frontend performansı ölçüm değil, kullanıcı akışıdır',
@@ -102,6 +133,16 @@ Measure on a real device, a real network, and a repeatable user flow. Good perfo
     coverImageUrl: '/images/posts/urun-tasarimi.webp',
     readingTime: 5,
     publishedAt: '2026-08-04T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Ürün karar incelemesi'],
+      prerequisites: ['Karar sırası', 'Geri alınabilir aksiyonlar'],
+      verificationSteps: ['Ekrandaki birincil kararı belirle', 'Gereksiz eşzamanlı seçenekleri kaldır'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'İyi ürün tasarımı seçenekleri azaltır',
@@ -130,6 +171,16 @@ Good defaults do not restrict people. They move attention to the work that matte
     coverImageUrl: '/images/posts/edge-mimarileri.webp',
     readingTime: 6,
     publishedAt: '2026-08-03T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Mimari karar incelemesi'],
+      prerequisites: ['Veri sahipliği', 'Tutarlılık ihtiyacı'],
+      verificationSteps: ['Kaynak sistemi tanımla', 'Edge eklemeden önce gerçek gecikme darboğazını doğrula'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'Edge mimarisi her problemi çözmez',
@@ -158,6 +209,16 @@ Edge is an architectural response to a specific bottleneck, not a default techno
     coverImageUrl: '/images/posts/gelistirici-akisi.webp',
     readingTime: 4,
     publishedAt: '2026-08-02T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Postify CI/CD akışı'],
+      prerequisites: ['GitHub Actions', 'Build smoke'],
+      verificationSteps: ['Test, lint ve build kapılarını çalıştır', 'Deploy edilen commit ile production çıktısını eşleştir'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'Geliştirici akışında güven, otomasyondan önce gelir',
@@ -186,6 +247,16 @@ Automation earns its value by producing repeatable evidence, not just by being f
     coverImageUrl: '/images/posts/teknik-yazarlik.webp',
     readingTime: 4,
     publishedAt: '2026-08-01T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Teknik yazı incelemesi'],
+      prerequisites: ['Karar bağlamı', 'Örnek açıklaması'],
+      verificationSteps: ['Okuyucunun vereceği kararı ilk bölümde belirt', 'Örneğin hangi durumda yanlış olacağını yaz'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'Teknik yazı, bilgi dökümü değildir',
@@ -214,6 +285,16 @@ Clarity is not less detail. It is putting detail in the right order.`,
     coverImageUrl: '/images/posts/urun-telemetrisi.webp',
     readingTime: 5,
     publishedAt: '2026-07-31T00:00:00.000Z',
+    evidence: {
+      level: 'author-tested',
+      testedAt: '2026-08-28T00:00:00.000Z',
+      staleAfterDays: 180,
+      environment: ['Ürün telemetrisi incelemesi'],
+      prerequisites: ['Ürün sorusu', 'Ölçülebilir davranış'],
+      verificationSteps: ['Event yazmadan önce ürün sorusunu yaz', 'Her metriği desteklediği kararla eşleştir'],
+      caveats: [],
+      sources: [],
+    },
     translations: {
       tr: {
         title: 'Ürün telemetrisi karar vermeyi kolaylaştırmalı',
@@ -257,6 +338,8 @@ const localize = (post, locale) => {
     publishedAt: post.publishedAt,
     updatedAt: post.publishedAt,
     commentCount: 0,
+    evidence: post.evidence || null,
+    outcome: post.outcome || translation.excerpt,
     isFallback: true,
     source: 'local-fallback',
   };

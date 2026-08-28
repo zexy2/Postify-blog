@@ -4,6 +4,10 @@ export function getPublishReadiness({
   bodyHtml = '',
   minTitleLength = 8,
   minBodyLength = 160,
+  outcome = '',
+  testedAt = '',
+  environment = '',
+  verificationSteps = '',
 } = {}) {
   const normalizedTitle = title.trim();
   const normalizedBody = body.trim();
@@ -14,6 +18,9 @@ export function getPublishReadiness({
     { id: 'title', passed: normalizedTitle.length >= minTitleLength },
     { id: 'substance', passed: normalizedBody.length >= minBodyLength },
     { id: 'structure', passed: hasRichStructure },
+    { id: 'outcome', passed: outcome.trim().length >= 12 },
+    { id: 'environment', passed: environment.trim().length >= 3 },
+    { id: 'verification', passed: testedAt.trim().length > 0 && verificationSteps.trim().length >= 12 },
   ];
   const passedCount = checks.filter((check) => check.passed).length;
 
@@ -22,6 +29,6 @@ export function getPublishReadiness({
     passedCount,
     total: checks.length,
     score: Math.round((passedCount / checks.length) * 100),
-    ready: checks[0].passed && checks[1].passed,
+    ready: checks[0].passed && checks[1].passed && checks[3].passed,
   };
 }

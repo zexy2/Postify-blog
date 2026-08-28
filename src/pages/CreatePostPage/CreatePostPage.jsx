@@ -41,6 +41,10 @@ const CreatePostPage = () => {
     title: '',
     body: '',
     bodyHtml: '',
+    outcome: '',
+    testedAt: '',
+    environment: '',
+    verificationSteps: '',
   }));
   const [errors, setErrors] = useState({});
   const [isDirty, setIsDirty] = useState(false);
@@ -99,6 +103,12 @@ const CreatePostPage = () => {
     if (errors.body) {
       setErrors((prev) => ({ ...prev, body: undefined }));
     }
+  };
+
+
+  const handleEvidenceChange = (field) => (event) => {
+    setFormData((prev) => ({ ...prev, [field]: event.target.value }));
+    setIsDirty(true);
   };
 
   const handleSubmit = async (e) => {
@@ -219,6 +229,13 @@ const CreatePostPage = () => {
             </div>
           </div>
 
+          <section className={styles.evidenceFields} aria-labelledby="evidence-fields-title">
+            <div><span className={styles.formatEyebrow}>{i18n.language?.startsWith('en') ? 'Evidence' : 'Kanıt'}</span><h2 id="evidence-fields-title">{i18n.language?.startsWith('en') ? 'What did you actually test?' : 'Gerçekte neyi test ettin?'}</h2><p>{i18n.language?.startsWith('en') ? 'These fields stay in the local draft in V1; production persistence waits for the reviewed schema.' : 'Bu alanlar V1’de yerel taslakta kalır; production kaydı onaylı şema sonrasına bırakıldı.'}</p></div>
+            <label>{i18n.language?.startsWith('en') ? 'Expected outcome' : 'Beklenen sonuç'}<input value={formData.outcome || ''} onChange={handleEvidenceChange('outcome')} placeholder={i18n.language?.startsWith('en') ? 'After this, the reader can…' : 'Bunun sonunda okuyucu…'} /></label>
+            <div className={styles.evidenceGrid}><label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label><label>{i18n.language?.startsWith('en') ? 'Environment / versions' : 'Ortam / sürümler'}<input value={formData.environment || ''} onChange={handleEvidenceChange('environment')} placeholder="Node 22 · React 19" /></label></div>
+            <label>{i18n.language?.startsWith('en') ? 'Verification steps' : 'Doğrulama adımları'}<textarea rows="3" value={formData.verificationSteps || ''} onChange={handleEvidenceChange('verificationSteps')} placeholder={i18n.language?.startsWith('en') ? 'One check per line' : 'Her satıra bir kontrol'} /></label>
+          </section>
+
           {/* Content Editor */}
           <div className={styles.formGroup}>
             <div className={styles.labelRow}>
@@ -272,8 +289,8 @@ const CreatePostPage = () => {
             <ul className={styles.readinessList}>
               {publishReadiness.checks.map((check) => {
                 const labels = i18n.language?.startsWith('en')
-                  ? { title: 'Clear title', substance: 'Enough substance', structure: 'Scannable structure' }
-                  : { title: 'Net başlık', substance: 'Yeterli içerik', structure: 'Taranabilir yapı' };
+                  ? { title: 'Clear title', substance: 'Enough substance', structure: 'Scannable structure', outcome: 'Concrete outcome', environment: 'Test environment', verification: 'Verification evidence' }
+                  : { title: 'Net başlık', substance: 'Yeterli içerik', structure: 'Taranabilir yapı', outcome: 'Somut sonuç', environment: 'Test ortamı', verification: 'Doğrulama kanıtı' };
                 return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
               })}
             </ul>

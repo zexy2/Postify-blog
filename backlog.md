@@ -58,3 +58,11 @@
 - [x] Rework About and Contact away from portfolio/bento presentation
 - [x] Align comment discussion UI with the editorial system
 - [ ] Run a content/copy pass on remaining authenticated-only surfaces with real production data once Supabase production work is allowed
+
+## Verified Knowledge — backend phase
+- [ ] Design/review Supabase schema for evidence snapshots, verification runs, user confirmations, failure reports and revisions
+- [ ] Threat model and rate-limit community confirmations before showing aggregate success rates
+- [ ] Build sandboxed automatic verification for a narrow supported runtime before introducing “Postify verified”
+- [ ] Add dependency release monitoring and evidence invalidation after backend model exists
+- [ ] Add revision history and evidence diff once immutable snapshots are persisted
+- [ ] Add grounded Ask Postify/API/MCP only after provenance/freshness data is durable

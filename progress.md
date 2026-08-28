@@ -143,3 +143,15 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Restyled article comments into the same quiet editorial system.
 - Expanded Chromium UI smoke to 9 scenarios covering About, Contact, and mobile filter layout.
 - Full verify PASS: 13 files / 53 tests, lint, production build, artifact smoke. Chromium UI smoke PASS: 9/9.
+
+## 2026-08-28 — Verified Knowledge V1
+- Repositioned the product from generic practical publishing toward explicit evidence/freshness semantics.
+- Added deterministic evidence model + tests; absent evidence is never upgraded to verification.
+- Added honest author-tested sample evidence to the local catalogue, including environment, tested date, verification steps and caveats.
+- Discovery now exposes evidence/freshness and a current-evidence filter.
+- Article detail now explains evidence, freshness, environment, prerequisites and verification steps, with an explicit author-claim disclaimer.
+- Added device-local Worked/Didn't work evidence and Try later/Using/Reference shelf states; no fake community aggregates.
+- Added zero-result Knowledge Gap capture stored only on-device.
+- Authoring draft now collects outcome, test date, environment and verification steps and includes them in readiness scoring; production persistence remains deferred pending schema review.
+- Added `llms.txt` trust semantics to static release and build smoke.
+- Verification baseline expanded to 15 test files / 59 unit tests and 12 Chromium UI scenarios.

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiBookmark, FiClock } from 'react-icons/fi';
 import ContentImage from '../ContentImage/ContentImage';
 import { getPostPresentation } from '../../lib/postPresentation';
+import EvidenceBadge from '../EvidenceBadge';
 import styles from './EditorialFeed.module.css';
 
 const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
@@ -20,6 +21,7 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
           <span>{presentation.dateLabel}: {presentation.formattedDate}</span>
         )}
         <span className={styles.readTime}><FiClock size={12} /> {post.readingTime} {t('common.minutes')}</span>
+        <EvidenceBadge post={post} compact />
       </div>
     );
   };
