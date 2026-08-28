@@ -269,3 +269,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Production transaction smoke used an existing profile, confirmed Knowledge Gap normalization/deduplication (`duplicate_count=1`), confirmed unauthorized failure-detail rejection, and rolled back with 0 persisted smoke rows. Production has no authored posts, so the positive author-only failure-detail path remains verified in the fresh PostgreSQL RLS test rather than by fabricating production data.
 - Supabase security advisor no longer reports authenticated SECURITY DEFINER RPC warnings; the only remaining security advisor warning is the project-level leaked-password-protection Auth setting.
 - Full release verify PASS: 22 Vitest files / 90 tests, deterministic verification, lint, build and build smoke. Official Playwright v1.57 Chromium suite PASS 22/22.
+
+## 2026-08-28 — Dependency security baseline + recurring monitoring
+- Reclassified the previously unresolved npm advisory set using online audit against the committed lock: baseline was 9 production vulnerabilities (6 high, 3 moderate) and 28 full-tree vulnerabilities (1 critical, 20 high, 6 moderate, 1 low).
+- Rejected a broad semver-compatible refresh that changed 33 direct package resolutions. Two non-force `npm audit fix --package-lock-only --ignore-scripts` passes from the committed lock instead reached 0 production / 0 full-tree vulnerabilities while changing six direct resolutions and leaving `package.json` ranges unchanged.
+- Added `.github/dependabot.yml` for weekly npm and GitHub Actions version monitoring. Routine npm minor/patch version updates are grouped by dependency type; security updates are intentionally not grouped by this configuration.
+- Clean validation of the selected minimal lock PASS: Node 20 `npm ci`, deterministic verification, 22 Vitest files / 90 tests, lint, production build/smoke, official Playwright 1.57 Chromium 22/22, and final independent npm audit 0/0.
+- A broad semver refresh candidate also reached audit 0 but failed Chromium badly (21/22 failures), validating the smaller remediation strategy; it was not selected or committed.

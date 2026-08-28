@@ -197,3 +197,13 @@
 **Decision:** PostgREST-exposed authenticated RPCs must not be SECURITY DEFINER when a narrow non-exposed helper can hold the required privilege. `request_knowledge_gap` and `get_post_failure_details` keep their public signatures as SECURITY INVOKER wrappers and delegate only to authenticated-only helpers in the `private` schema.
 
 **Why:** The product needs privileged aggregate mutation/raw-evidence reads that RLS deliberately prevents directly, but the privilege boundary does not need to be exposed as a definer function. Moving elevation behind a non-exposed helper preserves behavior while reducing the externally callable privileged surface and clearing the Supabase advisor warnings.
+
+## 2026-08-28 — Prefer minimal security lock remediation over broad semver refresh
+**Decision:** Dependency security remediation uses non-force `npm audit fix --package-lock-only` passes from the committed lock, preserving `package.json` ranges. A broad `npm update --package-lock-only` candidate that moved 33 direct dependencies was rejected even though its audit was clean.
+
+**Why:** Security work should minimize compatibility surface. The selected lock reaches 0 production / 0 full-tree audit findings while changing only six direct resolutions (`axios`, `react-router-dom`, `uuid`, `vite`, `vitest`, `workbox-window`) and passes the full release + Chromium gates. The rejected 33-direct-dependency refresh reached audit 0 but broke 21/22 Chromium checks, proving that audit cleanliness alone is not a release signal.
+
+## 2026-08-28 — Routine dependency monitoring does not batch security urgency
+**Decision:** Dependabot checks npm and GitHub Actions weekly. Routine npm minor/patch version updates are grouped by production/development dependency type, while the config does not group security updates.
+
+**Why:** Grouping normal maintenance reduces PR noise without turning security remediation into a weekly batch. Whether repository-level Dependabot security updates are enabled remains a GitHub setting and is not inferred from the config file alone.
