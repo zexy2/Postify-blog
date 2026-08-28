@@ -166,15 +166,42 @@ test.describe('Verified Knowledge pre-migration compatibility', () => {
     await expect(page.getByRole('button', { name: /^çalıştı$|^worked$/i })).toHaveAttribute('data-active', 'true');
   });
 
-  test('critical public knowledge flow has no uncaught browser errors', async ({ page }) => {
-    const errors = [];
-    page.on('pageerror', (error) => errors.push(`page:${error.message}`));
-    page.on('console', (message) => { if (message.type() === 'error') errors.push(`console:${message.text()}`); });
+  test('critical public knowledge flow has no unexpected browser or network errors', async ({ page }) => {
+    const pageErrors = [];
+    const consoleErrors = [];
+    const badResponses = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+    page.on('response', (response) => {
+      if (response.status() < 400) return;
+      const request = response.request();
+      const pathname = new URL(response.url()).pathname;
+      const expectedPagesSpaDocument404 = response.status() === 404
+        && request.resourceType() === 'document'
+        && pathname === '/posts/node-json-dogrulama';
+      if (!expectedPagesSpaDocument404) badResponses.push(`${response.status()} ${request.resourceType()} ${response.url()}`);
+    });
+
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await page.goto('/posts/node-json-dogrulama');
+    expect(badResponses).toEqual([]);
+
+    consoleErrors.length = 0;
+    const articleResponse = await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
-    expect(errors).toEqual([]);
+
+    let ignoredExpectedDocument404 = false;
+    const unexpectedConsoleErrors = consoleErrors.filter((message) => {
+      if (!ignoredExpectedDocument404 && articleResponse?.status() === 404 && /status of 404/i.test(message)) {
+        ignoredExpectedDocument404 = true;
+        return false;
+      }
+      return true;
+    });
+
+    expect(pageErrors).toEqual([]);
+    expect(badResponses).toEqual([]);
+    expect(unexpectedConsoleErrors).toEqual([]);
   });
 
   test('skip link reaches the main content with keyboard navigation', async ({ page }) => {

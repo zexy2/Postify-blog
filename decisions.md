@@ -124,3 +124,13 @@
 **Decision:** Every main deploy stamps `release.json`. The production smoke job waits until the custom domain reports the current `github.sha`, then probes critical artifacts and runs Chromium against production.
 
 **Why:** A green build/deploy action does not prove the CDN/custom domain is serving that commit. SHA-level attestation prevents stale-production false positives and gives the release pipeline an observable completion condition.
+
+## 2026-08-28 — Capability must select the read contract before the request
+**Decision:** When `knowledge-backend-status.json` reports `ready:false`, public post reads use the legacy column projection immediately rather than intentionally probing additive evidence columns and recovering from a 400.
+
+**Why:** Backward compatibility should be quiet and deterministic. Expected failing requests pollute observability, mask real network failures, and make production browser smoke less trustworthy.
+
+## 2026-08-28 — Treat only the GitHub Pages initial deep-link document 404 as expected
+**Decision:** Production browser smoke may ignore the initial document-level 404 for a known SPA deep link that GitHub Pages routes through `404.html`; all API, fetch, script, style, image, and other unexpected 4xx/5xx responses remain failures.
+
+**Why:** This preserves truthful monitoring without weakening the signal for real application/network regressions.
