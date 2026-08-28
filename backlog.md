@@ -63,6 +63,7 @@
 - [x] Design/review Supabase schema for evidence snapshots, user confirmations, failure aggregates and revisions
 - [x] Threat-model core confirmation abuse/privacy boundaries; self-confirmation/duplicate inflation/raw cross-user reads blocked by RLS
 - [x] Give authors identity-free private access to failure details without exposing raw community evidence publicly
+- [x] Move privileged authenticated RPC execution behind non-exposed private helpers
 - [x] Build a narrow deterministic Node.js automatic verification runtime before introducing “Postify verified”
 - [x] Bind the first automatic verification example to a canonical production row and reject stale fallback-only artifacts
 - [ ] Add dependency release monitoring and evidence invalidation after backend model exists

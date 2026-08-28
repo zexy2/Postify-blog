@@ -192,3 +192,8 @@
 **Decision:** Once the production Supabase schema is confirmed available, the deploy exporter replaces the generated `docs/knowledge` directory instead of overlaying database artifacts onto build-time fallback artifacts. Schema-pending deploys still retain the fallback set.
 
 **Why:** Overlay semantics allowed a fallback-only article to survive as a stale machine-readable production artifact even when no canonical database row existed. Replacing the directory after a successful production read prevents fallback content from masquerading as durable production knowledge.
+
+## 2026-08-28 — Exposed authenticated RPCs stay SECURITY INVOKER
+**Decision:** PostgREST-exposed authenticated RPCs must not be SECURITY DEFINER when a narrow non-exposed helper can hold the required privilege. `request_knowledge_gap` and `get_post_failure_details` keep their public signatures as SECURITY INVOKER wrappers and delegate only to authenticated-only helpers in the `private` schema.
+
+**Why:** The product needs privileged aggregate mutation/raw-evidence reads that RLS deliberately prevents directly, but the privilege boundary does not need to be exposed as a definer function. Moving elevation behind a non-exposed helper preserves behavior while reducing the externally callable privileged surface and clearing the Supabase advisor warnings.
