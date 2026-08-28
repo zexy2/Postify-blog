@@ -9,6 +9,8 @@ import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
 import { useBookmarks } from '../hooks/useBookmarks';
+import { getPostType } from '../lib/postPresentation';
+import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
 
 const HomePage = () => {
@@ -21,6 +23,7 @@ const HomePage = () => {
   const [showWakeUp, setShowWakeUp] = useState(false);
   const [visiblePostCount, setVisiblePostCount] = useState(9);
   const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
+  const [activeType, setActiveType] = useState('all');
 
   useEffect(() => {
     setActiveCategory(categoryParam || 'all');
@@ -44,7 +47,9 @@ const HomePage = () => {
 
   useEffect(() => {
     setVisiblePostCount(9);
-  }, [debouncedQuery, i18n.language]);
+  }, [activeType, debouncedQuery, i18n.language]);
+
+  const contentTypes = useMemo(() => getWritingTemplates(i18n.language), [i18n.language]);
 
   const categories = useMemo(
     () => [...new Set(posts.map((post) => post.category).filter(Boolean))],
@@ -55,17 +60,18 @@ const HomePage = () => {
     const normalizedQuery = debouncedQuery.trim().toLocaleLowerCase(i18n.language);
     return posts.filter((post) => {
       const matchesCategory = activeCategory === 'all' || post.category?.toLowerCase() === activeCategory.toLowerCase();
-      if (!matchesCategory) return false;
+      const matchesType = activeType === 'all' || getPostType(post) === activeType;
+      if (!matchesCategory || !matchesType) return false;
       if (!normalizedQuery) return true;
 
       return [post.title, post.excerpt, post.body, post.category, post.author?.name, post.author?.username]
         .filter(Boolean)
         .some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery));
     });
-  }, [activeCategory, debouncedQuery, i18n.language, posts]);
+  }, [activeCategory, activeType, debouncedQuery, i18n.language, posts]);
 
   const hasSearch = query.trim().length > 0;
-  const displayPosts = hasSearch || activeCategory !== 'all' || filteredPosts.length < 2
+  const displayPosts = hasSearch || activeCategory !== 'all' || activeType !== 'all' || filteredPosts.length < 2
     ? filteredPosts
     : filteredPosts.slice(1);
   const featuredPost = posts[0];
@@ -137,6 +143,27 @@ const HomePage = () => {
       <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
       <section className={`container ${styles.postsSection}`}>
+        <div className={styles.typeFilter} aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'}>
+          <button
+            type="button"
+            className={activeType === 'all' ? styles.typeFilterActive : ''}
+            aria-pressed={activeType === 'all'}
+            onClick={() => setActiveType('all')}
+          >
+            {i18n.language?.startsWith('en') ? 'All formats' : 'Tüm biçimler'}
+          </button>
+          {contentTypes.map((type) => (
+            <button
+              key={type.id}
+              type="button"
+              className={activeType === type.id ? styles.typeFilterActive : ''}
+              aria-pressed={activeType === type.id}
+              onClick={() => setActiveType(type.id)}
+            >
+              {type.label}
+            </button>
+          ))}
+        </div>
         <div className={styles.sectionHeader}>
           <div>
             <span className={styles.sectionEyebrow}>{hasSearch ? t('home.searchLabel') : t('home.latest')}</span>
@@ -150,9 +177,9 @@ const HomePage = () => {
         {displayPosts.length === 0 ? (
           <div className={styles.noResults}>
             <FiSearch size={32} />
-            <h3>{hasSearch || activeCategory !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
-            <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : t('home.noContentHint')}</p>
-            {(hasSearch || activeCategory !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); }}>{t('home.clearFilters')}</button>}
+            <h3>{hasSearch || activeCategory !== 'all' || activeType !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
+            <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : activeType !== 'all' ? (i18n.language?.startsWith('en') ? 'No stories match this format yet.' : 'Bu biçimde eşleşen yazı henüz yok.') : t('home.noContentHint')}</p>
+            {(hasSearch || activeCategory !== 'all' || activeType !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); setActiveType('all'); }}>{t('home.clearFilters')}</button>}
           </div>
         ) : (
           <EditorialFeed

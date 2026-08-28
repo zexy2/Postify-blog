@@ -59,13 +59,17 @@ export function Testimonial() {
     }
   };
 
-  const goNext = () => setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  const goPrev = () => setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  const testimonialCount = testimonials.length;
+  const goNext = () => setActiveIndex((prev) => (prev + 1) % testimonialCount);
+  const goPrev = () => setActiveIndex((prev) => (prev - 1 + testimonialCount) % testimonialCount);
 
   useEffect(() => {
-    const timer = setInterval(goNext, 6000);
+    const timer = setInterval(
+      () => setActiveIndex((prev) => (prev + 1) % testimonialCount),
+      6000,
+    );
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonialCount]);
 
   const current = testimonials[activeIndex];
 

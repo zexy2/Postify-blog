@@ -11,10 +11,10 @@ export default defineConfig({
       injectRegister: "script-defer",
       includeAssets: ["pwa-192x192.png", "pwa-512x512.png", "pwa-icon.svg"],
       manifest: {
-        name: "Postify Blog",
+        name: "Postify",
         short_name: "Postify",
         description:
-          "Teknoloji, ürün ve geliştirici deneyimi üzerine kısa editoryal notlar.",
+          "Okumak için değil, uygulamak için: rehberler, karar notları, açıklayıcılar ve saha notları.",
         theme_color: "#b34f2d",
         background_color: "#fbfaf7",
         display: "standalone",

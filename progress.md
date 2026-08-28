@@ -25,3 +25,30 @@ Current branch:
 Next:
 - Preview the product-value MVP in a browser and fix visual/interaction issues found there.
 - Then implement author-side structured templates (Guide / Decision / Explainer / Field Note) without requiring Supabase schema changes yet.
+
+## Overnight loop checkpoint — 04:15 TRT
+- Production deployment is now explicitly permitted after quality gates pass.
+- Continuing autonomous product-development loops on `chatgpt/postify-rethink`.
+
+
+## 2026-08-28 — Controlled loop batch (7+ loops)
+Completed in this run:
+1. Restored the documented test command and added focused tests for Postify content presentation.
+2. Removed the remaining React Hooks lint warning; lint now passes with zero warnings/errors.
+3. Added four author writing modes (Guide / Decision note / Explainer / Field note) with localized, actionable writing briefs and no database dependency.
+4. Added safe local draft autosave/restore with user+language scoped keys and tests.
+5. Added reader-side format filtering so discovery can be driven by intended outcome, not only category/search.
+6. Hardened SEO/PWA identity: Postify naming, practical-knowledge description, canonical URL normalization, Article structured data, correct app icon metadata, Turkish static document language.
+7. Added a repeatable release gate (`npm run verify`) plus build artifact smoke checks and a runtime Vite preview smoke for `/` and an article SPA route.
+8. Updated README to reflect the new product positioning and release workflow.
+
+Evidence:
+- `npm test`: 10 test files / 42 tests PASS.
+- `npm run lint`: PASS, zero warnings/errors.
+- `npm run build`: PASS.
+- `npm run smoke:build`: PASS.
+- Runtime preview smoke: `/` HTTP 200 and `/posts/ai-muhendisligi` HTTP 200.
+- `git diff --check`: PASS.
+
+Production status:
+- Quality gates are green. Deployment via the current GitHub Pages path will be attempted after checkpoint commit.

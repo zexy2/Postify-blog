@@ -54,3 +54,31 @@
   .fallbackNotice { margin-top: 1rem; }
   .postsSection { padding-top: 3rem; }
 }
+
+
+.typeFilter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.typeFilter button {
+  min-height: 38px;
+  padding: .5rem .75rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 650;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.typeFilter button:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.typeFilter button:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 2px; }
+.typeFilter .typeFilterActive { color: var(--text-primary); background: var(--primary-subtle); border-color: var(--primary); }

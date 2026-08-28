@@ -1,10 +1,13 @@
 # Postify Known Issues
 
-## Baseline
-- `package.json` has no `test` script even though README documents `npm run test` and Vitest/Playwright dependencies exist.
-- ESLint baseline warning: `src/components/ui/design-testimonial.jsx` has a missing `useEffect` dependency (`goNext`).
-- Current design system comments/implementation mix several unrelated visual trends (glassmorphism, bento, glow cards, editorial serif), which weakens product identity.
-- Current homepage communicates “technology journal/blog” rather than a unique reader outcome.
+## Current
+- Oracle host has no global Node/npm runtime; deterministic verification uses `node:20-alpine` Docker.
+- Playwright dependencies exist, but this run has not yet executed a real browser-engine E2E suite; runtime smoke used Vite preview + HTTP checks.
+- Explicit structured metadata (content type, outcome, prerequisites, environment/version, sources, revision history) is not persisted yet because Supabase migrations remain intentionally deferred.
+- Existing visual code outside the primary homepage/article/create flow still contains legacy trend-oriented components and can be simplified incrementally.
+- Current production hosting is GitHub Pages. Deployment requires a working GitHub write credential/path from the Oracle workspace; this must be verified during deploy attempt.
 
-## Environment
-- Oracle host does not have Node/npm installed globally. Build verification is performed in `node:20-alpine` Docker until/unless a host Node runtime is intentionally installed.
+## Resolved in 2026-08-28 loop
+- `package.json` now provides the documented `npm test` command.
+- The previous React Hooks warning in `src/components/ui/design-testimonial.jsx` is fixed; lint is clean.
+- Generic homepage positioning and glow-heavy primary discovery were replaced in the product-value branch.

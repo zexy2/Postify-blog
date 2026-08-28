@@ -1,17 +1,20 @@
 # Postify Backlog
 
 ## Now — Product value MVP
-- [ ] Replace generic homepage proposition with practical-knowledge positioning
-- [ ] Replace glow-card editorial feed with utility-focused content cards
-- [ ] Add content-type derivation that works with old Supabase rows
-- [ ] Add article quick-summary/trust strip
-- [ ] Simplify desktop navigation and remove nonessential visual noise
-- [ ] Preserve Turkish/English support
+- [x] Replace generic homepage proposition with practical-knowledge positioning
+- [x] Replace glow-card editorial feed with utility-focused content cards
+- [x] Add content-type derivation that works with old Supabase rows
+- [x] Add article quick-summary/trust strip
+- [x] Simplify desktop navigation and remove nonessential visual noise
+- [x] Preserve Turkish/English support
 
 ## Next — Author value
-- [ ] Structured editor templates: Guide / Decision / Explainer / Field Note
+- [x] Structured editor templates: Guide / Decision / Explainer / Field Note
 - [ ] Explicit outcome, prerequisites, environment/version and key takeaways fields
 - [ ] Draft quality checklist before publish
+- [x] Local draft autosave/restore
+- [x] Reader filter by content format
+- [x] Repeatable test/lint/build/smoke release gate
 - [ ] Markdown import/export and canonical URL support
 - [ ] Revision history / changelog model
 
