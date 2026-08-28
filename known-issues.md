@@ -17,3 +17,5 @@
 - Reading-time fallback is an estimate based on available plain text (220 words/minute), not a measured completion-time claim.
 
 - Browserslist compatibility data reports as 8 months old during build; dependency-data refresh is low-risk maintenance for a later batch, not a release blocker for this verified build.
+
+- Production root is healthy (HTTP 200), but direct navigation to `/posts/ai-muhendisligi` currently returns HTTP 404 from GitHub Pages. Client-side navigation may work, but deep-link hosting fallback needs a dedicated fix before claiming full production smoke health.

@@ -95,3 +95,5 @@ Completed in this run:
 7. Connected title validation and character-count feedback to the title input with `aria-invalid`, `aria-describedby`, and alert semantics.
 
 Verification: focused post-presentation/draft tests pass (10/10); full `npm run verify` passes with 13 test files / 53 tests, lint clean, production build PASS, and build smoke PASS. Runtime preview smoke returned HTTP 200 for `/`, the combined filter URL, and `/posts/create`; HTML product marker PASS.
+
+Production check after the batch: root returned HTTP 200 and serves the newer Postify identity, but a direct article deep link returned HTTP 404. Therefore this run does not claim a successful production deploy; deep-link hosting fallback is recorded as a release issue.
