@@ -24,3 +24,6 @@
 - GitHub Pages returns HTTP 404 for a direct SPA article path and serves `404.html`; the fallback JavaScript then redirects browsers into the SPA route. Build verification now guarantees that fallback exists and has current product identity, but HTTP-only smoke still observes the initial 404 by design. A browser-engine E2E check remains the best next verification step.
 
 - Final production release is operationally blocked by missing GitHub repository authentication on the Oracle host. The verified fix is committed locally, but cannot be pushed/deployed from this environment until an authenticated GitHub write path is available.
+
+## UI V2 QA note — 2026-08-28
+- The Oracle host exposes Snap Chromium, but headless launch from the MCP systemd service fails with `is not a snap cgroup`. HTTP preview smoke works; real screenshot/browser QA needs a non-Snap browser/Playwright runtime or external visual review before this UI branch is promoted.
