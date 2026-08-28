@@ -234,3 +234,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Verification artifacts now expose the actual Node runtime version, expected stdout, actual stdout, SHA-256 of the executed code, policy id and `articleContractMatched` state.
 - Added `node-deterministic-v1` release policy: narrow checked-in snippets reject external packages, dynamic imports, network APIs, filesystem builtins, process execution APIs, eval/Function and non-output process access. Execution remains explicitly documented as checked-in child-process execution, not a security sandbox.
 - Full gate: 22 test files / 89 tests PASS, deterministic verifier/article contract PASS, lint/build/smoke PASS, Chromium 22/22 PASS.
+
+## 2026-08-28 — Reproducible command/output verification contract
+- Extended verification artifact schema to v3 with a downloadable `.mjs`, reproduction command, expected/actual stdout, artifact hash and execution mode.
+- The release verifier now executes the generated artifact file itself and rejects code/artifact hash drift.
+- Evidence UI exposes the local command, expected output, actual CI output and exact executed file.
+- Build smoke and Chromium coverage require the reproduction artifact and command/hash contract.

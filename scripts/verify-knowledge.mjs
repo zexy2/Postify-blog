@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { VERIFICATION_MANIFEST } from '../src/content/verificationManifest.js';
 import { getFallbackPosts } from '../src/content/fallbackPosts.js';
@@ -8,7 +8,7 @@ import { validateVerificationCode } from './verification-policy.mjs';
 
 const execFileAsync = promisify(execFile);
 const results = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   generatedAt: new Date().toISOString(),
   scope: 'checked-in deterministic verification only',
   runs: {},
@@ -16,6 +16,8 @@ const results = {
 let failed = false;
 
 const catalog = getFallbackPosts('en');
+await rm('public/verification', { recursive: true, force: true });
+await mkdir('public/verification', { recursive: true });
 
 for (const check of VERIFICATION_MANIFEST) {
   const started = Date.now();
@@ -53,10 +55,44 @@ for (const check of VERIFICATION_MANIFEST) {
     continue;
   }
 
+  const artifactFile = String(check.artifactFile || '').trim();
+  const expectedReproduceCommand = `node ${artifactFile}`;
+  if (!/^[a-z0-9][a-z0-9._-]*\.mjs$/i.test(artifactFile) || check.reproduceCommand !== expectedReproduceCommand) {
+    results.runs[check.id] = {
+      id: check.id,
+      postSlug: check.postSlug,
+      status: 'failed',
+      failureKind: 'invalid-reproduction-contract',
+      verifiedAt: new Date().toISOString(),
+      durationMs: Date.now() - started,
+    };
+    failed = true;
+    continue;
+  }
+
+  const artifactPath = `public/verification/${artifactFile}`;
+  await writeFile(artifactPath, check.code);
+  const artifactCode = await readFile(artifactPath, 'utf8');
+  const artifactSha256 = createHash('sha256').update(artifactCode).digest('hex');
+  if (artifactSha256 !== codeSha256) {
+    results.runs[check.id] = {
+      id: check.id,
+      postSlug: check.postSlug,
+      status: 'failed',
+      failureKind: 'artifact-hash-mismatch',
+      codeSha256,
+      artifactSha256,
+      verifiedAt: new Date().toISOString(),
+      durationMs: Date.now() - started,
+    };
+    failed = true;
+    continue;
+  }
+
   try {
     const { stdout, stderr } = await execFileAsync(
       process.execPath,
-      ['--input-type=module', '--eval', check.code],
+      [artifactPath],
       { timeout: 2500, maxBuffer: 64 * 1024, env: { NODE_ENV: 'test' } },
     );
     const actualStdout = stdout.trim();
@@ -68,6 +104,11 @@ for (const check of VERIFICATION_MANIFEST) {
       runtime: check.runtime,
       runtimeVersion: process.version,
       policy: check.policy,
+      artifactFile,
+      artifactUrl: `/verification/${artifactFile}`,
+      reproduceCommand: check.reproduceCommand,
+      artifactSha256,
+      executionMode: 'generated-artifact-file',
       verifiedAt: new Date().toISOString(),
       durationMs: Date.now() - started,
       expectedStdout: check.expectedStdout,
@@ -84,6 +125,11 @@ for (const check of VERIFICATION_MANIFEST) {
       runtime: check.runtime,
       runtimeVersion: process.version,
       policy: check.policy,
+      artifactFile,
+      artifactUrl: `/verification/${artifactFile}`,
+      reproduceCommand: check.reproduceCommand,
+      artifactSha256,
+      executionMode: 'generated-artifact-file',
       verifiedAt: new Date().toISOString(),
       durationMs: Date.now() - started,
       expectedStdout: check.expectedStdout,

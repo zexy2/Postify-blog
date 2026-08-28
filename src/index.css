@@ -759,3 +759,13 @@ button {
 .community-evidence-details li p { margin:.25rem 0; }
 .community-evidence-details time { color:var(--text-muted); font-size:.72rem; }
 .evidence-badge[data-level="postify-verified"] strong { color:var(--primary); }
+
+.knowledge-evidence__execution { display:grid; gap:.65rem; margin:1rem 0 1.25rem; padding:1rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); }
+.knowledge-evidence__execution>p { margin:0; font-size:.78rem; }
+.knowledge-evidence__contract { display:grid; gap:.65rem; margin:0; }
+.knowledge-evidence__contract>div { display:grid; grid-template-columns:minmax(7.5rem,.45fr) minmax(0,1fr); gap:.75rem; align-items:baseline; }
+.knowledge-evidence__contract dt { color:var(--text-muted); font-family:var(--font-mono); font-size:.66rem; letter-spacing:.04em; text-transform:uppercase; }
+.knowledge-evidence__contract dd { min-width:0; margin:0; color:var(--text-primary); }
+.knowledge-evidence__contract code { overflow-wrap:anywhere; }
+.knowledge-evidence__artifact { width:fit-content; color:var(--primary); font-size:.76rem; font-weight:800; text-decoration:underline; text-underline-offset:3px; }
+@media(max-width:620px){.knowledge-evidence__contract>div{grid-template-columns:1fr;gap:.2rem}}

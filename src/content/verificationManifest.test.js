@@ -10,6 +10,8 @@ describe('verification manifest contract', () => {
       expect(matches).toHaveLength(1);
       expect(matches[0].body).toContain(check.code);
       expect(matches[0].body).toContain(check.expectedStdout);
+      expect(check.artifactFile).toMatch(/^[a-z0-9][a-z0-9._-]*\.mjs$/i);
+      expect(check.reproduceCommand).toBe(`node ${check.artifactFile}`);
     }
   });
 
