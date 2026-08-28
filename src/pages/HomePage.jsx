@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { FiSearch } from 'react-icons/fi';
+import { FiArrowRight, FiSearch } from 'react-icons/fi';
 import Hero from '../components/Hero';
-import BentoGrid from '../components/BentoGrid';
 import CategoryNav from '../components/CategoryNav';
 import EditorialFeed from '../components/EditorialFeed';
-import MarqueeBanner from '../components/MarqueeBanner/MarqueeBanner';
 import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
@@ -25,11 +23,7 @@ const HomePage = () => {
   const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
 
   useEffect(() => {
-    if (categoryParam) {
-      setActiveCategory(categoryParam);
-    } else {
-      setActiveCategory('all');
-    }
+    setActiveCategory(categoryParam || 'all');
   }, [categoryParam]);
 
   const handleCategoryChange = (category) => {
@@ -60,20 +54,13 @@ const HomePage = () => {
   const filteredPosts = useMemo(() => {
     const normalizedQuery = debouncedQuery.trim().toLocaleLowerCase(i18n.language);
     return posts.filter((post) => {
-      const matchesCategory =
-        activeCategory === 'all' ||
-        post.category?.toLowerCase() === activeCategory.toLowerCase();
+      const matchesCategory = activeCategory === 'all' || post.category?.toLowerCase() === activeCategory.toLowerCase();
       if (!matchesCategory) return false;
       if (!normalizedQuery) return true;
 
-      return [
-      post.title,
-      post.excerpt,
-      post.body,
-      post.category,
-      post.author?.name,
-      post.author?.username,
-      ].filter(Boolean).some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery));
+      return [post.title, post.excerpt, post.body, post.category, post.author?.name, post.author?.username]
+        .filter(Boolean)
+        .some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery));
     });
   }, [activeCategory, debouncedQuery, i18n.language, posts]);
 
@@ -81,13 +68,17 @@ const HomePage = () => {
   const displayPosts = hasSearch || activeCategory !== 'all' || filteredPosts.length < 2
     ? filteredPosts
     : filteredPosts.slice(1);
+  const featuredPost = posts[0];
 
   if (isLoading) {
     return (
       <div className={styles.page}>
         <Hero showSearch={false} />
         <section className={`container ${styles.loadingSection}`}>
-          <BentoGrid posts={[]} isLoading />
+          <div className={styles.loadingLine} />
+          <div className={styles.loadingCards}>
+            <div /><div /><div />
+          </div>
           {showWakeUp && (
             <p className={styles.wakeUpMessage} role="status">
               <strong>{t('home.wakeUp')}</strong> {t('home.wakeUpHint')}
@@ -101,24 +92,16 @@ const HomePage = () => {
   if (isError) {
     const isTimeout = error?.code === 'CONTENT_TIMEOUT';
     return (
-      <div className={styles.page}>
-        <section className={`container ${styles.errorSection}`}>
-          <div className={styles.errorCard} role="alert">
-            <span className={styles.errorKicker}>{isTimeout ? t('home.timeout') : t('common.error')}</span>
-            <h1>{isTimeout ? t('home.timeoutHint') : t('errors.networkError')}</h1>
-            <p>{error?.message === 'CONTENT_TIMEOUT' ? t('home.timeoutHint') : error?.message}</p>
-            <button type="button" onClick={() => refetch()} className={styles.retryButton}>
-              {t('common.retry')}
-            </button>
-          </div>
-        </section>
+      <div className={`container ${styles.errorSection}`}>
+        <div className={styles.errorCard} role="alert">
+          <span className={styles.errorKicker}>{isTimeout ? t('home.timeout') : t('common.error')}</span>
+          <h1>{isTimeout ? t('home.timeoutHint') : t('errors.networkError')}</h1>
+          <p>{error?.message === 'CONTENT_TIMEOUT' ? t('home.timeoutHint') : error?.message}</p>
+          <button type="button" onClick={() => refetch()} className={styles.retryButton}>{t('common.retry')}</button>
+        </div>
       </div>
     );
   }
-
-  const featuredPost = posts[0];
-  const usingFallback = isFallback;
-  const checkingLiveContent = isFetching;
 
   return (
     <div className={styles.page}>
@@ -129,11 +112,24 @@ const HomePage = () => {
         onSearchChange={setQuery}
         featuredPost={featuredPost}
       />
-      <MarqueeBanner />
 
-      {usingFallback && (
+      <section className={styles.standardSection}>
+        <div className={`container ${styles.standardInner}`}>
+          <div className={styles.standardIntro}>
+            <span className={styles.sectionEyebrow}>{t('home.standardLabel')}</span>
+            <h2>{t('home.standardTitle')}</h2>
+          </div>
+          <div className={styles.principles}>
+            <article><span>01</span><div><strong>{t('home.principleOutcomeTitle')}</strong><p>{t('home.principleOutcomeText')}</p></div></article>
+            <article><span>02</span><div><strong>{t('home.principleFreshTitle')}</strong><p>{t('home.principleFreshText')}</p></div></article>
+            <article><span>03</span><div><strong>{t('home.principlePortableTitle')}</strong><p>{t('home.principlePortableText')}</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      {isFallback && (
         <div className={`container ${styles.fallbackNotice}`} role="status">
-          <strong>{t(checkingLiveContent ? 'home.fallbackChecking' : 'home.fallbackNotice')}</strong>
+          <strong>{t(isFetching ? 'home.fallbackChecking' : 'home.fallbackNotice')}</strong>
           <span>{t('home.fallbackHint')}</span>
         </div>
       )}
@@ -145,7 +141,7 @@ const HomePage = () => {
           <div>
             <span className={styles.sectionEyebrow}>{hasSearch ? t('home.searchLabel') : t('home.latest')}</span>
             <h2 className={styles.sectionTitle}>
-              {hasSearch ? <><FiSearch size={22} /> “{query}”</> : activeCategory !== 'all' ? activeCategory : t('home.latest')}
+              {hasSearch ? <><FiSearch size={22} /> “{query}”</> : activeCategory !== 'all' ? activeCategory : t('home.feedTitle')}
             </h2>
             <p className={styles.sectionSubtitle}>{t('home.resultCount', { count: filteredPosts.length })}</p>
           </div>
@@ -153,7 +149,7 @@ const HomePage = () => {
 
         {displayPosts.length === 0 ? (
           <div className={styles.noResults}>
-            <FiSearch size={36} />
+            <FiSearch size={32} />
             <h3>{hasSearch || activeCategory !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
             <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : t('home.noContentHint')}</p>
             {(hasSearch || activeCategory !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); }}>{t('home.clearFilters')}</button>}
@@ -169,7 +165,7 @@ const HomePage = () => {
         {displayPosts.length > visiblePostCount && (
           <div className={styles.loadMore}>
             <button type="button" className={styles.loadMoreButton} onClick={() => setVisiblePostCount((count) => count + 9)}>
-              {t('common.loadMore')} ({displayPosts.length - visiblePostCount})
+              {t('common.loadMore')} <FiArrowRight size={15} />
             </button>
           </div>
         )}

@@ -9,6 +9,7 @@ import CopyLinkButton from '../components/CopyLinkButton';
 import ReadingProgress from '../components/ReadingProgress';
 import SEO from '../components/SEO';
 import styles from './PostDetailPage.module.css';
+import { getPostPresentation } from '../lib/postPresentation';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
 
@@ -82,6 +83,7 @@ const PostDetailPage = () => {
     : post.coverImageUrl;
   const articleBody = post.body || post.bodyHtml?.replace(/<[^>]+>/g, ' ') || '';
   const isBookmarked = bookmarkedIds.includes(post.id);
+  const presentation = getPostPresentation(post, i18n.language);
 
   return (
     <>
@@ -135,6 +137,7 @@ const PostDetailPage = () => {
               {/* Header Info FIRST */}
               <header className={styles.articleHeader}>
                 <div className={styles.meta}>
+                  <span className={styles.contentType}>{presentation.typeLabel}</span>
                   <span className={styles.category}>{post.category}</span>
                   <span className={styles.metaDot}>•</span>
                   <time dateTime={post.publishedAt}>{publishedDate}</time>
@@ -155,6 +158,28 @@ const PostDetailPage = () => {
                   </Link>
                 </div>
               </header>
+
+              <section className={styles.quickBrief} aria-label={t('article.quickBrief')}>
+                <div className={styles.quickBriefCopy}>
+                  <span className={styles.quickBriefEyebrow}>{t('article.quickBrief')}</span>
+                  <strong>{t('article.expectedOutcome')}</strong>
+                  <p>{presentation.outcome}</p>
+                </div>
+                <dl className={styles.quickBriefMeta}>
+                  <div>
+                    <dt>{t('article.contentType')}</dt>
+                    <dd>{presentation.typeLabel}</dd>
+                  </div>
+                  <div>
+                    <dt>{t('posts.readingTime')}</dt>
+                    <dd>{post.readingTime} {t('common.minutes')}</dd>
+                  </div>
+                  <div>
+                    <dt>{t('article.lastTouch')}</dt>
+                    <dd>{presentation.formattedDate || publishedDate}</dd>
+                  </div>
+                </dl>
+              </section>
 
               {/* Cover Image SECOND */}
               <div className={styles.coverWrapper}>

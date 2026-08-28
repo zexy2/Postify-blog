@@ -517,3 +517,55 @@
     text-align: left;
   }
 }
+
+/* Product value MVP: structured context before long-form content */
+.contentType {
+  display: inline-flex;
+  align-items: center;
+  padding: .28rem .48rem;
+  color: var(--primary);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-light);
+  border-radius: var(--radius-full);
+  font-size: .7rem;
+  font-weight: 800;
+}
+
+.quickBrief {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  margin: 0 clamp(1rem, 4vw, 3.5rem) clamp(1.5rem, 4vw, 2.5rem);
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.quickBriefCopy { min-width: 0; }
+.quickBriefEyebrow {
+  display: block;
+  margin-bottom: .45rem;
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.quickBriefCopy strong { display: block; color: var(--text-primary); font-size: .95rem; }
+.quickBriefCopy p { max-width: 62ch; margin: .45rem 0 0; color: var(--text-secondary); font-size: .88rem; line-height: 1.6; }
+.quickBriefMeta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin: 0; }
+.quickBriefMeta div { min-width: 0; padding-left: .8rem; border-left: 1px solid var(--border-color); }
+.quickBriefMeta dt { color: var(--text-muted); font-size: .66rem; line-height: 1.3; }
+.quickBriefMeta dd { margin: .3rem 0 0; overflow: hidden; color: var(--text-primary); font-size: .78rem; font-weight: 750; line-height: 1.35; text-overflow: ellipsis; }
+
+@media (max-width: 780px) {
+  .quickBrief { grid-template-columns: 1fr; margin-right: 0; margin-left: 0; border-right: 0; border-left: 0; border-radius: 0; }
+}
+
+@media (max-width: 520px) {
+  .quickBriefMeta { grid-template-columns: 1fr; gap: .55rem; }
+  .quickBriefMeta div { padding: .45rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }
+}
+
