@@ -22,6 +22,7 @@ import HomePage from './pages/HomePage';
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'));
+const PasswordRecoveryPage = lazy(() => import('./pages/PasswordRecoveryPage'));
 const PostDetailPage = lazy(() => import('./pages/PostDetailPage'));
 const UserPage = lazy(() => import('./pages/UserPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
@@ -104,6 +105,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/auth/login" element={<LoginPage />} />
               <Route path="/auth/register" element={<RegisterPage />} />
+              <Route path="/auth/forgot-password" element={<PasswordRecoveryPage mode="request" />} />
+              <Route path="/auth/reset-password" element={<PasswordRecoveryPage mode="update" />} />
               <Route path="/auth/callback" element={<AuthCallbackPage />} />
               <Route
                 path="/posts/create"

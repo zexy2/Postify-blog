@@ -12,7 +12,8 @@ import { useAuth } from '../../hooks/useAuth';
 import styles from './RegisterPage.module.css';
 
 const RegisterPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const en = i18n.language?.startsWith('en');
   const { register, loginWithOAuth, isLoading } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -85,6 +86,18 @@ const RegisterPage = () => {
 
   return (
     <div className={styles.container}>
+      <section className={styles.context} aria-label={en ? 'What a Postify account is for' : 'Postify hesabı ne işe yarar'}>
+        <span className={styles.eyebrow}>{en ? 'Publish with a trail' : 'İz bırakarak yayınla'}</span>
+        <h2>{en ? 'Turn experience into maintainable knowledge.' : 'Deneyimi bakımı yapılabilir bilgiye dönüştür.'}</h2>
+        <p>{en
+          ? 'Postify separates publishing from evidence claims, so useful guidance can stay readable without pretending every note is independently verified.'
+          : 'Postify yayınlamayı kanıt iddiasından ayırır; böylece faydalı bilgi okunabilir kalırken her not bağımsız doğrulanmış gibi gösterilmez.'}</p>
+        <ul className={styles.contextList}>
+          <li>{en ? 'Write guides, decisions, explainers and field notes' : 'Rehber, karar notu, açıklayıcı ve saha notu yaz'}</li>
+          <li>{en ? 'Attach the environment and checks you actually tested' : 'Gerçekte test ettiğin ortamı ve kontrolleri ekle'}</li>
+          <li>{en ? 'See when published knowledge needs another pass' : 'Yayınlanan bilginin ne zaman tekrar kontrol istediğini gör'}</li>
+        </ul>
+      </section>
       <div className={styles.card}>
         <div className={styles.header}>
           <h1 className={styles.title}>{t('auth.register')}</h1>

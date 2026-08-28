@@ -361,3 +361,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Populated Bookmarks browser QA used local-only Redux-persist seeding plus a temporary protected-route bypass; the bypass was reverted before release validation. Desktop/mobile document widths were exact at 1440/1440 and 390/390 with evidence/type/read-cost visible and no page errors.
 - Public author browser QA passed at 1440/1440 and 390/390 with nine fallback knowledge records and zero page errors.
 - Final release gates PASS: 25 Vitest files / 107 tests, lint, production Vite/PWA build (main entry 303,604 bytes), and official Chromium UI suite 26/26.
+
+## 2026-08-28 — UI V3 auth surfaces and complete password recovery
+- Rebuilt Login and Register from legacy glass/gradient cards into the V3 knowledge-account system: a product-context column explains why an account matters while the access form stays restrained and task-focused; mobile collapses to one clean column.
+- Removed the old duplicated auth CSS override layers, colored glow shadows and glassmorphism. Both auth stylesheets now have exact JSX selector coverage with no unused page selectors.
+- Found a real broken recovery chain during the visual audit: Login linked to `/auth/forgot-password`, and Supabase reset emails redirected to `/auth/reset-password`, but neither route existed. Added both public routes and a shared PasswordRecoveryPage that uses the existing `useAuth.resetPassword` and `useAuth.updatePassword` flows.
+- Added localized recovery failure/success keys that were already referenced by the auth hook but missing from i18n.
+- Added direct unit coverage for requesting a recovery email and completing a matching-password reset, plus a mobile Chromium contract proving both recovery routes render and do not overflow.
+- Real browser QA on Login, Register, Forgot Password and Reset Password passed at 1440/1440 and 390/390 document widths with zero page errors.
+- Final release gates PASS: 26 Vitest files / 109 tests, lint, production Vite/PWA build (main entry 304,189 bytes), and official Chromium UI suite 27/27.

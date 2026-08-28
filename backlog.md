@@ -51,6 +51,7 @@
 - [ ] Add screenshot-diff baselines for the key UI V2 viewports once a stable visual baseline is approved
 - [ ] Continue legacy surface cleanup: analytics/admin/secondary share controls where old gradient/card styles remain
 - [x] Align auth/404 and analytics/admin secondary surfaces with UI V2
+- [x] Rebuild Login/Register in UI V3 and complete the missing forgot/reset password route chain
 - [x] Restrain share/bookmark/fallback-card control styling
 
 ## UI cleanup follow-up

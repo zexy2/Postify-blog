@@ -75,6 +75,21 @@ test.describe('Postify UI V2', () => {
     await expect(page.locator('input[name="password"]')).toBeVisible();
   });
 
+  test('password recovery routes are real, responsive auth surfaces', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/auth/forgot-password');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByLabel(/hesap e-postası|account email/i)).toBeVisible();
+    let overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+
+    await page.goto('/auth/reset-password');
+    await expect(page.getByLabel(/^yeni şifre$|^new password$/i)).toBeVisible();
+    await expect(page.getByLabel(/yeni şifreyi doğrula|confirm new password/i)).toBeVisible();
+    overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test('unknown routes render the quiet 404 recovery surface', async ({ page }) => {
     await page.goto('/definitely-not-a-postify-route');
     await expect(page.getByText('404', { exact: true })).toBeVisible();

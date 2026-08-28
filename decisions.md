@@ -264,3 +264,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Bookmarks use an indexed knowledge-shelf model and public author pages use a knowledge-portfolio model. Profile keeps account editing functional but visually quiet. Evidence state, format, reading cost and published work take priority over ornamental banners, badges and generic profile-card styling.
 
 **Why:** Postify’s product identity is practical, maintained knowledge. Saved content and authors should therefore help users judge what is worth returning to and what an author actually contributes; generic social/profile decoration dilutes that value proposition and adds visual inconsistency.
+
+## 2026-08-28 — Authentication should explain account value, and recovery must be an end-to-end route chain
+**Decision:** Login/Register use the same quiet V3 editorial language as the rest of Postify and pair access forms with concise product context. Password recovery is a first-class public flow with both request and reset routes wired to the existing Supabase-backed auth methods.
+
+**Why:** Access screens are part of the product, not a generic SaaS template. More importantly, a visible “forgot password” link is harmful if its route 404s or the recovery email redirects to another missing route. The UI audit should close functional gaps it exposes rather than merely restyle them.

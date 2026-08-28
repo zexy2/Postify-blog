@@ -12,7 +12,8 @@ import { useAuth } from '../../hooks/useAuth';
 import styles from './LoginPage.module.css';
 
 const LoginPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const en = i18n.language?.startsWith('en');
   const { login, loginWithOAuth, isLoading } = useAuth();
   const [searchParams] = useSearchParams();
   const registered = searchParams.get('registered') === '1';
@@ -62,6 +63,18 @@ const LoginPage = () => {
 
   return (
     <div className={styles.container}>
+      <section className={styles.context} aria-label={en ? 'Why use a Postify account' : 'Postify hesabı neden kullanılır'}>
+        <span className={styles.eyebrow}>{en ? 'Postify account' : 'Postify hesabı'}</span>
+        <h2>{en ? 'Keep useful knowledge within reach.' : 'İşe yarayan bilgiyi elinin altında tut.'}</h2>
+        <p>{en
+          ? 'Sign in to keep a personal knowledge shelf, maintain what you publish and return to evidence-backed guidance.'
+          : 'Kişisel bilgi rafını korumak, yayınladıklarını güncel tutmak ve kanıtlı rehberlere geri dönmek için giriş yap.'}</p>
+        <ul className={styles.contextList}>
+          <li>{en ? 'Save guidance you actually plan to reuse' : 'Gerçekten tekrar kullanacağın rehberleri kaydet'}</li>
+          <li>{en ? 'Maintain evidence and re-verification state' : 'Kanıt ve yeniden doğrulama durumunu yönet'}</li>
+          <li>{en ? 'Build a practical knowledge portfolio' : 'Uygulanabilir bir bilgi portföyü oluştur'}</li>
+        </ul>
+      </section>
       <div className={styles.card}>
         <div className={styles.header}>
           <h1 className={styles.title}>{t('auth.login')}</h1>
