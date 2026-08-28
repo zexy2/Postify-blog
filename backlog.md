@@ -30,7 +30,7 @@
 - [x] AEO/structured data + machine-readable knowledge JSON/llms.txt
 
 ## Deferred until value is proven
-- [~] Apply the reviewed Supabase structured-evidence migration to production (schema authored/tested; owner access pending)
+- [x] Apply the reviewed Supabase structured-evidence migration to production and verify RLS/advisors
 - [ ] Monetization and paid publications
 - [ ] Recommendation ranking at scale
 

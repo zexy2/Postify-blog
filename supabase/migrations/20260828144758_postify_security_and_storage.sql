@@ -1,5 +1,5 @@
 -- Security and Storage hardening for the Postify project.
--- Apply after 202608070001_postify_content_model.sql.
+-- Apply after 20260828144744_postify_content_model.sql.
 
 -- Public reads need aggregate-like data for the comment UI. Writes remain
 -- limited to the authenticated user who owns the like.

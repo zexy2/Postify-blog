@@ -1,4 +1,4 @@
--- Verified Knowledge hardening: immutable follow-up to 202608280900.
+-- Verified Knowledge hardening: immutable follow-up to 20260828144831.
 -- Keeps automatic Postify verification outside author-writable post metadata,
 -- validates evidence structure, and exposes only privacy-safe public evidence views.
 
