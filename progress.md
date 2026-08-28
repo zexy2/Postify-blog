@@ -109,3 +109,21 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - `git push -u origin chatgpt/postify-rethink` failed because the Oracle host has no GitHub HTTPS credential.
 - `gh auth status` confirms no authenticated GitHub session; SSH auth to `git@github.com` also fails with `Permission denied (publickey)`; no GH/GITHUB token environment variables are present.
 - Production remains healthy at the root (HTTP 200) but still serves the prior fallback identity (`Postify Blog`) at `/404.html`, proving the final fallback hardening has not been deployed yet.
+
+## 2026-08-28 — UI V2 parallel worktree kickoff
+- Split the UI redesign into isolated foundation, home/discovery, article, editor, and QA worktree lanes.
+- Integrated the first four UI lanes into `chatgpt/postify-ui-v2` without functional/schema changes.
+- Foundation: warmer editorial palette, calmer typography system, simplified header, direct Guides/Decisions/Field Notes navigation.
+- Discovery: typography-led hero, useful primary/secondary actions, quieter search treatment, flatter featured story and filter styling.
+- Article: removed card/glass reading shell in favor of a cleaner editorial page, larger display hierarchy and quieter utility rail.
+- Editor: removed gradient/card treatment and moved toward a focused writing workspace with structured format/readiness tools retained.
+- Verification after integration: 13 test files / 53 tests PASS, lint PASS, production build PASS, build smoke PASS.
+- Runtime Vite preview root returned HTTP 200. Host Chromium screenshot automation is blocked by Snap cgroup restrictions under the MCP service, so this batch is not being auto-deployed before a real visual/browser QA pass.
+
+## 2026-08-28 — UI V2 parallel pass 2
+- Refined the editorial feed and category discovery: flatter surfaces, stronger serif hierarchy, calmer metadata, underline-style filters, less card chrome.
+- Reworked bookmarks/profile/public author surfaces to match the editorial system and removed legacy gradient/glass treatments from the main account flows.
+- Fixed the public author bookmark callback to match the current `EditorialFeed` contract and made bookmarked links slug-aware.
+- Simplified the footer, removed the giant display banner, shifted category links to Postify content formats, and added a global reduced-motion safeguard.
+- Added a dedicated Chromium UI V2 E2E smoke covering desktop discovery/navigation, direct article rendering, 390px mobile overflow/menu, and reduced-motion behavior.
+- Verification: full `npm run verify` PASS (13 files / 53 tests, lint, production build, build smoke) and Playwright Chromium UI smoke PASS (4/4).

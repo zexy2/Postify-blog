@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { FiArrowUpRight, FiCheck, FiClock, FiSearch } from 'react-icons/fi';
+import { FiArrowDown, FiArrowUpRight, FiClock, FiEdit3, FiSearch } from 'react-icons/fi';
 import styles from './Hero.module.css';
 import ContentImage from '../ContentImage/ContentImage';
 import { getPostPresentation } from '../../lib/postPresentation';
@@ -18,8 +18,8 @@ export default function Hero({
     <section className={styles.hero}>
       <div className="container">
         <div className={styles.utility}>
-          <span>POSTIFY / PRACTICAL KNOWLEDGE</span>
-          <span>{t('home.edition')}</span>
+          <span>POSTIFY / {t('home.edition')}</span>
+          <span>{i18n.language?.startsWith('en') ? 'Built for people who make things' : 'Üreten insanlar için'}</span>
         </div>
 
         <div className={styles.content}>
@@ -27,6 +27,15 @@ export default function Hero({
             <span className={styles.eyebrow}>{t('home.eyebrow')}</span>
             <h1 className={styles.title}>{t('home.title')}</h1>
             <p className={styles.subtitle}>{t('home.subtitle')}</p>
+
+            <div className={styles.heroActions}>
+              <a href="#knowledge-feed" className={styles.primaryAction}>
+                {i18n.language?.startsWith('en') ? 'Explore knowledge' : 'Bilgiyi keşfet'} <FiArrowDown size={15} />
+              </a>
+              <Link to="/posts/create" className={styles.secondaryAction}>
+                <FiEdit3 size={15} /> {i18n.language?.startsWith('en') ? 'Write something useful' : 'Faydalı bir şey yaz'}
+              </Link>
+            </div>
 
             {showSearch && (
               <label className={styles.searchContainer}>
@@ -43,11 +52,6 @@ export default function Hero({
               </label>
             )}
 
-            <div className={styles.promises} aria-label={t('home.standardLabel')}>
-              <span><FiCheck size={14} /> {t('home.promiseOutcome')}</span>
-              <span><FiCheck size={14} /> {t('home.promiseFreshness')}</span>
-              <span><FiCheck size={14} /> {t('home.promisePortable')}</span>
-            </div>
           </div>
 
           {featuredPost && (

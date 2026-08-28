@@ -246,3 +246,22 @@ a.socialBadge:hover {
     gap: 1.25rem;
   }
 }
+
+/* UI V2 quiet footer */
+.footerStickyWrapper { position: relative; bottom: auto; z-index: auto; overflow: visible; clip-path: none; }
+.footer { padding: 3.25rem 0 1.75rem; background: var(--bg-secondary); }
+.container { gap: 2rem; }
+.topSection { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: clamp(2rem, 6vw, 6rem); }
+.brandLink { font-family: var(--font-sans); font-size: 1.05rem; font-weight: 820; letter-spacing: -.03em; }
+.brandDesc { max-width: 38ch; }
+.socialBadge { padding: .35rem 0; background: transparent; border: 0; border-radius: 0; }
+a.socialBadge:hover { transform: none; }
+.colTitle { font-family: var(--font-mono); font-size: .64rem; }
+.colList { gap: .55rem; }
+.colList a { font-size: .82rem; }
+.colList a:hover { transform: none; }
+.bottomBar { padding-top: 1.25rem; }
+.scrollTopBtn { padding: .45rem .65rem; background: transparent; border-radius: var(--radius-md); }
+.scrollTopBtn:hover { background: var(--bg-primary); transform: none; box-shadow: none; }
+@media (max-width: 720px) { .topSection { grid-template-columns: 1fr; gap: 2.25rem; } .columnsGroup { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 460px) { .columnsGroup { grid-template-columns: 1fr 1fr; } .copyDot, .copyBrand { display: none; } }

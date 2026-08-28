@@ -1,7 +1,6 @@
 /**
- * Postify Blog - Premium UI Design System
- * 2025-2026 Design Trends: Glassmorphism 2.0, Bento Grid, Kinetic Typography
- * Inspired by landonorris.com aesthetics
+ * Postify editorial utility system.
+ * Quiet surfaces, strong type, one warm accent, predictable rhythm.
  */
 
 /*
@@ -16,18 +15,18 @@
 
 :root {
   /* Colors - Light Theme (Linear Style) */
-  --bg-primary: #fbfaf7;
-  --bg-secondary: #f3f0e9;
-  --bg-tertiary: #e9e5dc;
-  --bg-elevated: #fffdfa;
+  --bg-primary: #f7f5f0;
+  --bg-secondary: #efebe3;
+  --bg-tertiary: #e6e0d6;
+  --bg-elevated: #fcfbf8;
   --bg-hover: #eeebe4;
   --bg-active: #e4dfd6;
   --bg-glass: rgba(255, 255, 255, 0.85);
   --bg-glass-strong: rgba(255, 255, 255, 0.98);
 
-  --text-primary: #1b1917;
-  --text-secondary: #5d5953;
-  --text-muted: #847d74;
+  --text-primary: #1d1b18;
+  --text-secondary: #625d55;
+  --text-muted: #888077;
   --text-disabled: #d4d4d4;
   --text-inverse: #fafafa;
   --text-link: #a64225;
@@ -39,13 +38,13 @@
   --divider: rgba(0, 0, 0, 0.06);
   
   /* Primary Accent — Linear Indigo */
-  --primary: #b34f2d;
-  --primary-hover: #963e23;
-  --primary-active: #7b321d;
-  --primary-muted: #9f4628;
-  --primary-light: rgba(179, 79, 45, 0.14);
-  --primary-subtle: rgba(179, 79, 45, 0.07);
-  --primary-dark: #7b321d;
+  --primary: #a64628;
+  --primary-hover: #8d391f;
+  --primary-active: #722e1a;
+  --primary-muted: #944127;
+  --primary-light: rgba(166, 70, 40, 0.14);
+  --primary-subtle: rgba(166, 70, 40, 0.07);
+  --primary-dark: #722e1a;
 
   --secondary: #b34f2d;
   --secondary-hover: #963e23;
@@ -134,8 +133,8 @@
   --radius-full: 9999px;
   
   /* Typography - Linear Style (Inter only) */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Iowan Old Style', 'Baskerville', 'Times New Roman', Georgia, serif;
+  --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Iowan Old Style', Baskerville, 'Palatino Linotype', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   
   --text-xs: 0.75rem;
@@ -163,11 +162,11 @@
   --z-tooltip: 400;
   
   /* Header Height */
-  --header-height: 72px;
+  --header-height: 68px;
   
   /* Container - Linear Style */
-  --container-max: 1180px;
-  --container-narrow: 680px;
+  --container-max: 1220px;
+  --container-narrow: 740px;
 }
 
 /* ========================================
@@ -180,10 +179,10 @@
      BACKGROUND PALETTE - Linear Style
      Pure black base
      ═══════════════════════════════════════ */
-  --bg-primary: #000000;           /* Pure black */
-  --bg-secondary: #0a0a0a;         /* Slightly elevated */
-  --bg-tertiary: #111111;          /* Cards */
-  --bg-elevated: #161616;          /* Modals, dropdowns */
+  --bg-primary: #11100f;           /* Warm near-black */
+  --bg-secondary: #171513;         /* Slightly elevated */
+  --bg-tertiary: #1d1a18;          /* Cards */
+  --bg-elevated: #211e1b;          /* Modals, dropdowns */
   --bg-hover: #1a1a1a;             /* Hover states */
   --bg-active: #222222;            /* Active/pressed */
   
@@ -195,9 +194,9 @@
   /* ═══════════════════════════════════════
      TEXT PALETTE - Mercury White
      ═══════════════════════════════════════ */
-  --text-primary: #f4f5f8;         /* Mercury White */
-  --text-secondary: #8a8f98;       /* Linear gray */
-  --text-muted: #5c5f66;           /* Muted */
+  --text-primary: #f2eee7;         /* Warm paper */
+  --text-secondary: #aaa299;       /* Warm gray */
+  --text-muted: #7c746c;           /* Muted */
   --text-disabled: #3d3d3f;        /* Disabled */
   --text-inverse: #000000;         /* On light bg */
   --text-link: #f08a67;            /* Editorial coral */
@@ -349,7 +348,7 @@ html {
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--text-primary);
   background: var(--bg-primary);
   background-image: none;
@@ -365,9 +364,9 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   color: var(--text-primary);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.032em;
   margin-bottom: 0.5em;
 }
 
@@ -395,7 +394,7 @@ a:hover {
 }
 
 strong, b {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 code {
@@ -719,3 +718,12 @@ button {
 .skipLink:focus { transform: translateY(0); }
 #main-content:focus { outline: none; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

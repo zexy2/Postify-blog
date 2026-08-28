@@ -92,7 +92,7 @@ const UserPage = () => {
             <EditorialFeed
               posts={posts}
               bookmarkedIds={bookmarkedIds}
-              onBookmarkToggle={(_, post) => toggleBookmark(post?.id || _, post)}
+              onBookmarkToggle={(post) => toggleBookmark(post.id, post)}
             />
           )}
         </section>

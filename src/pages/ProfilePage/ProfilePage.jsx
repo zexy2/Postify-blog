@@ -29,9 +29,6 @@ const ProfilePage = () => {
   });
   const [avatarUploading, setAvatarUploading] = useState(false);
 
-  // Debug log
-  console.log('ProfilePage state:', { user, isAuthenticated, isLoading });
-
   // Timeout to prevent infinite loading
   useEffect(() => {
     const timer = setTimeout(() => {
