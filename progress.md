@@ -174,7 +174,7 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Authenticated/community features remain honestly local-only while the production backend upgrade is pending; the Knowledge Health dashboard explains the pending state instead of firing broken requests.
 - Expanded author evidence UI with prerequisites, verification steps, caveats, sources, freshness window and revision reason. Publish is disabled until the persistent backend capability is active.
 - Sanitized structured-data citations to HTTP(S) URLs only.
-- Added immutable follow-up migration `202608281320_evidence_integrity_and_privacy.sql`: DB evidence integrity trigger/constraints, author-writable status restriction, private raw confirmations/revision snapshots, aggregate public failure view and sanitized public revision history.
+- Added immutable follow-up migration `20260828144850_evidence_integrity_and_privacy.sql`: DB evidence integrity trigger/constraints, author-writable status restriction, private raw confirmations/revision snapshots, aggregate public failure view and sanitized public revision history.
 - PostgreSQL 16 full migration chain dry-run passes all five repository migrations plus RLS/privacy assertions, including cross-user confirmation privacy and anonymous raw-snapshot denial.
 - CI schema job now applies every migration in repository order and bootstraps the minimal Supabase Storage contract required for a faithful dry-run.
 - Added Chromium E2E as a deploy dependency; production cannot deploy when the 20-scenario browser suite fails.
@@ -240,3 +240,17 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - The release verifier now executes the generated artifact file itself and rejects code/artifact hash drift.
 - Evidence UI exposes the local command, expected output, actual CI output and exact executed file.
 - Build smoke and Chromium coverage require the reproduction artifact and command/hash contract.
+## 2026-08-28 — Production Supabase activation + advisor hardening
+- Confirmed authenticated Supabase management access and inspected the live schema before any DDL: 8 posts, 16 translations, 2 profiles, no drafts/null publish timestamps, RLS enabled on the existing public tables.
+- Applied the base/content/security migrations idempotently, restoring missing `comment_likes` policies and creating the expected `avatars` / `post-images` storage buckets.
+- Applied Verified Knowledge and privacy/integrity migrations to production; evidence columns, confirmations, revisions, Knowledge Gaps, private shelf state, integrity trigger and owner-only failure-detail RPC are live.
+- Ran a fresh PostgreSQL 16 migration-chain dry-run plus the full RLS/abuse verification: PASS (`verified knowledge RLS PASS`).
+- Supabase security advisor initially found 3 ERROR-level SECURITY DEFINER public views plus anonymous definer RPC execution. Added and applied a follow-up hardening migration using SECURITY INVOKER public views over narrow private-schema helpers and removed anonymous RPC EXECUTE grants. Security ERROR findings are now 0.
+- Added covering foreign-key indexes, removed the duplicate slug index, split the translation ALL policy, and converted RLS auth lookups to init-plan-safe `(select auth.uid())`. Performance advisor no longer reports unindexed-FK, auth-initplan, duplicate-index or multiple-permissive-policy findings.
+- Production migration history now records six migrations; repository filenames were aligned to those exact remote versions without `migration repair`.
+- Remaining Supabase security advisor warnings are two intentional authenticated SECURITY DEFINER RPCs (`request_knowledge_gap`, `get_post_failure_details`) with explicit auth/ownership checks, plus the project-level leaked-password-protection Auth setting.
+
+## 2026-08-28 — Production activation release gates
+- Full `npm run verify` PASS after production migration alignment: deterministic knowledge verification, 22 test files / 89 tests, lint, production build and artifact/performance smoke.
+- The previously observed Chromium failure reproduced as a local parallel-worker flake only; the isolated case PASS and the CI-parity Chromium suite (`CI=true`, 1 worker) PASS 22/22 without weakening assertions.
+- `npm ci` reports 28 advisories across the full dependency tree. Repeated online `npm audit` classification timed out from Oracle; offline audit output is not treated as authoritative, so production-vs-dev impact is not claimed yet.

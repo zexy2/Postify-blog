@@ -174,3 +174,12 @@
 **Decision:** A passed automatic verification must ship the exact executed `.mjs` artifact, its SHA-256, a local reproduction command, expected stdout and actual CI stdout. The release runner executes the generated artifact file rather than a separate eval-only copy.
 
 **Why:** “Postify Verified” is only useful if a reader can inspect and reproduce the same contract. Binding the displayed code, downloadable artifact, command and output closes another trust gap between documentation and execution.
+## 2026-08-28 — Production Supabase history follows the authenticated management apply
+**Decision:** After authenticated management access became available, apply the reviewed migration chain in repository order, then rename the repository migration files to the exact versions recorded by production. Do not use migration-history repair.
+
+**Why:** The production project had the base schema but an empty migration ledger. Applying the idempotent reviewed chain after a live-schema/data preflight created an auditable ledger; aligning filenames prevents future CLI runs from misclassifying already-applied migrations.
+
+## 2026-08-28 — Public evidence views must not run as exposed SECURITY DEFINER views
+**Decision:** Public evidence/revision views use `security_invoker=true` and call narrow SECURITY DEFINER row producers in a non-exposed `private` schema. Anonymous EXECUTE is revoked from public RPCs; authenticated access remains only where the product requires it and the function performs explicit ownership/auth checks.
+
+**Why:** The Supabase security advisor correctly flagged exposed definer views and anonymous definer RPC execution. Safe aggregate output still needs privileged reads of private raw evidence, so the privilege boundary belongs behind a narrow non-exposed helper rather than on the public view itself.

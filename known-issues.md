@@ -1,7 +1,8 @@
 # Postify Known Issues
 
 ## Current — release relevant
-- **Production Supabase Verified Knowledge migration is not applied yet.** The migration chain, privacy hardening, RLS/abuse verification and frontend services are ready, but owner-level Supabase management access is still required before production `db push`. Until then `/knowledge-backend-status.json` remains `ready:false`, public reading stays backward-compatible, and evidence/shelf/gap contributions use honest local fallback behavior.
+- **Supabase Auth leaked-password protection is disabled.** Database/RLS migration is healthy; this separate Auth setting still needs to be enabled from Supabase Auth configuration because the connected management surface does not expose that toggle.
+- **Full dependency install reports 28 npm advisories.** Oracle's online audit classification endpoint timed out repeatedly, and offline audit output is not considered authoritative; production-vs-dev exposure remains unclassified rather than being claimed clean.
 - **GitHub Pages direct SPA paths return an initial HTTP 404 by hosting design.** The checked `404.html` redirect restores the route in browsers. Chromium E2E covers direct article navigation; HTTP-only probes must not mislabel the expected initial 404 as an application rendering failure.
 - **Automatic Postify verification intentionally supports only checked-in deterministic Node.js snippets.** Arbitrary user code, package installation, shell/network access and external-service verification remain unsupported until an isolated runtime is designed.
 - **Browserslist/caniuse-lite data is ~8 months old.** This is a maintenance warning, not a current release blocker.
@@ -9,10 +10,13 @@
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
 
 ## Resolved — 2026-08-28
+- Production Supabase migration is applied and remote migration history is aligned to the repository versions; no history repair was used.
+- Supabase security advisor ERROR findings for public SECURITY DEFINER views were removed via SECURITY INVOKER public views backed by narrow helpers in a non-exposed private schema; anonymous RPC EXECUTE grants were removed.
+- Supabase performance advisor FK-index, RLS init-plan, duplicate-index, and multiple-permissive-policy findings were remediated; remaining new-index notices are INFO-level unused-index observations.
 - User-controlled profile website links are now restricted to absolute HTTP/HTTPS URLs on save, render, and profile normalization; script/data schemes are rejected.
 - GitHub HTTPS/CLI write authentication is available; branches, PRs, merges and workflow changes can be pushed from the Oracle workspace.
 - Real browser QA runs successfully in the official Playwright Chromium container; Snap Chromium cgroup limitations are no longer a blocker.
-- Verified Knowledge schema, persistence services, revision model, community evidence, Knowledge Gaps, shelf state, freshness and author dashboard are implemented and PostgreSQL/RLS tested; only production schema activation remains.
+- Verified Knowledge schema, persistence services, revision model, community evidence, Knowledge Gaps, shelf state, freshness and author dashboard are implemented, PostgreSQL/RLS tested, and active in production.
 - Raw confirmation identity/free text and raw revision snapshots are no longer public surfaces. Public failure/revision views are privacy-safe aggregates/history; author failure details use an owner/admin-only identity-free RPC.
 - Authors cannot write `postify-verified` into database metadata. The badge is derived only from a successful deterministic release execution artifact.
 - Pre-migration frontend/backend compatibility is explicit through `knowledge-backend-status.json`; the current production schema does not generate noisy missing-table requests or force public reading into fallback content.
