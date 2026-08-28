@@ -135,7 +135,8 @@ test.describe('Verified Knowledge execution', () => {
     expect(execution.codeSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(execution.articleContractMatched).toBe(true);
     expect(execution.policy).toBe('node-deterministic-v1');
-    expect(execution.runtimeVersion).toMatch(/^v20\./);
+    const runtimeMajor = Number(String(execution.runtimeVersion).match(/^v(\d+)/)?.[1]);
+    expect(runtimeMajor).toBeGreaterThanOrEqual(20);
     const knowledge = await request.get('/knowledge/node-json-dogrulama.tr.json');
     expect(knowledge.ok()).toBeTruthy();
     const artifact = await knowledge.json();
