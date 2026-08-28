@@ -73,3 +73,9 @@
 - [ ] Add dependency-release invalidation signals for evidence environments
 - [ ] Add moderation tooling if community failure notes become abusive/noisy at scale
 - [ ] Add grounded Ask Postify only after durable production evidence/revision data has enough coverage
+
+## Actionability
+- [x] Turn article verification steps into a version-scoped interactive runbook
+- [x] Add copy actions for fenced code examples with clipboard fallback
+- [ ] Add explicit command/output blocks that can attach an expected result to an automatic verifier
+- [ ] Sync personal runbook progress to account state only after a reviewed persistence model exists

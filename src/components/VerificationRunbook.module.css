@@ -1,0 +1,30 @@
+.runbook {
+  max-width: 68ch;
+  margin: 2.5rem 0;
+  padding: 1.25rem 0;
+  border-block: 1px solid var(--border-strong);
+}
+.header { display:flex; justify-content:space-between; gap:1.5rem; align-items:flex-start; }
+.eyebrow { color:var(--primary); font-family:var(--font-mono); font-size:.67rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.header h2 { margin:.35rem 0 .5rem; color:var(--text-primary); font-family:var(--font-display); font-size:clamp(1.65rem,3vw,2.15rem); line-height:1.08; }
+.header p { max-width:52ch; margin:0; color:var(--text-muted); font-size:.86rem; line-height:1.55; }
+.progressLabel { flex:0 0 auto; display:grid; justify-items:end; gap:.1rem; }
+.progressLabel strong { color:var(--text-primary); font-family:var(--font-mono); font-size:1rem; }
+.progressLabel span { color:var(--text-muted); font-size:.7rem; }
+.progressTrack { height:3px; margin:1rem 0 1.25rem; overflow:hidden; background:var(--border-color); }
+.progressTrack span { display:block; height:100%; background:var(--primary); transition:width var(--transition-fast); }
+.steps { display:grid; gap:.55rem; margin:0; padding:0; list-style:none; counter-reset:runbook-step; }
+.steps li { counter-increment:runbook-step; }
+.steps label { display:grid; grid-template-columns:1.65rem 1fr; gap:.7rem; align-items:start; min-height:44px; padding:.7rem .75rem; color:var(--text-secondary); background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); cursor:pointer; line-height:1.5; }
+.steps input { position:absolute; opacity:0; pointer-events:none; }
+.checkIcon { display:grid; width:1.45rem; height:1.45rem; place-items:center; color:transparent; border:1px solid var(--border-strong); border-radius:50%; margin-top:.05rem; }
+.steps li[data-complete="true"] label { color:var(--text-muted); background:transparent; }
+.steps li[data-complete="true"] .checkIcon { color:var(--text-inverse); background:var(--primary); border-color:var(--primary); }
+.steps input:focus-visible + .checkIcon { outline:2px solid var(--primary); outline-offset:3px; }
+.footer { display:flex; justify-content:space-between; gap:1rem; align-items:center; margin-top:1rem; }
+.footer small { max-width:48ch; color:var(--text-muted); line-height:1.45; }
+.actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.5rem; }
+.actions button,.actions a { display:inline-flex; align-items:center; gap:.35rem; min-height:38px; padding:.45rem .65rem; color:var(--text-secondary); background:transparent; border:1px solid var(--border-color); border-radius:var(--radius-md); font-size:.75rem; font-weight:750; text-decoration:none; cursor:pointer; }
+.actions a { color:var(--primary); border-color:var(--primary-light); }
+@media(max-width:620px){.header,.footer{align-items:stretch;flex-direction:column}.progressLabel{display:flex;justify-content:flex-start;gap:.5rem}.actions{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){.progressTrack span{transition:none}}

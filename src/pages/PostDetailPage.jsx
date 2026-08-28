@@ -13,7 +13,9 @@ import { getPostPresentation } from '../lib/postPresentation';
 import KnowledgeEvidencePanel from '../components/KnowledgeEvidencePanel';
 import LocalEvidenceActions from '../components/LocalEvidenceActions';
 import CommunityEvidenceDetails from '../components/CommunityEvidenceDetails';
-import { extractExternalReferences, getArticleOutline, slugifyHeading } from '../lib/articleStructure';
+import VerificationRunbook from '../components/VerificationRunbook';
+import CopyableCodeBlock from '../components/CopyableCodeBlock';
+import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading } from '../lib/articleStructure';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
 
@@ -34,9 +36,9 @@ const PlainArticleBody = ({ content }) => {
           const headingIndex = blocks.slice(0, index + 1).filter((item) => /^#{1,3}\s/.test(item)).length - 1;
           return <h2 id={slugifyHeading(heading, headingIndex)} key={key}>{heading}</h2>;
         }
-        if (block.startsWith('```')) {
-          const code = block.replace(/^```[a-z]*\n?/i, '').replace(/```$/, '').trim();
-          return <pre key={key}><code>{code}</code></pre>;
+        const fencedCode = parseFencedCodeBlock(block);
+        if (fencedCode) {
+          return <CopyableCodeBlock key={key} code={fencedCode.code} language={fencedCode.language} />;
         }
         if (block.split('\n').every((line) => line.trim().startsWith('- '))) {
           return <ul key={key}>{block.split('\n').map((line, lineIndex) => <li key={`${lineIndex}-${line}`}>{line.trim().slice(2)}</li>)}</ul>;
@@ -222,6 +224,7 @@ const PostDetailPage = () => {
                   </nav>
                 )}
                 <KnowledgeEvidencePanel post={post} />
+                <VerificationRunbook post={post} />
                 <div className={styles.body}>
                   <PlainArticleBody content={articleBody} />
                 </div>

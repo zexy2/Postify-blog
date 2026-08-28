@@ -66,7 +66,7 @@ export default function LocalEvidenceActions({ post }) {
   };
 
   return (
-    <section className="local-evidence-actions" aria-label={en ? 'Community and personal evidence' : 'Topluluk ve kişisel kanıt'}>
+    <section id="evidence-feedback" className="local-evidence-actions" aria-label={en ? 'Community and personal evidence' : 'Topluluk ve kişisel kanıt'}>
       <div className="local-evidence-actions__summary">
         <div>
           <span>{en ? 'Does this work in the real world?' : 'Gerçek ortamda çalışıyor mu?'}</span>

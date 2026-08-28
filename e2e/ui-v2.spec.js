@@ -214,3 +214,29 @@ test.describe('Verified Knowledge pre-migration compatibility', () => {
     await expect(page.locator('#main-content')).toBeFocused();
   });
 });
+
+test.describe('Action Runbook', () => {
+  test('verification steps become a durable device-local runbook without creating a false Postify badge', async ({ page }) => {
+    await page.goto('/posts/ai-muhendisligi');
+    await expect(page.getByRole('heading', { name: /sadece okuma, kontrolleri uygula|do the checks, not just the reading/i })).toBeVisible();
+    const checks = page.getByRole('checkbox');
+    await expect(checks).toHaveCount(3);
+    await checks.first().focus();
+    await page.keyboard.press('Space');
+    const runbook = page.getByRole('region', { name: /sadece okuma, kontrolleri uygula|do the checks, not just the reading/i });
+    await expect(runbook.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '33');
+    await page.reload();
+    await expect(page.getByRole('checkbox').first()).toBeChecked();
+    const reloadedRunbook = page.getByRole('region', { name: /sadece okuma, kontrolleri uygula|do the checks, not just the reading/i });
+    await expect(reloadedRunbook.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '33');
+    await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toHaveCount(0);
+  });
+
+  test('verified code examples expose a working copy action', async ({ page }) => {
+    await page.goto('/posts/node-json-dogrulama');
+    const copy = page.getByRole('button', { name: /^kopyala$|^copy$/i }).first();
+    await expect(copy).toBeVisible();
+    await copy.click();
+    await expect(page.getByRole('button', { name: /kopyalandı|copied/i }).first()).toBeVisible();
+  });
+});
