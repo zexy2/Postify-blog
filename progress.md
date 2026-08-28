@@ -83,3 +83,15 @@ Verification evidence:
 
 Release note:
 - GitHub write access has since been restored through the connected GitHub integration. This batch is eligible for branch push/PR/CI and production release after the checkpoint commit.
+
+## 2026-08-28 — Controlled loop batch: resilient drafts + shareable discovery
+Completed in this run:
+1. Fixed restored drafts so their selected writing mode is restored with the content.
+2. Made content-format discovery state URL-addressable via the `type` query parameter.
+3. Made quick-read discovery state URL-addressable via the `reading=quick` query parameter.
+4. Preserved category/type/reading filters when any one filter changes instead of overwriting sibling query state.
+5. Reset feed pagination when category changes and added explicit group semantics to format/time filters.
+6. Made quick-read filtering derive reading time from body/excerpt when API metadata is absent, while excluding posts with no measurable text; added unit coverage.
+7. Connected title validation and character-count feedback to the title input with `aria-invalid`, `aria-describedby`, and alert semantics.
+
+Verification: focused post-presentation/draft tests pass (10/10); full `npm run verify` passes with 13 test files / 53 tests, lint clean, production build PASS, and build smoke PASS. Runtime preview smoke returned HTTP 200 for `/`, the combined filter URL, and `/posts/create`; HTML product marker PASS.

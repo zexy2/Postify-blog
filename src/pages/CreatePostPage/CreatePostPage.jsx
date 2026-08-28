@@ -32,10 +32,10 @@ const CreatePostPage = () => {
   const aiAvailable = isAIAvailable();
   const currentUser = useSelector((state) => state.user.user);
   const writingTemplates = getWritingTemplates(i18n.language);
-  const [writingMode, setWritingMode] = useState('guide');
-  const writingTemplate = getWritingTemplate(writingMode, i18n.language);
   const draftKey = createDraftKey(currentUser?.id, i18n.language);
   const initialDraft = typeof window !== 'undefined' ? loadDraft(window.localStorage, draftKey) : null;
+  const [writingMode, setWritingMode] = useState(() => initialDraft?.writingMode || 'guide');
+  const writingTemplate = getWritingTemplate(writingMode, i18n.language);
 
   const [formData, setFormData] = useState(() => initialDraft?.formData || ({
     title: '',
@@ -207,11 +207,13 @@ const CreatePostPage = () => {
               onChange={handleTitleChange}
               placeholder={t('posts.titlePlaceholder')}
               className={`${styles.input} ${errors.title ? styles.inputError : ''}`}
+              aria-invalid={Boolean(errors.title)}
+              aria-describedby={errors.title ? "title-error title-count" : "title-count"}
               maxLength={EDITOR_CONFIG.MAX_TITLE_LENGTH}
             />
             <div className={styles.inputFooter}>
-              {errors.title && <span className={styles.error}>{errors.title}</span>}
-              <span className={styles.charCount}>
+              {errors.title && <span id="title-error" className={styles.error} role="alert">{errors.title}</span>}
+              <span id="title-count" className={styles.charCount}>
                 {formData.title.length}/{EDITOR_CONFIG.MAX_TITLE_LENGTH}
               </span>
             </div>

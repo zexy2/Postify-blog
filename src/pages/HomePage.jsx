@@ -9,7 +9,7 @@ import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
 import { useSearch } from '../hooks/useSearch';
 import { useBookmarks } from '../hooks/useBookmarks';
-import { getPostType } from '../lib/postPresentation';
+import { getPostReadingMinutes, getPostType } from '../lib/postPresentation';
 import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
 
@@ -17,27 +17,47 @@ const HomePage = () => {
   const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const typeParam = searchParams.get('type');
+  const readingParam = searchParams.get('reading');
   const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
   const [showWakeUp, setShowWakeUp] = useState(false);
   const [visiblePostCount, setVisiblePostCount] = useState(9);
   const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
-  const [activeType, setActiveType] = useState('all');
-  const [readingFilter, setReadingFilter] = useState('all');
+  const [activeType, setActiveType] = useState(typeParam || 'all');
+  const [readingFilter, setReadingFilter] = useState(readingParam === 'quick' ? 'quick' : 'all');
 
   useEffect(() => {
     setActiveCategory(categoryParam || 'all');
   }, [categoryParam]);
 
+  useEffect(() => {
+    setActiveType(typeParam || 'all');
+    setReadingFilter(readingParam === 'quick' ? 'quick' : 'all');
+  }, [readingParam, typeParam]);
+
+  const updateFilterParam = (key, value) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (value === 'all') nextParams.delete(key);
+    else nextParams.set(key, value);
+    setSearchParams(nextParams, { replace: true });
+  };
+
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
-    if (category === 'all') {
-      searchParams.delete('category');
-      setSearchParams(searchParams, { replace: true });
-    } else {
-      setSearchParams({ category }, { replace: true });
-    }
+    updateFilterParam('category', category);
+  };
+
+  const handleTypeChange = (type) => {
+    setActiveType(type);
+    updateFilterParam('type', type);
+  };
+
+  const handleReadingChange = () => {
+    const next = readingFilter === 'quick' ? 'all' : 'quick';
+    setReadingFilter(next);
+    updateFilterParam('reading', next);
   };
 
   useEffect(() => {
@@ -48,7 +68,7 @@ const HomePage = () => {
 
   useEffect(() => {
     setVisiblePostCount(9);
-  }, [activeType, debouncedQuery, i18n.language, readingFilter]);
+  }, [activeCategory, activeType, debouncedQuery, i18n.language, readingFilter]);
 
   const contentTypes = useMemo(() => getWritingTemplates(i18n.language), [i18n.language]);
 
@@ -62,7 +82,8 @@ const HomePage = () => {
     return posts.filter((post) => {
       const matchesCategory = activeCategory === 'all' || post.category?.toLowerCase() === activeCategory.toLowerCase();
       const matchesType = activeType === 'all' || getPostType(post) === activeType;
-      const matchesReading = readingFilter === 'all' || Number(post.readingTime || 0) <= 5;
+      const readingMinutes = getPostReadingMinutes(post);
+      const matchesReading = readingFilter === 'all' || (readingMinutes !== null && readingMinutes <= 5);
       if (!matchesCategory || !matchesType || !matchesReading) return false;
       if (!normalizedQuery) return true;
 
@@ -145,12 +166,12 @@ const HomePage = () => {
       <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
       <section className={`container ${styles.postsSection}`}>
-        <div className={styles.typeFilter} aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'}>
+        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'}>
           <button
             type="button"
             className={activeType === 'all' ? styles.typeFilterActive : ''}
             aria-pressed={activeType === 'all'}
-            onClick={() => setActiveType('all')}
+            onClick={() => handleTypeChange('all')}
           >
             {i18n.language?.startsWith('en') ? 'All formats' : 'Tüm biçimler'}
           </button>
@@ -160,7 +181,7 @@ const HomePage = () => {
               type="button"
               className={activeType === type.id ? styles.typeFilterActive : ''}
               aria-pressed={activeType === type.id}
-              onClick={() => setActiveType(type.id)}
+              onClick={() => handleTypeChange(type.id)}
             >
               {type.label}
             </button>
@@ -170,7 +191,7 @@ const HomePage = () => {
             type="button"
             className={readingFilter === 'quick' ? styles.typeFilterActive : ''}
             aria-pressed={readingFilter === 'quick'}
-            onClick={() => setReadingFilter((value) => value === 'quick' ? 'all' : 'quick')}
+            onClick={handleReadingChange}
           >
             {i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk'}
           </button>
@@ -190,7 +211,7 @@ const HomePage = () => {
             <FiSearch size={32} />
             <h3>{hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
             <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : activeType !== 'all' ? (i18n.language?.startsWith('en') ? 'No stories match this format yet.' : 'Bu biçimde eşleşen yazı henüz yok.') : readingFilter !== 'all' ? (i18n.language?.startsWith('en') ? 'No quick reads match these filters yet.' : 'Bu filtrelerde kısa okuma bulunamadı.') : t('home.noContentHint')}</p>
-            {(hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); setActiveType('all'); setReadingFilter('all'); }}>{t('home.clearFilters')}</button>}
+            {(hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); setActiveType('all'); setReadingFilter('all'); setSearchParams({}, { replace: true }); }}>{t('home.clearFilters')}</button>}
           </div>
         ) : (
           <EditorialFeed

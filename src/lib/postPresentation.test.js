@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPostDate, getPostPresentation, getPostType } from './postPresentation';
+import { formatPostDate, getPostPresentation, getPostReadingMinutes, getPostType } from './postPresentation';
 
 describe('postPresentation', () => {
   it('uses an explicit supported content type', () => {
@@ -33,6 +33,12 @@ describe('postPresentation', () => {
     }, 'en');
     expect(result.dateLabel).toBe('Last editor review');
     expect(result.dateValue).toBe('2026-08-04T10:00:00.000Z');
+  });
+
+  it('derives reading minutes when API metadata is missing', () => {
+    expect(getPostReadingMinutes({ body: 'word '.repeat(440) })).toBe(2);
+    expect(getPostReadingMinutes({ readingTime: 4, body: 'word '.repeat(2000) })).toBe(4);
+    expect(getPostReadingMinutes({})).toBeNull();
   });
 
   it('returns an empty string for invalid dates', () => {

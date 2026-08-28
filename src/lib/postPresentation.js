@@ -38,6 +38,16 @@ export function getPostType(post = {}) {
   return 'fieldNote';
 }
 
+
+export function getPostReadingMinutes(post = {}) {
+  const explicit = Number(post.readingTime);
+  if (Number.isFinite(explicit) && explicit > 0) return Math.max(1, Math.ceil(explicit));
+  const text = `${post.body || ''} ${post.excerpt || ''}`.trim();
+  if (!text) return null;
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
+}
+
 export function formatPostDate(value, locale = 'tr') {
   if (!value) return '';
   const normalized = normalizeLocale(locale);
