@@ -2,6 +2,7 @@ import { readFile, stat } from 'node:fs/promises';
 
 const required = [
   'docs/index.html',
+  'docs/404.html',
   'docs/manifest.webmanifest',
   'docs/sw.js',
   'docs/registerSW.js',
@@ -12,6 +13,14 @@ for (const path of required) {
   if (!file.isFile() || file.size === 0) {
     throw new Error(`Missing or empty build artifact: ${path}`);
   }
+}
+
+const fallbackHtml = await readFile('docs/404.html', 'utf8');
+if (!fallbackHtml.includes("l.replace(")) {
+  throw new Error('GitHub Pages SPA fallback redirect is missing from docs/404.html');
+}
+if (!fallbackHtml.includes('Postify — Uygulanabilir Bilgi')) {
+  throw new Error('GitHub Pages SPA fallback uses stale product identity');
 }
 
 const html = await readFile('docs/index.html', 'utf8');

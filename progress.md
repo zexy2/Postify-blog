@@ -97,3 +97,9 @@ Completed in this run:
 Verification: focused post-presentation/draft tests pass (10/10); full `npm run verify` passes with 13 test files / 53 tests, lint clean, production build PASS, and build smoke PASS. Runtime preview smoke returned HTTP 200 for `/`, the combined filter URL, and `/posts/create`; HTML product marker PASS.
 
 Production check after the batch: root returned HTTP 200 and serves the newer Postify identity, but a direct article deep link returned HTTP 404. Therefore this run does not claim a successful production deploy; deep-link hosting fallback is recorded as a release issue.
+
+## 2026-08-28 — Final release validation
+- Re-ran the full release gate after the overnight batches: 13 test files / 53 tests PASS, lint clean, production build PASS, build smoke PASS.
+- Hardened the GitHub Pages SPA fallback release gate: `docs/404.html` is now a required build artifact and its redirect/product identity are verified.
+- Updated the fallback page from the stale “Postify Blog” identity to “Postify — Uygulanabilir Bilgi”.
+- Production root remains healthy; direct article requests currently return GitHub Pages HTTP 404 before client-side fallback, so release verification must distinguish HTTP status from browser redirect behavior.
