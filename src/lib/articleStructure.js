@@ -30,3 +30,13 @@ export function extractExternalReferences(content = '', currentOrigin = '') {
     try { return new URL(url).origin !== currentOrigin; } catch { return false; }
   });
 }
+
+export function parseFencedCodeBlock(block = '') {
+  const source = String(block).trim();
+  const match = source.match(/^```([^\n`]*)\n?([\s\S]*?)\n?```$/);
+  if (!match) return null;
+  return {
+    language: match[1].trim().toLowerCase(),
+    code: match[2].replace(/\n$/, ''),
+  };
+}

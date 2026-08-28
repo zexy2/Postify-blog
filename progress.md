@@ -201,3 +201,11 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Public post queries now consult the deployed knowledge capability contract first and choose legacy fields immediately while `ready:false`, eliminating expected pre-migration API 400 noise.
 - Production browser observability now distinguishes GitHub Pages' known initial deep-link document 404 from unexpected API/subresource 4xx/5xx responses; API/resource failures remain release-blocking.
 - GitHub Actions public Supabase URL/publishable key were aligned with the production client already served by the live site; this does not grant schema-management access.
+
+## 2026-08-28 — Action Runbook V1
+- Turned evidence `verificationSteps` into an interactive article runbook so Postify content can be applied, not only read.
+- Runbook progress is stored device-locally and keyed to `evidence_version`; a new evidence version invalidates old completion state instead of carrying stale checks forward.
+- Completing a runbook never creates a `Postify verified` claim. The completed state links readers to the existing Worked/Didn't Work evidence flow.
+- Added copyable fenced code blocks with language labels and a clipboard fallback when the modern Clipboard API is denied.
+- Added keyboard-operable runbook checkboxes, progress semantics, reset, mobile layout, reduced-motion behavior, and clear local-only trust copy.
+- Verification baseline: 20 test files / 80 tests PASS, lint/build/smoke PASS, Chromium product suite 22/22 PASS.

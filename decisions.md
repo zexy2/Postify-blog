@@ -134,3 +134,13 @@
 **Decision:** Production browser smoke may ignore the initial document-level 404 for a known SPA deep link that GitHub Pages routes through `404.html`; all API, fetch, script, style, image, and other unexpected 4xx/5xx responses remain failures.
 
 **Why:** This preserves truthful monitoring without weakening the signal for real application/network regressions.
+
+## 2026-08-28 — Verification steps are an executable reading contract
+**Decision:** Render structured `verificationSteps` as an interactive Action Runbook. Progress is personal/device-local and scoped to the article's evidence version.
+
+**Why:** The product should help a reader perform and verify an outcome, not merely display evidence metadata. Version-scoped progress prevents a reader from carrying a completed checklist across materially changed evidence.
+
+## 2026-08-28 — Completing a runbook is not verification
+**Decision:** A completed Action Runbook never grants `Postify verified`, `Author tested`, or community confirmation. It only offers the reader a direct path to report Worked/Didn't Work.
+
+**Why:** Personal task completion is not independent proof. Keeping those trust states separate preserves the evidence model while still making content actionable.
