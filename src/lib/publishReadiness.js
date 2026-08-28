@@ -17,6 +17,11 @@ export function dateInputToTimestamp(value) {
   return date.toISOString();
 }
 
+export function timestampToLocalDateInputValue(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : getLocalDateInputValue(date);
+}
+
 export const hasMeaningfulEvidenceEntry = (value, minLength, separator = /\n/) => {
   const items = Array.isArray(value) ? value : String(value || '').split(separator);
   return items.some((item) => String(item || '').trim().length >= minLength);

@@ -12,7 +12,7 @@ import { useCreatePost, usePost, useUpdatePost } from '../../hooks/usePosts';
 import { EDITOR_CONFIG } from '../../constants';
 import { getWritingStarter, getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
 import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draftStorage';
-import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness } from '../../lib/publishReadiness';
+import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness, timestampToLocalDateInputValue } from '../../lib/publishReadiness';
 import { useKnowledgeBackendStatus } from '../../hooks/useKnowledge';
 import { getWritingMetrics } from '../../lib/writingMetrics';
 import { 
@@ -79,7 +79,7 @@ const CreatePostPage = () => {
       body: editingPost.body || '',
       bodyHtml: editingPost.bodyHtml || '',
       outcome: editingPost.outcome || editingPost.excerpt || '',
-      testedAt: editingPost.evidence?.testedAt ? editingPost.evidence.testedAt.slice(0, 10) : '',
+      testedAt: editingPost.evidence?.testedAt ? timestampToLocalDateInputValue(editingPost.evidence.testedAt) : '',
       environment: (editingPost.evidence?.environment || []).join(' · '),
       prerequisites: (editingPost.evidence?.prerequisites || []).join('\n'),
       verificationSteps: (editingPost.evidence?.verificationSteps || []).join('\n'),

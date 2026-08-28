@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness, hasMeaningfulEvidenceEntry } from './publishReadiness';
+import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness, hasMeaningfulEvidenceEntry, timestampToLocalDateInputValue } from './publishReadiness';
 
 const core = { title: 'Useful title', body: 'x'.repeat(200) };
 const evidence = {
@@ -85,6 +85,12 @@ describe('getPublishReadiness', () => {
 
   it('formats the browser-local maximum test date deterministically', () => {
     expect(getLocalDateInputValue(new Date(2026, 7, 28, 23, 59))).toBe('2026-08-28');
+  });
+
+  it('round-trips a local date input without UTC slice drift', () => {
+    const timestamp = dateInputToTimestamp('2026-08-28');
+    expect(timestampToLocalDateInputValue(timestamp)).toBe('2026-08-28');
+    expect(timestampToLocalDateInputValue('not-a-date')).toBe('');
   });
 
   it('honors the editor title maximum in the publication contract', () => {
