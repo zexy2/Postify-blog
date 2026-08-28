@@ -109,17 +109,21 @@ const PostDetailPage = () => {
       <div className={styles.page}>
         <div className="container">
           <div className={styles.articleLayout}>
+            {/* Left Floating Rail Tools Widget */}
             <aside className={styles.rail} aria-label={t('article.tools')}>
               <div className={styles.railWidget}>
                 <Link to="/" className={styles.backBtn} title={t('common.back')}>
                   <FiArrowLeft size={16} />
                   <span>{t('common.back')}</span>
                 </Link>
+
                 <div className={styles.railDivider} />
+
                 <div className={styles.readStat}>
                   <FiClock size={14} className={styles.statIcon} />
                   <span>{post.readingTime} {t('common.minutes')}</span>
                 </div>
+
                 <button
                   type="button"
                   className={`${styles.railActionBtn} ${isBookmarked ? styles.bookmarked : ''}`}
@@ -128,13 +132,16 @@ const PostDetailPage = () => {
                 >
                   <FiBookmark size={16} />
                 </button>
+
                 <div className={styles.railShareBtn}>
                   <CopyLinkButton url={pageUrl} />
                 </div>
               </div>
             </aside>
 
+            {/* Main Article Shell */}
             <article ref={articleRef} className={styles.articleShell}>
+              {/* Header Info FIRST */}
               <header className={styles.articleHeader}>
                 <div className={styles.meta}>
                   <span className={styles.contentType}>{presentation.typeLabel}</span>
@@ -143,8 +150,11 @@ const PostDetailPage = () => {
                   <time dateTime={post.publishedAt}>{publishedDate}</time>
                   {isUpdated && <span>({t('article.updated')} {updatedDate})</span>}
                 </div>
+
                 <h1 className={styles.title}>{post.title}</h1>
+                
                 {post.excerpt && <p className={styles.excerpt}>{post.excerpt}</p>}
+
                 <div className={styles.authorBar}>
                   <Link to={`/users/${author?.id || 'fallback-editor'}`} className={styles.author} title={author?.name || t('article.editor')}>
                     <span className={styles.avatar}>{initials(author?.name || t('article.editor'))}</span>
@@ -163,45 +173,138 @@ const PostDetailPage = () => {
                   <p>{presentation.outcome}</p>
                 </div>
                 <dl className={styles.quickBriefMeta}>
-                  <div><dt>{t('article.contentType')}</dt><dd>{presentation.typeLabel}</dd></div>
-                  <div><dt>{t('posts.readingTime')}</dt><dd>{post.readingTime} {t('common.minutes')}</dd></div>
-                  <div><dt>{t('article.lastTouch')}</dt><dd>{presentation.formattedDate || publishedDate}</dd></div>
+                  <div>
+                    <dt>{t('article.contentType')}</dt>
+                    <dd>{presentation.typeLabel}</dd>
+                  </div>
+                  <div>
+                    <dt>{t('posts.readingTime')}</dt>
+                    <dd>{post.readingTime} {t('common.minutes')}</dd>
+                  </div>
+                  <div>
+                    <dt>{t('article.lastTouch')}</dt>
+                    <dd>{presentation.formattedDate || publishedDate}</dd>
+                  </div>
                 </dl>
               </section>
 
+              {/* Cover Image SECOND */}
               <div className={styles.coverWrapper}>
-                <ContentImage src={post.coverImageUrl} alt={post.coverImageAlt || post.title} className={styles.coverImage} loading="eager" fetchPriority="high" />
+                <ContentImage
+                  src={post.coverImageUrl}
+                  alt={post.coverImageAlt || post.title}
+                  className={styles.coverImage}
+                  loading="eager"
+                  fetchPriority="high"
+                />
               </div>
 
               <div className={styles.articleContent}>
-                {post.isFallback && <p role="status" className={styles.fallbackNotice}><strong>{t('home.fallbackNotice')}</strong> {t('home.fallbackHint')}</p>}
+                {post.isFallback && (
+                  <p role="status" className={styles.fallbackNotice}>
+                    <strong>{t('home.fallbackNotice')}</strong> {t('home.fallbackHint')}
+                  </p>
+                )}
+
                 {outline.length >= 2 && (
                   <nav className={styles.articleOutline} aria-label={i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}>
                     <span>{i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}</span>
-                    <ol>{outline.map((item) => <li key={item.id} data-level={item.level}><a href={`#${item.id}`}>{item.text}</a></li>)}</ol>
+                    <ol>
+                      {outline.map((item) => (
+                        <li key={item.id} data-level={item.level}><a href={`#${item.id}`}>{item.text}</a></li>
+                      ))}
+                    </ol>
                   </nav>
                 )}
-                <div className={styles.body}><PlainArticleBody content={articleBody} /></div>
+                <div className={styles.body}>
+                  <PlainArticleBody content={articleBody} />
+                </div>
                 {externalReferences.length > 0 && (
                   <section className={styles.references} aria-labelledby="article-references-title">
-                    <div><span>{i18n.language?.startsWith('en') ? 'References found in this article' : 'Yazıda geçen kaynaklar'}</span><h2 id="article-references-title">{i18n.language?.startsWith('en') ? 'External references' : 'Dış kaynaklar'}</h2></div>
-                    <ol>{externalReferences.map((reference) => { let label = reference; try { label = new URL(reference).hostname.replace(/^www\./, ''); } catch { /* keep URL */ } return <li key={reference}><a href={reference} target="_blank" rel="noopener noreferrer">{label}</a></li>; })}</ol>
+                    <div>
+                      <span>{i18n.language?.startsWith('en') ? 'References found in this article' : 'Yazıda geçen kaynaklar'}</span>
+                      <h2 id="article-references-title">{i18n.language?.startsWith('en') ? 'External references' : 'Dış kaynaklar'}</h2>
+                    </div>
+                    <ol>
+                      {externalReferences.map((reference) => {
+                        let label = reference;
+                        try { label = new URL(reference).hostname.replace(/^www\./, ''); } catch { /* keep URL */ }
+                        return <li key={reference}><a href={reference} target="_blank" rel="noopener noreferrer">{label}</a></li>;
+                      })}
+                    </ol>
                   </section>
                 )}
               </div>
             </article>
           </div>
 
+          {/* Comments Section */}
           <section className={styles.commentsSection} id="comments-section">
-            <div className={styles.sectionHeading}><div><span className={styles.sectionEyebrow}>{t('article.discussion')}</span><h2><FiMessageCircle size={19} /> {t('posts.comments')} <span>({comments.length})</span></h2></div><CopyLinkButton url={pageUrl} /></div>
-            {commentsUnavailable ? <p className={styles.commentHint} role="status">{t('comments.unavailable')}</p> : comments.length === 0 ? <p className={styles.commentHint}>{t('comments.noComments')}</p> : comments.map((comment) => <div key={comment.id} className={styles.comment}><strong>{comment.author?.full_name || comment.author?.username || t('comments.reader')}</strong><p>{comment.content}</p></div>)}
+            <div className={styles.sectionHeading}>
+              <div>
+                <span className={styles.sectionEyebrow}>{t('article.discussion')}</span>
+                <h2><FiMessageCircle size={19} /> {t('posts.comments')} <span>({comments.length})</span></h2>
+              </div>
+              <CopyLinkButton url={pageUrl} />
+            </div>
+            {commentsUnavailable ? (
+              <p className={styles.commentHint} role="status">{t('comments.unavailable')}</p>
+            ) : comments.length === 0 ? (
+              <p className={styles.commentHint}>{t('comments.noComments')}</p>
+            ) : (
+              comments.map((comment) => (
+                <div key={comment.id} className={styles.comment}>
+                  <strong>{comment.author?.full_name || comment.author?.username || t('comments.reader')}</strong>
+                  <p>{comment.content}</p>
+                </div>
+              ))
+            )}
           </section>
 
-          {(adjacentPosts.newer || adjacentPosts.older) && <nav className={styles.adjacent} aria-label={t('article.moreStories')}>{adjacentPosts.older ? <Link to={`/posts/${adjacentPosts.older.slug || adjacentPosts.older.id}`} className={styles.adjacentLink}><span>{t('article.older')}</span><strong>{adjacentPosts.older.title}</strong><FiArrowLeft size={17} /></Link> : <span />}{adjacentPosts.newer ? <Link to={`/posts/${adjacentPosts.newer.slug || adjacentPosts.newer.id}`} className={`${styles.adjacentLink} ${styles.newer}`}><span>{t('article.newer')}</span><strong>{adjacentPosts.newer.title}</strong><FiArrowRight size={17} /></Link> : <span />}</nav>}
+          {/* Next / Previous Article Navigation */}
+          {(adjacentPosts.newer || adjacentPosts.older) && (
+            <nav className={styles.adjacent} aria-label={t('article.moreStories')}>
+              {adjacentPosts.older ? (
+                <Link to={`/posts/${adjacentPosts.older.slug || adjacentPosts.older.id}`} className={styles.adjacentLink}>
+                  <span>{t('article.older')}</span>
+                  <strong>{adjacentPosts.older.title}</strong>
+                  <FiArrowLeft size={17} />
+                </Link>
+              ) : <span />}
+              {adjacentPosts.newer ? (
+                <Link to={`/posts/${adjacentPosts.newer.slug || adjacentPosts.newer.id}`} className={`${styles.adjacentLink} ${styles.newer}`}>
+                  <span>{t('article.newer')}</span>
+                  <strong>{adjacentPosts.newer.title}</strong>
+                  <FiArrowRight size={17} />
+                </Link>
+              ) : <span />}
+            </nav>
+          )}
         </div>
-        <div className={styles.mobileActionBar} aria-label={t('article.tools')}><Link to="/" className={styles.mobileActionBtn} aria-label={t('common.back')}><FiArrowLeft size={18} /></Link><button type="button" className={`${styles.mobileActionBtn} ${isBookmarked ? styles.bookmarked : ''}`} onClick={() => toggleBookmark(post.id, post)}><FiBookmark size={18} /></button><a href="#comments-section" className={styles.mobileActionBtn} aria-label={t('posts.comments')}><FiMessageCircle size={18} /><small>{comments.length}</small></a><div className={styles.mobileShareWrap}><CopyLinkButton url={pageUrl} /></div></div>
+
+        {/* Mobile Sticky Action Bar */}
+        <div className={styles.mobileActionBar} aria-label={t('article.tools')}>
+          <Link to="/" className={styles.mobileActionBtn} aria-label={t('common.back')}>
+            <FiArrowLeft size={18} />
+          </Link>
+          <button
+            type="button"
+            className={`${styles.mobileActionBtn} ${isBookmarked ? styles.bookmarked : ''}`}
+            onClick={() => toggleBookmark(post.id, post)}
+          >
+            <FiBookmark size={18} />
+          </button>
+          <a href="#comments-section" className={styles.mobileActionBtn} aria-label={t('posts.comments')}>
+            <FiMessageCircle size={18} />
+            <small>{comments.length}</small>
+          </a>
+          <div className={styles.mobileShareWrap}>
+            <CopyLinkButton url={pageUrl} />
+          </div>
+        </div>
       </div>
     </>
   );
 };
+
 export default PostDetailPage;

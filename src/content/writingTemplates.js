@@ -66,6 +66,7 @@ export function getWritingTemplate(id, locale = 'tr') {
   return templates.find((template) => template.id === id) || templates[0];
 }
 
+
 export function getWritingStarter(id, locale = 'tr') {
   const template = getWritingTemplate(id, locale);
   const html = template.prompts.map((prompt) => `<h2>${prompt}</h2><p></p>`).join('');

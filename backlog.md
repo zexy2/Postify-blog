@@ -33,3 +33,13 @@
 - [ ] Supabase schema migration for the structured fields
 - [ ] Monetization and paid publications
 - [ ] Recommendation ranking at scale
+
+## Completed — discovery resilience batch
+- [x] Restore writing mode with local drafts
+- [x] URL-addressable category + format + quick-read discovery state
+- [x] Derive quick-read duration safely when legacy rows omit reading-time metadata
+- [x] Associate title validation feedback with the editor input for assistive technology
+
+## Final validation follow-up
+- [x] Verify GitHub Pages SPA fallback artifact and current product identity in the release gate
+- [ ] Add a real browser-engine E2E check for direct deep-link navigation and responsive critical flows

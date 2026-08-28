@@ -21,6 +21,7 @@ export function getArticleOutline(content = '') {
     });
 }
 
+
 export function extractExternalReferences(content = '', currentOrigin = '') {
   const matches = String(content).match(/https?:\/\/[^\s)\]}>"']+/g) || [];
   const unique = [...new Set(matches.map((url) => url.replace(/[.,;:!?]+$/, '')))];
