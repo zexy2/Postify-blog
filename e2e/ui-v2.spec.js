@@ -82,6 +82,17 @@ test.describe('Postify UI V2', () => {
     expect(wrap).toBe('nowrap');
   });
 
+  test('V3 knowledge feed stays within the mobile content column', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    const feed = page.locator('#knowledge-feed');
+    await expect(feed.getByText(/öncelikli okuma|priority read/i)).toBeVisible();
+    const articles = feed.locator('article');
+    await expect(articles.first()).toBeVisible();
+    const overflow = await articles.evaluateAll((items) => items.map((item) => item.scrollWidth - item.clientWidth));
+    expect(Math.max(...overflow)).toBeLessThanOrEqual(1);
+  });
+
   test('reduced motion preference keeps the page usable', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');

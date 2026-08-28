@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiBookmark, FiClock } from 'react-icons/fi';
 import ContentImage from '../ContentImage/ContentImage';
-import { getPostPresentation } from '../../lib/postPresentation';
+import { getPostPresentation, getPostReadingMinutes } from '../../lib/postPresentation';
 import EvidenceBadge from '../EvidenceBadge';
 import { summarizeCommunityEvidence } from '../../lib/communityEvidence';
 import styles from './EditorialFeed.module.css';
@@ -12,19 +12,31 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
   const [lead, ...rest] = posts;
   if (!lead) return null;
 
+  const en = i18n.language?.startsWith('en');
+
   const renderMeta = (post) => {
     const presentation = getPostPresentation(post, i18n.language);
     const community = summarizeCommunityEvidence(post.evidenceSummary || {});
+    const readingMinutes = getPostReadingMinutes(post);
+
     return (
       <div className={styles.meta}>
         <span className={styles.type}>{presentation.typeLabel}</span>
-        <span className={styles.category}>{post.category}</span>
+        {post.category && <span className={styles.category}>{post.category}</span>}
         {presentation.formattedDate && (
-          <span>{presentation.dateLabel}: {presentation.formattedDate}</span>
+          <span className={styles.date}>{presentation.formattedDate}</span>
         )}
-        <span className={styles.readTime}><FiClock size={12} /> {post.readingTime} {t('common.minutes')}</span>
+        {readingMinutes !== null && (
+          <span className={styles.readTime}><FiClock size={11} /> {readingMinutes} {t('common.minutes')}</span>
+        )}
         <EvidenceBadge post={post} compact />
-        {community.total > 0 && <span className={styles.communityEvidence}>{community.canShowRate ? `${community.successRate}% ${i18n.language?.startsWith('en') ? 'worked' : 'çalıştı'}` : `${community.total} ${i18n.language?.startsWith('en') ? 'confirmations' : 'doğrulama'}`}</span>}
+        {community.total > 0 && (
+          <span className={styles.communityEvidence}>
+            {community.canShowRate
+              ? `${community.successRate}% ${en ? 'worked' : 'çalıştı'}`
+              : `${community.total} ${en ? 'confirmations' : 'doğrulama'}`}
+          </span>
+        )}
       </div>
     );
   };
@@ -38,7 +50,7 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
         onClick={() => onBookmarkToggle?.(post)}
         aria-label={isBookmarked ? t('bookmarks.removeFromBookmarks') : t('bookmarks.addToBookmarks')}
       >
-        <FiBookmark size={16} />
+        <FiBookmark size={15} />
       </button>
     );
   };
@@ -48,20 +60,14 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
   return (
     <div className={styles.feedContainer}>
       <article className={styles.lead}>
-        <Link to={`/posts/${lead.slug || lead.id}`} className={styles.leadImageLink}>
-          <ContentImage
-            src={lead.coverImageUrl}
-            alt={lead.coverImageAlt || lead.title}
-            className={styles.leadImage}
-            loading="lazy"
-          />
-        </Link>
         <div className={styles.leadContent}>
+          <div className={styles.leadOrdinal} aria-hidden="true">01</div>
+          <div className={styles.leadKicker}>{en ? 'Priority read' : 'Öncelikli okuma'}</div>
           {renderMeta(lead)}
           <Link to={`/posts/${lead.slug || lead.id}`} className={styles.titleLink}>
             <h3 className={styles.leadTitle}>{lead.title}</h3>
           </Link>
-          <p className={styles.leadExcerpt}>{leadPresentation.outcome}</p>
+          {leadPresentation.outcome && <p className={styles.leadExcerpt}>{leadPresentation.outcome}</p>}
           <div className={styles.footer}>
             <Link to={`/posts/${lead.slug || lead.id}`} className={styles.readLink}>
               {t('common.readMore')} <FiArrowUpRight size={15} />
@@ -69,6 +75,14 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
             <BookmarkButton post={lead} />
           </div>
         </div>
+        <Link to={`/posts/${lead.slug || lead.id}`} className={styles.leadImageLink} tabIndex={-1} aria-hidden="true">
+          <ContentImage
+            src={lead.coverImageUrl}
+            alt=""
+            className={styles.leadImage}
+            loading="lazy"
+          />
+        </Link>
       </article>
 
       <div className={styles.list}>
@@ -82,7 +96,7 @@ const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
                 <Link to={`/posts/${post.slug || post.id}`} className={styles.titleLink}>
                   <h4 className={styles.rowTitle}>{post.title}</h4>
                 </Link>
-                <p className={styles.rowExcerpt}>{presentation.outcome}</p>
+                {presentation.outcome && <p className={styles.rowExcerpt}>{presentation.outcome}</p>}
                 <div className={styles.rowActions}>
                   <Link to={`/posts/${post.slug || post.id}`} className={styles.readLink}>
                     {t('common.read')} <FiArrowUpRight size={14} />

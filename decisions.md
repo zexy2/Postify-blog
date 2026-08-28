@@ -234,3 +234,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Postify UI V3 uses an editorial knowledge-index + precise developer-tool direction. Typography, spacing, information hierarchy, evidence/freshness signals, and content discovery take precedence over gradients, glow, glass, custom cursors, marquees, shimmer, decorative motion, or card-on-card presentation. Major visible changes must be inspected in a real browser at desktop and mobile sizes; build success alone is not UI approval.
 
 **Why:** The previous UI could pass functional tests while still feeling like a generic template because too many equally weighted visual treatments competed for attention. The product's differentiation is useful, inspectable knowledge, so the interface should make that information legible and trustworthy rather than advertise its CSS effects.
+
+## 2026-08-28 — Discovery cards behave like a knowledge index, not a magazine grid
+**Decision:** The primary discovery feed prioritizes title, outcome, evidence/freshness, format and reading cost over large decorative imagery. Thumbnails are supporting context; numbered rows and compact actions create a scannable knowledge-index rhythm.
+
+**Why:** Postify's product value is reusable, evidence-aware knowledge. A conventional image-first blog/news card system makes that differentiation visually secondary and reduces useful information density, especially on mobile.

@@ -320,4 +320,11 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Reworked the first discovery viewport around an editorial knowledge-index hierarchy: calmer sticky header, masthead-scale value proposition, compact search/actions, featured knowledge presentation, restrained topic navigation, and a clearer segmented discovery filter.
 - Removed one remaining app-shell decorative shadow and reduced competing visual weight instead of layering more effects onto the existing UI.
 - Rebuilt the focused `src/` Graphify map after the change: 590 nodes / 1,273 edges / 32 communities.
-- Exact UI V3 slice gates PASS: Node 24.20.0 23 Vitest files / 105 tests, lint, Vite production build (~303.7 KB main entry), and official Playwright 1.57 Chromium UI suite 23/23. Real 1440px and 390px home screenshots were reviewed; no horizontal overflow or blocking hierarchy defect was found.
+- Exact UI V3 slice gates PASS: Node 24.20.0 23 Vitest files / 105 tests, lint, Vite production build (~303.7 KB main entry), and official Playwright 1.57 Chromium UI suite 24/24, including a new mobile feed-overflow regression check. Real 1440px and 390px home screenshots were reviewed; no horizontal overflow or blocking hierarchy defect was found.
+
+## 2026-08-28 — UI V3 discovery feed
+- Reworked the live `EditorialFeed` surface from image-led blog cards into a denser knowledge index: priority lead record, numbered rows, quieter thumbnails, compact actions and evidence-first metadata.
+- Feed metadata now derives reading minutes through the shared presentation helper, so legacy posts without explicit `readingTime` no longer surface an undefined duration.
+- Preserved category, format, freshness/evidence badge, community confirmation and bookmark behavior while reducing decorative card chrome and oversized imagery.
+- Responsive QA: mobile document width is exact 390/390; each new feed article is 358/358 with no card overflow. The filter strip remains intentionally horizontally scrollable edge-to-edge.
+- Validation PASS: 23 Vitest files / 105 tests, lint, production Vite build, and official Playwright 1.57 Chromium UI suite 24/24, including a new mobile feed-overflow regression check.
