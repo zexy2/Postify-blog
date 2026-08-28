@@ -27,3 +27,7 @@
 
 ## UI V2 QA note — 2026-08-28
 - The Oracle host exposes Snap Chromium, but headless launch from the MCP systemd service fails with `is not a snap cgroup`. HTTP preview smoke works; real screenshot/browser QA needs a non-Snap browser/Playwright runtime or external visual review before this UI branch is promoted.
+
+## UI V2 browser QA note — 2026-08-28
+- Snap Chromium cannot run under the MCP systemd cgroup, but this is no longer a blocker: browser QA now runs successfully in the official Playwright Chromium container.
+- Screenshot-diff baselines are not yet committed; current browser smoke validates layout/interaction invariants rather than pixel-level visual approval.

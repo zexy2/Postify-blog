@@ -43,3 +43,10 @@
 ## Final validation follow-up
 - [x] Verify GitHub Pages SPA fallback artifact and current product identity in the release gate
 - [ ] Add a real browser-engine E2E check for direct deep-link navigation and responsive critical flows
+
+## UI V2 follow-up
+- [x] Flatten feed/category navigation and strengthen editorial hierarchy
+- [x] Align bookmarks/profile/public author pages with the new visual system
+- [x] Add Chromium desktop/article/mobile/reduced-motion smoke coverage
+- [ ] Add screenshot-diff baselines for the key UI V2 viewports once a stable visual baseline is approved
+- [ ] Continue legacy surface cleanup: analytics/admin/secondary share controls where old gradient/card styles remain
