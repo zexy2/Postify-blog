@@ -4,6 +4,8 @@ export const VERIFICATION_MANIFEST = [
     postSlug: 'node-json-dogrulama',
     runtime: 'node',
     policy: 'node-deterministic-v1',
+    artifactFile: 'node-json-parse-v1.mjs',
+    reproduceCommand: 'node node-json-parse-v1.mjs',
     expectedStdout: 'PASS',
     code: `import assert from 'node:assert/strict';
 const payload = '{"ok":true,"items":[1,2,3]}';

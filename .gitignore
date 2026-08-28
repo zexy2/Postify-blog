@@ -27,3 +27,5 @@ graphify-out/
 *.sw?
 /public/verification-runs.json
 /public/knowledge/
+
+/public/verification/

@@ -5,6 +5,7 @@ const required = [
   'docs/404.html',
   'docs/llms.txt',
   'docs/verification-runs.json',
+  'docs/verification/node-json-parse-v1.mjs',
   'docs/knowledge-backend-status.json',
   'docs/knowledge/node-json-dogrulama.tr.json',
   'docs/manifest.webmanifest',
@@ -54,6 +55,18 @@ for (const chunk of forbiddenPreloads) {
 const backendStatus = JSON.parse(await readFile('docs/knowledge-backend-status.json', 'utf8'));
 if (typeof backendStatus.ready !== 'boolean') {
   throw new Error('Knowledge backend capability artifact is invalid');
+}
+
+const verificationRuns = JSON.parse(await readFile('docs/verification-runs.json', 'utf8'));
+const nodeRun = verificationRuns.runs?.['node-json-parse-v1'];
+if (verificationRuns.schemaVersion !== 3 || nodeRun?.status !== 'passed') {
+  throw new Error('Verification reproduction contract is missing or did not pass');
+}
+if (nodeRun.artifactUrl !== '/verification/node-json-parse-v1.mjs' || nodeRun.reproduceCommand !== 'node node-json-parse-v1.mjs') {
+  throw new Error('Verification command/artifact contract drifted');
+}
+if (!nodeRun.codeSha256 || nodeRun.codeSha256 !== nodeRun.artifactSha256) {
+  throw new Error('Displayed and executed verification hashes do not match');
 }
 
 const manifest = JSON.parse(await readFile('docs/manifest.webmanifest', 'utf8'));

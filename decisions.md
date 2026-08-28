@@ -169,3 +169,8 @@
 **Decision:** The first automatic verifier is described as policy-limited checked-in Node execution, not isolated/sandboxed execution. The release gate statically rejects unsupported package/network/filesystem/process capabilities and applies code-size, output and timeout limits.
 
 **Why:** Trust copy must reflect the real security boundary. Arbitrary or untrusted user code remains unsupported until OS/container-level isolation is deliberately designed.
+
+## 2026-08-28 — Automatic verification requires a reproducible command/output artifact
+**Decision:** A passed automatic verification must ship the exact executed `.mjs` artifact, its SHA-256, a local reproduction command, expected stdout and actual CI stdout. The release runner executes the generated artifact file rather than a separate eval-only copy.
+
+**Why:** “Postify Verified” is only useful if a reader can inspect and reproduce the same contract. Binding the displayed code, downloadable artifact, command and output closes another trust gap between documentation and execution.
