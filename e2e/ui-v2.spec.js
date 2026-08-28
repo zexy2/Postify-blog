@@ -147,10 +147,16 @@ test.describe('Verified Knowledge execution', () => {
     const verifier = await request.get('/verification/node-json-parse-v1.mjs');
     expect(verifier.ok()).toBeTruthy();
     expect(await verifier.text()).toContain("process.stdout.write('PASS')");
+    const backend = await request.get('/knowledge-backend-status.json');
+    expect(backend.ok()).toBeTruthy();
+    const backendJson = await backend.json();
     const knowledge = await request.get('/knowledge/node-json-dogrulama.tr.json');
     expect(knowledge.ok()).toBeTruthy();
     const artifact = await knowledge.json();
     expect(artifact.evidence.automaticVerification.status).toBe('passed');
+    if (backendJson.ready === true) {
+      expect(String(artifact.id)).not.toMatch(/^fallback-/);
+    }
   });
 
   test('postify verified discovery filter resolves to genuinely executed knowledge', async ({ page }) => {

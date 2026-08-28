@@ -1,5 +1,6 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { createClient } from '@supabase/supabase-js';
+import { getAutomaticVerificationIdForPost } from '../src/content/verificationManifest.js';
 
 const url = process.env.VITE_SUPABASE_URL?.trim();
 const key = process.env.VITE_SUPABASE_ANON_KEY?.trim();
@@ -48,12 +49,24 @@ for (const translation of translations || []) {
   translationsByPost.get(postId).push(translation);
 }
 
+const verification = JSON.parse(await readFile('docs/verification-runs.json', 'utf8'));
+if (!verification?.runs || typeof verification.runs !== 'object') {
+  throw new Error('Production verification-runs.json is missing a runs object');
+}
+
+await rm('docs/knowledge', { recursive: true, force: true });
 await mkdir('docs/knowledge', { recursive: true });
 let count = 0;
 for (const post of posts || []) {
   const variants = translationsByPost.get(String(post.id)) || [{ locale: 'tr', title: post.title, excerpt: post.excerpt, body: post.body }];
   for (const translation of variants) {
     const author = profileById.get(String(post.author_id));
+    const body = translation.body || post.body;
+    const automaticVerificationId = getAutomaticVerificationIdForPost({ slug: post.slug, body });
+    const automaticVerification = automaticVerificationId ? verification.runs[automaticVerificationId] || null : null;
+    if (automaticVerificationId && !automaticVerification) {
+      throw new Error(`Missing verification run for ${automaticVerificationId}`);
+    }
     const artifact = {
       schemaVersion: 1,
       id: post.id,
@@ -61,7 +74,7 @@ for (const post of posts || []) {
       locale: translation.locale,
       title: translation.title || post.title,
       outcome: post.outcome || translation.excerpt || post.excerpt,
-      body: translation.body || post.body,
+      body,
       contentType: post.content_type,
       category: post.category,
       publishedAt: post.published_at,
@@ -78,6 +91,7 @@ for (const post of posts || []) {
         sources: post.sources || [],
         version: post.evidence_version,
         community: summaryById.get(String(post.id)) || null,
+        automaticVerification,
       },
       canonicalUrl: `https://postify.zekiakgul.dev/posts/${post.slug}`,
     };

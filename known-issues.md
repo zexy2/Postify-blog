@@ -10,6 +10,7 @@
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
 
 ## Resolved — 2026-08-28
+- Production knowledge export no longer leaves stale fallback-only JSON behind after a successful Supabase read; the canonical Node verification example now has a real production row and exact displayed-code binding.
 - Production Supabase migration is applied and remote migration history is aligned to the repository versions; no history repair was used.
 - Supabase security advisor ERROR findings for public SECURITY DEFINER views were removed via SECURITY INVOKER public views backed by narrow helpers in a non-exposed private schema; anonymous RPC EXECUTE grants were removed.
 - Supabase performance advisor FK-index, RLS init-plan, duplicate-index, and multiple-permissive-policy findings were remediated; remaining new-index notices are INFO-level unused-index observations.

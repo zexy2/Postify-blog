@@ -15,6 +15,7 @@ import {
   getFallbackStats,
   getFallbackUserPosts,
 } from '../content/fallbackPosts';
+import { getAutomaticVerificationIdForPost } from '../content/verificationManifest';
 
 const LEGACY_POST_FIELDS = [
   'id',
@@ -207,6 +208,10 @@ const normalizePost = (row, translation, author, commentCount = 0, evidenceSumma
     version: Number(row.evidence_version) || 1,
   },
   evidenceSummary,
+  autoVerificationId: getAutomaticVerificationIdForPost({
+    slug: row.slug,
+    body: translation?.body || row.body || '',
+  }),
   commentCount,
 });
 
