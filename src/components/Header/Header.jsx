@@ -25,7 +25,7 @@ import BrandMark from '../BrandMark';
 import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
 
 const Header = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -78,12 +78,13 @@ const Header = () => {
         <Link to="/" className={styles.logo} aria-label="Postify" onClick={closeMenu}>
           <BrandMark size="md" />
           <span>Postify</span>
-          <small>beta</small>
         </Link>
 
         <nav className={styles.desktopNav} aria-label="Primary">
           <Link to="/" className={location.pathname === '/' ? styles.active : ''}>{t('nav.home')}</Link>
-          <Link to="/about" className={location.pathname === '/about' ? styles.active : ''}>{t('nav.about')}</Link>
+          <Link to="/?type=guide">{i18n.language?.startsWith('en') ? 'Guides' : 'Rehberler'}</Link>
+          <Link to="/?type=decision">{i18n.language?.startsWith('en') ? 'Decisions' : 'Kararlar'}</Link>
+          <Link to="/?type=fieldNote">{i18n.language?.startsWith('en') ? 'Field notes' : 'Saha notları'}</Link>
         </nav>
 
         <div className={styles.desktopActions}>
