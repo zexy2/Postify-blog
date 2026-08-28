@@ -64,6 +64,7 @@
 - [x] Threat-model core confirmation abuse/privacy boundaries; self-confirmation/duplicate inflation/raw cross-user reads blocked by RLS
 - [x] Give authors identity-free private access to failure details without exposing raw community evidence publicly
 - [x] Build a narrow deterministic Node.js automatic verification runtime before introducing “Postify verified”
+- [x] Bind the first automatic verification example to a canonical production row and reject stale fallback-only artifacts
 - [ ] Add dependency release monitoring and evidence invalidation after backend model exists
 - [x] Add revision history model with private immutable snapshots and sanitized public changelog
 - [ ] Add grounded Ask Postify/API/MCP only after provenance/freshness data is durable

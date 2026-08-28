@@ -17,3 +17,22 @@ process.stdout.write('PASS');`,
 ];
 
 export const getVerificationCheck = (id) => VERIFICATION_MANIFEST.find((check) => check.id === id) || null;
+
+export const getVerificationCheckByPostSlug = (slug) => (
+  VERIFICATION_MANIFEST.find((check) => check.postSlug === slug) || null
+);
+
+const normalizeCode = (value) => String(value || '').replace(/\r\n/g, '\n').trimEnd();
+
+export const getAutomaticVerificationIdForPost = ({ slug, body }) => {
+  const check = getVerificationCheckByPostSlug(slug);
+  if (!check) return null;
+
+  const expectedCode = normalizeCode(check.code);
+  const fencedBlocks = String(body || '').matchAll(/```(?:js|javascript|mjs)?[ \t]*\n([\s\S]*?)```/gi);
+  for (const block of fencedBlocks) {
+    if (normalizeCode(block[1]) === expectedCode) return check.id;
+  }
+
+  return null;
+};

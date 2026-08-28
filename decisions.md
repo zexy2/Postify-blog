@@ -183,3 +183,12 @@
 **Decision:** Public evidence/revision views use `security_invoker=true` and call narrow SECURITY DEFINER row producers in a non-exposed `private` schema. Anonymous EXECUTE is revoked from public RPCs; authenticated access remains only where the product requires it and the function performs explicit ownership/auth checks.
 
 **Why:** The Supabase security advisor correctly flagged exposed definer views and anonymous definer RPC execution. Safe aggregate output still needs privileged reads of private raw evidence, so the privilege boundary belongs behind a narrow non-exposed helper rather than on the public view itself.
+## 2026-08-28 — Automatic verification binds to displayed code, not a slug or database flag
+**Decision:** A production article receives an automatic verification binding only when its immutable manifest slug matches and a displayed fenced code block exactly matches the checked-in code that the release verifier executed. The database remains limited to `unverified` / `author-tested`; it never stores `postify-verified`.
+
+**Why:** A slug match or author-writable row is not proof. Exact displayed-code matching makes content drift fail closed: if the production article changes without a corresponding checked-in verifier change and passing release artifact, the automatic badge disappears.
+
+## 2026-08-28 — Production knowledge export is authoritative after a successful backend read
+**Decision:** Once the production Supabase schema is confirmed available, the deploy exporter replaces the generated `docs/knowledge` directory instead of overlaying database artifacts onto build-time fallback artifacts. Schema-pending deploys still retain the fallback set.
+
+**Why:** Overlay semantics allowed a fallback-only article to survive as a stale machine-readable production artifact even when no canonical database row existed. Replacing the directory after a successful production read prevents fallback content from masquerading as durable production knowledge.
