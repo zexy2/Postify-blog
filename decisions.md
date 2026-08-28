@@ -36,3 +36,9 @@
 **Decision:** `npm run verify` is the release gate: tests → lint → production build → artifact smoke.
 
 **Why:** A deploy should be evidence-driven and repeatable rather than depend on remembering separate commands.
+
+
+## 2026-08-28 — Do not reroute production hosting just to bypass deploy credentials
+**Decision:** Keep the healthy GitHub Pages production path in place when deployment credentials are unavailable; do not repoint DNS to Oracle as an ad-hoc workaround.
+
+**Why:** Hosting migration changes DNS, TLS, caching, rollback and operational behavior. It is disproportionate to a credential-path failure and would introduce production risk unrelated to product quality.

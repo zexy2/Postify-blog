@@ -6,6 +6,7 @@
 import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useLayoutEffect, Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { selectTheme } from './store/slices/uiSlice';
 
 // Layout (keep eager - needed immediately)
@@ -57,6 +58,7 @@ const useIsomorphicLayoutEffect =
 function App() {
   const location = useLocation();
   const theme = useSelector(selectTheme);
+  const { i18n } = useTranslation();
 
   // Scroll to top on route change
   useIsomorphicLayoutEffect(() => {
@@ -69,6 +71,10 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language?.startsWith('en') ? 'en' : 'tr';
+  }, [i18n.language]);
 
   return (
     <ErrorBoundary>

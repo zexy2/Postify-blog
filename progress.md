@@ -52,3 +52,14 @@ Evidence:
 
 Production status:
 - Quality gates are green. Deployment via the current GitHub Pages path will be attempted after checkpoint commit.
+
+
+### Follow-up loop — language accessibility + deploy attempt
+- Added dynamic `<html lang>` synchronization when the user switches Turkish/English.
+- Re-ran `npm run verify`: 10 test files / 42 tests PASS, lint clean, production build PASS, build smoke PASS.
+- Attempted the repository's existing GitHub Pages deploy path after gates were green.
+- First deploy attempt exposed Docker git safe-directory context; strategy was corrected.
+- Second deploy reached GitHub but failed because the Oracle workspace has no GitHub HTTPS write credential (`could not read Username for https://github.com`).
+- Connected GitHub integration also returned HTTP 403 when creating a branch, confirming there is no usable repository write path from this run.
+- Production was left untouched and remains healthy: `https://postify.zekiakgul.dev/` returned HTTP 200 and still serves the prior `Postify Blog` build.
+- No DNS/hosting architecture switch was attempted as a workaround; preserving the healthy production site is safer than rerouting hosting solely to bypass missing GitHub credentials.

@@ -5,7 +5,7 @@
 - Playwright dependencies exist, but this run has not yet executed a real browser-engine E2E suite; runtime smoke used Vite preview + HTTP checks.
 - Explicit structured metadata (content type, outcome, prerequisites, environment/version, sources, revision history) is not persisted yet because Supabase migrations remain intentionally deferred.
 - Existing visual code outside the primary homepage/article/create flow still contains legacy trend-oriented components and can be simplified incrementally.
-- Current production hosting is GitHub Pages. Deployment requires a working GitHub write credential/path from the Oracle workspace; this must be verified during deploy attempt.
+- Current production hosting is GitHub Pages. Release gates pass, but deployment is blocked because the Oracle workspace has no GitHub HTTPS write credential and the connected GitHub integration returns HTTP 403 for branch creation. Production remains on the prior healthy build.
 
 ## Resolved in 2026-08-28 loop
 - `package.json` now provides the documented `npm test` command.
