@@ -269,3 +269,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Login/Register use the same quiet V3 editorial language as the rest of Postify and pair access forms with concise product context. Password recovery is a first-class public flow with both request and reset routes wired to the existing Supabase-backed auth methods.
 
 **Why:** Access screens are part of the product, not a generic SaaS template. More importantly, a visible “forgot password” link is harmful if its route 404s or the recovery email redirects to another missing route. The UI audit should close functional gaps it exposes rather than merely restyle them.
+
+## 2026-08-28 — Global chrome reinforces the knowledge contract
+**Decision:** Persistent discovery/footer chrome should explain and navigate Postify as a maintained knowledge system, not as a generic blog sitemap. The footer explicitly carries the Evidence / Freshness / Reproducibility model, while topic discovery uses a numbered index with native button semantics and URL-synchronized active state.
+
+**Why:** Header/footer/topic controls appear across a large share of the product and therefore shape the product identity more than isolated decorative components. Repeating the same trust vocabulary at these boundaries makes the evidence-aware value proposition legible without adding scores, glows or card chrome, while native controls keep the interaction accessible and testable.

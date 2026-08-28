@@ -370,3 +370,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Added direct unit coverage for requesting a recovery email and completing a matching-password reset, plus a mobile Chromium contract proving both recovery routes render and do not overflow.
 - Real browser QA on Login, Register, Forgot Password and Reset Password passed at 1440/1440 and 390/390 document widths with zero page errors.
 - Final release gates PASS: 26 Vitest files / 109 tests, lint, production Vite/PWA build (main entry 304,189 bytes), and official Chromium UI suite 27/27.
+
+## 2026-08-28 — UI V3 global knowledge navigation
+- Rebuilt the global Footer as a single V3 knowledge-system surface instead of the legacy footer plus V2 override stack. The footer now makes Postify’s trust model explicit through Evidence, Freshness and Reproducibility and routes users back into knowledge discovery/authoring.
+- Replaced pill-style category chrome with a numbered Topic Index rail that exposes the active topic, preserves URL-addressable category state and remains horizontally contained on mobile.
+- Removed unused giant-footer banner styling and updated the footer product description so global chrome describes practical knowledge with evidence, freshness and execution context rather than generic editorial notes.
+- Browser QA found and corrected an ARIA regression before release: custom `listitem` roles were removed so topic controls retain their native button semantics. Real-data QA confirmed 10 topic controls, state change to `Yapay zekâ`, URL synchronization, zero horizontal overflow and zero page errors at 390px.
+- Tightened the mobile footer after browser measurement, reducing its rendered height from 1,273px to 1,057px while keeping the two content indexes readable and preserving exact 390/390 document width.
+- Stabilized the password-recovery regression by waiting for the post-mutation React success render rather than only the mocked auth call; focused recovery coverage remains 2/2.
+- Final exact-worktree gates PASS: 26 Vitest files / 109 tests, source-only lint, production Vite/PWA build (main entry 305,219 bytes), and official Playwright 1.57 Chromium UI suite 29/29 including new Topic Index state and global Footer trust/mobile contracts.

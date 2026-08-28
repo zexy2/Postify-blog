@@ -92,8 +92,9 @@
 ## UI V3 — visible product redesign
 - [x] Establish repo-scoped Graphify + Postify UI Review workflow
 - [x] Redesign header, home masthead, featured knowledge, topic nav, and discovery-filter hierarchy
+- [x] Rebuild global Footer + Topic Index around evidence, freshness, reproducibility and URL-addressable topic state
 - [ ] Redesign standard / featured / compact post-card system around outcome, format, freshness, and evidence signals
-- [ ] Redesign article reading + trust surface as the primary product experience
+- [x] Redesign article reading + trust surface as the primary product experience
 - [x] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
 - [x] Bring profile and bookmarks into the same visual system (Knowledge Dashboard V3 complete)
 - [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor

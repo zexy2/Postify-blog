@@ -1,103 +1,105 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiArrowUpRight, FiGithub, FiArrowUp } from 'react-icons/fi';
-import styles from './Footer.module.css';
+import { FiArrowUp, FiArrowUpRight, FiGithub } from 'react-icons/fi';
 import BrandMark from '../BrandMark';
+import styles from './Footer.module.css';
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEnglish = i18n.language?.startsWith('en');
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const formatLinks = [
+    ['guide', isEnglish ? 'Guides' : 'Rehberler'],
+    ['decision', isEnglish ? 'Decisions' : 'Karar notları'],
+    ['explainer', isEnglish ? 'Explainers' : 'Açıklayıcılar'],
+    ['fieldNote', isEnglish ? 'Field notes' : 'Saha notları'],
+  ];
+
   return (
-    <div className={styles.footerStickyWrapper}>
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          {/* Top Section: Brand Statement & Columns */}
-          <div className={styles.topSection}>
-            <div className={styles.brandCol}>
-              <Link to="/" className={styles.brandLink}>
-                <BrandMark size="md" />
-                <span className={styles.brandTitle}>Postify</span>
-              </Link>
-              <p className={styles.brandDesc}>{t('footer.description', 'Okumak için değil, uygulamak için. Rehberler, karar notları ve saha deneyimleri.')}</p>
-              <div className={styles.socialBadges}>
-                <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" className={styles.socialBadge} title="GitHub">
-                  <FiGithub size={16} />
-                  <span>GitHub</span>
-                </a>
-              </div>
-            </div>
-
-            <div className={styles.columnsGroup}>
-              <div className={styles.col}>
-                <h4 className={styles.colTitle}>Navigasyon</h4>
-                <ul className={styles.colList}>
-                  <li><Link to="/">{t('nav.home')}</Link></li>
-                  <li><Link to="/about">{t('nav.about')}</Link></li>
-                  <li><Link to="/contact">{t('nav.contact')}</Link></li>
-                  <li><Link to="/bookmarks">{t('nav.bookmarks', 'Yer İşaretleri')}</Link></li>
-                </ul>
-              </div>
-
-              <div className={styles.col}>
-                <h4 className={styles.colTitle}>Biçimler</h4>
-                <ul className={styles.colList}>
-                  <li><Link to="/?type=guide">Rehberler</Link></li>
-                  <li><Link to="/?type=decision">Karar notları</Link></li>
-                  <li><Link to="/?type=explainer">Açıklayıcılar</Link></li>
-                  <li><Link to="/?type=fieldNote">Saha notları</Link></li>
-                </ul>
-              </div>
-
-              <div className={styles.col}>
-                <h4 className={styles.colTitle}>Kaynaklar</h4>
-                <ul className={styles.colList}>
-                  <li>
-                    <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer">
-                      Açık Kaynak <FiArrowUpRight size={13} />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">
-                      Supabase Docs <FiArrowUpRight size={13} />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-                      React 19 <FiArrowUpRight size={13} />
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+    <footer className={styles.footer} aria-label={isEnglish ? 'Postify footer' : 'Postify alt bilgi'}>
+      <div className={styles.shell}>
+        <section className={styles.statement} aria-labelledby="footer-statement-title">
+          <div className={styles.statementCopy}>
+            <span className={styles.eyebrow}>{isEnglish ? 'KNOWLEDGE SYSTEM' : 'BİLGİ SİSTEMİ'}</span>
+            <h2 id="footer-statement-title" className={styles.statementTitle}>
+              {isEnglish ? 'Useful knowledge should stay usable.' : 'Faydalı bilgi kullanılabilir kalmalı.'}
+            </h2>
+            <p className={styles.statementText}>
+              {isEnglish
+                ? 'Postify keeps practical knowledge close to its evidence, freshness and execution context.'
+                : 'Postify, pratik bilgiyi kanıtı, güncelliği ve uygulama bağlamıyla birlikte tutar.'}
+            </p>
           </div>
 
-          {/* Bottom Bar: Copyright & Scroll to Top */}
-          <div className={styles.bottomBar}>
-            <div className={styles.copyGroup}>
-              <span className={styles.copyBrand}>Postify</span>
-              <span className={styles.copyDot}>•</span>
-              <span className={styles.copyright}>© {currentYear} Postify. {t('footer.copyright', 'Tüm hakları saklıdır.')}</span>
-            </div>
+          <div className={styles.primaryActions}>
+            <Link to="/" className={styles.primaryLink}>
+              {isEnglish ? 'Explore knowledge' : 'Bilgiyi keşfet'}
+              <FiArrowUpRight aria-hidden="true" />
+            </Link>
+            <Link to="/posts/create" className={styles.secondaryLink}>
+              {isEnglish ? 'Write a field-tested note' : 'Sahada denenmiş not yaz'}
+            </Link>
+          </div>
+        </section>
 
-            <button
-              type="button"
-              className={styles.scrollTopBtn}
-              onClick={scrollToTop}
-              aria-label="Başa Dön"
-              title="Başa Dön"
+        <div className={styles.indexGrid}>
+          <div className={styles.brandBlock}>
+            <Link to="/" className={styles.brandLink} aria-label="Postify home">
+              <BrandMark size="md" />
+              <span>Postify</span>
+            </Link>
+            <p>{t('footer.description')}</p>
+            <a
+              href="https://github.com/zexy2/Postify-blog"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.githubLink}
             >
-              <span>Başa Dön</span>
-              <FiArrowUp size={16} />
-            </button>
+              <FiGithub aria-hidden="true" />
+              <span>GitHub</span>
+              <FiArrowUpRight aria-hidden="true" />
+            </a>
           </div>
+
+          <nav className={styles.linkGroup} aria-label={isEnglish ? 'Content formats' : 'İçerik biçimleri'}>
+            <span className={styles.groupLabel}>{isEnglish ? 'READ BY FORMAT' : 'BİÇİME GÖRE OKU'}</span>
+            {formatLinks.map(([type, label], index) => (
+              <Link key={type} to={`/?type=${type}`}>
+                <span className={styles.linkIndex}>{String(index + 1).padStart(2, '0')}</span>
+                <span>{label}</span>
+              </Link>
+            ))}
+          </nav>
+
+          <nav className={styles.linkGroup} aria-label={isEnglish ? 'Postify pages' : 'Postify sayfaları'}>
+            <span className={styles.groupLabel}>POSTIFY</span>
+            <Link to="/about"><span className={styles.linkIndex}>01</span><span>{t('nav.about')}</span></Link>
+            <Link to="/contact"><span className={styles.linkIndex}>02</span><span>{t('nav.contact')}</span></Link>
+            <Link to="/bookmarks"><span className={styles.linkIndex}>03</span><span>{t('nav.bookmarks')}</span></Link>
+            <Link to="/knowledge"><span className={styles.linkIndex}>04</span><span>{isEnglish ? 'Knowledge health' : 'Bilgi sağlığı'}</span></Link>
+          </nav>
         </div>
-      </footer>
-    </div>
+
+        <div className={styles.systemLine} aria-label={isEnglish ? 'Postify trust model' : 'Postify güven modeli'}>
+          <div><span>01</span><strong>{isEnglish ? 'Evidence' : 'Kanıt'}</strong></div>
+          <div><span>02</span><strong>{isEnglish ? 'Freshness' : 'Güncellik'}</strong></div>
+          <div><span>03</span><strong>{isEnglish ? 'Reproducibility' : 'Tekrarlanabilirlik'}</strong></div>
+        </div>
+
+        <div className={styles.bottomBar}>
+          <span>© {currentYear} Postify · {t('footer.copyright')}</span>
+          <button type="button" onClick={scrollToTop} className={styles.scrollTopButton}>
+            <span>{isEnglish ? 'Back to top' : 'Başa dön'}</span>
+            <FiArrowUp aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    </footer>
   );
 };
 

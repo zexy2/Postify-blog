@@ -58,6 +58,33 @@ test.describe('Postify UI V2', () => {
 
 
 
+  test('V3 topic index changes discovery context without mobile overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    const topicNav = page.locator('nav').filter({ hasText: /konu dizini|topic index/i }).first();
+    await expect(topicNav.getByText(/konu dizini|topic index/i)).toBeVisible();
+    const topicButtons = topicNav.getByRole('button');
+    expect(await topicButtons.count()).toBeGreaterThan(1);
+    await expect(topicButtons.first()).toHaveAttribute('aria-pressed', 'true');
+    await topicButtons.nth(1).click();
+    await expect(topicButtons.nth(1)).toHaveAttribute('aria-pressed', 'true');
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
+  test('V3 footer exposes the trust model and stays mobile-safe', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/about');
+    const footer = page.locator('footer');
+    await expect(footer).toBeVisible();
+    await expect(footer.getByText(/kanıt|evidence/i).first()).toBeVisible();
+    await expect(footer.getByText(/güncellik|freshness/i).first()).toBeVisible();
+    await expect(footer.getByText(/tekrarlanabilirlik|reproducibility/i).first()).toBeVisible();
+    await expect(footer.getByRole('link', { name: /bilgiyi keşfet|explore knowledge/i })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test('command search lazy-loads and stays keyboard operable', async ({ page }) => {
     await page.goto('/');
     await page.keyboard.press('Control+K');

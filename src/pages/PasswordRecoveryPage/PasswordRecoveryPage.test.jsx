@@ -32,7 +32,7 @@ describe('PasswordRecoveryPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Kurtarma bağlantısı gönder' }));
 
     await waitFor(() => expect(resetPassword).toHaveBeenCalledWith('user@example.com'));
-    expect(screen.getByText('Kurtarma e-postası gönderildi.')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('Kurtarma e-postası gönderildi.')).toBeVisible());
   });
 
   it('updates the password when the recovery session has matching credentials', async () => {
@@ -47,6 +47,6 @@ describe('PasswordRecoveryPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Şifreyi güncelle' }));
 
     await waitFor(() => expect(updatePassword).toHaveBeenCalledWith('secure-pass-123'));
-    expect(screen.getByText('Şifre güncellendi.')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('Şifre güncellendi.')).toBeVisible());
   });
 });
