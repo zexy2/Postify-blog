@@ -192,3 +192,13 @@
     line-clamp: 2;
   }
 }
+
+/* UI V2 fallback card */
+.card { padding: 1.35rem 0; background: transparent; border: 0; border-bottom: 1px solid var(--border-color); border-radius: 0; overflow: visible; transition: none; }
+.card::before { display: none; }
+.card:hover { transform: none; box-shadow: none; }
+.localBadge { top: 1.35rem; right: 0; border-radius: var(--radius-sm); }
+.avatar { width: 42px; height: 42px; background: var(--primary); border-radius: 50%; box-shadow: none; }
+.avatarLink:hover .avatar { transform: none; }
+.cardTitle { font-size: clamp(1.2rem,2vw,1.6rem); line-height: 1.18; }
+.cardFooter { padding-top: .8rem; }

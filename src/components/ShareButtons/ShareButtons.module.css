@@ -273,3 +273,15 @@
     height: 40px;
   }
 }
+
+/* UI V2 restrained sharing controls */
+.compact { padding: .3rem; background: var(--bg-primary); backdrop-filter: none; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: none; }
+.title { font-family: var(--font-mono); font-size: .64rem; }
+.button, .copyButton { width: 40px; height: 40px; color: var(--text-secondary); background: transparent; border: 1px solid transparent; border-radius: var(--radius-md); }
+.button::before { display: none; }
+.twitter, .facebook, .linkedin, .whatsapp, .telegram, .reddit, .email { color: var(--text-secondary); background: transparent; }
+.button:hover, .twitter:hover, .facebook:hover, .linkedin:hover, .whatsapp:hover, .telegram:hover, .reddit:hover, .email:hover { color: var(--primary); background: var(--primary-subtle); border-color: var(--primary-light); transform: none; box-shadow: none; }
+.copyButton { border-color: var(--border-color); }
+.copyButton:hover { color: var(--primary); background: var(--primary-subtle); border-color: var(--primary-light); transform: none; box-shadow: none; }
+.copyButton.copied { color: var(--success); background: var(--success-subtle); border-color: var(--success-light); animation: none; }
+.tooltip { box-shadow: none; }
