@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiArrowUpRight, FiGithub, FiArrowUp, FiGlobe } from 'react-icons/fi';
+import { FiArrowUpRight, FiGithub, FiArrowUp } from 'react-icons/fi';
 import styles from './Footer.module.css';
 import BrandMark from '../BrandMark';
 
@@ -23,7 +23,7 @@ const Footer = () => {
                 <BrandMark size="md" />
                 <span className={styles.brandTitle}>Postify</span>
               </Link>
-              <p className={styles.brandDesc}>{t('footer.description', 'Teknoloji, yazılım mimarisi ve ürün tasarımı üzerine bağımsız dijital yayın.')}</p>
+              <p className={styles.brandDesc}>{t('footer.description', 'Okumak için değil, uygulamak için. Rehberler, karar notları ve saha deneyimleri.')}</p>
               <div className={styles.socialBadges}>
                 <a href="https://github.com/zexy2/Postify-blog" target="_blank" rel="noopener noreferrer" className={styles.socialBadge} title="GitHub">
                   <FiGithub size={16} />
@@ -44,12 +44,12 @@ const Footer = () => {
               </div>
 
               <div className={styles.col}>
-                <h4 className={styles.colTitle}>Kategoriler</h4>
+                <h4 className={styles.colTitle}>Biçimler</h4>
                 <ul className={styles.colList}>
-                  <li><Link to="/?category=Frontend">#Frontend</Link></li>
-                  <li><Link to="/?category=AI">#AI & Yapay Zeka</Link></li>
-                  <li><Link to="/?category=Design">#Ürün Tasarımı</Link></li>
-                  <li><Link to="/?category=Altyapı">#Sistem Altyapısı</Link></li>
+                  <li><Link to="/?type=guide">Rehberler</Link></li>
+                  <li><Link to="/?type=decision">Karar notları</Link></li>
+                  <li><Link to="/?type=explainer">Açıklayıcılar</Link></li>
+                  <li><Link to="/?type=fieldNote">Saha notları</Link></li>
                 </ul>
               </div>
 
@@ -76,17 +76,12 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Giant Awwwards-Style Display Typography Banner */}
-          <div className={styles.displayBanner}>
-            <span className={styles.displayTitle}>POSTIFY</span>
-          </div>
-
           {/* Bottom Bar: Copyright & Scroll to Top */}
           <div className={styles.bottomBar}>
             <div className={styles.copyGroup}>
               <span className={styles.copyBrand}>Postify</span>
               <span className={styles.copyDot}>•</span>
-              <span className={styles.copyright}>© {currentYear} Postify Blog. {t('footer.copyright', 'Tüm hakları saklıdır.')}</span>
+              <span className={styles.copyright}>© {currentYear} Postify. {t('footer.copyright', 'Tüm hakları saklıdır.')}</span>
             </div>
 
             <button
