@@ -1,14 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { FiBookOpen, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { FiBookOpen, FiCheckCircle, FiClock } from 'react-icons/fi';
 import { useUser, useUserPosts } from '../hooks/usePosts';
 import { useBookmarks } from '../hooks/useBookmarks';
 import EditorialFeed from '../components/EditorialFeed';
 import SEO from '../components/SEO';
+import { getPostReadingMinutes } from '../lib/postPresentation';
 import styles from './UserPage.module.css';
 
 const UserPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const en = i18n.language?.startsWith('en');
   const { id } = useParams();
   const { data: user, isLoading: userLoading } = useUser(id);
   const { data: posts = [], isLoading: postsLoading } = useUserPosts(id);
@@ -27,67 +29,57 @@ const UserPage = () => {
     );
   }
 
-  const totalReadingTime = posts.reduce((acc, post) => acc + (post.readingTime || 5), 0);
+  const totalReadingTime = posts.reduce((total, post) => total + (getPostReadingMinutes(post) || 0), 0);
+  const testedCount = posts.filter((post) => post.evidence?.level === 'author-tested' || post.evidenceStatus === 'author-tested').length;
+  const roleLabel = user.role === 'editor'
+    ? (en ? 'Postify editor' : 'Postify editörü')
+    : (en ? 'Knowledge author' : 'Bilgi yazarı');
 
   return (
     <div className={styles.page}>
       <SEO title={user.name} description={user.bio} />
-      
-      <main className="container" style={{ maxWidth: '1080px' }}>
-        {/* Profile Card Hero */}
-        <section className={styles.profileCard}>
-          <div className={styles.banner}>
-            <div className={styles.bannerPattern} />
+      <main className={`container ${styles.container}`}>
+        <header className={styles.authorHeader}>
+          <div className={styles.monogram} aria-hidden="true">{(user.name || 'P')[0].toUpperCase()}</div>
+          <div className={styles.identity}>
+            <span className={styles.eyebrow}><FiCheckCircle /> {roleLabel}</span>
+            <h1>{user.name}</h1>
+            {user.username && <p className={styles.handle}>@{user.username}</p>}
+            {user.bio && <p className={styles.bio}>{user.bio}</p>}
           </div>
+        </header>
 
-          <div className={styles.profileBody}>
-            <div className={styles.avatarWrapper}>
-              <span className={styles.avatar}>{(user.name || 'P')[0].toUpperCase()}</span>
-              <span className={styles.badge} title="Aktif Yayıncı" />
-            </div>
-
-            <div className={styles.identity}>
-              <span className={styles.roleTag}>
-                <FiCheckCircle size={13} /> {user.role === 'editor' ? 'Postify Editör' : 'Yazar'}
-              </span>
-
-              <h1 className={styles.name}>{user.name}</h1>
-              
-              {user.username && <p className={styles.handle}>@{user.username}</p>}
-              
-              {user.bio && <p className={styles.bio}>{user.bio}</p>}
-            </div>
-
-            {/* Stats Pills Row */}
-            <div className={styles.statsRow}>
-              <span className={styles.statPill}>
-                <FiBookOpen size={14} className={styles.statIcon} />
-                <span>{posts.length} {t('user.posts', 'Yayımlanan Makale')}</span>
-              </span>
-
-              <span className={styles.statPill}>
-                <FiClock size={14} className={styles.statIcon} />
-                <span>{totalReadingTime} {t('common.minutes', 'dakika okuma süresi')}</span>
-              </span>
-            </div>
+        <section className={styles.authorStats} aria-label={en ? 'Author knowledge summary' : 'Yazar bilgi özeti'}>
+          <div>
+            <FiBookOpen aria-hidden="true" />
+            <strong>{posts.length}</strong>
+            <span>{en ? 'published records' : 'yayınlanmış içerik'}</span>
+          </div>
+          <div>
+            <FiClock aria-hidden="true" />
+            <strong>{totalReadingTime}</strong>
+            <span>{en ? 'minutes of reading' : 'dakika okuma'}</span>
+          </div>
+          <div>
+            <FiCheckCircle aria-hidden="true" />
+            <strong>{testedCount}</strong>
+            <span>{en ? 'author-tested records' : 'yazar testli içerik'}</span>
           </div>
         </section>
 
-        {/* Author Posts Grid */}
-        <section>
+        <section className={styles.knowledgeSection}>
           <div className={styles.sectionHeader}>
             <div>
-              <span className={styles.sectionEyebrow}>Yazarın Makaleleri</span>
-              <h2 className={styles.sectionTitle}>
-                Yayımlanan Hikayeler <span className={styles.countBadge}>({posts.length})</span>
-              </h2>
+              <span className={styles.sectionEyebrow}>{en ? 'Knowledge portfolio' : 'Bilgi portföyü'}</span>
+              <h2>{en ? 'Published work' : 'Yayınlanan çalışmalar'}</h2>
             </div>
+            <strong>{posts.length}</strong>
           </div>
 
           {postsLoading ? (
             <p className={styles.status}>{t('common.loading')}</p>
           ) : posts.length === 0 ? (
-            <p className={styles.status}>{t('home.noContent')}</p>
+            <p className={styles.empty}>{t('home.noContent')}</p>
           ) : (
             <EditorialFeed
               posts={posts}

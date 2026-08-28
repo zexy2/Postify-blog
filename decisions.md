@@ -259,3 +259,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** The author Knowledge Dashboard leads with maintenance state and reader demand: freshness, re-verification, evidence claim, community confirmations, domain credibility and unresolved knowledge gaps. It does not manufacture a single overall “health score.”
 
 **Why:** Postify’s differentiated author workflow is keeping actionable guidance trustworthy over time. A generic analytics dashboard would optimize for vanity metrics; the console should instead tell an author what needs action, why it needs action and where new useful knowledge is demanded.
+
+## 2026-08-28 — Saved items and author identity are knowledge surfaces, not social/decorative cards
+**Decision:** Bookmarks use an indexed knowledge-shelf model and public author pages use a knowledge-portfolio model. Profile keeps account editing functional but visually quiet. Evidence state, format, reading cost and published work take priority over ornamental banners, badges and generic profile-card styling.
+
+**Why:** Postify’s product identity is practical, maintained knowledge. Saved content and authors should therefore help users judge what is worth returning to and what an author actually contributes; generic social/profile decoration dilutes that value proposition and adds visual inconsistency.

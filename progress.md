@@ -352,3 +352,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Freshness states now use readable localized labels instead of exposing raw state tokens as the main UI copy; stale/unknown records are visually separated from current guidance without inventing a health score.
 - Browser QA used a local-only protected-route bypass plus a mocked ready backend status and was fully reverted before commit. Responsive document widths were exact at 1440/1440, 820/820 and 390/390 with four core dashboard sections and zero page errors.
 - Validation PASS: 24 Vitest files / 106 tests, lint, production Vite compile/PWA generation, and responsive browser structure QA.
+
+## 2026-08-28 — UI V3 account knowledge surfaces
+- Rebuilt Bookmarks as a personal knowledge shelf instead of a decorative card grid. Saved records now expose evidence state, format, reading cost, freshness/date context, outcome/summary and author linkage in a dense numbered index.
+- Rebuilt public author pages as knowledge portfolios: removed banner/pattern/active-publisher decoration, surfaced published-record count, real derived reading minutes and author-tested record count, and reused the live V3 EditorialFeed for the author’s work.
+- Rebuilt Profile as a focused account workspace with a calm identity header, flat editable fields and compact account metadata; removed the unused legacy danger/stats/gradient-card CSS layers entirely.
+- Added Profile component regression coverage for both read and edit modes and added a public-author mobile E2E overflow/knowledge-portfolio contract.
+- Populated Bookmarks browser QA used local-only Redux-persist seeding plus a temporary protected-route bypass; the bypass was reverted before release validation. Desktop/mobile document widths were exact at 1440/1440 and 390/390 with evidence/type/read-cost visible and no page errors.
+- Public author browser QA passed at 1440/1440 and 390/390 with nine fallback knowledge records and zero page errors.
+- Final release gates PASS: 25 Vitest files / 107 tests, lint, production Vite/PWA build (main entry 303,604 bytes), and official Chromium UI suite 26/26.

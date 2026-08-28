@@ -15,7 +15,8 @@ import { safeHttpUrl } from '../../lib/seoUtils';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const en = i18n.language?.startsWith('en');
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading, updateProfile } = useAuth();
 
@@ -111,7 +112,7 @@ const ProfilePage = () => {
   if (!user) {
     return (
       <div className={styles.loading}>
-        <p>Kullanıcı bulunamadı. Lütfen giriş yapın.</p>
+        <p>{en ? 'User not found. Please sign in.' : 'Kullanıcı bulunamadı. Lütfen giriş yapın.'}</p>
       </div>
     );
   }
@@ -148,12 +149,14 @@ const ProfilePage = () => {
           </div>
 
           <div className={styles.headerInfo}>
+            <span className={styles.eyebrow}>{en ? 'Account profile' : 'Hesap profili'}</span>
             <h1 className={styles.name}>{displayName}</h1>
             <p className={styles.username}>@{displayUsername}</p>
             <p className={styles.email}>{user.email}</p>
           </div>
 
           <button
+            type="button"
             className={styles.editButton}
             onClick={() => setIsEditing(!isEditing)}
           >
@@ -224,7 +227,7 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            <button className={styles.saveButton} onClick={handleSave}>
+            <button type="button" className={styles.saveButton} onClick={handleSave}>
               <FaSave />
               {t('common.save')}
             </button>
@@ -256,7 +259,7 @@ const ProfilePage = () => {
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>{t('profile.memberSince')}</span>
                 <span>
-                  {new Date(user.created_at || Date.now()).toLocaleDateString()}
+                  {new Date(user.created_at || Date.now()).toLocaleDateString(en ? 'en-US' : 'tr-TR')}
                 </span>
               </div>
             </div>

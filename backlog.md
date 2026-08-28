@@ -94,7 +94,7 @@
 - [ ] Redesign standard / featured / compact post-card system around outcome, format, freshness, and evidence signals
 - [ ] Redesign article reading + trust surface as the primary product experience
 - [x] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
-- [ ] Bring profile and bookmarks into the same visual system (Knowledge Dashboard V3 complete)
+- [x] Bring profile and bookmarks into the same visual system (Knowledge Dashboard V3 complete)
 - [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
 - [ ] Audit/delete legacy decorative components that remain unused after V3 conversion
 
@@ -103,5 +103,5 @@
 - [x] Rebuild the live EditorialFeed around evidence-first, high-density knowledge rows
 - [x] Reframe article detail around reading flow, evidence and actionability
 - [x] Rebuild Create/Edit as a focused writing workspace instead of a form page
-- [ ] Align profile and bookmarks with the same V3 system (knowledge dashboard complete)
+- [x] Align profile and bookmarks with the same V3 system (knowledge dashboard complete)
 - [ ] Approve and commit screenshot-diff baselines after V3 core surfaces stabilize

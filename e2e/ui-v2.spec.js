@@ -34,6 +34,15 @@ test.describe('Postify UI V2', () => {
     await expect(article.getByText(/undefined\s*(dk|min)/i)).toHaveCount(0);
   });
 
+  test('V3 public author portfolio stays mobile-safe and knowledge-first', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/users/fallback-editor');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByText(/bilgi portföyü|knowledge portfolio/i)).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test('mobile home does not overflow and menu remains operable', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
