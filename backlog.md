@@ -87,3 +87,13 @@
 
 ## Security hardening
 - [x] Harden user-controlled profile website URLs with an HTTP/HTTPS protocol allowlist
+
+## UI V3 — visible product redesign
+- [x] Establish repo-scoped Graphify + Postify UI Review workflow
+- [x] Redesign header, home masthead, featured knowledge, topic nav, and discovery-filter hierarchy
+- [ ] Redesign standard / featured / compact post-card system around outcome, format, freshness, and evidence signals
+- [ ] Redesign article reading + trust surface as the primary product experience
+- [ ] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
+- [ ] Bring profile, bookmarks, and Knowledge Dashboard into the same visual system
+- [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
+- [ ] Audit/delete legacy decorative components that remain unused after V3 conversion

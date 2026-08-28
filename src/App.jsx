@@ -97,7 +97,6 @@ function App() {
             zIndex: 2,
             width: '100%',
             background: 'var(--bg-primary)',
-            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.12)',
           }}
         >
           <Suspense fallback={<PageLoader />}>

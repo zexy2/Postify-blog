@@ -19,23 +19,21 @@ export default function Hero({
       <div className="container">
         <div className={styles.utility}>
           <span>POSTIFY / {t('home.edition')}</span>
-          <span>{i18n.language?.startsWith('en') ? 'Built for people who make things' : 'Üreten insanlar için'}</span>
+          <div className={styles.promiseLine} aria-label={t('home.standardLabel')}>
+            <span>{t('home.promiseOutcome')}</span>
+            <span>{t('home.promiseFreshness')}</span>
+            <span>{t('home.promisePortable')}</span>
+          </div>
         </div>
 
-        <div className={styles.content}>
-          <div className={styles.copy}>
-            <span className={styles.eyebrow}>{t('home.eyebrow')}</span>
-            <h1 className={styles.title}>{t('home.title')}</h1>
-            <p className={styles.subtitle}>{t('home.subtitle')}</p>
+        <div className={styles.masthead}>
+          <span className={styles.eyebrow}>{t('home.eyebrow')}</span>
+          <h1 className={styles.title}>{t('home.title')}</h1>
+        </div>
 
-            <div className={styles.heroActions}>
-              <a href="#knowledge-feed" className={styles.primaryAction}>
-                {i18n.language?.startsWith('en') ? 'Explore knowledge' : 'Bilgiyi keşfet'} <FiArrowDown size={15} />
-              </a>
-              <Link to="/posts/create" className={styles.secondaryAction}>
-                <FiEdit3 size={15} /> {i18n.language?.startsWith('en') ? 'Write something useful' : 'Faydalı bir şey yaz'}
-              </Link>
-            </div>
+        <div className={styles.supportingGrid}>
+          <div className={styles.copy}>
+            <p className={styles.subtitle}>{t('home.subtitle')}</p>
 
             {showSearch && (
               <label className={styles.searchContainer}>
@@ -52,6 +50,14 @@ export default function Hero({
               </label>
             )}
 
+            <div className={styles.heroActions}>
+              <a href="#knowledge-feed" className={styles.primaryAction}>
+                {i18n.language?.startsWith('en') ? 'Browse the library' : 'Bilgi arşivine göz at'} <FiArrowDown size={15} />
+              </a>
+              <Link to="/posts/create" className={styles.secondaryAction}>
+                <FiEdit3 size={14} /> {i18n.language?.startsWith('en') ? 'Contribute' : 'Katkı yap'}
+              </Link>
+            </div>
           </div>
 
           {featuredPost && (
@@ -68,7 +74,10 @@ export default function Hero({
                 <span className={styles.featuredType}>{presentation?.typeLabel}</span>
               </div>
               <div className={styles.featuredContent}>
-                <span className={styles.featuredLabel}>{t('home.featured')}</span>
+                <div className={styles.featuredTopline}>
+                  <span className={styles.featuredLabel}>{t('home.featured')}</span>
+                  <FiArrowUpRight className={styles.arrow} size={17} />
+                </div>
                 <strong>{featuredPost.title}</strong>
                 <span className={styles.featuredExcerpt}>{presentation?.outcome}</span>
                 <span className={styles.featuredMeta}>
@@ -81,7 +90,6 @@ export default function Hero({
                       <span>{presentation.dateLabel}: {presentation.formattedDate}</span>
                     </>
                   )}
-                  <FiArrowUpRight className={styles.arrow} size={17} />
                 </span>
               </div>
             </Link>

@@ -313,3 +313,11 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Exact local gates PASS: focused readiness tests 12/12 + lint; fresh PostgreSQL 16 full migration/RLS chain PASS; Node 24.20.0 clean install + npm audit 0 + release-security + full verify PASS; official Playwright 1.57 Chromium 23/23 PASS.
 - Supabase advisor after apply: security ERROR 0; only the pre-existing leaked-password-protection WARN remains. Performance remains INFO-only unused-index observations.
 - Modernized `project-context.md` and README so future loops and repository visitors no longer see stale “Supabase deferred / Node 20 / generic blog” assumptions.
+
+## 2026-08-28 — UI V3 discovery masthead
+- Started a dedicated `chatgpt/postify-ui-v3` branch so the redesign does not mix with the evidence-readiness release work.
+- Installed Graphify repo-scoped and added a Postify UI Review skill that requires impact analysis, real-browser desktop/mobile inspection, accessibility checks, and rejects effect-first/template styling as a completion criterion.
+- Reworked the first discovery viewport around an editorial knowledge-index hierarchy: calmer sticky header, masthead-scale value proposition, compact search/actions, featured knowledge presentation, restrained topic navigation, and a clearer segmented discovery filter.
+- Removed one remaining app-shell decorative shadow and reduced competing visual weight instead of layering more effects onto the existing UI.
+- Rebuilt the focused `src/` Graphify map after the change: 590 nodes / 1,273 edges / 32 communities.
+- Exact UI V3 slice gates PASS: Node 24.20.0 23 Vitest files / 105 tests, lint, Vite production build (~303.7 KB main entry), and official Playwright 1.57 Chromium UI suite 23/23. Real 1440px and 390px home screenshots were reviewed; no horizontal overflow or blocking hierarchy defect was found.
