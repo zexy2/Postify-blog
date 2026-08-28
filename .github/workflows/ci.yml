@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '17 5 * * *'
   workflow_dispatch:
 
 env:
@@ -238,13 +240,21 @@ jobs:
       - name: Probe production capability and machine-readable artifacts
         run: |
           node --input-type=module <<'NODE'
-          for(const path of ['/','/llms.txt','/verification-runs.json','/knowledge-backend-status.json','/knowledge/node-json-dogrulama.tr.json']){
+          for(const path of ['/','/llms.txt','/verification-runs.json','/runtime-release-status.json','/knowledge-backend-status.json','/knowledge/node-json-dogrulama.tr.json']){
             const response=await fetch(`https://postify.zekiakgul.dev${path}?smoke=${Date.now()}`,{cache:'no-store'});
             if(!response.ok) throw new Error(`${path} returned ${response.status}`);
             console.log(`${path} ${response.status}`);
           }
           const capability=await fetch(`https://postify.zekiakgul.dev/knowledge-backend-status.json?t=${Date.now()}`,{cache:'no-store'}).then((r)=>r.json());
-          console.log(`Verified Knowledge backend ready=${capability.ready} mode=${capability.mode}`);
+          const verification=await fetch(`https://postify.zekiakgul.dev/verification-runs.json?t=${Date.now()}`,{cache:'no-store'}).then((r)=>r.json());
+          const runtimeStatus=await fetch(`https://postify.zekiakgul.dev/runtime-release-status.json?t=${Date.now()}`,{cache:'no-store'}).then((r)=>r.json());
+          const run=verification.runs?.['node-json-parse-v1'];
+          const signal=runtimeStatus.checks?.['node-json-parse-v1'];
+          if(!run || !signal || signal.verifiedRuntimeVersion!==run.runtimeVersion || signal.requiredRuntimeMajor!==run.requiredRuntimeMajor){
+            throw new Error('Production runtime freshness artifact is not bound to the executed verification run');
+          }
+          if(!['current','recheck-required','unknown'].includes(signal.status)) throw new Error(`Unexpected runtime freshness status: ${signal.status}`);
+          console.log(`Verified Knowledge backend ready=${capability.ready} mode=${capability.mode} runtimeFreshness=${signal.status}`);
           NODE
 
       - name: Run production Chromium product suite

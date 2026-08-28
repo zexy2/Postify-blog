@@ -113,7 +113,11 @@ test.describe('Verified Knowledge V1', () => {
 });
 
 test.describe('Verified Knowledge execution', () => {
-  test('automatic verification exposes the exact executed article contract', async ({ page }) => {
+  test('automatic verification exposes the exact executed article contract', async ({ page, request }) => {
+    const execution = await request.get('/verification-runs.json').then((response) => response.json()).then((json) => json.runs['node-json-parse-v1']);
+    await page.route('**/runtime-release-status.json', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ schemaVersion: 1, checks: { 'node-json-parse-v1': { checkId: 'node-json-parse-v1', runtime: 'node', status: 'current', reason: 'exact-latest-lts', checkedAt: new Date().toISOString(), verifiedRuntimeVersion: execution.runtimeVersion, requiredRuntimeMajor: execution.requiredRuntimeMajor, latestLtsVersion: execution.runtimeVersion, latestLtsMajor: execution.requiredRuntimeMajor } } }) });
+    });
     await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
     await expect(page.getByText(/execution passed|çalıştırma geçti/i)).toBeVisible();
@@ -143,7 +147,14 @@ test.describe('Verified Knowledge execution', () => {
     expect(execution.articleContractMatched).toBe(true);
     expect(execution.policy).toBe('node-deterministic-v1');
     const runtimeMajor = Number(String(execution.runtimeVersion).match(/^v(\d+)/)?.[1]);
-    expect(runtimeMajor).toBeGreaterThanOrEqual(20);
+    expect(runtimeMajor).toBe(24);
+    const runtimeResponse = await request.get('/runtime-release-status.json');
+    expect(runtimeResponse.ok()).toBeTruthy();
+    const runtimeJson = await runtimeResponse.json();
+    const runtimeSignal = runtimeJson.checks['node-json-parse-v1'];
+    expect(['current', 'recheck-required', 'unknown']).toContain(runtimeSignal.status);
+    expect(runtimeSignal.verifiedRuntimeVersion).toBe(execution.runtimeVersion);
+    expect(runtimeSignal.requiredRuntimeMajor).toBe(24);
     const verifier = await request.get('/verification/node-json-parse-v1.mjs');
     expect(verifier.ok()).toBeTruthy();
     expect(await verifier.text()).toContain("process.stdout.write('PASS')");
@@ -154,15 +165,34 @@ test.describe('Verified Knowledge execution', () => {
     expect(knowledge.ok()).toBeTruthy();
     const artifact = await knowledge.json();
     expect(artifact.evidence.automaticVerification.status).toBe('passed');
+    expect(artifact.evidence.runtimeReleaseSignal.status).toBe(runtimeSignal.status);
     if (backendJson.ready === true) {
       expect(String(artifact.id)).not.toMatch(/^fallback-/);
     }
   });
 
-  test('postify verified discovery filter resolves to genuinely executed knowledge', async ({ page }) => {
+  test('postify verified discovery filter requires both execution and current runtime freshness', async ({ page, request }) => {
+    const runtimeJson = await request.get('/runtime-release-status.json').then((response) => response.json());
+    const current = runtimeJson.checks?.['node-json-parse-v1']?.status === 'current';
     await page.goto('/');
     await page.getByRole('button', { name: /postify verified/i }).click();
-    await expect(page.getByRole('heading', { name: /Node.js örneğini|Verify a Node.js example/i })).toBeVisible();
+    const article = page.getByRole('heading', { name: /Node.js örneğini|Verify a Node.js example/i });
+    if (current) await expect(article).toBeVisible();
+    else await expect(article).toHaveCount(0);
+  });
+
+  test('runtime advancement withholds Verified while preserving historical execution proof', async ({ page, request }) => {
+    const execution = await request.get('/verification-runs.json').then((response) => response.json()).then((json) => json.runs['node-json-parse-v1']);
+    const parts = String(execution.runtimeVersion).replace(/^v/, '').split('.').map(Number);
+    const newerVersion = `v${parts[0]}.${parts[1]}.${parts[2] + 1}`;
+    await page.route('**/runtime-release-status.json', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ schemaVersion: 1, checks: { 'node-json-parse-v1': { checkId: 'node-json-parse-v1', runtime: 'node', status: 'recheck-required', reason: 'newer-lts-release', checkedAt: new Date().toISOString(), verifiedRuntimeVersion: execution.runtimeVersion, requiredRuntimeMajor: execution.requiredRuntimeMajor, latestLtsVersion: newerVersion, latestLtsMajor: execution.requiredRuntimeMajor } } }) });
+    });
+    await page.goto('/posts/node-json-dogrulama');
+    await expect(page.getByRole('heading', { name: /postify re-check required|postify yeniden kontrol etmeli/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toHaveCount(0);
+    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
+    await expect(page.getByText(newerVersion, { exact: false })).toBeVisible();
   });
 
 });
@@ -216,7 +246,9 @@ test.describe('Verified Knowledge pre-migration compatibility', () => {
 
     consoleErrors.length = 0;
     const articleResponse = await page.goto('/posts/node-json-dogrulama');
-    await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('.knowledge-evidence')).toBeVisible();
+    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
 
     let ignoredExpectedDocument404 = false;
     const unexpectedConsoleErrors = consoleErrors.filter((message) => {

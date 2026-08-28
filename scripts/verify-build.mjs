@@ -5,6 +5,7 @@ const required = [
   'docs/404.html',
   'docs/llms.txt',
   'docs/verification-runs.json',
+  'docs/runtime-release-status.json',
   'docs/verification/node-json-parse-v1.mjs',
   'docs/knowledge-backend-status.json',
   'docs/knowledge/node-json-dogrulama.tr.json',
@@ -67,6 +68,14 @@ if (nodeRun.artifactUrl !== '/verification/node-json-parse-v1.mjs' || nodeRun.re
 }
 if (!nodeRun.codeSha256 || nodeRun.codeSha256 !== nodeRun.artifactSha256) {
   throw new Error('Displayed and executed verification hashes do not match');
+}
+const runtimeStatus = JSON.parse(await readFile('docs/runtime-release-status.json', 'utf8'));
+const nodeSignal = runtimeStatus.checks?.['node-json-parse-v1'];
+if (runtimeStatus.schemaVersion !== 1 || runtimeStatus.maxAgeHours !== 36 || !['current', 'recheck-required', 'unknown'].includes(nodeSignal?.status)) {
+  throw new Error('Runtime release freshness artifact is invalid');
+}
+if (nodeSignal.verifiedRuntimeVersion !== nodeRun.runtimeVersion || nodeSignal.requiredRuntimeMajor !== nodeRun.requiredRuntimeMajor) {
+  throw new Error('Runtime release signal is not bound to the executed verification contract');
 }
 
 const manifest = JSON.parse(await readFile('docs/manifest.webmanifest', 'utf8'));

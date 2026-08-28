@@ -4,8 +4,11 @@
 
 ## Trust semantics
 - `Author tested` means the author claims to have tested the guidance in the displayed environment. It is not an independent Postify execution.
-- Device-local `Worked / Didn't work` feedback is personal V1 evidence and is never presented as a community aggregate.
-- `Postify verified` is intentionally not used until a real sandboxed execution system exists.
+- Authenticated `Worked / Didn't work` feedback on canonical posts is stored as the contributor's private confirmation and contributes only to privacy-safe community aggregates. Anonymous or fallback feedback stays device-local.
+- Community success percentages are withheld until at least 3 independent confirmations exist; smaller samples show counts without an inflated rate.
+- `Postify verified` means the displayed checked-in deterministic code exactly matched the release manifest, executed successfully, and its runtime freshness is still current.
+- Runtime freshness is checked against the official Node.js release signal. A newer LTS release or an unavailable freshness signal withholds the current Verified badge while preserving the historical execution artifact.
+- Automatic verification is policy-limited checked-in execution, not a sandbox for arbitrary or untrusted user code.
 
 ## Content types
 - Guide: accomplish a concrete task.
@@ -15,3 +18,8 @@
 
 ## Canonical site
 https://postify.zekiakgul.dev/
+
+## Machine-readable trust artifacts
+- `/verification-runs.json`: exact executed code/runtime/output/hash contract.
+- `/runtime-release-status.json`: current/re-check/unknown runtime freshness signal.
+- `/knowledge/<slug>.<locale>.json`: canonical article evidence plus execution and runtime-release binding.

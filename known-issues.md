@@ -9,7 +9,7 @@
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
 
 ## Resolved — 2026-08-28
-- Automatic Node verification no longer runs on the EOL Node 20 line; hosted verification/deploy uses Node 24.20.0 and the manifest rejects any non-Node-24 execution. Dynamic future runtime-release invalidation remains a separate backlog item.
+- Automatic Node verification no longer runs on the EOL Node 20 line; hosted verification/deploy uses Node 24.20.0, the manifest rejects non-Node-24 execution, and a daily official Node release signal withholds the current Verified badge when a newer LTS release appears or freshness cannot be established. Package/dependency-level evidence invalidation remains a separate backlog item.
 - Dependency regressions are now release-blocking: CI fails closed if npm audit reports any vulnerability or is unavailable, and also blocks Playwright package/container version drift. Dependabot routine version PRs are limited to minor/patch updates; major upgrades require deliberate review.
 - Dependency lock security baseline is clean: independent npm audit reports 0 production and 0 full-tree vulnerabilities after a minimal non-force lock remediation; weekly Dependabot version monitoring is configured separately from urgent security updates.
 - Authenticated Verified Knowledge RPCs no longer execute as exposed SECURITY DEFINER functions; public wrappers are SECURITY INVOKER and privileged helpers live in the non-exposed `private` schema. Supabase security advisor now reports only the separate leaked-password-protection Auth warning.

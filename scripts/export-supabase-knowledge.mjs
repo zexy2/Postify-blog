@@ -50,6 +50,7 @@ for (const translation of translations || []) {
 }
 
 const verification = JSON.parse(await readFile('docs/verification-runs.json', 'utf8'));
+const runtimeStatus = JSON.parse(await readFile('docs/runtime-release-status.json', 'utf8'));
 if (!verification?.runs || typeof verification.runs !== 'object') {
   throw new Error('Production verification-runs.json is missing a runs object');
 }
@@ -92,6 +93,7 @@ for (const post of posts || []) {
         version: post.evidence_version,
         community: summaryById.get(String(post.id)) || null,
         automaticVerification,
+        runtimeReleaseSignal: automaticVerificationId ? runtimeStatus.checks?.[automaticVerificationId] || null : null,
       },
       canonicalUrl: `https://postify.zekiakgul.dev/posts/${post.slug}`,
     };
