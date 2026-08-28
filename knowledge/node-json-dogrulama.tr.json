@@ -24,7 +24,7 @@
       "Çıktının PASS olduğunu doğrula"
     ],
     "caveats": [
-      "Otomatik doğrulama yalnız aşağıdaki deterministik Node.js örneğini kapsar; harici servis veya ağ davranışını doğrulamaz."
+      "Otomatik doğrulama yalnız aşağıdaki checked-in deterministik Node.js örneğini kapsar. Release politikası dış paket, ağ, dosya sistemi ve process API’lerini reddeder; bu bir güvenlik sandbox’ı değildir."
     ],
     "sources": [
       "https://nodejs.org/api/assert.html"
@@ -34,12 +34,16 @@
       "postSlug": "node-json-dogrulama",
       "status": "passed",
       "runtime": "node",
-      "runtimeVersion": "20+",
-      "verifiedAt": "2026-08-28T14:35:36.735Z",
-      "durationMs": 35,
-      "expectedStdout": "PASS"
+      "runtimeVersion": "v20.20.2",
+      "policy": "node-deterministic-v1",
+      "verifiedAt": "2026-08-28T14:38:42.255Z",
+      "durationMs": 34,
+      "expectedStdout": "PASS",
+      "actualStdout": "PASS",
+      "codeSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
+      "articleContractMatched": true
     }
   },
-  "body": "## Problem\nKod örnekleri çoğu teknik yazıda yalnızca okunur. Bu rehberde küçük ama deterministik bir Node.js örneğini gerçekten çalıştırıp beklenen çıktıyı doğruluyoruz.\n\n## Kod\n\n```js\nimport assert from 'node:assert/strict';\nconst payload = '{\"ok\":true,\"items\":[1,2,3]}';\nconst parsed = JSON.parse(payload);\nassert.equal(parsed.ok, true);\nassert.deepEqual(parsed.items, [1,2,3]);\nprocess.stdout.write('PASS');\n```\n\n## Doğrulama\nBuild sırasında Postify aynı kodu izole bir child process içinde Node.js ile çalıştırır. Çıktı tam olarak PASS değilse release gate başarısız olur. Bu nedenle bu örnekte “Postify doğruladı” ifadesi gerçek bir execution sonucuna dayanır.",
+  "body": "## Problem\nKod örnekleri çoğu teknik yazıda yalnızca okunur. Bu rehberde küçük ama deterministik bir Node.js örneğini gerçekten çalıştırıp beklenen çıktıyı doğruluyoruz.\n\n## Kod\n\n```js\nimport assert from 'node:assert/strict';\nconst payload = '{\"ok\":true,\"items\":[1,2,3]}';\nconst parsed = JSON.parse(payload);\nassert.equal(parsed.ok, true);\nassert.deepEqual(parsed.items, [1,2,3]);\nprocess.stdout.write('PASS');\n```\n\n## Doğrulama\nBuild sırasında Postify yukarıda gösterilen aynı kodu daraltılmış deterministik release politikası altında ayrı bir Node.js child process’inde çalıştırır. Beklenen çıktı tam olarak PASS. Çıktı eşleşmezse release gate başarısız olur. Bu nedenle bu örnekte “Postify doğruladı” ifadesi gerçek bir execution sonucuna dayanır.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/node-json-dogrulama"
 }
