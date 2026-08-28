@@ -286,3 +286,28 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* UI V2 editorial collection */
+.page { padding: clamp(2rem, 5vw, 4.5rem) 0 5rem; animation: none; }
+.header { align-items: flex-end; margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-strong); }
+.headerLeft { display: block; }
+.title { margin: 0 0 .35rem; font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 4.4rem); font-weight: 700; letter-spacing: -.045em; line-height: .98; }
+.count { padding: 0; background: transparent; border: 0; border-radius: 0; color: var(--text-muted); font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; }
+.clearButton { min-height: 40px; padding: .6rem .75rem; border-width: 1px; border-radius: var(--radius-md); transform: none; }
+.clearButton:hover { color: var(--error); background: var(--error-subtle); transform: none; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 0; border-top: 1px solid var(--border-color); }
+.card { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; padding: 1.5rem 0; background: transparent; border: 0; border-bottom: 1px solid var(--border-color); border-radius: 0; box-shadow: none; overflow: visible; transition: none; }
+.card::before { display: none; }
+.card:hover { transform: none; box-shadow: none; }
+.cardLink { margin: 0; }
+.cardTitle { max-width: 30ch; margin: 0 0 .5rem; font-family: var(--font-display); font-size: clamp(1.5rem, 2.5vw, 2.15rem); line-height: 1.08; letter-spacing: -.03em; }
+.cardBody { max-width: 68ch; margin: 0; font-size: .9rem; line-height: 1.6; -webkit-line-clamp: 2; }
+.cardFooter { justify-content: flex-end; align-items: flex-start; padding: 0; border: 0; }
+.author { display: none; }
+.removeButton { width: 40px; height: 40px; justify-content: center; padding: 0; border-radius: var(--radius-md); }
+.emptyState { max-width: 620px; margin: 0 auto; padding: clamp(4rem, 10vw, 7rem) 1rem; text-align: center; }
+.emptyIcon { width: 52px; height: 52px; margin: 0 auto 1rem; background: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-md); }
+.emptyIcon svg { width: 24px; color: var(--text-muted); }
+.emptyTitle { margin: 0 0 .5rem; font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); }
+.backButton { display: inline-flex; align-items: center; gap: .4rem; min-height: 42px; margin-top: .75rem; padding: .65rem .85rem; color: var(--bg-primary); background: var(--text-primary); border-radius: var(--radius-md); font-size: .8rem; font-weight: 800; text-decoration: none; }
+@media (max-width: 640px) { .page { padding: 2rem 0 4rem; } .header { align-items: flex-start; } .clearButton { width: auto; } .card { grid-template-columns: 1fr auto; } }

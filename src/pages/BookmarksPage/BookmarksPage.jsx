@@ -49,7 +49,7 @@ const BookmarksPage = () => {
         <div className={styles.grid}>
           {bookmarkedPosts.map((post) => (
             <article key={post.id} className={styles.card}>
-              <Link to={`/posts/${post.id}`} className={styles.cardLink}>
+              <Link to={`/posts/${post.slug || post.id}`} className={styles.cardLink}>
                 <h3 className={styles.cardTitle}>{post.title}</h3>
                 <p className={styles.cardBody}>
                   {post.body?.substring(0, 120)}...
