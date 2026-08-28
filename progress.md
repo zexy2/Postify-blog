@@ -127,3 +127,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Simplified the footer, removed the giant display banner, shifted category links to Postify content formats, and added a global reduced-motion safeguard.
 - Added a dedicated Chromium UI V2 E2E smoke covering desktop discovery/navigation, direct article rendering, 390px mobile overflow/menu, and reduced-motion behavior.
 - Verification: full `npm run verify` PASS (13 files / 53 tests, lint, production build, build smoke) and Playwright Chromium UI smoke PASS (4/4).
+
+## 2026-08-28 — UI V2 polish pass 3
+- Calmed login/auth and 404 recovery surfaces by removing decorative orb/gradient motion and emphasizing typography + clear actions.
+- Brought analytics/admin dashboards into the same flat editorial system: lighter surfaces, fewer shadows, stronger separators, quieter status treatments.
+- Simplified secondary sharing, bookmark and fallback post-card controls; removed platform-color spectacle and hover scale/glow behavior.
+- Expanded Chromium UI smoke from 4 to 6 scenarios with login and unknown-route recovery coverage.
+- Verification: `npm run verify` PASS (13 files / 53 tests, lint, production build, build smoke) and Playwright Chromium UI smoke PASS (6/6).
