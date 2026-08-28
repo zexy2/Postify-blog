@@ -1,6 +1,6 @@
-export function createDraftKey(userId, locale = 'tr') {
+export function createDraftKey(userId, locale = 'tr', scope = 'new') {
   const language = String(locale).toLowerCase().startsWith('en') ? 'en' : 'tr';
-  return `postify:create-draft:${userId || 'local'}:${language}`;
+  return `postify:create-draft:${userId || 'local'}:${language}:${scope || 'new'}`;
 }
 
 export function loadDraft(storage, key) {

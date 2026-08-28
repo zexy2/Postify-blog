@@ -12,8 +12,8 @@ function createMemoryStorage() {
 
 describe('draftStorage', () => {
   it('scopes drafts by user and language', () => {
-    expect(createDraftKey('u1', 'tr-TR')).toBe('postify:create-draft:u1:tr');
-    expect(createDraftKey('u1', 'en-US')).toBe('postify:create-draft:u1:en');
+    expect(createDraftKey('u1', 'tr-TR')).toBe('postify:create-draft:u1:tr:new');
+    expect(createDraftKey('u1', 'en-US')).toBe('postify:create-draft:u1:en:new');
   });
 
   it('round-trips and clears a draft safely', () => {

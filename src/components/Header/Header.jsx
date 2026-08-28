@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   FiBookmark,
+  FiActivity,
   FiInfo,
   FiLogIn,
   FiLogOut,
@@ -153,6 +154,7 @@ const Header = () => {
               <nav className={styles.mobileNav}>
                 <Link to="/" onClick={closeMenu}><span>{t('nav.home')}</span><small>01</small></Link>
                 {isAuthenticated && <Link to="/posts/create" onClick={closeMenu}><span>{t('nav.createPost')}</span><FiPlus size={16} /></Link>}
+                {isAuthenticated && <Link to="/knowledge" onClick={closeMenu}><span>{i18n.language?.startsWith('en') ? 'Knowledge health' : 'Bilgi sağlığı'}</span><FiActivity size={16} /></Link>}
                 {isAuthenticated && <Link to="/bookmarks" onClick={closeMenu}><span>{t('nav.bookmarks')}</span><small>{bookmarksCount || '—'}</small></Link>}
                 <Link to="/about" onClick={closeMenu}><span>{t('nav.about')}</span><FiInfo size={16} /></Link>
                 <Link to="/contact" onClick={closeMenu}><span>{t('nav.contact')}</span><FiMail size={16} /></Link>

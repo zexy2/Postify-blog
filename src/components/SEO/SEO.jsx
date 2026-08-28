@@ -18,6 +18,8 @@ const SEO = ({
   modifiedTime,
   keywords = [],
   noIndex = false,
+  citations = [],
+  alternateJsonUrl,
 }) => {
   const siteTitle = 'Postify';
   const defaultDescription = 'Postify, geliştiriciler ve ürün üretenler için uygulanabilir rehberler, karar notları, açıklayıcılar ve saha notları sunar.';
@@ -51,6 +53,7 @@ const SEO = ({
     ...(modifiedTime && {
       dateModified: modifiedTime,
     }),
+    ...(citations.length > 0 && { citation: citations }),
     publisher: {
       '@type': 'Organization',
       name: siteTitle,
@@ -97,6 +100,7 @@ const SEO = ({
 
       {/* Canonical URL */}
       <link rel="canonical" href={pageUrl} />
+      {alternateJsonUrl && <link rel="alternate" type="application/json" href={absoluteAssetUrl(alternateJsonUrl, siteUrl)} />}
 
       {/* JSON-LD Structured Data */}
       <script type="application/ld+json">

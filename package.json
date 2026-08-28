@@ -13,8 +13,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "smoke:build": "node scripts/verify-build.mjs",
-    "verify": "npm test && npm run lint && npm run build && npm run smoke:build",
-    "test:e2e:ui": "playwright test e2e/ui-v2.spec.js --project=chromium"
+    "verify": "npm run verify:knowledge && npm test && npm run lint && npm run build && npm run smoke:build",
+    "test:e2e:ui": "playwright test e2e/ui-v2.spec.js --project=chromium",
+    "verify:knowledge": "node scripts/verify-knowledge.mjs",
+    "knowledge:artifacts": "node scripts/generate-knowledge-artifacts.mjs",
+    "predev": "npm run verify:knowledge && npm run knowledge:artifacts",
+    "prebuild": "npm run verify:knowledge && npm run knowledge:artifacts",
+    "export:knowledge": "node scripts/export-supabase-knowledge.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

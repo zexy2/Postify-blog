@@ -4,11 +4,11 @@
  */
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import RichTextEditor from '../../components/RichTextEditor';
-import { useCreatePost } from '../../hooks/usePosts';
+import { useCreatePost, usePost, useUpdatePost } from '../../hooks/usePosts';
 import { EDITOR_CONFIG } from '../../constants';
 import { getWritingStarter, getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
 import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draftStorage';
@@ -24,15 +24,19 @@ import styles from './CreatePostPage.module.css';
 const CreatePostPage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEdit = Boolean(id);
   const dispatch = useDispatch();
   const createPost = useCreatePost();
+  const updatePost = useUpdatePost();
+  const { post: editingPost } = usePost(id);
 
   // AI state
   const aiEnabled = useSelector(selectAIEnabled);
   const aiAvailable = isAIAvailable();
   const currentUser = useSelector((state) => state.user.user);
   const writingTemplates = getWritingTemplates(i18n.language);
-  const draftKey = createDraftKey(currentUser?.id, i18n.language);
+  const draftKey = createDraftKey(currentUser?.id, i18n.language, id || 'new');
   const initialDraft = typeof window !== 'undefined' ? loadDraft(window.localStorage, draftKey) : null;
   const [writingMode, setWritingMode] = useState(() => initialDraft?.writingMode || 'guide');
   const writingTemplate = getWritingTemplate(writingMode, i18n.language);
@@ -55,6 +59,20 @@ const CreatePostPage = () => {
     minTitleLength: EDITOR_CONFIG.MIN_TITLE_LENGTH,
     minBodyLength: EDITOR_CONFIG.MIN_BODY_LENGTH,
   });
+
+  useEffect(() => {
+    if (!isEdit || !editingPost || initialDraft?.formData || isDirty) return;
+    setWritingMode(editingPost.contentType || 'guide');
+    setFormData({
+      title: editingPost.title || '',
+      body: editingPost.body || '',
+      bodyHtml: editingPost.bodyHtml || '',
+      outcome: editingPost.outcome || editingPost.excerpt || '',
+      testedAt: editingPost.evidence?.testedAt ? editingPost.evidence.testedAt.slice(0, 10) : '',
+      environment: (editingPost.evidence?.environment || []).join(' · '),
+      verificationSteps: (editingPost.evidence?.verificationSteps || []).join('\n'),
+    });
+  }, [editingPost, initialDraft?.formData, isDirty, isEdit]);
 
   useEffect(() => {
     if (!isDirty || typeof window === 'undefined') return undefined;
@@ -117,16 +135,34 @@ const CreatePostPage = () => {
     if (!validateForm()) return;
 
     try {
-      await createPost.mutateAsync({
+      const payload = {
         title: formData.title.trim(),
         body: formData.body.trim(),
         bodyHtml: formData.bodyHtml,
         authorId: currentUser?.id,
         locale: i18n.language?.startsWith('en') ? 'en' : 'tr',
-      });
+        contentType: writingMode,
+        outcome: formData.outcome.trim(),
+        evidence: {
+          level: formData.testedAt && formData.environment.trim() && formData.verificationSteps.trim() ? 'author-tested' : 'unverified',
+          testedAt: formData.testedAt ? `${formData.testedAt}T12:00:00.000Z` : null,
+          environment: formData.environment.split(/[·,\n]/).map((item) => item.trim()).filter(Boolean),
+          prerequisites: editingPost?.evidence?.prerequisites || [],
+          verificationSteps: formData.verificationSteps.split('\n').map((item) => item.trim()).filter(Boolean),
+          caveats: editingPost?.evidence?.caveats || [],
+          sources: editingPost?.evidence?.sources || [],
+          staleAfterDays: editingPost?.evidence?.staleAfterDays || 180,
+          version: editingPost?.evidence?.version || 1,
+        },
+      };
+      if (isEdit) {
+        await updatePost.mutateAsync({ id, data: { ...payload, revisionReason: 'Author edited content or evidence' } });
+      } else {
+        await createPost.mutateAsync(payload);
+      }
 
       if (typeof window !== 'undefined') clearDraft(window.localStorage, draftKey);
-      navigate('/');
+      navigate(isEdit ? `/posts/${editingPost?.slug || id}` : '/');
     } catch (error) {
       console.error('Failed to create post:', error);
     }
@@ -145,7 +181,7 @@ const CreatePostPage = () => {
     <div className="container">
       <div className={styles.page}>
         <header className={styles.header}>
-          <h1 className={styles.title}>{t('posts.createPost')}</h1>
+          <h1 className={styles.title}>{isEdit ? (i18n.language?.startsWith('en') ? 'Edit verified knowledge' : 'Doğrulanmış bilgiyi düzenle') : t('posts.createPost')}</h1>
           <p className={styles.subtitle}>
             {t('posts.createSubtitle')}
           </p>
@@ -308,17 +344,17 @@ const CreatePostPage = () => {
             <button
               type="submit"
               className={styles.submitButton}
-              disabled={createPost.isPending}
+              disabled={createPost.isPending || updatePost.isPending}
             >
-              {createPost.isPending ? (
+              {createPost.isPending || updatePost.isPending ? (
                 <>
                   <span className={styles.spinner} />
-                  {t('posts.publishing')}
+                  {isEdit ? (i18n.language?.startsWith('en') ? 'Updating…' : 'Güncelleniyor…') : t('posts.publishing')}
                 </>
               ) : (
                 <>
                   <span>✨</span>
-                  {t('posts.publish')}
+                  {isEdit ? (i18n.language?.startsWith('en') ? 'Update' : 'Güncelle') : t('posts.publish')}
                 </>
               )}
             </button>

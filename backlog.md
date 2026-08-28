@@ -66,3 +66,9 @@
 - [ ] Add dependency release monitoring and evidence invalidation after backend model exists
 - [ ] Add revision history and evidence diff once immutable snapshots are persisted
 - [ ] Add grounded Ask Postify/API/MCP only after provenance/freshness data is durable
+
+## Verified Knowledge expansion after full conversion
+- [ ] Add additional sandbox runtimes only with resource/network isolation and explicit supported scopes
+- [ ] Add dependency-release invalidation signals for evidence environments
+- [ ] Add moderation tooling if community failure notes become abusive/noisy at scale
+- [ ] Add grounded Ask Postify only after durable production evidence/revision data has enough coverage

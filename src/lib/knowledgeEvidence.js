@@ -12,7 +12,7 @@ export function getKnowledgeEvidence(post = {}, now = new Date()) {
   const verificationSteps = Array.isArray(evidence.verificationSteps) ? evidence.verificationSteps.filter(Boolean) : [];
   const caveats = Array.isArray(evidence.caveats) ? evidence.caveats.filter(Boolean) : [];
   const sources = Array.isArray(evidence.sources) ? evidence.sources.filter(Boolean) : [];
-  const level = evidence.level === 'author-tested' ? 'author-tested' : 'unverified';
+  const level = ['author-tested','postify-verified'].includes(evidence.level) ? evidence.level : 'unverified';
   const staleAfterDays = Number(evidence.staleAfterDays) > 0 ? Number(evidence.staleAfterDays) : 180;
   const freshness = ageDays === null ? 'unknown' : ageDays > staleAfterDays ? 'stale' : ageDays > staleAfterDays * 0.65 ? 'aging' : 'current';
 
@@ -34,13 +34,13 @@ export function getEvidenceCopy(post = {}, locale = 'tr', now = new Date()) {
   const evidence = getKnowledgeEvidence(post, now);
   const lang = localeKey(locale);
   const labels = lang === 'en' ? {
-    authorTested: 'Author tested', unverified: 'Not independently verified', current: 'Current', aging: 'Re-check soon', stale: 'Needs re-verification', unknown: 'Freshness unknown', tested: 'Tested',
+    postifyVerified: 'Postify verified', authorTested: 'Author tested', unverified: 'Not independently verified', current: 'Current', aging: 'Re-check soon', stale: 'Needs re-verification', unknown: 'Freshness unknown', tested: 'Tested',
   } : {
-    authorTested: 'Yazar test etti', unverified: 'Bağımsız doğrulanmadı', current: 'Güncel', aging: 'Yakında tekrar kontrol edilmeli', stale: 'Yeniden doğrulama gerekli', unknown: 'Güncellik bilinmiyor', tested: 'Test edildi',
+    postifyVerified: 'Postify doğruladı', authorTested: 'Yazar test etti', unverified: 'Bağımsız doğrulanmadı', current: 'Güncel', aging: 'Yakında tekrar kontrol edilmeli', stale: 'Yeniden doğrulama gerekli', unknown: 'Güncellik bilinmiyor', tested: 'Test edildi',
   };
   return {
     ...evidence,
-    levelLabel: evidence.level === 'author-tested' ? labels.authorTested : labels.unverified,
+    levelLabel: evidence.level === 'postify-verified' ? labels.postifyVerified : evidence.level === 'author-tested' ? labels.authorTested : labels.unverified,
     freshnessLabel: labels[evidence.freshness],
     testedLabel: labels.tested,
   };

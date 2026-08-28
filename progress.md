@@ -155,3 +155,15 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Authoring draft now collects outcome, test date, environment and verification steps and includes them in readiness scoring; production persistence remains deferred pending schema review.
 - Added `llms.txt` trust semantics to static release and build smoke.
 - Verification baseline expanded to 15 test files / 59 unit tests and 12 Chromium UI scenarios.
+
+## 2026-08-28 — Verified Knowledge full product conversion
+- Added additive production schema for post evidence, confirmations, revisions, knowledge gaps, private shelf state and aggregate evidence views.
+- Migration passes PostgreSQL 16 dry-run and idempotency; RLS integration test passes self-confirmation, duplicate inflation, private shelf, gap dedupe, revision ownership and re-verification boundaries.
+- Authoring now persists structured evidence and edit mode performs real updates with revision snapshots.
+- Added real community confirmations/failure reports and minimum-sample aggregate rules.
+- Added author Knowledge Health dashboard with re-verification queue, knowledge demand and evidence-gated domain credibility.
+- Added evidence-aware discovery ranking/filtering and persistent authenticated knowledge gaps/shelf states.
+- Added the first real `Postify verified` execution: deterministic Node.js code is run in the release gate; failed expected output fails release.
+- Added machine-readable verification and per-article JSON artifacts plus structured citations/alternate JSON metadata.
+- CI now includes a PostgreSQL schema/RLS gate. Deploy workflow now reads existing Supabase Action secrets correctly and exports production knowledge artifacts after build.
+- Local release verification: 19 test files / 67 tests PASS; lint/build/smoke PASS; Chromium 15/15 PASS.
