@@ -165,7 +165,7 @@ const HomePage = () => {
 
       <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
-      <section className={`container ${styles.postsSection}`}>
+      <section id="knowledge-feed" className={`container ${styles.postsSection}`}>
         <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'}>
           <button
             type="button"

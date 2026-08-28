@@ -8,9 +8,9 @@
 .wakeUpMessage { max-width: 640px; margin: 1.5rem auto 0; padding: 1rem 1.25rem; color: var(--text-secondary); background: var(--primary-subtle); border: 1px solid var(--primary-light); border-radius: var(--radius-lg); line-height: 1.5; text-align: center; }
 .wakeUpMessage strong { display: block; margin-bottom: .25rem; color: var(--text-primary); }
 
-.standardSection { background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.standardSection { background: transparent; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
 .standardInner { display: grid; grid-template-columns: minmax(250px, .75fr) minmax(0, 1.25fr); gap: clamp(2rem, 6vw, 5rem); padding-top: clamp(2rem, 5vw, 3.5rem); padding-bottom: clamp(2rem, 5vw, 3.5rem); }
-.standardIntro h2 { max-width: 14ch; margin: .65rem 0 0; color: var(--text-primary); font-family: var(--font-sans); font-size: clamp(1.7rem, 3vw, 2.6rem); font-weight: 750; letter-spacing: -.045em; line-height: 1.05; }
+.standardIntro h2 { max-width: 14ch; margin: .65rem 0 0; color: var(--text-primary); font-family: var(--font-display); font-size: clamp(1.9rem, 3vw, 3rem); font-weight: 600; letter-spacing: -.045em; line-height: 1.02; }
 .principles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-left: 1px solid var(--border-color); }
 .principles article { display: grid; grid-template-columns: auto 1fr; gap: .8rem; padding: .25rem clamp(1rem, 2.5vw, 1.5rem); border-right: 1px solid var(--border-color); }
 .principles article > span { color: var(--primary); font-family: var(--font-mono); font-size: .68rem; font-weight: 800; }
@@ -29,7 +29,7 @@
 
 .postsSection { padding-top: clamp(3rem, 7vw, 5.5rem); padding-bottom: var(--space-3xl); }
 .sectionHeader { display: flex; justify-content: space-between; margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
-.sectionTitle { display: flex; align-items: center; gap: .5rem; margin: .45rem 0 .3rem; color: var(--text-primary); font-family: var(--font-sans); font-size: clamp(2rem, 4vw, 3.3rem); font-weight: 760; letter-spacing: -.055em; }
+.sectionTitle { display: flex; align-items: center; gap: .5rem; margin: .45rem 0 .3rem; color: var(--text-primary); font-family: var(--font-display); font-size: clamp(2.15rem, 4vw, 3.6rem); font-weight: 600; letter-spacing: -.05em; }
 .sectionSubtitle { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
 
 .noResults { display: grid; justify-items: center; gap: .6rem; padding: 4rem 1.5rem; color: var(--text-muted); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); text-align: center; }
@@ -70,8 +70,9 @@
   padding: .5rem .75rem;
   color: var(--text-secondary);
   background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
   font: inherit;
   font-size: var(--text-sm);
   font-weight: 650;
@@ -79,9 +80,9 @@
   transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
-.typeFilter button:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.typeFilter button:hover { border-bottom-color: var(--border-strong); color: var(--text-primary); }
 .typeFilter button:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 2px; }
-.typeFilter .typeFilterActive { color: var(--text-primary); background: var(--primary-subtle); border-color: var(--primary); }
+.typeFilter .typeFilterActive { color: var(--primary); background: transparent; border-bottom-color: var(--primary); }
 
 
 .filterDivider { width: 1px; height: 1.4rem; align-self: center; background: var(--border-strong); }
