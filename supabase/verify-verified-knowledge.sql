@@ -15,6 +15,45 @@ grant execute on function public.capture_post_revision(uuid,text) to authenticat
 grant execute on function public.reverify_post(uuid,text) to authenticated;
 grant execute on function public.get_post_failure_details(uuid) to authenticated;
 
+-- Exposed RPCs must never execute as SECURITY DEFINER. Privileged operations
+-- belong behind non-exposed helpers in the private schema.
+do $$
+begin
+  if exists(
+    select 1
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.proname in ('request_knowledge_gap', 'get_post_failure_details')
+      and p.prosecdef
+  ) then
+    raise exception 'exposed Verified Knowledge RPC is SECURITY DEFINER';
+  end if;
+
+  if not exists(
+    select 1
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'private'
+      and p.proname = 'request_knowledge_gap_impl'
+      and p.prosecdef
+  ) or not exists(
+    select 1
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'private'
+      and p.proname = 'get_post_failure_details_impl'
+      and p.prosecdef
+  ) then
+    raise exception 'private Verified Knowledge privilege boundary is missing';
+  end if;
+
+  if has_function_privilege('anon', 'public.request_knowledge_gap(text)', 'EXECUTE')
+     or has_function_privilege('anon', 'public.get_post_failure_details(uuid)', 'EXECUTE') then
+    raise exception 'anonymous role can execute authenticated Verified Knowledge RPC';
+  end if;
+end $$;
+
 delete from public.user_knowledge_shelf where user_id in ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-2222-222222222222');
 delete from public.post_confirmations where user_id in ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-2222-222222222222');
 delete from public.post_revisions where post_id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';

@@ -262,3 +262,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Verified both production migration code blocks are byte-equivalent after newline normalization to the manifest code (2/2 exact). Fresh PostgreSQL 16 full migration chain + RLS/abuse verification PASS.
 - Full release gate PASS: 22 Vitest files / 90 tests, deterministic verifier/article contract, lint, build and build smoke. Official Playwright v1.57 Chromium container PASS 22/22.
 - Playwright local preview port is now configurable with `PLAYWRIGHT_PORT`; default CI behavior remains 4173 and unrelated server processes are not terminated.
+## 2026-08-28 — Private RPC privilege boundary
+- Moved privileged Knowledge Gap mutation and author failure-detail reads behind `private` SECURITY DEFINER helpers; the PostgREST-exposed `public.request_knowledge_gap` and `public.get_post_failure_details` signatures now remain SECURITY INVOKER wrappers.
+- Anonymous EXECUTE remains denied; authenticated callers retain the same public RPC contract. Fresh PostgreSQL 16 migration/RLS/abuse verification PASS, including a new assertion that these public RPCs can never regress to SECURITY DEFINER.
+- Applied production migration `20260828161849_private_rpc_boundary.sql` through authenticated Supabase management access and aligned the repository filename to the exact remote ledger version.
+- Production transaction smoke used an existing profile, confirmed Knowledge Gap normalization/deduplication (`duplicate_count=1`), confirmed unauthorized failure-detail rejection, and rolled back with 0 persisted smoke rows. Production has no authored posts, so the positive author-only failure-detail path remains verified in the fresh PostgreSQL RLS test rather than by fabricating production data.
+- Supabase security advisor no longer reports authenticated SECURITY DEFINER RPC warnings; the only remaining security advisor warning is the project-level leaked-password-protection Auth setting.
+- Full release verify PASS: 22 Vitest files / 90 tests, deterministic verification, lint, build and build smoke. Official Playwright v1.57 Chromium suite PASS 22/22.
