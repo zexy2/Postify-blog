@@ -5,6 +5,7 @@
  */
 
 import { Helmet } from 'react-helmet-async';
+import { absoluteAssetUrl, canonicalizeUrl } from '../../lib/seoUtils';
 
 const SEO = ({
   title,
@@ -18,24 +19,26 @@ const SEO = ({
   keywords = [],
   noIndex = false,
 }) => {
-  const siteTitle = 'Postify Blog';
-  const defaultDescription = 'Postify; teknoloji, ürün ve geliştirici deneyimi üzerine kısa editoryal notlar.';
+  const siteTitle = 'Postify';
+  const defaultDescription = 'Postify, geliştiriciler ve ürün üretenler için uygulanabilir rehberler, karar notları, açıklayıcılar ve saha notları sunar.';
   const defaultImage = '/images/posts/ai-muhendisligi.webp';
   const siteUrl = import.meta.env.VITE_APP_URL || 'https://postify.zekiakgul.dev';
 
   const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle;
   const pageDescription = description || defaultDescription;
-  const pageImage = image || `${siteUrl}${defaultImage}`;
-  const pageUrl = url || (typeof window !== 'undefined' ? window.location.href : siteUrl);
+  const pageImage = absoluteAssetUrl(image || defaultImage, siteUrl);
+  const rawPageUrl = url || (typeof window !== 'undefined' ? window.location.href : siteUrl);
+  const pageUrl = canonicalizeUrl(rawPageUrl, siteUrl);
 
   // JSON-LD structured data
   const structuredData = {
     '@context': 'https://schema.org',
-    '@type': type === 'article' ? 'BlogPosting' : 'WebSite',
+    '@type': type === 'article' ? 'Article' : 'WebSite',
     headline: title || siteTitle,
     description: pageDescription,
     image: pageImage,
     url: pageUrl,
+    ...(type === 'article' && { mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl } }),
     ...(author && {
       author: {
         '@type': 'Person',
@@ -53,7 +56,7 @@ const SEO = ({
       name: siteTitle,
       logo: {
         '@type': 'ImageObject',
-        url: `${siteUrl}/images/posts/ai-muhendisligi.webp`,
+        url: `${siteUrl}/pwa-512x512.png`,
       },
     },
   };

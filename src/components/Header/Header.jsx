@@ -1,12 +1,19 @@
-/**
- * Header Component
- * Main navigation header with search, theme toggle, and language switcher
- */
-
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiPlus, FiBookmark, FiGithub, FiUser, FiLogIn, FiLogOut, FiShield, FiMoon, FiSun, FiSearch, FiHome, FiInfo, FiMail } from 'react-icons/fi';
+import {
+  FiBookmark,
+  FiInfo,
+  FiLogIn,
+  FiLogOut,
+  FiMail,
+  FiMoon,
+  FiPlus,
+  FiSearch,
+  FiShield,
+  FiSun,
+  FiUser,
+} from 'react-icons/fi';
 
 import styles from './Header.module.css';
 import { useTheme } from '../../hooks/useTheme';
@@ -22,20 +29,18 @@ const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [shortcutLabel, setShortcutLabel] = useState('⌘K');
 
   const { theme, toggle: toggleTheme } = useTheme();
   const { bookmarksCount } = useBookmarks();
-  const { isAuthenticated, user, logout: handleLogout } = useAuth();
-
+  const { isAuthenticated, user, logout } = useAuth();
   const isAdmin = user?.profile?.role === 'admin';
 
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen(prev => !prev);
-  }, []);
-
-  const closeMenu = useCallback(() => {
-    setIsMenuOpen(false);
-  }, []);
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+  const openSearch = useCallback(() => {
+    closeMenu();
+    setIsCommandOpen(true);
+  }, [closeMenu]);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -46,29 +51,12 @@ const Header = () => {
     const handleShortcut = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        setIsCommandOpen(true);
-        setIsMenuOpen(false);
+        openSearch();
       }
     };
     document.addEventListener('keydown', handleShortcut);
     return () => document.removeEventListener('keydown', handleShortcut);
-  }, []);
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMenuOpen]);
-
-  const isActive = (path) => location.pathname === path;
-
-  const [shortcutLabel, setShortcutLabel] = useState('⌘K');
+  }, [openSearch]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -77,377 +65,117 @@ const Header = () => {
     }
   }, []);
 
-  const renderNavContent = () => (
-    <>
-      <button
-        type="button"
-        className={styles.searchTrigger}
-        onClick={() => { closeMenu(); setIsCommandOpen(true); }}
-        aria-label={t('search.open')}
-      >
-        <FiSearch size={16} />
-        <span>{t('search.open')}</span>
-        <kbd className={styles.searchKbd}>{shortcutLabel}</kbd>
-      </button>
-
-      {/* Navigation Links */}
-      <nav className={styles.navLinks}>
-        <Link
-          to="/"
-          className={`${styles.navItem} ${isActive('/') ? styles.active : ''}`}
-          onClick={closeMenu}
-        >
-          <FiHome size={17} className={styles.navIcon} />
-          <span>{t('nav.home')}</span>
-        </Link>
-
-        {isAuthenticated && (
-          <Link
-            to="/posts/create"
-            className={`${styles.createButton} ${isActive('/posts/create') ? styles.active : ''}`}
-            onClick={closeMenu}
-          >
-            <FiPlus size={16} />
-            {t('nav.createPost')}
-          </Link>
-        )}
-
-        {isAuthenticated && (
-          <Link
-            to="/bookmarks"
-            className={`${styles.iconLink} ${isActive('/bookmarks') ? styles.active : ''}`}
-            onClick={closeMenu}
-          >
-            <FiBookmark size={18} />
-            {bookmarksCount > 0 && (
-              <span className={styles.badge}>{bookmarksCount}</span>
-            )}
-          </Link>
-        )}
-
-        <Link
-          to="/about"
-          className={`${styles.navItem} ${isActive('/about') ? styles.active : ''}`}
-          onClick={closeMenu}
-        >
-          <FiInfo size={17} className={styles.navIcon} />
-          <span>{t('nav.about')}</span>
-        </Link>
-
-        <Link
-          to="/contact"
-          className={`${styles.navItem} ${isActive('/contact') ? styles.active : ''}`}
-          onClick={closeMenu}
-        >
-          <FiMail size={17} className={styles.navIcon} />
-          <span>{t('nav.contact')}</span>
-        </Link>
-      </nav>
-
-      {/* Actions */}
-      <div className={styles.actions}>
-        {/* Auth Links */}
-        {isAuthenticated ? (
-          <>
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className={`${styles.adminLink} ${isActive('/admin') ? styles.active : ''}`}
-                onClick={closeMenu}
-                title={t('nav.admin', 'Admin')}
-              >
-                <FiShield size={18} />
-              </Link>
-            )}
-            <Link
-              to="/profile"
-              className={`${styles.iconLink} ${isActive('/profile') ? styles.active : ''}`}
-              onClick={closeMenu}
-              title={user?.user_metadata?.full_name || t('user.profile')}
-            >
-              <FiUser size={18} />
-            </Link>
-            <button
-              onClick={() => { handleLogout(); closeMenu(); }}
-              className={styles.logoutButton}
-              title={t('auth.logout')}
-            >
-              <FiLogOut size={18} />
-            </button>
-          </>
-        ) : (
-          <Link
-            to="/auth/login"
-            className={styles.loginButton}
-            onClick={closeMenu}
-          >
-            <FiLogIn size={16} />
-            {t('auth.login')}
-          </Link>
-        )}
-
-        <LanguageSwitcher />
-
-        <a
-          href="https://github.com/zexy2"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.githubButton}
-          onClick={closeMenu}
-          aria-label="GitHub"
-          title="GitHub"
-        >
-          <FiGithub size={18} />
-        </a>
-
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className={styles.themeToggle}
-          aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
-          title={theme === 'light' ? t('theme.dark') : t('theme.light')}
-        >
-          {theme === 'light' ? <FiMoon size={17} /> : <FiSun size={17} />}
-        </button>
-      </div>
-    </>
-  );
-
-  const renderMobileNav = () => (
-    <div className={styles.mobileDrawerContainer}>
-      {/* 1. Quick Search Trigger */}
-      <div className={styles.mobileSearchWrapper}>
-        <button
-          type="button"
-          className={styles.mobileSearchTrigger}
-          onClick={() => { closeMenu(); setIsCommandOpen(true); }}
-          aria-label={t('search.open')}
-        >
-          <FiSearch size={18} className={styles.mobileSearchIcon} />
-          <span className={styles.mobileSearchPlaceholder}>{t('search.open')}...</span>
-        </button>
-      </div>
-
-      {/* 2. User Profile Card or Login CTA Banner */}
-      {isAuthenticated && user ? (
-        <div className={styles.mobileProfileCard}>
-          <div className={styles.mobileAvatar}>
-            {user?.user_metadata?.avatar_url ? (
-              <img src={user.user_metadata.avatar_url} alt={user?.user_metadata?.full_name || 'User'} />
-            ) : (
-              <FiUser size={18} />
-            )}
-          </div>
-          <div className={styles.mobileUserInfo}>
-            <span className={styles.mobileUserName}>
-              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || t('user.profile')}
-            </span>
-            <span className={styles.mobileUserEmail}>{user?.email}</span>
-          </div>
-          <Link
-            to="/profile"
-            className={styles.mobileProfileBtn}
-            onClick={closeMenu}
-          >
-            Profil
-          </Link>
-        </div>
-      ) : (
-        <div className={styles.mobileGuestBanner}>
-          <div className={styles.mobileGuestInfo}>
-            <span className={styles.mobileGuestTitle}>Postify'a Hoş Geldiniz</span>
-            <span className={styles.mobileGuestDesc}>Yazıları kaydetmek ve paylaşmak için giriş yapın</span>
-          </div>
-        </div>
-      )}
-
-      {/* 3. Navigation Links List */}
-      <div className={styles.mobileNavSection}>
-        <span className={styles.mobileSectionLabel}>NAVİGASYON</span>
-        <nav className={styles.mobileNavList}>
-          <Link
-            to="/"
-            className={`${styles.mobileNavItem} ${isActive('/') ? styles.mobileActive : ''}`}
-            onClick={closeMenu}
-          >
-            <div className={styles.mobileIconWrapper}>
-              <FiHome size={18} />
-            </div>
-            <div className={styles.mobileNavContent}>
-              <span className={styles.mobileNavTitle}>{t('nav.home')}</span>
-              <span className={styles.mobileNavDesc}>Ana Sayfa ve Akış</span>
-            </div>
-          </Link>
-
-          {isAuthenticated && (
-            <Link
-              to="/posts/create"
-              className={`${styles.mobileNavItem} ${styles.mobileCreatePostItem} ${isActive('/posts/create') ? styles.mobileActive : ''}`}
-              onClick={closeMenu}
-            >
-              <div className={`${styles.mobileIconWrapper} ${styles.createIconWrapper}`}>
-                <FiPlus size={18} />
-              </div>
-              <div className={styles.mobileNavContent}>
-                <span className={styles.mobileNavTitle}>{t('nav.createPost')}</span>
-                <span className={styles.mobileNavDesc}>Yeni Yazı Paylaş</span>
-              </div>
-            </Link>
-          )}
-
-          {isAuthenticated && (
-            <Link
-              to="/bookmarks"
-              className={`${styles.mobileNavItem} ${isActive('/bookmarks') ? styles.mobileActive : ''}`}
-              onClick={closeMenu}
-            >
-              <div className={styles.mobileIconWrapper}>
-                <FiBookmark size={18} />
-              </div>
-              <div className={styles.mobileNavContent}>
-                <span className={styles.mobileNavTitle}>Yer İşaretleri</span>
-                <span className={styles.mobileNavDesc}>Kaydedilen İçerikler</span>
-              </div>
-              {bookmarksCount > 0 && (
-                <span className={styles.mobileCountBadge}>{bookmarksCount}</span>
-              )}
-            </Link>
-          )}
-
-          <Link
-            to="/about"
-            className={`${styles.mobileNavItem} ${isActive('/about') ? styles.mobileActive : ''}`}
-            onClick={closeMenu}
-          >
-            <div className={styles.mobileIconWrapper}>
-              <FiInfo size={18} />
-            </div>
-            <div className={styles.mobileNavContent}>
-              <span className={styles.mobileNavTitle}>{t('nav.about')}</span>
-              <span className={styles.mobileNavDesc}>Hakkımızda ve Detaylar</span>
-            </div>
-          </Link>
-
-          <Link
-            to="/contact"
-            className={`${styles.mobileNavItem} ${isActive('/contact') ? styles.mobileActive : ''}`}
-            onClick={closeMenu}
-          >
-            <div className={styles.mobileIconWrapper}>
-              <FiMail size={18} />
-            </div>
-            <div className={styles.mobileNavContent}>
-              <span className={styles.mobileNavTitle}>{t('nav.contact')}</span>
-              <span className={styles.mobileNavDesc}>İletişime Geçin</span>
-            </div>
-          </Link>
-
-          {isAuthenticated && isAdmin && (
-            <Link
-              to="/admin"
-              className={`${styles.mobileNavItem} ${styles.mobileAdminNavItem} ${isActive('/admin') ? styles.mobileActive : ''}`}
-              onClick={closeMenu}
-            >
-              <div className={`${styles.mobileIconWrapper} ${styles.adminIconWrapper}`}>
-                <FiShield size={18} />
-              </div>
-              <div className={styles.mobileNavContent}>
-                <span className={styles.mobileNavTitle}>{t('nav.admin', 'Admin Panel')}</span>
-                <span className={styles.mobileNavDesc}>Yönetici Kontrolleri</span>
-              </div>
-            </Link>
-          )}
-        </nav>
-      </div>
-
-      {/* 4. Bottom Footer & Actions */}
-      <div className={styles.mobileDrawerFooter}>
-        <div className={styles.mobileUtilsCluster}>
-          <div className={styles.mobileLangWrap}>
-            <LanguageSwitcher />
-          </div>
-
-          <a
-            href="https://github.com/zexy2"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.mobileUtilIconBtn}
-            onClick={closeMenu}
-            aria-label="GitHub"
-            title="GitHub"
-          >
-            <FiGithub size={18} />
-          </a>
-
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className={styles.mobileUtilIconBtn}
-            aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
-            title={theme === 'light' ? t('theme.dark') : t('theme.light')}
-          >
-            {theme === 'light' ? <FiMoon size={18} /> : <FiSun size={18} />}
-          </button>
-        </div>
-
-        <div className={styles.mobileAuthAction}>
-          {isAuthenticated ? (
-            <button
-              onClick={() => { handleLogout(); closeMenu(); }}
-              className={styles.mobileLogoutButton}
-            >
-              <FiLogOut size={18} />
-              <span>{t('auth.logout')}</span>
-            </button>
-          ) : (
-            <Link
-              to="/auth/login"
-              className={styles.mobileLoginButton}
-              onClick={closeMenu}
-            >
-              <FiLogIn size={18} />
-              <span>{t('auth.login')}</span>
-            </Link>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+  };
 
   return (
-    <header className={`${styles.header} ${isMenuOpen ? styles.headerMenuOpen : ''}`}>
+    <header className={styles.header}>
       <CommandPalette open={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
 
       <div className={styles.container}>
-        <div className={styles.logoSection}>
-          <Link to="/" className={styles.logo} aria-label="Postify Home" onClick={closeMenu}>
-            <BrandMark size="md" />
-            <span className={styles.logoText}>Postify</span>
-          </Link>
+        <Link to="/" className={styles.logo} aria-label="Postify" onClick={closeMenu}>
+          <BrandMark size="md" />
+          <span>Postify</span>
+          <small>beta</small>
+        </Link>
+
+        <nav className={styles.desktopNav} aria-label="Primary">
+          <Link to="/" className={location.pathname === '/' ? styles.active : ''}>{t('nav.home')}</Link>
+          <Link to="/about" className={location.pathname === '/about' ? styles.active : ''}>{t('nav.about')}</Link>
+        </nav>
+
+        <div className={styles.desktopActions}>
+          <button type="button" className={styles.searchButton} onClick={openSearch} aria-label={t('search.open')}>
+            <FiSearch size={15} />
+            <span>{t('search.open')}</span>
+            <kbd>{shortcutLabel}</kbd>
+          </button>
+
+          {isAuthenticated && (
+            <Link to="/bookmarks" className={styles.iconButton} aria-label={t('nav.bookmarks')} title={t('nav.bookmarks')}>
+              <FiBookmark size={17} />
+              {bookmarksCount > 0 && <span className={styles.badge}>{bookmarksCount}</span>}
+            </Link>
+          )}
+
+          {isAuthenticated ? (
+            <Link to="/posts/create" className={styles.writeButton}>
+              <FiPlus size={15} /> {t('nav.createPost')}
+            </Link>
+          ) : (
+            <Link to="/auth/login" className={styles.loginButton}>
+              <FiLogIn size={15} /> {t('auth.login')}
+            </Link>
+          )}
+
+          <div className={styles.utilityActions}>
+            <LanguageSwitcher />
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className={styles.iconButton}
+              aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
+            >
+              {theme === 'light' ? <FiMoon size={16} /> : <FiSun size={16} />}
+            </button>
+          </div>
         </div>
 
         <button
-          className={`${styles.menuButton} ${isMenuOpen ? styles.open : ''}`}
-          onClick={toggleMenu}
+          type="button"
+          className={`${styles.menuButton} ${isMenuOpen ? styles.menuOpen : ''}`}
+          onClick={() => setIsMenuOpen((open) => !open)}
           aria-label={t('common.toggleMenu')}
           aria-expanded={isMenuOpen}
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span /><span /><span />
         </button>
 
-        {/* Desktop Inline Navigation */}
-        <div className={`${styles.navContainer} ${styles.desktopNav}`}>
-          {renderNavContent()}
-        </div>
+        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen} modal>
+          <SheetContent side="right" className={styles.sheet}>
+            <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
+            <div className={styles.mobilePanel}>
+              <div className={styles.mobileTop}>
+                <Link to="/" className={styles.logo} onClick={closeMenu}>
+                  <BrandMark size="md" /><span>Postify</span>
+                </Link>
+                <p>{t('home.subtitle')}</p>
+              </div>
 
-        {/* Shadcn UI Sheet Drawer for Mobile */}
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen} modal={true}>
-          <SheetContent side="right" className={styles.shadcnSheetContent}>
-            <SheetTitle className="sr-only">Navigasyon Menüsü</SheetTitle>
-            <div className={styles.shadcnSheetBody}>
-              {renderMobileNav()}
+              <button type="button" className={styles.mobileSearch} onClick={openSearch}>
+                <FiSearch size={17} />
+                <span>{t('home.searchPlaceholder')}</span>
+              </button>
+
+              <nav className={styles.mobileNav}>
+                <Link to="/" onClick={closeMenu}><span>{t('nav.home')}</span><small>01</small></Link>
+                {isAuthenticated && <Link to="/posts/create" onClick={closeMenu}><span>{t('nav.createPost')}</span><FiPlus size={16} /></Link>}
+                {isAuthenticated && <Link to="/bookmarks" onClick={closeMenu}><span>{t('nav.bookmarks')}</span><small>{bookmarksCount || '—'}</small></Link>}
+                <Link to="/about" onClick={closeMenu}><span>{t('nav.about')}</span><FiInfo size={16} /></Link>
+                <Link to="/contact" onClick={closeMenu}><span>{t('nav.contact')}</span><FiMail size={16} /></Link>
+                {isAuthenticated && <Link to="/profile" onClick={closeMenu}><span>{t('user.profile')}</span><FiUser size={16} /></Link>}
+                {isAuthenticated && isAdmin && <Link to="/admin" onClick={closeMenu}><span>{t('nav.admin')}</span><FiShield size={16} /></Link>}
+              </nav>
+
+              <div className={styles.mobileFooter}>
+                <div className={styles.mobileUtilities}>
+                  <LanguageSwitcher />
+                  <button type="button" onClick={toggleTheme} className={styles.iconButton}>
+                    {theme === 'light' ? <FiMoon size={17} /> : <FiSun size={17} />}
+                  </button>
+                </div>
+                {isAuthenticated ? (
+                  <button type="button" onClick={handleLogout} className={styles.logoutButton}>
+                    <FiLogOut size={16} /> {t('auth.logout')}
+                  </button>
+                ) : (
+                  <Link to="/auth/login" className={styles.mobileLogin} onClick={closeMenu}>
+                    <FiLogIn size={16} /> {t('auth.login')}
+                  </Link>
+                )}
+              </div>
             </div>
           </SheetContent>
         </Sheet>

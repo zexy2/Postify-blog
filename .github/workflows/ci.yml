@@ -12,7 +12,7 @@ env:
 
 jobs:
   verify:
-    name: Lint & Unit Tests
+    name: Test, Lint, Build & Smoke
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,11 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Run unit tests
-        run: npx vitest run --passWithNoTests
+      - name: Run release verification
+        run: npm run verify
 
   deploy:
     name: Build & Deploy to GitHub Pages
@@ -56,9 +53,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Deploying without Supabase credentials would publish a build that
-      # Frontend Supabase values are public runtime configuration. They are
-      # stored as repository Actions variables, not secrets.
       - name: Check deploy prerequisites
         id: prereq
         env:
@@ -79,7 +73,7 @@ jobs:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
           VITE_APP_URL: https://postify.zekiakgul.dev
-          VITE_APP_NAME: Postify Blog
+          VITE_APP_NAME: Postify
 
       - name: Deploy to GitHub Pages
         if: steps.prereq.outputs.ready == 'true'
