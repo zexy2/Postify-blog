@@ -35,6 +35,12 @@ export const knowledgeService = {
     if(error) throw error;
     return data || [];
   },
+  getAuthorFailureDetails: async (postId) => {
+    const client=requireSupabase();
+    const {data,error}=await client.rpc('get_post_failure_details',{target_post_id:postId});
+    if(error) throw error;
+    return data || [];
+  },
   getRevisions: async (postId) => {
     const client=requireSupabase();
     const {data,error}=await client.from('post_revision_history').select('id,revision_number,reason,created_at').eq('post_id',postId).order('revision_number',{ascending:false});

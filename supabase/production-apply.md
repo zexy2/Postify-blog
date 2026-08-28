@@ -26,6 +26,7 @@ The earlier 20260807 base/content/security migrations are existing project found
 - `post_evidence_summary`, aggregate `post_failure_reports`, and sanitized `post_revision_history` are publicly readable.
 - Anonymous/authenticated users cannot read raw `post_confirmations` belonging to another user or raw `post_revisions` snapshots.
 - Author cannot confirm their own post; one user cannot inflate a post with duplicate confirmations.
+- `get_post_failure_details(post_id)` rejects non-owners and returns owner/admin failure environment/note/date without contributor identity.
 - Author-tested status requires a test date, non-empty environment, and verification steps; future test timestamps are rejected.
 - `Postify verified` remains execution-derived from release artifacts and is not author-writable database metadata.
 - Authenticated shelf state and Knowledge Gap requests persist; anonymous mode remains local-only.

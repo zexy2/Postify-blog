@@ -13,6 +13,7 @@ grant usage, select on all sequences in schema public to authenticated;
 grant execute on function public.request_knowledge_gap(text) to authenticated;
 grant execute on function public.capture_post_revision(uuid,text) to authenticated;
 grant execute on function public.reverify_post(uuid,text) to authenticated;
+grant execute on function public.get_post_failure_details(uuid) to authenticated;
 
 delete from public.user_knowledge_shelf where user_id in ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-2222-222222222222');
 delete from public.post_confirmations where user_id in ('11111111-1111-1111-1111-111111111111','22222222-2222-2222-2222-222222222222');
@@ -69,6 +70,20 @@ values('22222222-2222-2222-2222-222222222222','aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa
 -- Gap same user/query counts once.
 select (public.request_knowledge_gap('Need a deterministic test')).request_count;
 select (public.request_knowledge_gap('need   a deterministic test')).request_count;
+update public.post_confirmations
+set result='failed', environment='Node 20', note='Step 2 failed', updated_at=now()
+where post_id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' and user_id='22222222-2222-2222-2222-222222222222';
+
+-- A non-author cannot use the author-only failure detail RPC.
+do $$
+begin
+  begin
+    perform * from public.get_post_failure_details('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa');
+    raise exception 'reader unexpectedly accessed author failure details';
+  exception when others then
+    if sqlerrm <> 'not authorized' then raise; end if;
+  end;
+end $$;
 reset role;
 
 -- Assert aggregate count stayed one.
@@ -104,6 +119,14 @@ begin
       and user_id='22222222-2222-2222-2222-222222222222'
   ) then
     raise exception 'individual confirmation leaked across users';
+  end if;
+end $$;
+
+-- Author can inspect sanitized failure details for their own post.
+do $$
+begin
+  if (select count(*) from public.get_post_failure_details('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa')) <> 1 then
+    raise exception 'author failure detail RPC did not return the expected report';
   end if;
 end $$;
 
@@ -143,7 +166,7 @@ begin
   ) then
     raise exception 'public revision history exposes raw snapshots';
   end if;
-  if (select failure_count from public.post_failure_reports where post_id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') <> 0 then
+  if (select failure_count from public.post_failure_reports where post_id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') <> 1 then
     raise exception 'failure aggregate is incorrect';
   end if;
 end $$;

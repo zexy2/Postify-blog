@@ -38,6 +38,11 @@ describe('knowledgeService', () => {
     expect(chain.select).toHaveBeenCalledWith('post_id,failure_count,last_failure_at');
   });
 
+  it('loads author-only failure details through the identity-free rpc', async () => {
+    await service.getAuthorFailureDetails('p1');
+    expect(client.rpc).toHaveBeenCalledWith('get_post_failure_details', { target_post_id: 'p1' });
+  });
+
   it('uses sanitized public revision history rather than raw snapshots', async () => {
     await service.getRevisions('p1');
     expect(client.from).toHaveBeenCalledWith('post_revision_history');

@@ -84,6 +84,32 @@ using (
   )
 );
 
+
+-- Authors/admins can inspect failure details for their own posts without exposing contributor identity.
+create or replace function public.get_post_failure_details(target_post_id uuid)
+returns table(environment text, note text, updated_at timestamptz)
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null or not exists(
+    select 1 from public.posts p
+    where p.id=target_post_id
+      and (p.author_id=auth.uid() or exists(select 1 from public.profiles where id=auth.uid() and role='admin'))
+  ) then
+    raise exception 'not authorized';
+  end if;
+
+  return query
+  select c.environment, c.note, c.updated_at
+  from public.post_confirmations c
+  where c.post_id=target_post_id and c.result='failed'
+  order by c.updated_at desc
+  limit 50;
+end;
+$$;
+
 revoke all on public.post_confirmations,public.post_revisions,public.knowledge_gap_requests,public.user_knowledge_shelf from anon;
 revoke all on public.post_confirmations,public.post_revisions from authenticated;
 grant select,insert,update,delete on public.post_confirmations to authenticated;
@@ -95,6 +121,8 @@ grant select on public.post_revision_history to anon, authenticated;
 revoke all on function public.request_knowledge_gap(text) from public;
 revoke all on function public.capture_post_revision(uuid,text) from public;
 revoke all on function public.reverify_post(uuid,text) from public;
+revoke all on function public.get_post_failure_details(uuid) from public;
 grant execute on function public.request_knowledge_gap(text) to authenticated;
 grant execute on function public.capture_post_revision(uuid,text) to authenticated;
 grant execute on function public.reverify_post(uuid,text) to authenticated;
+grant execute on function public.get_post_failure_details(uuid) to authenticated;

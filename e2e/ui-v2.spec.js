@@ -140,14 +140,14 @@ test.describe('Verified Knowledge execution', () => {
 });
 
 test.describe('Verified Knowledge pre-migration compatibility', () => {
-  test('capability artifact prevents premature evidence backend requests', async ({ page, request }) => {
-    const status = await request.get('/knowledge-backend-status.json');
-    expect(status.ok()).toBeTruthy();
-    expect((await status.json()).ready).toBe(false);
+  test('capability artifact prevents premature evidence backend requests', async ({ page }) => {
+    await page.route('**/knowledge-backend-status.json', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ schemaVersion: 1, ready: false, mode: 'e2e-schema-pending' }) });
+    });
 
     const evidenceRequests = [];
     page.on('request', (req) => {
-      if (/post_evidence_summary|post_confirmations|post_failure_reports|post_revisions|user_knowledge_shelf|knowledge_gaps/.test(req.url())) {
+      if (/post_evidence_summary|post_confirmations|post_failure_reports|post_revision_history|post_revisions|get_post_failure_details|user_knowledge_shelf|knowledge_gaps/.test(req.url())) {
         evidenceRequests.push(req.url());
       }
     });
@@ -179,6 +179,7 @@ test.describe('Verified Knowledge pre-migration compatibility', () => {
 
   test('skip link reaches the main content with keyboard navigation', async ({ page }) => {
     await page.goto('/');
+    await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
     await page.keyboard.press('Tab');
     const skip = page.getByRole('link', { name: /İçeriğe geç|Skip to content/i });
     await expect(skip).toBeFocused();

@@ -62,6 +62,7 @@
 ## Verified Knowledge — backend phase
 - [x] Design/review Supabase schema for evidence snapshots, user confirmations, failure aggregates and revisions
 - [x] Threat-model core confirmation abuse/privacy boundaries; self-confirmation/duplicate inflation/raw cross-user reads blocked by RLS
+- [x] Give authors identity-free private access to failure details without exposing raw community evidence publicly
 - [x] Build a narrow deterministic Node.js automatic verification runtime before introducing “Postify verified”
 - [ ] Add dependency release monitoring and evidence invalidation after backend model exists
 - [x] Add revision history model with private immutable snapshots and sanitized public changelog

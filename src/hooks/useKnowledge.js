@@ -9,6 +9,7 @@ export const knowledgeKeys = {
   summary: (id) => ['knowledge', 'summary', id],
   mine: (id) => ['knowledge', 'mine', id],
   failures: (id) => ['knowledge', 'failures', id],
+  authorFailures: (id) => ['knowledge', 'author-failures', id],
   revisions: (id) => ['knowledge', 'revisions', id],
   shelf: ['knowledge', 'shelf'],
   gaps: ['knowledge', 'gaps'],
@@ -38,6 +39,10 @@ export function useMyConfirmation(postId, { enabled = true } = {}) {
 export function useFailures(postId, { enabled = true } = {}) {
   const ready = useBackendReady();
   return useQuery({ queryKey: knowledgeKeys.failures(postId), queryFn: async () => (await loadKnowledgeService()).getFailures(postId), enabled: Boolean(postId) && enabled && ready, staleTime: 60_000, retry: 0 });
+}
+export function useAuthorFailureDetails(postId, { enabled = true } = {}) {
+  const ready = useBackendReady();
+  return useQuery({ queryKey: knowledgeKeys.authorFailures(postId), queryFn: async () => (await loadKnowledgeService()).getAuthorFailureDetails(postId), enabled: Boolean(postId) && enabled && ready, staleTime: 30_000, retry: 0 });
 }
 export function useRevisions(postId, { enabled = true } = {}) {
   const ready = useBackendReady();
