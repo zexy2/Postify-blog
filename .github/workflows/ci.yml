@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify dependency security and browser runner parity
+        run: npm run verify:security
+
       - name: Run release verification
         run: npm run verify
 
