@@ -215,6 +215,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Added a strict UUID guard so non-UUID slugs never enter the ID lookup path.
 - Current verification on the combined main + Action Runbook baseline: 20 unit/integration files / 81 tests PASS; lint/build/artifact smoke PASS; Chromium 22/22 PASS.
 
+## 2026-08-28 — Production migration runner prepared
+- Added a manual-only Supabase production migration workflow pinned to CLI 2.116.0 and project `fuiwcrqmxndguxymwoin`.
+- The workflow validates owner credentials, links the exact project, lists remote migration history, performs a dry-run without `--include-all`, and refuses apply unless the exact production confirmation is supplied.
+- Successful apply re-reads migration history, probes the three new public evidence views with the production publishable key, then triggers the full main CI/deploy/production-browser pipeline.
+- No production migration is performed by normal push/PR events.
+
 ## 2026-08-28 — Verification Contract V2
 - Removed verifier/article code duplication for the first Postify Verified Node.js example. The article now renders the exact code stored in the verification manifest.
 - The release verifier fails if an automatic verification manifest entry cannot find a matching article or if the article no longer contains the exact executed code.
