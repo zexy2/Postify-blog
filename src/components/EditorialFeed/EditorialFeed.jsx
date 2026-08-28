@@ -2,102 +2,98 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiBookmark, FiClock } from 'react-icons/fi';
 import ContentImage from '../ContentImage/ContentImage';
-import GlowingCard from '../GlowingCard/GlowingCard';
+import { getPostPresentation } from '../../lib/postPresentation';
 import styles from './EditorialFeed.module.css';
-
-const formatDate = (value, locale) => {
-  if (!value) return '';
-  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value));
-};
 
 const EditorialFeed = ({ posts, onBookmarkToggle, bookmarkedIds = [] }) => {
   const { t, i18n } = useTranslation();
   const [lead, ...rest] = posts;
   if (!lead) return null;
 
-  const renderMeta = (post) => (
-    <div className={styles.meta}>
-      <span className={styles.category}>{post.category}</span>
-      <span>•</span>
-      <span>{formatDate(post.publishedAt, i18n.language)}</span>
-      <span className={styles.readTime}><FiClock size={13} /> {post.readingTime} {t('common.minutes')}</span>
-    </div>
-  );
+  const renderMeta = (post) => {
+    const presentation = getPostPresentation(post, i18n.language);
+    return (
+      <div className={styles.meta}>
+        <span className={styles.type}>{presentation.typeLabel}</span>
+        <span className={styles.category}>{post.category}</span>
+        {presentation.formattedDate && (
+          <span>{presentation.dateLabel}: {presentation.formattedDate}</span>
+        )}
+        <span className={styles.readTime}><FiClock size={12} /> {post.readingTime} {t('common.minutes')}</span>
+      </div>
+    );
+  };
+
+  const BookmarkButton = ({ post }) => {
+    const isBookmarked = bookmarkedIds.includes(post.id);
+    return (
+      <button
+        type="button"
+        className={`${styles.bookmark} ${isBookmarked ? styles.bookmarked : ''}`}
+        onClick={() => onBookmarkToggle?.(post)}
+        aria-label={isBookmarked ? t('bookmarks.removeFromBookmarks') : t('bookmarks.addToBookmarks')}
+      >
+        <FiBookmark size={16} />
+      </button>
+    );
+  };
+
+  const leadPresentation = getPostPresentation(lead, i18n.language);
 
   return (
     <div className={styles.feedContainer}>
-      {/* 1. Hero Featured Lead Post with 21st.dev Spotlight Glow */}
-      {lead && (
-        <GlowingCard
-          glowColor="color-mix(in srgb, var(--primary) 25%, transparent)"
-          borderRadius="16px"
-          className={styles.heroGlowWrapper}
-        >
-          <article className={styles.heroLead}>
-            <Link to={`/posts/${lead.slug || lead.id}`} className={styles.heroImageLink}>
-              <ContentImage src={lead.coverImageUrl} alt={lead.coverImageAlt || lead.title} className={styles.heroImage} loading="lazy" />
+      <article className={styles.lead}>
+        <Link to={`/posts/${lead.slug || lead.id}`} className={styles.leadImageLink}>
+          <ContentImage
+            src={lead.coverImageUrl}
+            alt={lead.coverImageAlt || lead.title}
+            className={styles.leadImage}
+            loading="lazy"
+          />
+        </Link>
+        <div className={styles.leadContent}>
+          {renderMeta(lead)}
+          <Link to={`/posts/${lead.slug || lead.id}`} className={styles.titleLink}>
+            <h3 className={styles.leadTitle}>{lead.title}</h3>
+          </Link>
+          <p className={styles.leadExcerpt}>{leadPresentation.outcome}</p>
+          <div className={styles.footer}>
+            <Link to={`/posts/${lead.slug || lead.id}`} className={styles.readLink}>
+              {t('common.readMore')} <FiArrowUpRight size={15} />
             </Link>
-            <div className={styles.heroContent}>
-              {renderMeta(lead)}
-              <Link to={`/posts/${lead.slug || lead.id}`} className={styles.titleLink}>
-                <h3 className={styles.heroTitle}>{lead.title}</h3>
-              </Link>
-              <p className={styles.heroExcerpt}>{lead.excerpt}</p>
-              <div className={styles.heroFooter}>
-                <Link to={`/posts/${lead.slug || lead.id}`} className={styles.readLink}>
-                  {t('common.readMore')} <FiArrowUpRight size={16} />
-                </Link>
-                <button
-                  type="button"
-                  className={`${styles.bookmark} ${bookmarkedIds.includes(lead.id) ? styles.bookmarked : ''}`}
-                  onClick={() => onBookmarkToggle?.(lead)}
-                  aria-label={t('bookmarks.addToBookmarks')}
-                >
-                  <FiBookmark size={16} />
-                </button>
-              </div>
-            </div>
-          </article>
-        </GlowingCard>
-      )}
+            <BookmarkButton post={lead} />
+          </div>
+        </div>
+      </article>
 
-      {/* 2. Balanced 3-Column Responsive Grid with Spotlight Glow Cards */}
-      <div className={styles.grid}>
-        {rest.map((post) => {
-          const isBookmarked = bookmarkedIds.includes(post.id);
+      <div className={styles.list}>
+        {rest.map((post, index) => {
+          const presentation = getPostPresentation(post, i18n.language);
           return (
-            <GlowingCard
-              key={post.id}
-              glowColor="color-mix(in srgb, var(--primary) 20%, transparent)"
-              borderRadius="16px"
-              className={styles.cardGlowWrapper}
-            >
-              <article className={styles.card}>
-                <Link to={`/posts/${post.slug || post.id}`} className={styles.cardImageLink}>
-                  <ContentImage src={post.coverImageUrl} alt={post.coverImageAlt || post.title} className={styles.cardImage} loading="lazy" />
+            <article className={styles.row} key={post.id}>
+              <span className={styles.index}>{String(index + 2).padStart(2, '0')}</span>
+              <div className={styles.rowContent}>
+                {renderMeta(post)}
+                <Link to={`/posts/${post.slug || post.id}`} className={styles.titleLink}>
+                  <h4 className={styles.rowTitle}>{post.title}</h4>
                 </Link>
-                <div className={styles.cardBody}>
-                  {renderMeta(post)}
-                  <Link to={`/posts/${post.slug || post.id}`} className={styles.titleLink}>
-                    <h4 className={styles.cardTitle}>{post.title}</h4>
+                <p className={styles.rowExcerpt}>{presentation.outcome}</p>
+                <div className={styles.rowActions}>
+                  <Link to={`/posts/${post.slug || post.id}`} className={styles.readLink}>
+                    {t('common.read')} <FiArrowUpRight size={14} />
                   </Link>
-                  <p className={styles.cardExcerpt}>{post.excerpt}</p>
-                  <div className={styles.cardFooter}>
-                    <Link to={`/posts/${post.slug || post.id}`} className={styles.readLink}>
-                      {t('common.readMore')} <FiArrowUpRight size={15} />
-                    </Link>
-                    <button
-                      type="button"
-                      className={`${styles.bookmark} ${isBookmarked ? styles.bookmarked : ''}`}
-                      onClick={() => onBookmarkToggle?.(post)}
-                      aria-label={isBookmarked ? t('bookmarks.removeFromBookmarks') : t('bookmarks.addToBookmarks')}
-                    >
-                      <FiBookmark size={16} />
-                    </button>
-                  </div>
+                  <BookmarkButton post={post} />
                 </div>
-              </article>
-            </GlowingCard>
+              </div>
+              <Link to={`/posts/${post.slug || post.id}`} className={styles.thumbLink} tabIndex={-1} aria-hidden="true">
+                <ContentImage
+                  src={post.coverImageUrl}
+                  alt=""
+                  className={styles.thumb}
+                  loading="lazy"
+                />
+              </Link>
+            </article>
           );
         })}
       </div>

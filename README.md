@@ -1,92 +1,55 @@
-# Postify Blog
+# Postify
 
-A full-stack blog platform built with React 19, Redux Toolkit, and Supabase.
+**Okumak için değil, uygulamak için.**
 
-**Demo:** https://zexy2.github.io/Postify-blog
+Postify; geliştiriciler ve ürün üretenler için uygulanabilir bilgiyi öne çıkaran bir yayınlama deneyimidir. Genel amaçlı bir blog klonu olmak yerine içeriği dört kullanışlı formata ayırır:
 
-## Features
+- **Rehber** — somut bir işi tamamlatır.
+- **Karar notu** — seçenekleri ve ödünleşimleri görünür kılar.
+- **Açıklayıcı** — bir kavram için hızlı, doğru zihinsel model kurar.
+- **Saha notu** — gerçek bir deneyimden sonucu ve dersi kaydeder.
 
-- Content management with rich text editor (TipTap)
-- JWT authentication with refresh token mechanism
-- Role-based access control (Admin, Moderator, User)
-- Admin dashboard for user and content management
-- Multi-language support (English, Turkish)
-- Dark/Light theme with system preference detection
-- PWA with offline support
-- Analytics dashboard with charts
+## Şu anki ürün yönü
 
-## Tech Stack
+Okur tarafında içerik türü, beklenen sonuç, okuma süresi ve güncellik sinyalleri öne çıkarılır. Yazar tarafında içerik biçimi seçimi ve yapılandırılmış yazım rehberi vardır; yerel taslaklar otomatik saklanır. Mevcut Supabase modeli korunur ve yeni ürün modeli doğrulanana kadar migration yapılmaz.
 
-**Frontend:** React 19, Redux Toolkit, TanStack Query, React Router 7, TipTap, Recharts
+## Stack
 
-**Backend:** Supabase (PostgreSQL), JWT Authentication
+React 19, Vite 7, React Router, Redux Toolkit, TanStack Query, TipTap, Supabase client, Vitest, Playwright ve PWA/Workbox.
 
-**Build:** Vite 7, Docker
-
-**Testing:** Vitest, Playwright
-
-## Getting Started
+## Local development
 
 ```bash
-git clone https://github.com/zexy2/Postify-blog.git
-cd Postify-blog
-npm install
-cp .env.example .env
+npm ci
 npm run dev
 ```
 
-## Project Structure
-
-```
-src/
-├── components/     # UI components
-├── pages/          # Route pages
-├── services/       # API and business logic
-│   ├── apiService.js      # REST API layer
-│   ├── authService.js     # Auth logic
-│   ├── jwtService.js      # Token management
-│   └── adminService.js    # Admin operations
-├── store/          # Redux store and slices
-├── hooks/          # Custom hooks
-└── lib/            # External configs (Supabase, i18n)
-```
-
-## API
-
-```javascript
-api.posts.getAll({ page, limit })
-api.posts.getById(id)
-api.posts.create(data)
-api.posts.update(id, data)
-api.posts.delete(id)
-
-api.users.getById(id)
-api.users.update(id, data)
-```
-
-## Scripts
+## Quality gate
 
 ```bash
-npm run dev       # Start dev server
-npm run build     # Production build
-npm run test      # Run tests
-npm run lint      # Lint code
+npm run verify
 ```
 
-## Environment Variables
+`verify`; unit/component testlerini, ESLint'i, production build'i ve kritik build artifact smoke kontrolünü tek komutta çalıştırır.
 
+Tek tek komutlar:
+
+```bash
+npm test
+npm run lint
+npm run build
+npm run smoke:build
+npm run preview
 ```
+
+## Environment
+
+```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-## Performance
-
-| Metric | Score |
-|--------|-------|
-| Best Practices | 100 |
-| Accessibility | 95 |
-| SEO | 90 |
+Supabase production schema değişiklikleri ürün modeli doğrulanana kadar bilinçli olarak ertelenmiştir.
 
 ## License
 

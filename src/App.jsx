@@ -6,6 +6,7 @@
 import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useLayoutEffect, Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { selectTheme } from './store/slices/uiSlice';
 
 // Layout (keep eager - needed immediately)
@@ -33,7 +34,7 @@ const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 // Loading spinner component
 const PageLoader = () => (
-  <div style={{
+  <div role="status" aria-live="polite" aria-label="Loading" style={{
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,6 +58,7 @@ const useIsomorphicLayoutEffect =
 function App() {
   const location = useLocation();
   const theme = useSelector(selectTheme);
+  const { i18n } = useTranslation();
 
   // Scroll to top on route change
   useIsomorphicLayoutEffect(() => {
@@ -70,6 +72,10 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    document.documentElement.lang = i18n.language?.startsWith('en') ? 'en' : 'tr';
+  }, [i18n.language]);
+
   return (
     <ErrorBoundary>
       <div
@@ -78,8 +84,13 @@ function App() {
           position: 'relative',
         }}
       >
+        <a className="skipLink" href="#main-content">
+          {i18n.language?.startsWith('en') ? 'Skip to content' : 'İçeriğe geç'}
+        </a>
         <Header />
         <main
+          id="main-content"
+          tabIndex={-1}
           style={{
             position: 'relative',
             zIndex: 2,

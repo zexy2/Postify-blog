@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { FiArrowUpRight, FiSearch } from 'react-icons/fi';
+import { FiArrowUpRight, FiCheck, FiClock, FiSearch } from 'react-icons/fi';
 import styles from './Hero.module.css';
 import ContentImage from '../ContentImage/ContentImage';
+import { getPostPresentation } from '../../lib/postPresentation';
 
 export default function Hero({
   showSearch = true,
@@ -10,58 +11,77 @@ export default function Hero({
   onSearchChange,
   featuredPost,
 }) {
-  const { t } = useTranslation();
-  const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(new Date());
+  const { t, i18n } = useTranslation();
+  const presentation = featuredPost ? getPostPresentation(featuredPost, i18n.language) : null;
 
   return (
     <section className={styles.hero}>
       <div className="container">
         <div className={styles.utility}>
-          <span>POSTIFY / {year}</span>
+          <span>POSTIFY / PRACTICAL KNOWLEDGE</span>
           <span>{t('home.edition')}</span>
         </div>
-        <div className={styles.content}>
-        <div className={styles.copy}>
-          <span className={styles.eyebrow}>{t('home.eyebrow')}</span>
-          <h1 className={styles.title}>{t('home.title')}</h1>
-          <p className={styles.subtitle}>{t('home.subtitle')}</p>
-          {showSearch && (
-            <label className={styles.searchContainer}>
-              <FiSearch className={styles.searchIcon} aria-hidden="true" />
-              <input
-                type="search"
-                className={styles.searchInput}
-                placeholder={t('home.searchPlaceholder')}
-                value={searchValue}
-                onChange={(event) => onSearchChange?.(event.target.value)}
-                aria-label={t('home.searchLabel')}
-              />
-            </label>
-          )}
-        </div>
 
-        {featuredPost && (
-          <Link to={`/posts/${featuredPost.slug || featuredPost.id}`} className={styles.featured}>
-            <ContentImage
-              src={featuredPost.coverImageUrl}
-              alt={featuredPost.coverImageAlt || featuredPost.title}
-              className={styles.featuredImage}
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-            />
-            <span className={styles.featuredOverlay} />
-            <span className={styles.featuredContent}>
-              <span className={styles.featuredLabel}>{t('home.featured')}</span>
-              <strong>{featuredPost.title}</strong>
-              <span className={styles.featuredExcerpt}>{featuredPost.excerpt}</span>
-              <span className={styles.featuredMeta}>
-                {featuredPost.category} · {featuredPost.readingTime} {t('common.minutes')}
-                <FiArrowUpRight size={16} />
-              </span>
-            </span>
-          </Link>
-        )}
+        <div className={styles.content}>
+          <div className={styles.copy}>
+            <span className={styles.eyebrow}>{t('home.eyebrow')}</span>
+            <h1 className={styles.title}>{t('home.title')}</h1>
+            <p className={styles.subtitle}>{t('home.subtitle')}</p>
+
+            {showSearch && (
+              <label className={styles.searchContainer}>
+                <FiSearch className={styles.searchIcon} aria-hidden="true" />
+                <input
+                  type="search"
+                  className={styles.searchInput}
+                  placeholder={t('home.searchPlaceholder')}
+                  value={searchValue}
+                  onChange={(event) => onSearchChange?.(event.target.value)}
+                  aria-label={t('home.searchLabel')}
+                />
+                <span className={styles.searchHint}>⌘K</span>
+              </label>
+            )}
+
+            <div className={styles.promises} aria-label={t('home.standardLabel')}>
+              <span><FiCheck size={14} /> {t('home.promiseOutcome')}</span>
+              <span><FiCheck size={14} /> {t('home.promiseFreshness')}</span>
+              <span><FiCheck size={14} /> {t('home.promisePortable')}</span>
+            </div>
+          </div>
+
+          {featuredPost && (
+            <Link to={`/posts/${featuredPost.slug || featuredPost.id}`} className={styles.featured}>
+              <div className={styles.featuredVisual}>
+                <ContentImage
+                  src={featuredPost.coverImageUrl}
+                  alt={featuredPost.coverImageAlt || featuredPost.title}
+                  className={styles.featuredImage}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+                <span className={styles.featuredType}>{presentation?.typeLabel}</span>
+              </div>
+              <div className={styles.featuredContent}>
+                <span className={styles.featuredLabel}>{t('home.featured')}</span>
+                <strong>{featuredPost.title}</strong>
+                <span className={styles.featuredExcerpt}>{presentation?.outcome}</span>
+                <span className={styles.featuredMeta}>
+                  <span>{featuredPost.category}</span>
+                  <span className={styles.dot}>·</span>
+                  <span><FiClock size={13} /> {featuredPost.readingTime} {t('common.minutes')}</span>
+                  {presentation?.formattedDate && (
+                    <>
+                      <span className={styles.dot}>·</span>
+                      <span>{presentation.dateLabel}: {presentation.formattedDate}</span>
+                    </>
+                  )}
+                  <FiArrowUpRight className={styles.arrow} size={17} />
+                </span>
+              </div>
+            </Link>
+          )}
         </div>
       </div>
     </section>
