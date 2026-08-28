@@ -52,3 +52,9 @@
 - [ ] Continue legacy surface cleanup: analytics/admin/secondary share controls where old gradient/card styles remain
 - [x] Align auth/404 and analytics/admin secondary surfaces with UI V2
 - [x] Restrain share/bookmark/fallback-card control styling
+
+## UI cleanup follow-up
+- [x] Remove homepage manifesto block and compress mobile discovery controls
+- [x] Rework About and Contact away from portfolio/bento presentation
+- [x] Align comment discussion UI with the editorial system
+- [ ] Run a content/copy pass on remaining authenticated-only surfaces with real production data once Supabase production work is allowed

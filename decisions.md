@@ -79,3 +79,8 @@
 **Decision:** Keep a focused Chromium UI smoke (`npm run test:e2e:ui`) alongside the existing unit/lint/build smoke gates for substantial visual changes.
 
 **Why:** CSS regressions such as mobile overflow, broken menu operation, and unreadable article widths are not reliably caught by unit/build checks alone.
+
+## 2026-08-28 — Remove manifesto-first homepage content
+**Decision:** Do not place product principles/manifesto between the hero and content discovery on Home.
+
+**Why:** On mobile it consumed most of the first viewport without helping the user find content. Product principles belong in About and should be expressed briefly through the interface itself.

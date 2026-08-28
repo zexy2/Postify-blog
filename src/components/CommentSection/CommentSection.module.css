@@ -417,3 +417,26 @@
     padding-left: var(--space-md);
   }
 }
+
+/* UI V2 editorial discussion surface */
+.container { margin-top: clamp(3rem, 7vw, 5rem); padding-top: 2rem; border-top: 1px solid var(--border-strong); }
+.title { margin: 0 0 1.5rem; font-family: var(--font-display); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 600; letter-spacing: -.035em; }
+.form { align-items: flex-start; margin-bottom: 2rem; padding: 0 0 2rem; background: transparent; border: 0; border-bottom: 1px solid var(--border-color); border-radius: 0; }
+.formAvatar, .avatar { border-radius: 50%; background: var(--bg-secondary); border: 1px solid var(--border-color); }
+.textarea, .editTextarea, .replyTextarea { background: transparent; border: 1px solid var(--border-strong); border-radius: var(--radius-md); }
+.textarea:focus, .editTextarea:focus, .replyTextarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.submitBtn, .saveBtn, .replySubmit { min-height: 40px; color: var(--bg-primary); background: var(--text-primary); border: 1px solid var(--text-primary); border-radius: var(--radius-md); box-shadow: none; }
+.submitBtn:hover, .saveBtn:hover, .replySubmit:hover { transform: none; box-shadow: none; opacity: .9; }
+.commentList { display: flex; flex-direction: column; }
+.comment { display: flex; gap: 1rem; padding: 1.5rem 0; background: transparent; border: 0; border-bottom: 1px solid var(--border-color); border-radius: 0; animation: none; }
+.commentContent { flex: 1; min-width: 0; }
+.commentHeader { gap: .45rem; margin-bottom: .55rem; }
+.authorName { font-size: .85rem; }
+.authorUsername, .date, .edited { color: var(--text-muted); font-size: .75rem; }
+.commentText { margin: 0; color: var(--text-secondary); line-height: 1.65; }
+.commentActions { gap: .25rem; margin-top: .7rem; }
+.actionBtn { min-height: 34px; padding: .35rem .5rem; color: var(--text-muted); background: transparent; border: 0; border-radius: var(--radius-sm); }
+.actionBtn:hover { color: var(--text-primary); background: var(--bg-secondary); transform: none; }
+.replies { margin-top: 1rem; margin-left: 0; padding-left: 1rem; border-left: 1px solid var(--border-strong); }
+.loginPrompt, .noComments { margin: 0; padding: 1.25rem 0; color: var(--text-secondary); background: transparent; border: 0; border-radius: 0; text-align: left; }
+@media (max-width: 640px) { .form { padding: 0 0 1.5rem; } .formAvatar { width: 36px; height: 36px; } .comment { padding: 1.25rem 0; } .avatar { width: 36px; height: 36px; } }
