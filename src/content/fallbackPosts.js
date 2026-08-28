@@ -1,3 +1,7 @@
+import { getVerificationCheck } from './verificationManifest.js';
+
+const NODE_JSON_VERIFICATION = getVerificationCheck('node-json-parse-v1');
+
 export const FALLBACK_AUTHOR = {
   id: 'fallback-editor',
   name: 'Postify Editör',
@@ -332,7 +336,7 @@ Good telemetry does more than produce reports. It makes team discussions more co
       environment: ['Node.js 20+'],
       prerequisites: ['Node.js 20 veya daha yeni bir sürüm'],
       verificationSteps: ['Kodu Node.js ile çalıştır', 'Çıktının PASS olduğunu doğrula'],
-      caveats: ['Otomatik doğrulama yalnız aşağıdaki deterministik Node.js örneğini kapsar; harici servis veya ağ davranışını doğrulamaz.'],
+      caveats: ['Otomatik doğrulama yalnız aşağıdaki checked-in deterministik Node.js örneğini kapsar. Release politikası dış paket, ağ, dosya sistemi ve process API’lerini reddeder; bu bir güvenlik sandbox’ı değildir.'],
       sources: ['https://nodejs.org/api/assert.html'],
     },
     translations: {
@@ -345,16 +349,11 @@ Kod örnekleri çoğu teknik yazıda yalnızca okunur. Bu rehberde küçük ama 
 ## Kod
 
 \`\`\`js
-import assert from 'node:assert/strict';
-const payload = '{"ok":true,"items":[1,2,3]}';
-const parsed = JSON.parse(payload);
-assert.equal(parsed.ok, true);
-assert.deepEqual(parsed.items, [1,2,3]);
-process.stdout.write('PASS');
+${NODE_JSON_VERIFICATION.code}
 \`\`\`
 
 ## Doğrulama
-Build sırasında Postify aynı kodu izole bir child process içinde Node.js ile çalıştırır. Çıktı tam olarak PASS değilse release gate başarısız olur. Bu nedenle bu örnekte “Postify doğruladı” ifadesi gerçek bir execution sonucuna dayanır.`,
+Build sırasında Postify yukarıda gösterilen aynı kodu daraltılmış deterministik release politikası altında ayrı bir Node.js child process’inde çalıştırır. Beklenen çıktı tam olarak ${NODE_JSON_VERIFICATION.expectedStdout}. Çıktı eşleşmezse release gate başarısız olur. Bu nedenle bu örnekte “Postify doğruladı” ifadesi gerçek bir execution sonucuna dayanır.`,
       },
       en: {
         title: 'Verify a Node.js example by running it, not by saying it should work',
@@ -365,16 +364,11 @@ Code samples are usually only read. Here a small deterministic Node.js example i
 ## Code
 
 \`\`\`js
-import assert from 'node:assert/strict';
-const payload = '{"ok":true,"items":[1,2,3]}';
-const parsed = JSON.parse(payload);
-assert.equal(parsed.ok, true);
-assert.deepEqual(parsed.items, [1,2,3]);
-process.stdout.write('PASS');
+${NODE_JSON_VERIFICATION.code}
 \`\`\`
 
 ## Verification
-During the build Postify runs the same checked-in code in a Node.js child process. If stdout is not exactly PASS, the release gate fails. The “Postify verified” claim for this example therefore comes from a real execution result.`,
+During the build Postify runs the exact code displayed above in a Node.js child process. Expected stdout is exactly ${NODE_JSON_VERIFICATION.expectedStdout}. If it differs, the release gate fails. The “Postify verified” claim therefore comes from the same execution contract the reader can inspect.`,
       },
     },
   },

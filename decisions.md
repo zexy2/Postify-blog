@@ -159,3 +159,13 @@
 **Decision:** Any user-controlled public outbound URL must pass a shared absolute `http:`/`https:` allowlist before persistence or clickable rendering. Invalid legacy values remain non-clickable.
 
 **Why:** HTML `type=url` is not a security boundary and programmatic save flows can bypass native form validation. Centralizing the protocol boundary reduces stored-link/script-scheme risk without requiring a Supabase migration.
+
+## 2026-08-28 — Displayed automatic-verification code must equal executed code
+**Decision:** Automatically verified examples use the verification manifest as the single source for the code shown in the article and the code executed by the release gate. A mismatch fails verification.
+
+**Why:** A green badge is meaningless if the reader sees different code from what the verifier executed. The verification artifact now carries actual runtime/output plus a code hash so provenance is inspectable.
+
+## 2026-08-28 — Checked-in execution policy is not called a sandbox
+**Decision:** The first automatic verifier is described as policy-limited checked-in Node execution, not isolated/sandboxed execution. The release gate statically rejects unsupported package/network/filesystem/process capabilities and applies code-size, output and timeout limits.
+
+**Why:** Trust copy must reflect the real security boundary. Arbitrary or untrusted user code remains unsupported until OS/container-level isolation is deliberately designed.

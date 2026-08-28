@@ -113,18 +113,30 @@ test.describe('Verified Knowledge V1', () => {
 });
 
 test.describe('Verified Knowledge execution', () => {
-  test('automatic verification is visible only for a passed execution artifact', async ({ page }) => {
+  test('automatic verification exposes the exact executed article contract', async ({ page }) => {
     await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
     await expect(page.getByText(/execution passed|çalıştırma geçti/i)).toBeVisible();
-    await expect(page.getByText(/Node 20\+/i)).toBeVisible();
+    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
+    await expect(page.getByText(/gerçek|actual/i).filter({ hasText: 'PASS' })).toBeVisible();
+    await expect(page.getByText(/makale sözleşmesi eşleşti|article contract matched/i)).toBeVisible();
+    const evidence = page.locator('.knowledge-evidence');
+    await expect(evidence.locator('small').filter({ hasText: /güvenlik sandbox’ı değildir|not a security sandbox/i })).toBeVisible();
   });
 
   test('machine readable verification and knowledge artifacts are shipped', async ({ request }) => {
     const run = await request.get('/verification-runs.json');
     expect(run.ok()).toBeTruthy();
     const runJson = await run.json();
-    expect(runJson.runs['node-json-parse-v1'].status).toBe('passed');
+    const execution = runJson.runs['node-json-parse-v1'];
+    expect(runJson.schemaVersion).toBe(2);
+    expect(execution.status).toBe('passed');
+    expect(execution.actualStdout).toBe(execution.expectedStdout);
+    expect(execution.codeSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(execution.articleContractMatched).toBe(true);
+    expect(execution.policy).toBe('node-deterministic-v1');
+    const runtimeMajor = Number(String(execution.runtimeVersion).match(/^v(\d+)/)?.[1]);
+    expect(runtimeMajor).toBeGreaterThanOrEqual(20);
     const knowledge = await request.get('/knowledge/node-json-dogrulama.tr.json');
     expect(knowledge.ok()).toBeTruthy();
     const artifact = await knowledge.json();
