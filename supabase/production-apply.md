@@ -10,6 +10,7 @@ Production project `fuiwcrqmxndguxymwoin` was migrated through authenticated Sup
 6. `migrations/20260828145543_production_security_and_advisor_hardening.sql`
 7. `migrations/20260828155643_publish_verified_node_example.sql`
 8. `migrations/20260828161849_private_rpc_boundary.sql`
+9. `migrations/20260828171756_update_node_verification_lts.sql`
 
 Do not repair or rewrite production migration history. Future migrations must be additive files after the last recorded version.
 
@@ -23,7 +24,7 @@ Do not repair or rewrite production migration history. Future migrations must be
 1. Link the CLI to the production project using owner credentials.
 2. Inspect remote migration history before `db push`; do not guess or repair history blindly.
 3. Run a remote migration dry-run where supported and inspect the SQL list.
-4. Apply only genuinely pending migrations in order; production currently has all eight versions above.
+4. Apply only genuinely pending migrations in order; production currently has all nine versions above.
 5. Run read-only schema probes for the added post evidence columns, tables, views, functions, trigger, constraints and RLS policies.
 6. Rebuild/deploy the frontend. The deploy export step must switch `knowledge-backend-status.json` from `ready:false` to `ready:true` only when the new public evidence views are actually queryable.
 

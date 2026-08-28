@@ -282,3 +282,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Tightened Dependabot version-update automation to SemVer minor/patch only; major upgrades remain manual compatibility work. Playwright is excluded from the grouped development PR so its package + browser image update can be reviewed together. GitHub Actions minor/patch updates are grouped.
 - Clean Node 20 gate PASS: `npm ci`, online dependency audit 0 vulnerabilities, release security parity, deterministic verification, 22 Vitest files / 90 tests, lint, production build and build smoke.
 - Official Playwright v1.57 Chromium clean workspace PASS 22/22.
+
+## 2026-08-28 — Node 24 LTS verification runtime
+- Moved hosted verify/deploy runtime from Node 20 to exact Node `24.20.0` and declared `runtimeMajor: 24` / `runtimeChannel: lts` in the automatic verification manifest.
+- The verifier now fails closed with `runtime-major-mismatch` outside Node 24; an isolated Node 20 negative test PASS confirmed that the old runtime can no longer mint a passing release artifact.
+- Clean Node `24.20.0` release gate PASS: npm audit 0, dependency/browser parity PASS, deterministic verification, 22 Vitest files / 90 tests, lint, build and build smoke. Official Playwright 1.57 Chromium PASS 22/22 on its bundled Node 24 runtime.
+- Fresh PostgreSQL 16 full migration chain + RLS/abuse verification PASS with the Node LTS metadata migration. A focused DML invariant check confirmed only prerequisites change while `unverified`, `tested_at=null`, empty environment and evidence version 1 remain unchanged.
+- Applied production migration `20260828171756_update_node_verification_lts.sql`. Production `node-json-dogrulama` now requires `Node.js 24 LTS`; evidence remains `unverified`, community worked/failed/confirmation counts remain 0, and no verification state was fabricated.

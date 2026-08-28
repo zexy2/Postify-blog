@@ -17,6 +17,8 @@ describe('verification manifest contract', () => {
       expect(matches[0].body).toContain(check.expectedStdout);
       expect(check.artifactFile).toMatch(/^[a-z0-9][a-z0-9._-]*\.mjs$/i);
       expect(check.reproduceCommand).toBe(`node ${check.artifactFile}`);
+      expect(check.runtimeMajor).toBe(24);
+      expect(check.runtimeChannel).toBe('lts');
     }
   });
 
