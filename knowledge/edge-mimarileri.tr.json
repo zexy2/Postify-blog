@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-edge-mimarileri",
+  "id": "72aa959c-046f-47ba-974c-c20e2944d756",
   "slug": "edge-mimarileri",
   "locale": "tr",
-  "title": "Edge mimarisi her problemi çözmez",
-  "outcome": "Gecikmeyi azaltmadan önce veri sahipliğini, tutarlılık ihtiyacını ve operasyon maliyetini netleştirin.",
+  "title": "Edge mimarisi her probleme cevap değildir",
+  "outcome": "Dağıtık çalıştırma kararını moda olduğu için değil, gecikme ve veri sınırları gerçekten bunu gerektirdiğinde verin.",
+  "body": "Edge dağıtımı bazı istekleri kullanıcıya yaklaştırır; fakat gözlemlenebilirlik, veri tutarlılığı ve hata ayıklama maliyetini artırabilir. Önbelleklenebilir içerik, bölgesel hesaplama ve kişisel veri aynı çözümle ele alınmamalı. Basit bir origin yeterliyse edge katmanı ek operasyon demektir.",
   "contentType": null,
-  "category": "Mimari",
-  "publishedAt": "2026-08-03T00:00:00.000Z",
-  "updatedAt": "2026-08-03T00:00:00.000Z",
+  "category": "Altyapı",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 180,
-    "environment": [
-      "Mimari karar incelemesi"
-    ],
-    "prerequisites": [
-      "Veri sahipliği",
-      "Tutarlılık ihtiyacı"
-    ],
-    "verificationSteps": [
-      "Kaynak sistemi tanımla",
-      "Edge eklemeden önce gerçek gecikme darboğazını doğrula"
-    ],
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
     "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "72aa959c-046f-47ba-974c-c20e2944d756",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "Edge yaklaşımı kullanıcıya yakın çalışarak gecikmeyi azaltabilir. Ancak her veriyi kenara taşımak, sistemin tutarlılık ve gözlemlenebilirlik sorunlarını ortadan kaldırmaz.\n\nİyi bir karar için üç soruya bakın: Bu işlem ne kadar sık çalışıyor? Güncel veri şart mı? Hata olduğunda hangi sistem kaynak gerçek olacak? Bu sorular cevaplanmadan dağıtık cache veya edge function eklemek yalnızca daha fazla hareketli parça yaratır.\n\nEdge, belirli bir darboğaza verilmiş bir mimari cevaptır; varsayılan teknoloji seçimi değildir.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/edge-mimarileri"
 }

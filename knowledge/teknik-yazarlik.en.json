@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-teknik-yazarlik",
+  "id": "f9fd7ed8-beaa-4867-9edd-2247400e636c",
   "slug": "teknik-yazarlik",
   "locale": "en",
-  "title": "Technical writing is not a data dump",
-  "outcome": "A useful technical story makes the reader’s decision clear before it explains the implementation.",
+  "title": "Technical writing is a way to test your thinking",
+  "outcome": "If you cannot explain a decision simply, its assumptions may not be separated clearly enough yet.",
+  "body": "Good technical writing makes the context, rejected alternatives, and rollback conditions visible. Start with the decision the reader needs to make, then separate evidence, risk, and open questions. Decisionability matters more than length.",
   "contentType": null,
-  "category": "Teknik iletişim",
-  "publishedAt": "2026-08-01T00:00:00.000Z",
-  "updatedAt": "2026-08-01T00:00:00.000Z",
+  "category": "İş akışı",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 180,
-    "environment": [
-      "Teknik yazı incelemesi"
-    ],
-    "prerequisites": [
-      "Karar bağlamı",
-      "Örnek açıklaması"
-    ],
-    "verificationSteps": [
-      "Okuyucunun vereceği kararı ilk bölümde belirt",
-      "Örneğin hangi durumda yanlış olacağını yaz"
-    ],
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
     "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "f9fd7ed8-beaa-4867-9edd-2247400e636c",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "Many technical articles list concepts while leaving the reader’s real decision unclear. A useful explanation starts with context, then compares options and their costs.\n\nAn example is not educational just because it includes code. Why was this approach chosen? When does it fail? What should change first? Without those answers, people copy the example without understanding it.\n\nClarity is not less detail. It is putting detail in the right order.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/teknik-yazarlik"
 }

@@ -1,37 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-ai-muhendisligi",
+  "id": "dbb46199-7914-4ddb-b874-919d5fe81953",
   "slug": "ai-muhendisligi",
   "locale": "tr",
-  "title": "AI özelliği değil, iyi tasarlanmış bir sistemdir",
-  "outcome": "AI özelliğini model çağrısı yerine ölçülebilir ve güvenli bir ürün sistemi olarak tasarlamak.",
+  "title": "AI özelliği eklemekten önce çözülmesi gereken beş soru",
+  "outcome": "Bir modele bağlanmak kolay; doğru problemi seçmek, ölçmek ve güvenli bir ürün davranışına dönüştürmek asıl iştir.",
+  "body": "Yapay zekâ özelliği planlarken ilk soru hangi modeli kullanacağımız değil, kullanıcının hangi kararını daha iyi vereceğidir. Bu ayrım yapılmadığında ürün yalnızca pahalı bir metin kutusuna dönüşür. İkinci adım başarı ölçüsünü yazmaktır. Yanıt kalitesi kadar bekleme süresi, hata oranı, maliyet ve insanın müdahale ettiği anlar da ölçülmelidir. Üçüncü adım ise başarısızlık davranışıdır: model emin değilse bunu saklamamalı, kullanıcıya anlaşılır bir alternatif sunmalıdır. İyi AI ürünü model demosu değil, sınırları belli bir iş akışıdır.",
   "contentType": null,
-  "category": "Yapay zekâ",
-  "publishedAt": "2026-08-07T00:00:00.000Z",
-  "updatedAt": "2026-08-07T00:00:00.000Z",
+  "category": "AI",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
-    "staleAfterDays": 120,
-    "environment": [
-      "Postify ürün incelemesi",
-      "React 19",
-      "Vite 7"
-    ],
-    "prerequisites": [
-      "Bir AI özelliği için ölçülebilir kullanıcı sonucunu tanımlamış olmak"
-    ],
-    "verificationSteps": [
-      "Başarı metriğini model seçmeden önce yaz",
-      "Hatalı çıktı için geri alma veya insan onayı yolu tanımla",
-      "Model değişse bile ürün sözleşmesinin aynı kaldığını kontrol et"
-    ],
-    "caveats": [
-      "Bu içerik bir model benchmarkı veya sağlayıcı karşılaştırması değildir."
-    ],
+    "level": "unverified",
+    "testedAt": null,
+    "staleAfterDays": 180,
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
+    "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "dbb46199-7914-4ddb-b874-919d5fe81953",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "Yapay zekâ özellikleri çoğu üründe tek bir model çağrısından ibaretmiş gibi anlatılıyor. Gerçekte kullanıcıya güvenilir bir deneyim vermek; doğru girdiyi toplamak, çıktıyı değerlendirmek ve hatalı sonucu güvenle ele almakla mümkün.\n\nİlk karar model seçimi değil, özelliğin hangi kararı hızlandıracağı olmalı. Kullanıcı bir öneriyi neden gördüğünü anlayamıyorsa, en iyi model bile güven üretmez. Bu nedenle açıklanabilirlik, geri alma ve insan onayı akışları ürünün temel parçalarıdır.\n\nİyi bir AI özelliği; ölçülebilir fayda, kontrollü hata ve açık bir sınırla başlar. Model değişebilir, fakat bu ürün sözleşmesi değişmemelidir.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/ai-muhendisligi"
 }

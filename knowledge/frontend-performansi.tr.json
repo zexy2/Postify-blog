@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-frontend-performansi",
+  "id": "464fdfc6-4ec2-4f02-96e7-b0e60d622100",
   "slug": "frontend-performansi",
   "locale": "tr",
-  "title": "Frontend performansı ölçüm değil, kullanıcı akışıdır",
-  "outcome": "Lighthouse puanı tek başına yetmez; gerçek darboğazı ilk anlamlı etkileşimde ve mobil ağda arayın.",
+  "title": "Frontend performansı için önce kullanıcı yolculuğunu ölçün",
+  "outcome": "Lighthouse skoru bir sonuçtur. Asıl hedef, gerçek kullanıcının ilk anlamlı etkileşime daha hızlı ulaşmasıdır.",
+  "body": "Performans çalışmasına bundle grafiğiyle başlamak yanlış öncelik yaratır. Önce kritik yolu yazın: kullanıcı hangi sayfayı açıyor, ilk neyi görmeli ve hangi eylemi yapabilmeli? LCP, INP ve CLS değerlerini bu yol üzerinde takip edin. Ölçüm yoksa optimizasyon yalnızca sezgidir.",
   "contentType": null,
   "category": "Frontend",
-  "publishedAt": "2026-08-05T00:00:00.000Z",
-  "updatedAt": "2026-08-05T00:00:00.000Z",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 180,
-    "environment": [
-      "Frontend performans incelemesi"
-    ],
-    "prerequisites": [
-      "Mobil viewport",
-      "Gerçek kullanıcı akışı"
-    ],
-    "verificationSteps": [
-      "İlk ekranı ve temel etkileşimi ölç",
-      "Layout shift ve gereksiz JavaScript yükünü kontrol et"
-    ],
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
     "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "464fdfc6-4ec2-4f02-96e7-b0e60d622100",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "Performans çalışmaları çoğu zaman tek bir skorun peşinden gidiyor. Skorlar yararlı bir sinyal olsa da kullanıcı için asıl soru sayfanın ne zaman anlaşılır ve etkileşilebilir hale geldiğidir.\n\nÖnce kritik akışı tanımlayın: ilk ekran, arama, yazı açma ve geri dönme. Bu akışta gereksiz JavaScript'i ertelemek, görselleri doğru boyutta sunmak ve layout kaymasını önlemek genellikle gösterişli optimizasyonlardan daha fazla fark yaratır.\n\nÖlçümü gerçek cihaz, gerçek ağ ve tekrar eden kullanıcı akışıyla yapın. İyi performans, raporda güzel görünen değil, kullanıcıyı bekletmeyen deneyimdir.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/frontend-performansi"
 }

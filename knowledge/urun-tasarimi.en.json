@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-urun-tasarimi",
+  "id": "4d8876de-7305-4354-bdd4-14825d0d4452",
   "slug": "urun-tasarimi",
   "locale": "en",
-  "title": "Good product design reduces choices",
-  "outcome": "Instead of exposing every possibility, design the right default and an easy way back.",
+  "title": "A design system is a decision system, not a color palette",
+  "outcome": "A good system does not repeat screens; it helps different teams make decisions at the same quality bar.",
+  "body": "A design system is more than tokens and component pages. It also explains when to choose a component, when an exception is justified, and how success is evaluated. The best system speeds up the team while giving users fewer surprises.",
   "contentType": null,
   "category": "Ürün tasarımı",
-  "publishedAt": "2026-08-04T00:00:00.000Z",
-  "updatedAt": "2026-08-04T00:00:00.000Z",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 180,
-    "environment": [
-      "Ürün karar incelemesi"
-    ],
-    "prerequisites": [
-      "Karar sırası",
-      "Geri alınabilir aksiyonlar"
-    ],
-    "verificationSteps": [
-      "Ekrandaki birincil kararı belirle",
-      "Gereksiz eşzamanlı seçenekleri kaldır"
-    ],
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
     "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "4d8876de-7305-4354-bdd4-14825d0d4452",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "Complex products are tiring not only because they have many features, but because they leave every decision to the user. Good design makes the important choice visible and keeps recovery easy.\n\nThe first step in simplifying a screen is not shrinking buttons. It is understanding the decision order: what should happen first, what information is needed now, and which mistakes can be undone?\n\nGood defaults do not restrict people. They move attention to the work that matters.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/urun-tasarimi"
 }

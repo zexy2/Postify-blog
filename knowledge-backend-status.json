@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
-  "ready": false,
-  "mode": "supabase-schema-pending",
-  "checkedAt": "2026-08-28T14:38:56.627Z"
+  "ready": true,
+  "mode": "supabase",
+  "checkedAt": "2026-08-28T14:51:39.182Z",
+  "exportedArtifacts": 16
 }

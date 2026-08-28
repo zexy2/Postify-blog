@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-gelistirici-akisi",
+  "id": "09300a56-5993-4d19-b8b4-57aa97456047",
   "slug": "gelistirici-akisi",
   "locale": "tr",
-  "title": "Geliştirici akışında güven, otomasyondan önce gelir",
-  "outcome": "CI/CD yalnızca hızlı deploy etmek değil, neyin deploy edildiğini kanıtlayabilmektir.",
+  "title": "Geliştirici deneyiminde hız, komut sayısını azaltmaktan fazlasıdır",
+  "outcome": "İyi DX; doğru bağlam, hızlı geri bildirim ve güven veren otomasyonun birlikte çalışmasıdır.",
+  "body": "Bir projenin geliştirici deneyimini yalnızca kurulum süresiyle ölçmek eksik kalır. Değişikliğin sonucu ne kadar çabuk görülüyor, hatanın kaynağı ne kadar açık ve bilgi ne kadar kolay paylaşılıyor? Otomasyonun amacı belirsiz işleri azaltmaktır.",
   "contentType": null,
   "category": "Geliştirici araçları",
-  "publishedAt": "2026-08-02T00:00:00.000Z",
-  "updatedAt": "2026-08-02T00:00:00.000Z",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 180,
-    "environment": [
-      "Postify CI/CD akışı"
-    ],
-    "prerequisites": [
-      "GitHub Actions",
-      "Build smoke"
-    ],
-    "verificationSteps": [
-      "Test, lint ve build kapılarını çalıştır",
-      "Deploy edilen commit ile production çıktısını eşleştir"
-    ],
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
     "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "09300a56-5993-4d19-b8b4-57aa97456047",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "İyi bir geliştirici akışı geliştiriciyi daha hızlı komut yazmaya değil, daha az belirsizlikle karar vermeye yardımcı olur. Bunun için küçük ama güvenilir kontroller gerekir.\n\nLint, test ve build adımları tek başına yeterli değildir. Üretim ortamının hangi commit'ten çıktığı, gerekli değişkenlerin mevcut olup olmadığı ve kritik akışın gerçekten açıldığı da görünür olmalı.\n\nOtomasyonun değeri hızında değil, tekrarlanabilir kanıt üretmesindedir.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/gelistirici-akisi"
 }

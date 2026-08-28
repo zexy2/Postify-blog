@@ -1,33 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-urun-telemetrisi",
+  "id": "5cea6c36-51cd-4e40-a731-a63ae6f8eeac",
   "slug": "urun-telemetrisi",
   "locale": "en",
-  "title": "Product telemetry should make decisions easier",
-  "outcome": "Instead of collecting more events, define which product decision the signal should support.",
+  "title": "Product telemetry is about reducing uncertainty, not collecting numbers",
+  "outcome": "Instead of recording every event, decide which decision should become safer.",
+  "body": "The first reflex in telemetry design is to collect every click. Many events create noise when they do not answer a clear question. Define the product hypothesis and the measurement’s decision impact first. Good analytics clarifies the next experiment.",
   "contentType": null,
-  "category": "Ürün analitiği",
-  "publishedAt": "2026-07-31T00:00:00.000Z",
-  "updatedAt": "2026-07-31T00:00:00.000Z",
+  "category": "Performans",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
+    "level": "unverified",
+    "testedAt": null,
     "staleAfterDays": 180,
-    "environment": [
-      "Ürün telemetrisi incelemesi"
-    ],
-    "prerequisites": [
-      "Ürün sorusu",
-      "Ölçülebilir davranış"
-    ],
-    "verificationSteps": [
-      "Event yazmadan önce ürün sorusunu yaz",
-      "Her metriği desteklediği kararla eşleştir"
-    ],
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
     "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "5cea6c36-51cd-4e40-a731-a63ae6f8eeac",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "The main problem in analytics is often not missing data. Event names drift, ownership becomes unclear, and the decision a measurement was meant to support is forgotten.\n\nWrite the product question first: where do users get stuck, which flow creates value, and what behavior should change if the release succeeds? Then collect only the signals that answer those questions.\n\nGood telemetry does more than produce reports. It makes team discussions more concrete.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/urun-telemetrisi"
 }

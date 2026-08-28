@@ -1,37 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "fallback-ai-muhendisligi",
+  "id": "dbb46199-7914-4ddb-b874-919d5fe81953",
   "slug": "ai-muhendisligi",
   "locale": "en",
-  "title": "An AI feature is a system, not a model call",
-  "outcome": "AI özelliğini model çağrısı yerine ölçülebilir ve güvenli bir ürün sistemi olarak tasarlamak.",
+  "title": "Five questions to answer before adding an AI feature",
+  "outcome": "Connecting a model is easy; choosing, measuring, and safely productizing the right problem is the work.",
+  "body": "The first question when planning an AI feature is not which model to use, but which user decision should improve. Without that distinction, a product becomes an expensive text box. Define success with quality, latency, error rate, cost, and human intervention. A good AI product is not a model demo; it is a workflow with clear boundaries.",
   "contentType": null,
-  "category": "Yapay zekâ",
-  "publishedAt": "2026-08-07T00:00:00.000Z",
-  "updatedAt": "2026-08-07T00:00:00.000Z",
+  "category": "AI",
+  "publishedAt": "2026-08-07T11:14:10.230392+00:00",
+  "updatedAt": "2026-08-07T11:14:10.230392+00:00",
+  "author": null,
   "evidence": {
-    "level": "author-tested",
-    "testedAt": "2026-08-28T00:00:00.000Z",
-    "staleAfterDays": 120,
-    "environment": [
-      "Postify ürün incelemesi",
-      "React 19",
-      "Vite 7"
-    ],
-    "prerequisites": [
-      "Bir AI özelliği için ölçülebilir kullanıcı sonucunu tanımlamış olmak"
-    ],
-    "verificationSteps": [
-      "Başarı metriğini model seçmeden önce yaz",
-      "Hatalı çıktı için geri alma veya insan onayı yolu tanımla",
-      "Model değişse bile ürün sözleşmesinin aynı kaldığını kontrol et"
-    ],
-    "caveats": [
-      "Bu içerik bir model benchmarkı veya sağlayıcı karşılaştırması değildir."
-    ],
+    "level": "unverified",
+    "testedAt": null,
+    "staleAfterDays": 180,
+    "environment": [],
+    "prerequisites": [],
+    "verificationSteps": [],
+    "caveats": [],
     "sources": [],
-    "automaticVerification": null
+    "version": 1,
+    "community": {
+      "post_id": "dbb46199-7914-4ddb-b874-919d5fe81953",
+      "confirmation_count": 0,
+      "worked_count": 0,
+      "failed_count": 0,
+      "environment_count": 0,
+      "last_community_check_at": null
+    }
   },
-  "body": "AI features are often described as if they were a single model call. A reliable user experience also needs good inputs, output evaluation, and a safe way to handle mistakes.\n\nThe first decision should not be which model to use. It should be which user decision the feature will improve. If people cannot understand why a suggestion appeared, even a strong model will struggle to earn trust.\n\nGood AI product work starts with measurable value, controlled failure, and a clear boundary. The model can change; that product contract should not.",
   "canonicalUrl": "https://postify.zekiakgul.dev/posts/ai-muhendisligi"
 }
