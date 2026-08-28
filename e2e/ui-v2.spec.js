@@ -45,6 +45,31 @@ test.describe('Postify UI V2', () => {
     await expect(page.getByRole('link', { name: /home|ana sayfa|keşfet/i }).first()).toBeVisible();
   });
 
+
+  test('about page explains the product without portfolio clutter', async ({ page }) => {
+    await page.goto('/about');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByText(/farklı sorunlar|different problems/i)).toBeVisible();
+    await expect(page.getByText(/React 19 & Vite|Supabase Data & Auth/i)).toHaveCount(0);
+  });
+
+  test('contact page exposes direct channels without bento clutter', async ({ page }) => {
+    await page.goto('/contact');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByRole('link', { name: /zekiakgul09@gmail.com/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /@zexy2/i })).toBeVisible();
+  });
+
+  test('mobile discovery filters stay in one scrollable row', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    const allFormats = page.getByRole('button', { name: /tüm biçimler|all formats/i });
+    await expect(allFormats).toBeVisible();
+    const filter = allFormats.locator('..');
+    const wrap = await filter.evaluate((element) => getComputedStyle(element).flexWrap);
+    expect(wrap).toBe('nowrap');
+  });
+
   test('reduced motion preference keeps the page usable', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');

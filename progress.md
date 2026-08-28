@@ -134,3 +134,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Simplified secondary sharing, bookmark and fallback post-card controls; removed platform-color spectacle and hover scale/glow behavior.
 - Expanded Chromium UI smoke from 4 to 6 scenarios with login and unknown-route recovery coverage.
 - Verification: `npm run verify` PASS (13 files / 53 tests, lint, production build, build smoke) and Playwright Chromium UI smoke PASS (6/6).
+
+## 2026-08-28 — UI cleanup v4
+- Removed the oversized “Postify Standardı” manifesto block from Home; discovery now moves directly from hero into topics/formats/content.
+- Mobile format filters now stay in one horizontally scrollable row instead of wrapping into a large two-row control block.
+- Rebuilt About as a concise product explanation instead of a founder/tech-stack portfolio showcase.
+- Rebuilt Contact as two direct channels plus a short contact-purpose note; removed glowing/bento presentation.
+- Restyled article comments into the same quiet editorial system.
+- Expanded Chromium UI smoke to 9 scenarios covering About, Contact, and mobile filter layout.
+- Full verify PASS: 13 files / 53 tests, lint, production build, artifact smoke. Chromium UI smoke PASS: 9/9.

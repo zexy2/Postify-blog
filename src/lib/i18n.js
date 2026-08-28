@@ -169,7 +169,7 @@ const resources = {
       about: {
         title: "Hakkında",
         description:
-          "Postify Blog, modern web teknolojileri ile geliştirilmiş, profesyonel bir blog platformudur.",
+          "Postify, uygulanabilir teknoloji bilgisini rehberler, karar notları, saha notları ve açıklayıcı içeriklerle düzenleyen bağımsız bir bilgi platformudur.",
         technologies: "Kullanılan Teknolojiler",
         projectOwner: "Proje sahibi",
         bio: "Postify; teknoloji, ürün ve geliştirici deneyimi üzerine kısa, uygulanabilir notlar yayınlayan bağımsız bir editoryal alan.",
@@ -190,7 +190,7 @@ const resources = {
       contact: {
         title: "İletişim",
         description:
-          "Sorularınız veya önerileriniz için bizimle iletişime geçin.",
+          "Geri bildirim, düzeltme, iş birliği veya içerik önerileri için doğrudan iletişime geçin.",
         github: "GitHub",
         linkedin: "LinkedIn",
         email: "E-posta",
@@ -512,7 +512,7 @@ const resources = {
       about: {
         title: "About",
         description:
-          "Postify Blog is a professional blog platform built with modern web technologies.",
+          "Postify is an independent knowledge platform for practical guides, decision notes, field notes, and explainers.",
         technologies: "Technologies Used",
         projectOwner: "Project owner",
         bio: "Postify is an independent editorial space for short, practical notes on technology, products, and developer experience.",

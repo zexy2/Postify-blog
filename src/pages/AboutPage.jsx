@@ -1,142 +1,66 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiArrowUpRight, FiGithub, FiZap, FiCode, FiGlobe, FiLayers, FiCpu, FiDatabase } from 'react-icons/fi';
+import { FiArrowRight, FiBookOpen, FiCompass, FiEdit3, FiRefreshCw } from 'react-icons/fi';
 import SEO from '../components/SEO';
-import GlowingCard from '../components/GlowingCard/GlowingCard';
-import { Testimonial } from '../components/ui/design-testimonial';
 import styles from './AboutPage.module.css';
 
 const AboutPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language?.startsWith('en');
 
-  const techStack = [
-    {
-      name: 'React 19 & Vite',
-      tag: 'Core UI',
-      desc: 'Modern component architecture with Instant HMR and bundle optimization.',
-      icon: <FiCpu className={styles.techIcon} />,
-    },
-    {
-      name: 'Supabase Data & Auth',
-      tag: 'Backend',
-      desc: 'PostgreSQL database with Row Level Security (RLS) and OAuth authentication.',
-      icon: <FiDatabase className={styles.techIcon} />,
-    },
-    {
-      name: 'CSS Modules & Motion',
-      tag: 'Design System',
-      desc: 'Vanilla CSS token architecture with micro-interactions and dark/light themes.',
-      icon: <FiLayers className={styles.techIcon} />,
-    },
-    {
-      name: 'i18next & Offline PWA',
-      tag: 'Experience',
-      desc: 'Multilingual Turkish/English localization with offline Service Worker caching.',
-      icon: <FiGlobe className={styles.techIcon} />,
-    },
+  const formats = [
+    { icon: FiBookOpen, title: isEn ? 'Guides' : 'Rehberler', text: isEn ? 'Step-by-step paths for getting a concrete job done.' : 'Somut bir işi tamamlamak için adım adım yollar.' },
+    { icon: FiCompass, title: isEn ? 'Decision notes' : 'Karar notları', text: isEn ? 'Trade-offs, constraints, and why one option wins.' : 'Seçeneklerin artıları, eksileri ve hangi koşulda hangisinin seçileceği.' },
+    { icon: FiRefreshCw, title: isEn ? 'Field notes' : 'Saha notları', text: isEn ? 'What happened in real work, including mistakes and fixes.' : 'Gerçek işte ne olduğu, hatalar ve işe yarayan düzeltmeler.' },
+    { icon: FiEdit3, title: isEn ? 'Explainers' : 'Açıklayıcılar', text: isEn ? 'Dense concepts made easier to understand and reuse.' : 'Karmaşık konuları anlaşılır ve tekrar kullanılabilir hale getiren anlatılar.' },
   ];
 
   return (
-    <main className={styles.aboutPage}>
+    <main className={styles.page}>
       <SEO title={t('about.title')} description={t('about.description')} />
-
       <div className={styles.container}>
-        {/* 1. Hero Header Section */}
-        <header className={styles.heroCard}>
-          <span className={styles.eyebrow}>Postify Journal</span>
-          <h1 className={styles.heroTitle}>{t('about.title')}</h1>
-          <p className={styles.heroSubtitle}>{t('about.description')}</p>
-
-          <div className={styles.metricsBar}>
-            <span className={styles.metricBadge}>100% Open Source</span>
-            <span className={styles.metricBadge}>React 19 & Supabase</span>
-            <span className={styles.metricBadge}>Offline PWA</span>
-            <span className={styles.metricBadge}>Multilingual TR / EN</span>
-          </div>
+        <header className={styles.hero}>
+          <span className={styles.eyebrow}>Postify</span>
+          <h1>{t('about.title')}</h1>
+          <p>{t('about.description')}</p>
         </header>
 
-        {/* 2. Founder Profile Bento Card */}
-        <section className={styles.section}>
-          <GlowingCard
-            glowColor="color-mix(in srgb, var(--primary) 20%, transparent)"
-            borderRadius="20px"
-          >
-            <div className={styles.profileCard}>
-              <div className={styles.avatarWrapper}>
-                <span className={styles.avatar}>ZA</span>
-                <span className={styles.avatarBadge} title="Project Owner" />
-              </div>
-
-              <div className={styles.profileContent}>
-                <span className={styles.roleTag}>
-                  <FiCode size={13} /> {t('about.projectOwner')}
-                </span>
-
-                <h2 className={styles.founderName}>Zeki Akgül</h2>
-                <p className={styles.role}>{t('about.role')}</p>
-                <p className={styles.bio}>{t('about.bio')}</p>
-
-                <div className={styles.profileActions}>
-                  <a
-                    href="https://github.com/zexy2"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.socialBtn}
-                  >
-                    <FiGithub size={16} />
-                    <span>GitHub Profile <FiArrowUpRight size={14} /></span>
-                  </a>
-                  <Link to="/" className={styles.socialBtnOutline}>
-                    <span>Browse Journal</span>
-                    <FiArrowUpRight size={14} />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </GlowingCard>
+        <section className={styles.statement}>
+          <p>{isEn ? 'Postify is built around one simple job: help you find useful knowledge quickly, understand whether it fits your situation, and come back to it when you need it.' : 'Postify’ın tek bir işi var: işe yarayan bilgiyi hızlı bulmanı, sana uygun olup olmadığını anlamanı ve gerektiğinde yeniden dönüp kullanmanı kolaylaştırmak.'}</p>
         </section>
 
-        {/* 3. Testimonials Showcase Section */}
-        <section className={styles.section}>
-          <Testimonial />
-        </section>
-
-        {/* 4. Streamlined Architecture Stack */}
-        <section className={styles.section}>
+        <section className={styles.formats} aria-labelledby="formats-title">
           <div className={styles.sectionHeading}>
-            <div>
-              <span className={styles.eyebrow}>Architecture</span>
-              <h2>{t('about.technologies')}</h2>
-            </div>
+            <span className={styles.eyebrow}>{isEn ? 'Content formats' : 'İçerik biçimleri'}</span>
+            <h2 id="formats-title">{isEn ? 'Different problems need different writing.' : 'Farklı sorunlar, farklı anlatım ister.'}</h2>
           </div>
-
-          <div className={styles.techGrid}>
-            {techStack.map((tech) => (
-              <GlowingCard
-                key={tech.name}
-                glowColor="color-mix(in srgb, var(--primary) 15%, transparent)"
-                borderRadius="16px"
-                className={styles.techCardWrapper}
-              >
-                <div className={styles.techCard}>
-                  <div className={styles.techHeader}>
-                    {tech.icon}
-                    <span className={styles.techTag}>{tech.tag}</span>
-                  </div>
-                  <h3 className={styles.techTitle}>{tech.name}</h3>
-                  <p className={styles.techDesc}>{tech.desc}</p>
-                </div>
-              </GlowingCard>
+          <div className={styles.grid}>
+            {formats.map(({ icon: Icon, title, text }) => (
+              <article key={title} className={styles.item}>
+                <Icon aria-hidden="true" />
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        {/* Return Link */}
-        <div className={styles.returnWrapper}>
-          <Link to="/" className={styles.returnLink}>
-            <span>{t('home.latest')}</span>
-            <FiArrowUpRight size={16} />
-          </Link>
+        <section className={styles.principles}>
+          <div>
+            <span className={styles.eyebrow}>{isEn ? 'What we optimize for' : 'Neye önem veriyoruz'}</span>
+            <h2>{isEn ? 'Less performance. More usefulness.' : 'Daha az gösteri. Daha çok fayda.'}</h2>
+          </div>
+          <ul>
+            <li>{isEn ? 'Clear outcomes before long introductions.' : 'Uzun girişlerden önce net sonuç.'}</li>
+            <li>{isEn ? 'Visible dates and context.' : 'Görünür tarih ve bağlam.'}</li>
+            <li>{isEn ? 'Readable pages on mobile and desktop.' : 'Mobilde ve masaüstünde rahat okuma.'}</li>
+            <li>{isEn ? 'Practical examples over generic advice.' : 'Genel tavsiye yerine uygulanabilir örnek.'}</li>
+          </ul>
+        </section>
+
+        <div className={styles.cta}>
+          <Link to="/">{isEn ? 'Explore Postify' : 'İçerikleri keşfet'} <FiArrowRight /></Link>
+          <Link to="/create" className={styles.secondary}>{isEn ? 'Write something useful' : 'Faydalı bir şey yaz'}</Link>
         </div>
       </div>
     </main>

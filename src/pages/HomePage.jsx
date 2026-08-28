@@ -142,20 +142,6 @@ const HomePage = () => {
         featuredPost={featuredPost}
       />
 
-      <section className={styles.standardSection}>
-        <div className={`container ${styles.standardInner}`}>
-          <div className={styles.standardIntro}>
-            <span className={styles.sectionEyebrow}>{t('home.standardLabel')}</span>
-            <h2>{t('home.standardTitle')}</h2>
-          </div>
-          <div className={styles.principles}>
-            <article><span>01</span><div><strong>{t('home.principleOutcomeTitle')}</strong><p>{t('home.principleOutcomeText')}</p></div></article>
-            <article><span>02</span><div><strong>{t('home.principleFreshTitle')}</strong><p>{t('home.principleFreshText')}</p></div></article>
-            <article><span>03</span><div><strong>{t('home.principlePortableTitle')}</strong><p>{t('home.principlePortableText')}</p></div></article>
-          </div>
-        </div>
-      </section>
-
       {isFallback && (
         <div className={`container ${styles.fallbackNotice}`} role="status">
           <strong>{t(isFetching ? 'home.fallbackChecking' : 'home.fallbackNotice')}</strong>
