@@ -66,7 +66,8 @@
 - [x] Move privileged authenticated RPC execution behind non-exposed private helpers
 - [x] Build a narrow deterministic Node.js automatic verification runtime before introducing “Postify verified”
 - [x] Bind the first automatic verification example to a canonical production row and reject stale fallback-only artifacts
-- [ ] Add dependency release monitoring and evidence invalidation after backend model exists
+- [x] Add repository dependency/version monitoring with weekly Dependabot checks
+- [ ] Invalidate or re-check Verified Knowledge evidence when tracked dependency/runtime releases advance
 - [x] Add revision history model with private immutable snapshots and sanitized public changelog
 - [ ] Add grounded Ask Postify/API/MCP only after provenance/freshness data is durable
 

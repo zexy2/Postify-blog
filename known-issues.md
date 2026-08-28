@@ -2,7 +2,6 @@
 
 ## Current — release relevant
 - **Supabase Auth leaked-password protection is disabled.** Database/RLS migration is healthy; this separate Auth setting still needs to be enabled from Supabase Auth configuration because the connected management surface does not expose that toggle.
-- **Full dependency install reports 28 npm advisories.** Oracle's online audit classification endpoint timed out repeatedly, and offline audit output is not considered authoritative; production-vs-dev exposure remains unclassified rather than being claimed clean.
 - **GitHub Pages direct SPA paths return an initial HTTP 404 by hosting design.** The checked `404.html` redirect restores the route in browsers. Chromium E2E covers direct article navigation; HTTP-only probes must not mislabel the expected initial 404 as an application rendering failure.
 - **Automatic Postify verification intentionally supports only checked-in deterministic Node.js snippets.** Arbitrary user code, package installation, shell/network access and external-service verification remain unsupported until an isolated runtime is designed.
 - **Browserslist/caniuse-lite data is ~8 months old.** This is a maintenance warning, not a current release blocker.
@@ -10,6 +9,7 @@
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
 
 ## Resolved — 2026-08-28
+- Dependency lock security baseline is clean: independent npm audit reports 0 production and 0 full-tree vulnerabilities after a minimal non-force lock remediation; weekly Dependabot version monitoring is configured separately from urgent security updates.
 - Authenticated Verified Knowledge RPCs no longer execute as exposed SECURITY DEFINER functions; public wrappers are SECURITY INVOKER and privileged helpers live in the non-exposed `private` schema. Supabase security advisor now reports only the separate leaked-password-protection Auth warning.
 - Production knowledge export no longer leaves stale fallback-only JSON behind after a successful Supabase read; the canonical Node verification example now has a real production row and exact displayed-code binding.
 - Production Supabase migration is applied and remote migration history is aligned to the repository versions; no history repair was used.
