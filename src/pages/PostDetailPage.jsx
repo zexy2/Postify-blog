@@ -10,6 +10,8 @@ import ReadingProgress from '../components/ReadingProgress';
 import SEO from '../components/SEO';
 import styles from './PostDetailPage.module.css';
 import { getPostPresentation } from '../lib/postPresentation';
+import KnowledgeEvidencePanel from '../components/KnowledgeEvidencePanel';
+import LocalEvidenceActions from '../components/LocalEvidenceActions';
 import { extractExternalReferences, getArticleOutline, slugifyHeading } from '../lib/articleStructure';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
@@ -216,9 +218,11 @@ const PostDetailPage = () => {
                     </ol>
                   </nav>
                 )}
+                <KnowledgeEvidencePanel post={post} />
                 <div className={styles.body}>
                   <PlainArticleBody content={articleBody} />
                 </div>
+                <LocalEvidenceActions post={post} />
                 {externalReferences.length > 0 && (
                   <section className={styles.references} aria-labelledby="article-references-title">
                     <div>

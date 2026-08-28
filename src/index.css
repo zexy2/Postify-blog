@@ -727,3 +727,25 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Verified Knowledge evidence primitives */
+.evidence-badge { display:inline-flex; flex-wrap:wrap; align-items:center; gap:.15rem; color:var(--text-muted); font-family:var(--font-mono); font-size:.65rem; letter-spacing:.02em; }
+.evidence-badge strong { color:var(--text-secondary); font-weight:800; }
+.evidence-badge[data-level="author-tested"] strong { color:var(--success, #237a4b); }
+.evidence-badge[data-freshness="stale"] strong, .evidence-badge[data-freshness="stale"] { color:var(--warning, #9a6700); }
+.knowledge-evidence { max-width:68ch; margin:0 0 2.5rem; padding:1.25rem 0; border-block:1px solid var(--border-strong); }
+.knowledge-evidence__header { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; }
+.knowledge-evidence__header span,.knowledge-evidence h3 { color:var(--text-muted); font-family:var(--font-mono); font-size:.67rem; letter-spacing:.06em; text-transform:uppercase; }
+.knowledge-evidence h2 { margin:.2rem 0 .5rem; font-family:var(--font-display); font-size:1.55rem; }
+.knowledge-evidence__header>strong { color:var(--success,#237a4b); font-size:.78rem; }
+.knowledge-evidence__header>strong[data-freshness="stale"] { color:var(--warning,#9a6700); }
+.knowledge-evidence p,.knowledge-evidence li { color:var(--text-secondary); font-size:.9rem; line-height:1.6; }
+.knowledge-evidence ul,.knowledge-evidence ol { margin:.45rem 0 1rem; padding-left:1.25rem; }
+.knowledge-evidence small { display:block; color:var(--text-muted); line-height:1.5; }
+.local-evidence-actions { max-width:68ch; margin:2.5rem 0; padding:1.25rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); }
+.local-evidence-actions>div:first-child { display:flex; justify-content:space-between; gap:1rem; align-items:baseline; }
+.local-evidence-actions span { font-weight:800; color:var(--text-primary); }
+.local-evidence-actions small,.local-evidence-actions p { color:var(--text-muted); font-size:.75rem; }
+.local-evidence-actions__buttons,.local-evidence-actions__shelf { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.8rem; align-items:center; }
+.local-evidence-actions button { min-height:38px; padding:.5rem .7rem; color:var(--text-secondary); background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-md); cursor:pointer; }
+.local-evidence-actions button[data-active="true"] { color:var(--primary); border-color:var(--primary); background:var(--primary-subtle); }

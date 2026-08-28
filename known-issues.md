@@ -31,3 +31,8 @@
 ## UI V2 browser QA note — 2026-08-28
 - Snap Chromium cannot run under the MCP systemd cgroup, but this is no longer a blocker: browser QA now runs successfully in the official Playwright Chromium container.
 - Screenshot-diff baselines are not yet committed; current browser smoke validates layout/interaction invariants rather than pixel-level visual approval.
+
+## Verified Knowledge V1 boundaries — 2026-08-28
+- Structured evidence entered in the authoring UI is draft-only in V1; the current production Supabase schema has no reviewed evidence columns and no migration was performed.
+- Worked/Didn't work, action shelf and Knowledge Gap data are device-local only. They are intentionally not presented as community totals.
+- Automatic `Postify verified` execution, cross-user evidence aggregation, anti-abuse/reputation, dependency release monitoring and revision history require backend/security/schema work and remain deferred.

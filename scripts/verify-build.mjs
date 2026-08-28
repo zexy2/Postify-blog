@@ -3,6 +3,7 @@ import { readFile, stat } from 'node:fs/promises';
 const required = [
   'docs/index.html',
   'docs/404.html',
+  'docs/llms.txt',
   'docs/manifest.webmanifest',
   'docs/sw.js',
   'docs/registerSW.js',

@@ -598,3 +598,10 @@
 .submitButton:hover { transform: none; box-shadow: none; opacity: .9; }
 @media (max-width: 780px) { .page { padding: 2rem .25rem 4rem; } .formatGrid { grid-template-columns: repeat(2,minmax(0,1fr)); } .formatButton:nth-child(2) { border-right:0; } .formatButton:nth-child(-n+2) { border-bottom:1px solid var(--border-color); } .actions { margin-right:-.5rem; margin-left:-.5rem; padding-right:.5rem; padding-left:.5rem; } }
 @media (max-width: 520px) { .formatGrid { grid-template-columns:1fr; } .formatButton { border-right:0; border-bottom:1px solid var(--border-color); } .formatButton:last-child { border-bottom:0; } }
+.evidenceFields { display:grid; gap:1rem; padding:1.25rem 0; border-block:1px solid var(--border-strong); }
+.evidenceFields h2 { margin:.2rem 0; font-family:var(--font-display); font-size:1.65rem; }
+.evidenceFields p { margin:0; color:var(--text-muted); font-size:.82rem; }
+.evidenceFields label { display:grid; gap:.4rem; color:var(--text-secondary); font-size:.78rem; font-weight:800; }
+.evidenceFields input,.evidenceFields textarea { width:100%; padding:.75rem .8rem; color:var(--text-primary); background:var(--bg-primary); border:1px solid var(--border-strong); border-radius:var(--radius-md); font:inherit; }
+.evidenceGrid { display:grid; grid-template-columns:1fr 2fr; gap:1rem; }
+@media(max-width:640px){.evidenceGrid{grid-template-columns:1fr}}

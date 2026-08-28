@@ -76,3 +76,26 @@ test.describe('Postify UI V2', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 });
+
+test.describe('Verified Knowledge V1', () => {
+  test('discovery exposes evidence and freshness controls', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByText(/yazar test etti|author tested/i).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /güncel kanıt|current evidence/i })).toBeVisible();
+  });
+
+  test('article explains evidence and allows device-local feedback', async ({ page }) => {
+    await page.goto('/posts/ai-muhendisligi');
+    await expect(page.getByRole('heading', { name: /yazar test etti|author tested/i })).toBeVisible();
+    await expect(page.getByText(/yazar beyanıdır|author claim/i)).toBeVisible();
+    await expect(page.getByRole('button', { name: /^çalıştı$|^worked$/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /sonra dene|try later/i })).toBeVisible();
+  });
+
+  test('zero-result search can record a local knowledge gap', async ({ page }) => {
+    await page.goto('/');
+    const search = page.getByRole('searchbox');
+    await search.fill('zzzz-no-such-verified-solution');
+    await expect(page.getByRole('button', { name: /bu çözüme ihtiyacım var|i need this solution/i })).toBeVisible();
+  });
+});

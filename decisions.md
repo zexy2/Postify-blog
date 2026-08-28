@@ -84,3 +84,8 @@
 **Decision:** Do not place product principles/manifesto between the hero and content discovery on Home.
 
 **Why:** On mobile it consumed most of the first viewport without helping the user find content. Product principles belong in About and should be expressed briefly through the interface itself.
+
+## 2026-08-28 — Verified Knowledge V1 trust boundary
+**Decision:** Build the product semantics frontend-first without a production Supabase migration. Author-tested evidence must be explicit; device-local feedback must be labelled local; “Postify verified” is reserved for a future real execution system.
+
+**Why:** The differentiation depends on trust. Fabricating community counts or verification would destroy the product promise, while a structured frontend model lets us validate the UX before committing to a production schema and abuse/security model.
