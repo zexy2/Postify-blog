@@ -101,7 +101,7 @@
 ## UI V3 — product-language rebuild
 - [x] Replace startup-style discovery masthead with an editorial knowledge index entry point
 - [x] Rebuild the live EditorialFeed around evidence-first, high-density knowledge rows
-- [ ] Reframe article detail around reading flow, evidence and actionability
+- [x] Reframe article detail around reading flow, evidence and actionability
 - [ ] Rebuild Create/Edit as a focused writing workspace instead of a form page
 - [ ] Align profile, bookmarks and knowledge dashboard with the same V3 system
 - [ ] Approve and commit screenshot-diff baselines after V3 core surfaces stabilize

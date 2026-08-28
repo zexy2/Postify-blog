@@ -9,11 +9,12 @@ import CopyLinkButton from '../components/CopyLinkButton';
 import ReadingProgress from '../components/ReadingProgress';
 import SEO from '../components/SEO';
 import styles from './PostDetailPage.module.css';
-import { getPostPresentation } from '../lib/postPresentation';
+import { getPostPresentation, getPostReadingMinutes } from '../lib/postPresentation';
 import KnowledgeEvidencePanel from '../components/KnowledgeEvidencePanel';
 import LocalEvidenceActions from '../components/LocalEvidenceActions';
 import CommunityEvidenceDetails from '../components/CommunityEvidenceDetails';
 import VerificationRunbook from '../components/VerificationRunbook';
+import EvidenceBadge from '../components/EvidenceBadge';
 import CopyableCodeBlock from '../components/CopyableCodeBlock';
 import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading } from '../lib/articleStructure';
 
@@ -91,6 +92,7 @@ const PostDetailPage = () => {
   const articleBody = post.body || post.bodyHtml?.replace(/<[^>]+>/g, ' ') || '';
   const isBookmarked = bookmarkedIds.includes(post.id);
   const presentation = getPostPresentation(post, i18n.language);
+  const readingMinutes = getPostReadingMinutes(post);
   const outline = getArticleOutline(articleBody);
   const externalReferences = extractExternalReferences(
     articleBody,
@@ -128,7 +130,7 @@ const PostDetailPage = () => {
 
                 <div className={styles.readStat}>
                   <FiClock size={14} className={styles.statIcon} />
-                  <span>{post.readingTime} {t('common.minutes')}</span>
+                  <span>{readingMinutes ?? 1} {t('common.minutes')}</span>
                 </div>
 
                 <button
@@ -156,6 +158,7 @@ const PostDetailPage = () => {
                   <span className={styles.metaDot}>•</span>
                   <time dateTime={post.publishedAt}>{publishedDate}</time>
                   {isUpdated && <span>({t('article.updated')} {updatedDate})</span>}
+                  <EvidenceBadge post={post} compact />
                 </div>
 
                 <h1 className={styles.title}>{post.title}</h1>
@@ -186,7 +189,7 @@ const PostDetailPage = () => {
                   </div>
                   <div>
                     <dt>{t('posts.readingTime')}</dt>
-                    <dd>{post.readingTime} {t('common.minutes')}</dd>
+                    <dd>{readingMinutes ?? 1} {t('common.minutes')}</dd>
                   </div>
                   <div>
                     <dt>{t('article.lastTouch')}</dt>

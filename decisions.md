@@ -239,3 +239,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** The primary discovery feed prioritizes title, outcome, evidence/freshness, format and reading cost over large decorative imagery. Thumbnails are supporting context; numbered rows and compact actions create a scannable knowledge-index rhythm.
 
 **Why:** Postify's product value is reusable, evidence-aware knowledge. A conventional image-first blog/news card system makes that differentiation visually secondary and reduces useful information density, especially on mobile.
+
+## 2026-08-28 — Article trust is visible before long-form reading
+**Decision:** Put the compact evidence/freshness state in the article header before the title, while keeping detailed evidence and the runbook in the reading flow. Long-form prose uses the primary sans-serif reading face; magazine-style drop caps and oversized cover/title treatment are removed.
+
+**Why:** Postify asks readers to act on technical guidance, so trust state and reading cost are decision inputs, not post-reading decoration. A quieter dossier hierarchy makes provenance visible early and improves sustained technical reading without duplicating the full evidence explanation.

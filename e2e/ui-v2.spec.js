@@ -19,6 +19,21 @@ test.describe('Postify UI V2', () => {
     expect(articleWidth).toBeLessThan(1000);
   });
 
+  test('V3 article surfaces trust before reading and stays mobile-safe', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/posts/ai-muhendisligi');
+    const article = page.locator('article').first();
+    const heading = article.getByRole('heading', { level: 1 });
+    const trust = article.locator('.evidence-badge').first();
+    await expect(heading).toBeVisible();
+    await expect(trust).toBeVisible();
+    const [headingBox, trustBox] = await Promise.all([heading.boundingBox(), trust.boundingBox()]);
+    expect(trustBox.y).toBeLessThan(headingBox.y);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+    await expect(article.getByText(/undefined\s*(dk|min)/i)).toHaveCount(0);
+  });
+
   test('mobile home does not overflow and menu remains operable', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');

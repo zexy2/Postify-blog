@@ -328,3 +328,11 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Preserved category, format, freshness/evidence badge, community confirmation and bookmark behavior while reducing decorative card chrome and oversized imagery.
 - Responsive QA: mobile document width is exact 390/390; each new feed article is 358/358 with no card overflow. The filter strip remains intentionally horizontally scrollable edge-to-edge.
 - Validation PASS: 23 Vitest files / 105 tests, lint, production Vite build, and official Playwright 1.57 Chromium UI suite 24/24, including a new mobile feed-overflow regression check.
+
+## 2026-08-28 — UI V3 article reader dossier
+- Rebuilt the article detail surface as a quieter reader dossier instead of a stacked magazine/card composition: tighter title scale, compact author/meta, compressed quick brief, shallower cover, denser outline, sans-serif long-form body and flatter discussion/adjacent navigation.
+- Surfaced the evidence/freshness badge in the article header before the H1 so readers can see the trust state before committing to the guidance; the full evidence panel and runbook remain intact below.
+- Article reading time now uses the shared `getPostReadingMinutes` fallback, preventing legacy rows without explicit metadata from rendering an undefined duration in the rail or quick brief.
+- Removed the legacy drop-cap and collapsed the accumulated V1/V2 CSS override layers into one coherent V3 stylesheet; every JSX CSS-module reference has a matching selector.
+- Responsive QA: desktop article width is 820px; mobile article is 358px inside a 390px document with exact 390/390 document width. Trust metadata remains above the H1 and the mobile cover resolves to 16:9.
+- Validation PASS: 23 Vitest files / 105 tests, lint, production Vite build, and official Playwright 1.57 Chromium UI suite 25/25 including trust-before-reading, mobile overflow and duration-fallback regression coverage.
