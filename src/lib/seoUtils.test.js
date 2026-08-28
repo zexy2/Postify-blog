@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { absoluteAssetUrl, canonicalizeUrl, sanitizeHttpUrls } from './seoUtils';
+import { absoluteAssetUrl, canonicalizeUrl, safeHttpUrl, sanitizeHttpUrls } from './seoUtils';
 
 describe('seoUtils', () => {
   it('removes query strings and fragments from canonicals', () => {
@@ -17,6 +17,15 @@ describe('seoUtils', () => {
       .toBe('https://postify.zekiakgul.dev/pwa-512x512.png');
   });
 
+  it('accepts only absolute http/https URLs for user-controlled links', () => {
+    expect(safeHttpUrl(' https://example.com/path ')).toBe('https://example.com/path');
+    expect(safeHttpUrl('http://example.org')).toBe('http://example.org/');
+    expect(safeHttpUrl('javascript:alert(1)')).toBeNull();
+    expect(safeHttpUrl('data:text/html,x')).toBeNull();
+    expect(safeHttpUrl('//example.com')).toBeNull();
+    expect(safeHttpUrl('example.com')).toBeNull();
+  });
+
   it('keeps only http/https citation URLs', () => {
     expect(sanitizeHttpUrls([
       'https://example.com/docs',
@@ -24,6 +33,6 @@ describe('seoUtils', () => {
       'javascript:alert(1)',
       'data:text/html,x',
       'not-a-url',
-    ])).toEqual(['https://example.com/docs', 'http://example.org']);
+    ])).toEqual(['https://example.com/docs', 'http://example.org/']);
   });
 });

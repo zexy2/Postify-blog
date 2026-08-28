@@ -154,3 +154,8 @@
 **Decision:** Keep production Supabase migration in a `workflow_dispatch`-only workflow pinned to the exact production project ref and Supabase CLI version. Always inspect remote migration history and run `db push --dry-run` first. Never use `--include-all` or migration-history repair automatically. Real apply additionally requires the exact `APPLY_<project-ref>` confirmation.
 
 **Why:** Production schema access is privileged and remote migration history may differ from the repository. An automated guess could apply legacy migrations or repair history incorrectly. The safest automation is deterministic everywhere except the explicit owner-authorized apply boundary.
+
+## 2026-08-28 — User-controlled outbound URLs are protocol-allowlisted
+**Decision:** Any user-controlled public outbound URL must pass a shared absolute `http:`/`https:` allowlist before persistence or clickable rendering. Invalid legacy values remain non-clickable.
+
+**Why:** HTML `type=url` is not a security boundary and programmatic save flows can bypass native form validation. Centralizing the protocol boundary reduces stored-link/script-scheme risk without requiring a Supabase migration.
