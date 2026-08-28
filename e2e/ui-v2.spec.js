@@ -117,25 +117,43 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  test('unknown routes render the quiet 404 recovery surface', async ({ page }) => {
+  test('unknown routes render the V3 recovery index without mobile overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/definitely-not-a-postify-route');
     await expect(page.getByText('404', { exact: true })).toBeVisible();
-    await expect(page.getByRole('link', { name: /home|ana sayfa|keşfet/i }).first()).toBeVisible();
+    await expect(page.getByText(/index miss/i)).toBeVisible();
+    const recoverySurface = page.locator('section[aria-labelledby="not-found-title"]');
+    await expect(recoverySurface.getByRole('link', { name: /explore knowledge|bilgiyi keşfet/i })).toBeVisible();
+    const recoveryIndex = page.getByRole('navigation', { name: /önerilen sayfalar|suggested pages/i });
+    await expect(recoveryIndex.getByRole('link')).toHaveCount(3);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 
-
-  test('about page explains the product without portfolio clutter', async ({ page }) => {
+  test('about page explains the V3 trust model and points writing to the real route', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/about');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByText(/farklı sorunlar|different problems/i)).toBeVisible();
-    await expect(page.getByText(/React 19 & Vite|Supabase Data & Auth/i)).toHaveCount(0);
+    await expect(page.getByText(/trust model|güven modeli/i)).toBeVisible();
+    await expect(page.getByText(/outcome first|önce sonuç/i)).toBeVisible();
+    await expect(page.getByText(/evidence attached|kanıt yanında/i)).toBeVisible();
+    await expect(page.getByText(/freshness visible|güncellik görünür/i)).toBeVisible();
+    await expect(page.getByText(/reproducible by design|tekrarlanabilir tasarım/i)).toBeVisible();
+    await expect(page.getByRole('link', { name: /write a useful record|faydalı bir kayıt yaz/i })).toHaveAttribute('href', '/posts/create');
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  test('contact page exposes direct channels without bento clutter', async ({ page }) => {
+  test('contact page is a correction-first public channel index', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/contact');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByText(/direct channels|doğrudan kanallar/i)).toBeVisible();
+    await expect(page.getByText(/^correction$|^düzeltme$/i)).toBeVisible();
     await expect(page.getByRole('link', { name: /zekiakgul09@gmail.com/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /@zexy2/i })).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 
   test('mobile discovery filters stay in one scrollable row', async ({ page }) => {

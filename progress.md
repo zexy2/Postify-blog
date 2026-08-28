@@ -379,3 +379,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Tightened the mobile footer after browser measurement, reducing its rendered height from 1,273px to 1,057px while keeping the two content indexes readable and preserving exact 390/390 document width.
 - Stabilized the password-recovery regression by waiting for the post-mutation React success render rather than only the mocked auth call; focused recovery coverage remains 2/2.
 - Final exact-worktree gates PASS: 26 Vitest files / 109 tests, source-only lint, production Vite/PWA build (main entry 305,219 bytes), and official Playwright 1.57 Chromium UI suite 29/29 including new Topic Index state and global Footer trust/mobile contracts.
+
+## 2026-08-28 — UI V3 public system pages
+- Rebuilt About as a product-contract page centered on Outcome, Evidence, Freshness and Reproducibility instead of a generic portfolio/about layout. The page now explains what Postify is optimizing for and how Guide / Decision / Explainer / Field Note formats map to practical work.
+- Fixed a real navigation defect exposed by the redesign: the About authoring CTA pointed to nonexistent `/create`; it now targets the protected real route `/posts/create`.
+- Rebuilt Contact as a correction-first public channel index. The page now prioritizes corrections, useful topic proposals and evidence-backed collaboration rather than generic contact-card decoration.
+- Replaced the legacy 264-line animated/glowing 404 stack plus appended V2 override with one quiet V3 index-miss recovery surface and three format-aware recovery links. No gradient, blur, animation or box-shadow debt remains in the three public-system stylesheets.
+- Updated stale Playwright contracts to the new public-system language and scoped the 404 primary CTA assertion to its own recovery surface so the identical global Footer CTA cannot create strict-mode ambiguity.
+- Browser QA: About, Contact and 404 render without page errors at 1440px and 390px; mobile document width stays exact at 390/390. About exposes the real `/posts/create` href, Contact exposes correction/direct-channel rows, and 404 exposes its recovery index.
+- Final exact-worktree gates PASS: 26 Vitest files / 109 tests, lint, production Vite/PWA build (main entry 305,219 bytes), focused public-system Chromium 3/3, and full Chromium UI suite 29/29.

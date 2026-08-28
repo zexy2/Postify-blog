@@ -274,3 +274,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Persistent discovery/footer chrome should explain and navigate Postify as a maintained knowledge system, not as a generic blog sitemap. The footer explicitly carries the Evidence / Freshness / Reproducibility model, while topic discovery uses a numbered index with native button semantics and URL-synchronized active state.
 
 **Why:** Header/footer/topic controls appear across a large share of the product and therefore shape the product identity more than isolated decorative components. Repeating the same trust vocabulary at these boundaries makes the evidence-aware value proposition legible without adding scores, glows or card chrome, while native controls keep the interaction accessible and testable.
+
+## 2026-08-28 — Public system pages should explain, correct and recover
+**Decision:** About, Contact and 404 are product-system surfaces rather than decorative marketing pages. About explains the inspectable knowledge contract; Contact treats reader corrections as a first-class maintenance input; 404 turns a navigation miss into a compact recovery index.
+
+**Why:** These routes often appear at moments where a visitor is deciding whether to trust the product, challenge information, or recover from a dead path. Generic portfolio cards, animated error decoration and broken authoring links weaken that trust. A quiet indexed structure makes the same V3 product language legible outside the core feed/article/editor flow.

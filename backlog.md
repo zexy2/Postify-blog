@@ -97,6 +97,7 @@
 - [x] Redesign article reading + trust surface as the primary product experience
 - [x] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
 - [x] Bring profile and bookmarks into the same visual system (Knowledge Dashboard V3 complete)
+- [x] Rebuild About, Contact, and 404 as V3 public-system surfaces and close broken authoring navigation
 - [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
 - [ ] Audit/delete legacy decorative components that remain unused after V3 conversion
 
