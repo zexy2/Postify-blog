@@ -214,3 +214,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** CI runs `npm run verify:security` immediately after `npm ci` and before normal release verification. The gate requires npm audit to report zero vulnerabilities, requires `@playwright/test` to be exact-pinned, and requires every pinned Playwright CI container to match that package version. Audit outages/non-JSON responses fail the release instead of being treated as clean.
 
 **Why:** A clean lock can regress on a future dependency PR, and Playwright package/browser-image skew can create misleading E2E failures. Keeping online audit out of `npm run verify` preserves deterministic local verification while making the hosted release pipeline fail closed on supply-chain/security drift.
+
+## 2026-08-28 — Automatic verification pins a supported runtime major
+**Decision:** The checked-in Node verification contract requires Node major 24 on the LTS channel. Hosted verify/deploy jobs pin Node `24.20.0`, while the verifier fails closed whenever the executing Node major differs from the manifest. Browser E2E may use a different Node 24 patch supplied by the exact-pinned Playwright image.
+
+**Why:** A passing code artifact on an EOL runtime is stale evidence, and exact patch equality across independent CI images is unnecessarily brittle. Major-line enforcement preserves a supported runtime trust boundary while the emitted artifact still records the exact Node patch that actually executed the code.

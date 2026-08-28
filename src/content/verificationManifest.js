@@ -3,6 +3,8 @@ export const VERIFICATION_MANIFEST = [
     id: 'node-json-parse-v1',
     postSlug: 'node-json-dogrulama',
     runtime: 'node',
+    runtimeMajor: 24,
+    runtimeChannel: 'lts',
     policy: 'node-deterministic-v1',
     artifactFile: 'node-json-parse-v1.mjs',
     reproduceCommand: 'node node-json-parse-v1.mjs',

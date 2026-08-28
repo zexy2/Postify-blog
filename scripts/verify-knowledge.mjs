@@ -24,6 +24,25 @@ for (const check of VERIFICATION_MANIFEST) {
   const article = catalog.find((post) => post.slug === check.postSlug && post.autoVerificationId === check.id);
   const codeSha256 = createHash('sha256').update(check.code).digest('hex');
   const policy = validateVerificationCode(check);
+  const runtimeMajor = Number(process.versions.node.split('.')[0]);
+
+  if (check.runtime === 'node' && runtimeMajor !== check.runtimeMajor) {
+    results.runs[check.id] = {
+      id: check.id,
+      postSlug: check.postSlug,
+      status: 'failed',
+      failureKind: 'runtime-major-mismatch',
+      runtime: check.runtime,
+      runtimeVersion: process.version,
+      requiredRuntimeMajor: check.runtimeMajor,
+      runtimeChannel: check.runtimeChannel,
+      codeSha256,
+      verifiedAt: new Date().toISOString(),
+      durationMs: Date.now() - started,
+    };
+    failed = true;
+    continue;
+  }
 
   if (!policy.ok) {
     results.runs[check.id] = {
@@ -103,6 +122,8 @@ for (const check of VERIFICATION_MANIFEST) {
       status: passed ? 'passed' : 'failed',
       runtime: check.runtime,
       runtimeVersion: process.version,
+      requiredRuntimeMajor: check.runtimeMajor,
+      runtimeChannel: check.runtimeChannel,
       policy: check.policy,
       artifactFile,
       artifactUrl: `/verification/${artifactFile}`,
@@ -124,6 +145,8 @@ for (const check of VERIFICATION_MANIFEST) {
       status: 'failed',
       runtime: check.runtime,
       runtimeVersion: process.version,
+      requiredRuntimeMajor: check.runtimeMajor,
+      runtimeChannel: check.runtimeChannel,
       policy: check.policy,
       artifactFile,
       artifactUrl: `/verification/${artifactFile}`,
