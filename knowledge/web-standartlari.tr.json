@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-web-standartlari",
+  "slug": "web-standartlari",
+  "locale": "tr",
+  "title": "Web standartları hızdan önce gelir",
+  "outcome": "Erişilebilir HTML ve sağlam tarayıcı davranışı, performans optimizasyonlarının en ucuz temelidir.",
+  "contentType": null,
+  "category": "Web geliştirme",
+  "publishedAt": "2026-08-06T00:00:00.000Z",
+  "updatedAt": "2026-08-06T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Web standartları kontrol listesi"
+    ],
+    "prerequisites": [
+      "Semantik HTML",
+      "Klavye erişimi",
+      "Görünür focus"
+    ],
+    "verificationSteps": [
+      "Kritik akışı yalnızca klavyeyle tamamla",
+      "Başlık hiyerarşisini ve form etiketlerini kontrol et"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Modern bir arayüzü hızlı yapmak yalnızca bundle boyutunu küçültmek değildir. Sayfanın tarayıcı tarafından doğru anlaşılması, klavye ile kullanılabilmesi ve ağ koşulları kötüleştiğinde anlamını koruması gerekir.\n\nSemantik HTML, form etiketleri, görünür odak durumu ve doğru başlık hiyerarşisi çoğu projede sonradan eklenmeye çalışılıyor. Oysa bunlar bileşenin API'si kadar erken tasarlanmalı.\n\nStandartlara uyan bir arayüz daha az sürpriz üretir. Bu da hem performans hem test hem de uzun vadeli bakım maliyetinde doğrudan karşılık bulur.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/web-standartlari"
+}

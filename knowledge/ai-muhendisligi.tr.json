@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-ai-muhendisligi",
+  "slug": "ai-muhendisligi",
+  "locale": "tr",
+  "title": "AI özelliği değil, iyi tasarlanmış bir sistemdir",
+  "outcome": "AI özelliğini model çağrısı yerine ölçülebilir ve güvenli bir ürün sistemi olarak tasarlamak.",
+  "contentType": null,
+  "category": "Yapay zekâ",
+  "publishedAt": "2026-08-07T00:00:00.000Z",
+  "updatedAt": "2026-08-07T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 120,
+    "environment": [
+      "Postify ürün incelemesi",
+      "React 19",
+      "Vite 7"
+    ],
+    "prerequisites": [
+      "Bir AI özelliği için ölçülebilir kullanıcı sonucunu tanımlamış olmak"
+    ],
+    "verificationSteps": [
+      "Başarı metriğini model seçmeden önce yaz",
+      "Hatalı çıktı için geri alma veya insan onayı yolu tanımla",
+      "Model değişse bile ürün sözleşmesinin aynı kaldığını kontrol et"
+    ],
+    "caveats": [
+      "Bu içerik bir model benchmarkı veya sağlayıcı karşılaştırması değildir."
+    ],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Yapay zekâ özellikleri çoğu üründe tek bir model çağrısından ibaretmiş gibi anlatılıyor. Gerçekte kullanıcıya güvenilir bir deneyim vermek; doğru girdiyi toplamak, çıktıyı değerlendirmek ve hatalı sonucu güvenle ele almakla mümkün.\n\nİlk karar model seçimi değil, özelliğin hangi kararı hızlandıracağı olmalı. Kullanıcı bir öneriyi neden gördüğünü anlayamıyorsa, en iyi model bile güven üretmez. Bu nedenle açıklanabilirlik, geri alma ve insan onayı akışları ürünün temel parçalarıdır.\n\nİyi bir AI özelliği; ölçülebilir fayda, kontrollü hata ve açık bir sınırla başlar. Model değişebilir, fakat bu ürün sözleşmesi değişmemelidir.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/ai-muhendisligi"
+}

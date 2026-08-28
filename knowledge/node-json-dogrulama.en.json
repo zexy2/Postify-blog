@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-node-json-dogrulama",
+  "slug": "node-json-dogrulama",
+  "locale": "en",
+  "title": "Verify a Node.js example by running it, not by saying it should work",
+  "outcome": "Node.js içinde gelen JSON verisini parse edip beklenen yapıyı assertion ile doğrulamak.",
+  "contentType": null,
+  "category": "Node.js",
+  "publishedAt": "2026-08-28T00:00:00.000Z",
+  "updatedAt": "2026-08-28T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 90,
+    "environment": [
+      "Node.js 20+"
+    ],
+    "prerequisites": [
+      "Node.js 20 veya daha yeni bir sürüm"
+    ],
+    "verificationSteps": [
+      "Kodu Node.js ile çalıştır",
+      "Çıktının PASS olduğunu doğrula"
+    ],
+    "caveats": [
+      "Otomatik doğrulama yalnız aşağıdaki deterministik Node.js örneğini kapsar; harici servis veya ağ davranışını doğrulamaz."
+    ],
+    "sources": [
+      "https://nodejs.org/api/assert.html"
+    ],
+    "automaticVerification": {
+      "id": "node-json-parse-v1",
+      "postSlug": "node-json-dogrulama",
+      "status": "passed",
+      "runtime": "node",
+      "runtimeVersion": "20+",
+      "verifiedAt": "2026-08-28T09:54:03.407Z",
+      "durationMs": 32,
+      "expectedStdout": "PASS"
+    }
+  },
+  "body": "## Problem\nCode samples are usually only read. Here a small deterministic Node.js example is actually executed and its expected output is checked.\n\n## Code\n\n```js\nimport assert from 'node:assert/strict';\nconst payload = '{\"ok\":true,\"items\":[1,2,3]}';\nconst parsed = JSON.parse(payload);\nassert.equal(parsed.ok, true);\nassert.deepEqual(parsed.items, [1,2,3]);\nprocess.stdout.write('PASS');\n```\n\n## Verification\nDuring the build Postify runs the same checked-in code in a Node.js child process. If stdout is not exactly PASS, the release gate fails. The “Postify verified” claim for this example therefore comes from a real execution result.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/node-json-dogrulama"
+}

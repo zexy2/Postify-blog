@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-frontend-performansi",
+  "slug": "frontend-performansi",
+  "locale": "en",
+  "title": "Frontend performance is a user flow, not a score",
+  "outcome": "Lighthouse is a useful signal, but the real bottleneck appears in the first meaningful interaction on mobile.",
+  "contentType": null,
+  "category": "Frontend",
+  "publishedAt": "2026-08-05T00:00:00.000Z",
+  "updatedAt": "2026-08-05T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Frontend performans incelemesi"
+    ],
+    "prerequisites": [
+      "Mobil viewport",
+      "Gerçek kullanıcı akışı"
+    ],
+    "verificationSteps": [
+      "İlk ekranı ve temel etkileşimi ölç",
+      "Layout shift ve gereksiz JavaScript yükünü kontrol et"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Performance work often chases a single score. Scores are useful signals, but users care about when the page becomes understandable and interactive.\n\nStart with the critical flow: first paint, search, opening a story, and returning to the list. Deferring nonessential JavaScript, serving correctly sized images, and preventing layout shifts usually matter more than flashy optimizations.\n\nMeasure on a real device, a real network, and a repeatable user flow. Good performance is the experience that does not make people wait.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/frontend-performansi"
+}

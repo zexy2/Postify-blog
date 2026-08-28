@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-edge-mimarileri",
+  "slug": "edge-mimarileri",
+  "locale": "en",
+  "title": "Edge architecture does not solve every problem",
+  "outcome": "Before reducing latency, clarify data ownership, consistency needs, and the operational cost.",
+  "contentType": null,
+  "category": "Mimari",
+  "publishedAt": "2026-08-03T00:00:00.000Z",
+  "updatedAt": "2026-08-03T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Mimari karar incelemesi"
+    ],
+    "prerequisites": [
+      "Veri sahipliği",
+      "Tutarlılık ihtiyacı"
+    ],
+    "verificationSteps": [
+      "Kaynak sistemi tanımla",
+      "Edge eklemeden önce gerçek gecikme darboğazını doğrula"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Edge systems can reduce latency by running closer to users. Moving every piece of data to the edge does not remove consistency or observability problems.\n\nAsk three questions: how often does this operation run, does it require fresh data, and which system is the source of truth when something fails? Without those answers, adding caches or edge functions only creates more moving parts.\n\nEdge is an architectural response to a specific bottleneck, not a default technology choice.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/edge-mimarileri"
+}

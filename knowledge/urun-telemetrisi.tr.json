@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-urun-telemetrisi",
+  "slug": "urun-telemetrisi",
+  "locale": "tr",
+  "title": "Ürün telemetrisi karar vermeyi kolaylaştırmalı",
+  "outcome": "Daha çok event toplamak yerine, hangi ürün kararını destekleyeceğinizi tanımlayın.",
+  "contentType": null,
+  "category": "Ürün analitiği",
+  "publishedAt": "2026-07-31T00:00:00.000Z",
+  "updatedAt": "2026-07-31T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Ürün telemetrisi incelemesi"
+    ],
+    "prerequisites": [
+      "Ürün sorusu",
+      "Ölçülebilir davranış"
+    ],
+    "verificationSteps": [
+      "Event yazmadan önce ürün sorusunu yaz",
+      "Her metriği desteklediği kararla eşleştir"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Analitik sistemlerinde sorun çoğu zaman veri eksikliği değildir. Event isimleri dağınık, sahiplik belirsiz ve ölçümün hangi karara bağlandığı unutulmuştur.\n\nÖnce ürün sorusunu yazın: Kullanıcı nerede takılıyor? Hangi akış değer üretiyor? Bir değişiklik başarılı sayılacaksa hangi davranış değişmeli? Sonra yalnızca bu soruları cevaplayan sinyalleri toplayın.\n\nİyi telemetri rapor üretmekten çok, ekip içindeki tartışmayı daha somut hale getirir.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/urun-telemetrisi"
+}

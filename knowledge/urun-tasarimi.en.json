@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-urun-tasarimi",
+  "slug": "urun-tasarimi",
+  "locale": "en",
+  "title": "Good product design reduces choices",
+  "outcome": "Instead of exposing every possibility, design the right default and an easy way back.",
+  "contentType": null,
+  "category": "Ürün tasarımı",
+  "publishedAt": "2026-08-04T00:00:00.000Z",
+  "updatedAt": "2026-08-04T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Ürün karar incelemesi"
+    ],
+    "prerequisites": [
+      "Karar sırası",
+      "Geri alınabilir aksiyonlar"
+    ],
+    "verificationSteps": [
+      "Ekrandaki birincil kararı belirle",
+      "Gereksiz eşzamanlı seçenekleri kaldır"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Complex products are tiring not only because they have many features, but because they leave every decision to the user. Good design makes the important choice visible and keeps recovery easy.\n\nThe first step in simplifying a screen is not shrinking buttons. It is understanding the decision order: what should happen first, what information is needed now, and which mistakes can be undone?\n\nGood defaults do not restrict people. They move attention to the work that matters.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/urun-tasarimi"
+}

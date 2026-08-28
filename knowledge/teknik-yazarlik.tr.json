@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-teknik-yazarlik",
+  "slug": "teknik-yazarlik",
+  "locale": "tr",
+  "title": "Teknik yazı, bilgi dökümü değildir",
+  "outcome": "İyi bir teknik anlatı okuyucunun hangi kararı vereceğini baştan netleştirir.",
+  "contentType": null,
+  "category": "Teknik iletişim",
+  "publishedAt": "2026-08-01T00:00:00.000Z",
+  "updatedAt": "2026-08-01T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Teknik yazı incelemesi"
+    ],
+    "prerequisites": [
+      "Karar bağlamı",
+      "Örnek açıklaması"
+    ],
+    "verificationSteps": [
+      "Okuyucunun vereceği kararı ilk bölümde belirt",
+      "Örneğin hangi durumda yanlış olacağını yaz"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Teknik yazıların çoğu kavramları sıralıyor, fakat okuyucunun asıl ihtiyacı olan kararı belirsiz bırakıyor. İyi anlatı önce bağlamı verir, sonra seçenekleri ve bedellerini karşılaştırır.\n\nBir örnek, yalnızca kod gösterdiğinde öğretici olmaz. Neden bu çözüm seçildi? Hangi durumda yanlış olur? Değiştirilmesi gereken ilk parça hangisi? Bu sorular cevapsızsa örnek kopyalanır ama anlaşılmaz.\n\nNetlik, ayrıntıyı azaltmak değil; ayrıntıyı doğru sıraya koymaktır.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/teknik-yazarlik"
+}

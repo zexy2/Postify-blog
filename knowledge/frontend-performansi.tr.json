@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fallback-frontend-performansi",
+  "slug": "frontend-performansi",
+  "locale": "tr",
+  "title": "Frontend performansı ölçüm değil, kullanıcı akışıdır",
+  "outcome": "Lighthouse puanı tek başına yetmez; gerçek darboğazı ilk anlamlı etkileşimde ve mobil ağda arayın.",
+  "contentType": null,
+  "category": "Frontend",
+  "publishedAt": "2026-08-05T00:00:00.000Z",
+  "updatedAt": "2026-08-05T00:00:00.000Z",
+  "evidence": {
+    "level": "author-tested",
+    "testedAt": "2026-08-28T00:00:00.000Z",
+    "staleAfterDays": 180,
+    "environment": [
+      "Frontend performans incelemesi"
+    ],
+    "prerequisites": [
+      "Mobil viewport",
+      "Gerçek kullanıcı akışı"
+    ],
+    "verificationSteps": [
+      "İlk ekranı ve temel etkileşimi ölç",
+      "Layout shift ve gereksiz JavaScript yükünü kontrol et"
+    ],
+    "caveats": [],
+    "sources": [],
+    "automaticVerification": null
+  },
+  "body": "Performans çalışmaları çoğu zaman tek bir skorun peşinden gidiyor. Skorlar yararlı bir sinyal olsa da kullanıcı için asıl soru sayfanın ne zaman anlaşılır ve etkileşilebilir hale geldiğidir.\n\nÖnce kritik akışı tanımlayın: ilk ekran, arama, yazı açma ve geri dönme. Bu akışta gereksiz JavaScript'i ertelemek, görselleri doğru boyutta sunmak ve layout kaymasını önlemek genellikle gösterişli optimizasyonlardan daha fazla fark yaratır.\n\nÖlçümü gerçek cihaz, gerçek ağ ve tekrar eden kullanıcı akışıyla yapın. İyi performans, raporda güzel görünen değil, kullanıcıyı bekletmeyen deneyimdir.",
+  "canonicalUrl": "https://postify.zekiakgul.dev/posts/frontend-performansi"
+}
