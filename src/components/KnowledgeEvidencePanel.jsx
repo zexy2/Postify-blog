@@ -60,16 +60,28 @@ export default function KnowledgeEvidencePanel({ post }) {
   const { i18n } = useTranslation();
   const en = i18n.language?.startsWith('en');
   const evidence = getEvidenceCopy(post, i18n.language);
-  const auto = useAutoVerification(post.autoVerificationId).run;
-  const postifyVerified = auto?.status === 'passed';
+  const { run: auto, state: autoState } = useAutoVerification(post.autoVerificationId);
+  const postifyVerified = autoState.status === 'verified';
+  const executionPassed = auto?.status === 'passed';
+  const recheckRequired = autoState.status === 'recheck-required';
+  const freshnessUnknown = autoState.status === 'freshness-unknown' && executionPassed;
+  const heading = postifyVerified ? 'Postify verified'
+    : recheckRequired ? (en ? 'Postify re-check required' : 'Postify yeniden kontrol etmeli')
+      : freshnessUnknown ? (en ? 'Verification freshness unknown' : 'Doğrulama güncelliği bilinmiyor') : evidence.levelLabel;
+  const freshness = postifyVerified ? 'current' : recheckRequired ? 'stale' : freshnessUnknown ? 'unknown' : evidence.freshness;
+  const freshnessLabel = postifyVerified ? (en ? 'Execution passed · runtime current' : 'Çalıştırma geçti · runtime güncel')
+    : recheckRequired ? (en ? 'A newer Node LTS release exists' : 'Daha yeni Node LTS sürümü var')
+      : freshnessUnknown ? (en ? 'Runtime release signal unavailable' : 'Runtime sürüm sinyali kullanılamıyor') : evidence.freshnessLabel;
 
   return (
     <section className="knowledge-evidence" aria-labelledby="knowledge-evidence-title">
       <div className="knowledge-evidence__header">
-        <div><span>{en ? 'Evidence' : 'Kanıt durumu'}</span><h2 id="knowledge-evidence-title">{postifyVerified ? 'Postify verified' : evidence.levelLabel}</h2></div>
-        <strong data-freshness={postifyVerified ? 'current' : evidence.freshness}>{postifyVerified ? (en ? 'Execution passed' : 'Çalıştırma geçti') : evidence.freshnessLabel}</strong>
+        <div><span>{en ? 'Evidence' : 'Kanıt durumu'}</span><h2 id="knowledge-evidence-title">{heading}</h2></div>
+        <strong data-freshness={freshness}>{freshnessLabel}</strong>
       </div>
-      {postifyVerified && <ExecutionContract auto={auto} en={en} />}
+      {executionPassed && <ExecutionContract auto={auto} en={en} />}
+      {recheckRequired && <p>{en ? `Historical execution passed on ${auto.runtimeVersion}, but ${autoState.signal?.latestLtsVersion || 'a newer LTS release'} is now the current Node LTS. Re-run before restoring Postify Verified.` : `Geçmiş çalıştırma ${auto.runtimeVersion} üzerinde geçti; ancak güncel Node LTS artık ${autoState.signal?.latestLtsVersion || 'daha yeni bir sürüm'}. Postify Verified geri gelmeden önce yeniden çalıştırılmalı.`}</p>}
+      {freshnessUnknown && <p>{en ? 'The historical execution still exists, but Postify cannot currently prove that its runtime is still the latest LTS. The Verified badge is withheld.' : 'Geçmiş çalıştırma kanıtı duruyor; ancak Postify runtime’ın hâlâ en güncel LTS olduğunu şu anda kanıtlayamıyor. Verified rozeti bu yüzden gösterilmiyor.'}</p>}
       {evidence.testedAt && <p>{en ? 'Author last tested' : 'Yazarın son testi'}: <time dateTime={evidence.testedAt}>{new Intl.DateTimeFormat(en ? 'en-US' : 'tr-TR', { dateStyle: 'medium' }).format(new Date(evidence.testedAt))}</time></p>}
       {evidence.environment.length > 0 && <div><h3>{en ? 'Test environment' : 'Test ortamı'}</h3><ul>{evidence.environment.map((item) => <li key={item}>{item}</li>)}</ul></div>}
       {evidence.prerequisites.length > 0 && <div><h3>{en ? 'Before you start' : 'Başlamadan önce'}</h3><ul>{evidence.prerequisites.map((item) => <li key={item}>{item}</li>)}</ul></div>}
@@ -78,7 +90,9 @@ export default function KnowledgeEvidencePanel({ post }) {
       {evidence.sources.length > 0 && <div><h3>{en ? 'Evidence sources' : 'Kanıt kaynakları'}</h3><ol>{evidence.sources.map((source) => { const url = safeSource(source); return url ? <li key={source}><a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname.replace(/^www\./, '')}</a></li> : <li key={source}>{source}</li>; })}</ol></div>}
       <small>{postifyVerified
         ? (en ? 'Postify Verified applies only to the displayed deterministic execution scope; it does not certify unrelated external systems.' : 'Postify Verified yalnız gösterilen deterministik çalıştırma kapsamı için geçerlidir; dış sistemleri genel olarak sertifikalandırmaz.')
-        : (en ? '“Author tested” is an author claim, not an independent Postify execution.' : '“Yazar test etti” yazar beyanıdır; Postify tarafından bağımsız çalıştırıldığı anlamına gelmez.')}</small>
+        : executionPassed
+          ? (en ? 'The execution artifact is historical proof, not a current Postify Verified claim until runtime freshness is current again.' : 'Çalıştırma artifactı geçmiş kanıttır; runtime güncelliği yeniden current olmadan güncel Postify Verified iddiası sayılmaz.')
+          : (en ? '“Author tested” is an author claim, not an independent Postify execution.' : '“Yazar test etti” yazar beyanıdır; Postify tarafından bağımsız çalıştırıldığı anlamına gelmez.')}</small>
     </section>
   );
 }

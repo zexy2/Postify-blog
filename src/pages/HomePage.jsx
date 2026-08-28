@@ -16,7 +16,8 @@ import { addKnowledgeGap } from '../lib/localKnowledgeState';
 import { summarizeCommunityEvidence } from '../lib/communityEvidence';
 import { sortKnowledge } from '../lib/knowledgeRanking';
 import { useKnowledgeBackendStatus, useRequestGap } from '../hooks/useKnowledge';
-import { useVerificationRuns } from '../hooks/useAutoVerification';
+import { useRuntimeReleaseStatus, useVerificationRuns } from '../hooks/useAutoVerification';
+import { getAutomaticVerificationState } from '../lib/runtimeReleaseSignal';
 import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
 
@@ -35,6 +36,7 @@ const HomePage = () => {
   const knowledgeBackend = useKnowledgeBackendStatus();
   const knowledgeBackendReady = knowledgeBackend.data?.ready === true;
   const verificationRuns = useVerificationRuns();
+  const runtimeReleaseStatus = useRuntimeReleaseStatus();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
   const [showWakeUp, setShowWakeUp] = useState(false);
@@ -99,8 +101,9 @@ const HomePage = () => {
   const contentTypes = useMemo(() => getWritingTemplates(i18n.language), [i18n.language]);
   const evidenceAwarePosts = useMemo(() => posts.map((post) => {
     const run = post.autoVerificationId ? verificationRuns.data?.runs?.[post.autoVerificationId] : null;
-    return run?.status === 'passed' ? { ...post, evidence: { ...(post.evidence || {}), level: 'postify-verified', testedAt: run.verifiedAt || post.evidence?.testedAt } } : post;
-  }), [posts, verificationRuns.data]);
+    const verificationState = getAutomaticVerificationState(run, runtimeReleaseStatus.data);
+    return verificationState.verified ? { ...post, evidence: { ...(post.evidence || {}), level: 'postify-verified', testedAt: run.verifiedAt || post.evidence?.testedAt } } : post;
+  }), [posts, runtimeReleaseStatus.data, verificationRuns.data]);
 
   const categories = useMemo(
     () => [...new Set(evidenceAwarePosts.map((post) => post.category).filter(Boolean))],

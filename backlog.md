@@ -69,7 +69,7 @@
 - [x] Add repository dependency/version monitoring with weekly Dependabot checks
 - [x] Block releases on dependency audit findings or Playwright package/container drift
 - [x] Move deterministic verification to supported Node 24 LTS and reject runtime-major drift
-- [ ] Invalidate or re-check Verified Knowledge evidence when tracked dependency/runtime releases advance
+- [x] Invalidate/re-check automatic Verified Knowledge when the tracked Node LTS release advances or freshness becomes unknown
 - [x] Add revision history model with private immutable snapshots and sanitized public changelog
 - [ ] Add grounded Ask Postify/API/MCP only after provenance/freshness data is durable
 
