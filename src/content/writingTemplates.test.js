@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getWritingTemplate, getWritingTemplates } from './writingTemplates';
+import { getWritingStarter, getWritingTemplate, getWritingTemplates } from './writingTemplates';
 
 describe('writingTemplates', () => {
   it('exposes the four Postify knowledge formats', () => {
@@ -15,5 +15,10 @@ describe('writingTemplates', () => {
 
   it('falls back safely to guide for an unknown id', () => {
     expect(getWritingTemplate('missing', 'tr').id).toBe('guide');
+  });
+  it('creates a structured starter outline without inventing content', () => {
+    const starter = getWritingStarter('guide', 'tr');
+    expect(starter.html).toContain('<h2>Hedef ve önkoşullar</h2>');
+    expect(starter.text).toContain('## Doğrulama / beklenen sonuç');
   });
 });

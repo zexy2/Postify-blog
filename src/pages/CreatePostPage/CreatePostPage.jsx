@@ -10,8 +10,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import RichTextEditor from '../../components/RichTextEditor';
 import { useCreatePost } from '../../hooks/usePosts';
 import { EDITOR_CONFIG } from '../../constants';
-import { getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
+import { getWritingStarter, getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
 import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draftStorage';
+import { getPublishReadiness } from '../../lib/publishReadiness';
+import { getWritingMetrics } from '../../lib/writingMetrics';
 import { 
   selectAIEnabled, 
   toggleAI,
@@ -43,6 +45,12 @@ const CreatePostPage = () => {
   const [errors, setErrors] = useState({});
   const [isDirty, setIsDirty] = useState(false);
   const [draftRestored, setDraftRestored] = useState(Boolean(initialDraft?.formData));
+  const writingMetrics = getWritingMetrics(formData.body);
+  const publishReadiness = getPublishReadiness({
+    ...formData,
+    minTitleLength: EDITOR_CONFIG.MIN_TITLE_LENGTH,
+    minBodyLength: EDITOR_CONFIG.MIN_BODY_LENGTH,
+  });
 
   useEffect(() => {
     if (!isDirty || typeof window === 'undefined') return undefined;
@@ -165,7 +173,21 @@ const CreatePostPage = () => {
               ))}
             </div>
             <div className={styles.writingBrief}>
-              <strong>{writingTemplate.label}: {writingTemplate.promise}</strong>
+              <div className={styles.briefTopline}>
+                <strong>{writingTemplate.label}: {writingTemplate.promise}</strong>
+                <button
+                  type="button"
+                  className={styles.outlineButton}
+                  disabled={Boolean(formData.body.trim())}
+                  onClick={() => {
+                    const starter = getWritingStarter(writingMode, i18n.language);
+                    setFormData((prev) => ({ ...prev, body: starter.text, bodyHtml: starter.html }));
+                    setIsDirty(true);
+                  }}
+                >
+                  {i18n.language?.startsWith('en') ? 'Use outline' : 'İskeleti ekle'}
+                </button>
+              </div>
               <ol>
                 {writingTemplate.prompts.map((prompt) => <li key={prompt}>{prompt}</li>)}
               </ol>
@@ -226,10 +248,34 @@ const CreatePostPage = () => {
             <div className={styles.inputFooter}>
               {errors.body && <span className={styles.error}>{errors.body}</span>}
               <span className={styles.charCount}>
-                {formData.body.length} karakter
+                {i18n.language?.startsWith('en')
+                  ? `${writingMetrics.words} words · ${writingMetrics.readingMinutes || 0} min`
+                  : `${writingMetrics.words} kelime · ${writingMetrics.readingMinutes || 0} dk`}
               </span>
             </div>
           </div>
+
+          <aside className={styles.readinessPanel} aria-label={i18n.language?.startsWith('en') ? 'Publish readiness' : 'Yayın hazırlığı'}>
+            <div className={styles.readinessHeader}>
+              <div>
+                <span>{i18n.language?.startsWith('en') ? 'Publish readiness' : 'Yayın hazırlığı'}</span>
+                <strong>{publishReadiness.score}%</strong>
+              </div>
+              <span className={publishReadiness.ready ? styles.readyBadge : styles.draftBadge}>
+                {publishReadiness.ready
+                  ? (i18n.language?.startsWith('en') ? 'Core checks ready' : 'Temel kontroller hazır')
+                  : (i18n.language?.startsWith('en') ? 'Draft needs work' : 'Taslak geliştirilmeli')}
+              </span>
+            </div>
+            <ul className={styles.readinessList}>
+              {publishReadiness.checks.map((check) => {
+                const labels = i18n.language?.startsWith('en')
+                  ? { title: 'Clear title', substance: 'Enough substance', structure: 'Scannable structure' }
+                  : { title: 'Net başlık', substance: 'Yeterli içerik', structure: 'Taranabilir yapı' };
+                return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
+              })}
+            </ul>
+          </aside>
 
           {/* Actions */}
           <div className={styles.actions}>

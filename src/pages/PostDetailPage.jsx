@@ -10,6 +10,7 @@ import ReadingProgress from '../components/ReadingProgress';
 import SEO from '../components/SEO';
 import styles from './PostDetailPage.module.css';
 import { getPostPresentation } from '../lib/postPresentation';
+import { extractExternalReferences, getArticleOutline, slugifyHeading } from '../lib/articleStructure';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
 
@@ -27,7 +28,8 @@ const PlainArticleBody = ({ content }) => {
         const key = `${index}-${block.slice(0, 12)}`;
         if (/^#{1,3}\s/.test(block)) {
           const heading = block.replace(/^#{1,3}\s+/, '');
-          return <h2 key={key}>{heading}</h2>;
+          const headingIndex = blocks.slice(0, index + 1).filter((item) => /^#{1,3}\s/.test(item)).length - 1;
+          return <h2 id={slugifyHeading(heading, headingIndex)} key={key}>{heading}</h2>;
         }
         if (block.startsWith('```')) {
           const code = block.replace(/^```[a-z]*\n?/i, '').replace(/```$/, '').trim();
@@ -84,6 +86,11 @@ const PostDetailPage = () => {
   const articleBody = post.body || post.bodyHtml?.replace(/<[^>]+>/g, ' ') || '';
   const isBookmarked = bookmarkedIds.includes(post.id);
   const presentation = getPostPresentation(post, i18n.language);
+  const outline = getArticleOutline(articleBody);
+  const externalReferences = extractExternalReferences(
+    articleBody,
+    typeof window !== 'undefined' ? window.location.origin : '',
+  );
 
   return (
     <>
@@ -199,9 +206,34 @@ const PostDetailPage = () => {
                   </p>
                 )}
 
+                {outline.length >= 2 && (
+                  <nav className={styles.articleOutline} aria-label={i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}>
+                    <span>{i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}</span>
+                    <ol>
+                      {outline.map((item) => (
+                        <li key={item.id} data-level={item.level}><a href={`#${item.id}`}>{item.text}</a></li>
+                      ))}
+                    </ol>
+                  </nav>
+                )}
                 <div className={styles.body}>
                   <PlainArticleBody content={articleBody} />
                 </div>
+                {externalReferences.length > 0 && (
+                  <section className={styles.references} aria-labelledby="article-references-title">
+                    <div>
+                      <span>{i18n.language?.startsWith('en') ? 'References found in this article' : 'Yazıda geçen kaynaklar'}</span>
+                      <h2 id="article-references-title">{i18n.language?.startsWith('en') ? 'External references' : 'Dış kaynaklar'}</h2>
+                    </div>
+                    <ol>
+                      {externalReferences.map((reference) => {
+                        let label = reference;
+                        try { label = new URL(reference).hostname.replace(/^www\./, ''); } catch { /* keep URL */ }
+                        return <li key={reference}><a href={reference} target="_blank" rel="noopener noreferrer">{label}</a></li>;
+                      })}
+                    </ol>
+                  </section>
+                )}
               </div>
             </article>
           </div>

@@ -63,3 +63,23 @@ Production status:
 - Connected GitHub integration also returned HTTP 403 when creating a branch, confirming there is no usable repository write path from this run.
 - Production was left untouched and remains healthy: `https://postify.zekiakgul.dev/` returned HTTP 200 and still serves the prior `Postify Blog` build.
 - No DNS/hosting architecture switch was attempted as a workaround; preserving the healthy production site is safer than rerouting hosting solely to bypass missing GitHub credentials.
+
+
+## 2026-08-28 — Controlled loop batch: author quality + reader utility
+Completed in this run:
+1. Added a publish-readiness panel that separates required title/body checks from advisory scannable-structure guidance.
+2. Added live author metrics for word count and estimated reading time.
+3. Added safe one-click starter outlines for Guide / Decision note / Explainer / Field note; outlines add structure only and never fabricate article content.
+4. Added deterministic article heading anchors and an automatic “On this page / Bu yazıda” outline when enough headings exist.
+5. Added a transparent external-reference section that only surfaces URLs actually present in article content; same-origin links are excluded.
+6. Added keyboard skip navigation, global focus-visible treatment, and accessible loading status semantics.
+7. Added a ≤5-minute quick-read discovery filter alongside content-format filters.
+
+Verification evidence:
+- Focused tests for publish readiness, writing metrics, writing templates, and article structure: PASS.
+- Full `npm run verify`: 13 test files / 52 tests PASS, lint PASS with zero warnings/errors, production build PASS, build smoke PASS.
+- Runtime Vite preview smoke: `/`, `/posts/ai-muhendisligi`, `/posts/create` all HTTP 200; product HTML metadata check PASS.
+- `git diff --check`: PASS.
+
+Release note:
+- GitHub write access has since been restored through the connected GitHub integration. This batch is eligible for branch push/PR/CI and production release after the checkpoint commit.

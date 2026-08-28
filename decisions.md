@@ -42,3 +42,15 @@
 **Decision:** Keep the healthy GitHub Pages production path in place when deployment credentials are unavailable; do not repoint DNS to Oracle as an ad-hoc workaround.
 
 **Why:** Hosting migration changes DNS, TLS, caching, rollback and operational behavior. It is disproportionate to a credential-path failure and would introduce production risk unrelated to product quality.
+
+
+## 2026-08-28 — Guidance must be explicit, not generative by default
+**Decision:** Author tooling may provide structure, readiness checks, and measurable writing metrics without inventing prose. Starter outlines contain headings/prompts only.
+
+**Why:** Postify's product promise depends on useful, trustworthy knowledge. Fabricated detail would weaken that promise before provenance and verification workflows exist.
+
+## 2026-08-28 — Surface only evidence already present in an article
+**Decision:** The reader trust layer may show external references only when URLs are actually present in the article body. No synthetic source lists or “verified” badges are generated.
+
+## 2026-08-28 — Discovery should optimize for intent and time
+**Decision:** Keep category search, but add format and quick-read filters so readers can choose by desired outcome and available time.

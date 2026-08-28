@@ -34,7 +34,7 @@ const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 // Loading spinner component
 const PageLoader = () => (
-  <div style={{
+  <div role="status" aria-live="polite" aria-label="Loading" style={{
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -84,8 +84,13 @@ function App() {
           position: 'relative',
         }}
       >
+        <a className="skipLink" href="#main-content">
+          {i18n.language?.startsWith('en') ? 'Skip to content' : 'İçeriğe geç'}
+        </a>
         <Header />
         <main
+          id="main-content"
+          tabIndex={-1}
           style={{
             position: 'relative',
             zIndex: 2,

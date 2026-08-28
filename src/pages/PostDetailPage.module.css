@@ -569,3 +569,19 @@
   .quickBriefMeta div { padding: .45rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }
 }
 
+
+
+.articleOutline { margin: 0 0 2rem; padding: 1rem 1.1rem; background: var(--bg-secondary); border-left: 3px solid var(--primary); }
+.articleOutline > span { display: block; margin-bottom: .65rem; color: var(--text-muted); font-size: var(--text-xs); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.articleOutline ol { display: grid; gap: .4rem; margin: 0; padding-left: 1.2rem; }
+.articleOutline li[data-level='3'] { margin-left: .8rem; }
+.articleOutline a { color: var(--text-secondary); text-decoration: none; }
+.articleOutline a:hover, .articleOutline a:focus-visible { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.plainBody h2 { scroll-margin-top: calc(var(--header-height) + 1rem); }
+
+
+.references { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+.references > div > span { color: var(--text-muted); font-size: var(--text-xs); font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
+.references h2 { margin: .35rem 0 1rem; color: var(--text-primary); font-size: 1.15rem; }
+.references ol { display: grid; gap: .45rem; margin: 0; padding-left: 1.25rem; }
+.references a { color: var(--text-link); overflow-wrap: anywhere; text-underline-offset: 3px; }

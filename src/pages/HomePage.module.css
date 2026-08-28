@@ -82,3 +82,7 @@
 .typeFilter button:hover { border-color: var(--border-strong); color: var(--text-primary); }
 .typeFilter button:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 2px; }
 .typeFilter .typeFilterActive { color: var(--text-primary); background: var(--primary-subtle); border-color: var(--primary); }
+
+
+.filterDivider { width: 1px; height: 1.4rem; align-self: center; background: var(--border-strong); }
+@media (max-width: 600px) { .filterDivider { display: none; } }

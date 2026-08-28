@@ -699,3 +699,23 @@ button {
     display: none !important;
   }
 }
+
+
+/* Keyboard accessibility */
+.skipLink {
+  position: fixed;
+  top: .75rem;
+  left: .75rem;
+  z-index: 10000;
+  padding: .7rem .9rem;
+  color: var(--text-inverse);
+  background: var(--primary);
+  border-radius: var(--radius-md);
+  font-weight: 750;
+  text-decoration: none;
+  transform: translateY(-180%);
+  transition: transform var(--transition-fast);
+}
+.skipLink:focus { transform: translateY(0); }
+#main-content:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }

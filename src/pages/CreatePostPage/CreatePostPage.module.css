@@ -551,3 +551,22 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+
+/* Publish readiness */
+.readinessPanel { margin: 1.25rem 0 1.5rem; padding: 1rem 1.1rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+.readinessHeader { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.readinessHeader > div { display: flex; align-items: baseline; gap: .65rem; color: var(--text-secondary); font-size: var(--text-sm); }
+.readinessHeader strong { color: var(--text-primary); font-size: 1.15rem; }
+.readyBadge, .draftBadge { padding: .28rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 750; }
+.readyBadge { color: var(--success); background: var(--success-subtle); }
+.draftBadge { color: var(--warning); background: var(--warning-subtle); }
+.readinessList { display: flex; flex-wrap: wrap; gap: .55rem 1rem; margin: .8rem 0 0; padding: .8rem 0 0; list-style: none; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: var(--text-sm); }
+.readinessList li[data-passed='true'] { color: var(--text-secondary); }
+@media (max-width: 600px) { .readinessHeader { align-items: flex-start; flex-direction: column; } }
+
+
+.briefTopline { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.outlineButton { flex: 0 0 auto; padding: .5rem .7rem; color: var(--primary); background: var(--primary-subtle); border: 1px solid var(--primary-light); border-radius: var(--radius-md); font: inherit; font-size: var(--text-xs); font-weight: 750; cursor: pointer; }
+.outlineButton:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 600px) { .briefTopline { flex-direction: column; } }

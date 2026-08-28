@@ -11,19 +11,22 @@
 ## Next — Author value
 - [x] Structured editor templates: Guide / Decision / Explainer / Field Note
 - [ ] Explicit outcome, prerequisites, environment/version and key takeaways fields
-- [ ] Draft quality checklist before publish
+- [x] Draft quality checklist before publish
 - [x] Local draft autosave/restore
 - [x] Reader filter by content format
 - [x] Repeatable test/lint/build/smoke release gate
 - [ ] Markdown import/export and canonical URL support
 - [ ] Revision history / changelog model
 
+- [x] Reader table of contents for structured articles
+- [x] Quick-read discovery filter
+
 ## Later — Network value
 - [ ] “Worked for me” with environment/version context
 - [ ] Suggested corrections / patch-style contributions
 - [ ] Follow authors/topics
 - [ ] Personalized reading queue
-- [ ] Source/reference blocks and freshness reminders
+- [~] Source/reference blocks and freshness reminders (URL-derived reference display shipped; persistent structured sources still deferred)
 - [ ] AEO/structured data and clean Markdown representation
 
 ## Deferred until value is proven

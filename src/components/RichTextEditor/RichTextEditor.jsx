@@ -163,6 +163,16 @@ const RichTextEditor = ({
     },
   });
 
+  // Sync only genuine external content changes (draft restore / starter outline).
+  useEffect(() => {
+    if (!editor) return;
+    const nextContent = content || '';
+    const currentHtml = editor.getHTML();
+    if (nextContent && nextContent !== currentHtml && editor.getText().trim().length === 0) {
+      editor.commands.setContent(nextContent, { emitUpdate: false });
+    }
+  }, [content, editor]);
+
   // AI Completion hook
   const {
     suggestion,
