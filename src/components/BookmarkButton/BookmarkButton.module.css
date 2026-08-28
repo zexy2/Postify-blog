@@ -212,3 +212,16 @@
     height: 18px;
   }
 }
+
+/* UI V2 restrained bookmark control */
+.button { background: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-secondary); overflow: visible; }
+.button::before { display: none; }
+.button:hover { color: var(--primary); background: var(--primary-subtle); border-color: var(--primary-light); transform: none; box-shadow: none; }
+.button.active { color: var(--primary); background: var(--primary-subtle); border-color: var(--primary-light); box-shadow: none; }
+.button.active:hover { box-shadow: none; }
+.button.active .icon { animation: none; }
+.button:hover .icon { transform: none; }
+.iconOnly { border-radius: var(--radius-md); }
+.count { background: var(--bg-secondary); border-radius: var(--radius-sm); }
+.button.active .count { background: var(--primary-light); }
+.tooltip { box-shadow: none; }

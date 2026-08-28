@@ -50,3 +50,5 @@
 - [x] Add Chromium desktop/article/mobile/reduced-motion smoke coverage
 - [ ] Add screenshot-diff baselines for the key UI V2 viewports once a stable visual baseline is approved
 - [ ] Continue legacy surface cleanup: analytics/admin/secondary share controls where old gradient/card styles remain
+- [x] Align auth/404 and analytics/admin secondary surfaces with UI V2
+- [x] Restrain share/bookmark/fallback-card control styling

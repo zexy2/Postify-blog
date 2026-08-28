@@ -402,3 +402,21 @@
   --table-header: #0f172a;
   --input-bg: #1e293b;
 }
+
+/* UI V2 admin surface */
+.container { padding: clamp(2rem,5vw,4rem) var(--space-lg) 5rem; }
+.header { margin-bottom: 1.5rem; border-bottom-color: var(--border-strong); }
+.header h1 { font-family: var(--font-display); font-size: clamp(2.2rem,5vw,3.6rem); font-weight: 700; letter-spacing: -.04em; }
+.headerIcon { color: var(--primary); }
+.tabs { gap: 1.2rem; }
+.tab { padding: .75rem 0; border-radius: 0; }
+.tab:hover { color: var(--text-primary); background: transparent; }
+.tab.active { color: var(--text-primary); border-bottom-color: var(--primary); }
+.statsGrid { gap: 0; border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); }
+.statCard { padding: 1.25rem; background: transparent; border: 0; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); border-radius: 0; box-shadow: none; transition: none; }
+.statCard:hover { transform: none; box-shadow: none; }
+.statIcon { color: var(--primary); background: var(--primary-subtle); border-radius: var(--radius-md); }
+.recentSection, .table, .noPosts { background: transparent; border: 1px solid var(--border-color); border-radius: 0; box-shadow: none; }
+.table th { background: var(--bg-secondary); font-family: var(--font-mono); font-size: .66rem; }
+.roleBadge, .statusBadge { border-radius: var(--radius-md); }
+.actionBtn, .deleteBtn, .roleSelect { border-radius: var(--radius-md); }

@@ -508,3 +508,10 @@
 .socialButtons { gap: .75rem; }
 .socialButton { min-height: 44px; border-radius: var(--radius-md); }
 .footer { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); }
+
+/* UI V2 auth polish */
+.card { animation: none; }
+.iconWrapper { display: none; }
+.label { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .05em; text-transform: uppercase; }
+.socialButton:hover { transform: none; border-color: var(--border-strong); }
+.alert { animation: none; }

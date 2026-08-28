@@ -31,6 +31,20 @@ test.describe('Postify UI V2', () => {
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
   });
 
+
+  test('login surface remains clear and operable', async ({ page }) => {
+    await page.goto('/auth/login');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByLabel(/email/i)).toBeVisible();
+    await expect(page.locator('input[name="password"]')).toBeVisible();
+  });
+
+  test('unknown routes render the quiet 404 recovery surface', async ({ page }) => {
+    await page.goto('/definitely-not-a-postify-route');
+    await expect(page.getByText('404', { exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: /home|ana sayfa|keşfet/i }).first()).toBeVisible();
+  });
+
   test('reduced motion preference keeps the page usable', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
