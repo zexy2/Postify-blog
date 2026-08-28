@@ -345,3 +345,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - QA exposed an existing Tiptap mount race: AI ghost-keyboard setup accessed `editor.view.dom` before EditorContent had mounted. The binding now targets the mounted `.ProseMirror` node through the editor wrapper and safely skips the effect until it exists.
 - Added a dedicated RichTextEditor regression test proving the editor mounts safely while AI ghost completion is enabled.
 - Final exact-worktree gates PASS: 24 Vitest files / 106 tests, lint, production Vite build (main entry 303,604 bytes), and official Playwright 1.57 Chromium public UI suite 25/25.
+
+## 2026-08-28 — UI V3 knowledge health console
+- Rebuilt Knowledge Dashboard from a compressed admin-style list into a product-facing knowledge health console with a clear maintenance model: authored knowledge, needs-attention count, author-tested count and aggregate community signals.
+- Added an explicit top-demand signal, re-verification queue, domain credibility track record and knowledge-gap demand map while preserving all existing author-only failure detail and re-verification behavior.
+- Freshness states now use readable localized labels instead of exposing raw state tokens as the main UI copy; stale/unknown records are visually separated from current guidance without inventing a health score.
+- Browser QA used a local-only protected-route bypass plus a mocked ready backend status and was fully reverted before commit. Responsive document widths were exact at 1440/1440, 820/820 and 390/390 with four core dashboard sections and zero page errors.
+- Validation PASS: 24 Vitest files / 106 tests, lint, production Vite compile/PWA generation, and responsive browser structure QA.

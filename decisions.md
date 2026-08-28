@@ -254,3 +254,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** RichTextEditor keyboard bindings resolve the mounted `.ProseMirror` node from the wrapper DOM instead of directly reading Tiptap's throwing `editor.view` getter during passive-effect startup. If the node is not mounted, the effect exits safely.
 
 **Why:** React/Tiptap can expose the editor object one effect tick before the editor view DOM exists. Direct access can crash the entire protected Create/Edit route through the ErrorBoundary even though the editor is otherwise healthy. Binding only to an existing mounted node removes that lifecycle race and now has regression coverage.
+
+## 2026-08-28 — Knowledge Dashboard is a maintenance console, not an analytics dashboard
+**Decision:** The author Knowledge Dashboard leads with maintenance state and reader demand: freshness, re-verification, evidence claim, community confirmations, domain credibility and unresolved knowledge gaps. It does not manufacture a single overall “health score.”
+
+**Why:** Postify’s differentiated author workflow is keeping actionable guidance trustworthy over time. A generic analytics dashboard would optimize for vanity metrics; the console should instead tell an author what needs action, why it needs action and where new useful knowledge is demanded.
