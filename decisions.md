@@ -169,3 +169,8 @@
 **Decision:** The first automatic verifier is described as policy-limited checked-in Node execution, not isolated/sandboxed execution. The release gate statically rejects unsupported package/network/filesystem/process capabilities and applies code-size, output and timeout limits.
 
 **Why:** Trust copy must reflect the real security boundary. Arbitrary or untrusted user code remains unsupported until OS/container-level isolation is deliberately designed.
+
+## 2026-08-28 — A Postify Verified execution must publish a reproducible command contract
+**Decision:** Automatic Node verification writes the exact checked-in code to a policy-validated temporary `.mjs` filename and runs that file with Node. The verification artifact publishes the safe filename, minimum runtime major, reproduction command, expected stdout, observed stdout, execution mode and code hash. The article exposes the same command/output contract to the reader.
+
+**Why:** “We ran this somewhere” is weaker than reproducibility. A reader should be able to save the displayed code under the declared filename, run the same command, and compare the same expected result without reverse-engineering Postify's release process.

@@ -1,7 +1,9 @@
 export const NODE_DETERMINISTIC_POLICY = 'node-deterministic-v1';
 export const MAX_VERIFICATION_CODE_BYTES = 4_096;
+export const MAX_EXPECTED_OUTPUT_BYTES = 4_096;
 
 const ALLOWED_IMPORTS = new Set(['node:assert', 'node:assert/strict']);
+const SAFE_ENTRY_FILE = /^[a-z0-9][a-z0-9._-]*\.mjs$/i;
 const FORBIDDEN_PATTERNS = [
   ['dynamic import', /\bimport\s*\(/],
   ['CommonJS require', /\brequire\s*\(/],
@@ -26,10 +28,18 @@ const getStaticImports = (code) => {
 
 export function validateVerificationCode(check) {
   const code = String(check?.code || '');
+  const expectedStdout = String(check?.expectedStdout ?? '');
+  const minimumRuntimeMajor = Number(check?.minimumRuntimeMajor);
   const violations = [];
+
+  if (check?.runtime !== 'node') violations.push('only node runtime is supported');
   if (check?.policy !== NODE_DETERMINISTIC_POLICY) violations.push('unknown or missing verification policy');
+  if (!SAFE_ENTRY_FILE.test(String(check?.entryFile || ''))) violations.push('entry file must be a safe .mjs basename');
+  if (!Number.isInteger(minimumRuntimeMajor) || minimumRuntimeMajor < 20) violations.push('minimum Node runtime must be an integer >= 20');
   if (!code.trim()) violations.push('empty code');
   if (Buffer.byteLength(code, 'utf8') > MAX_VERIFICATION_CODE_BYTES) violations.push('code exceeds 4096-byte policy limit');
+  if (!expectedStdout.length) violations.push('expected stdout is required');
+  if (Buffer.byteLength(expectedStdout, 'utf8') > MAX_EXPECTED_OUTPUT_BYTES) violations.push('expected stdout exceeds 4096-byte policy limit');
 
   for (const specifier of getStaticImports(code)) {
     if (!ALLOWED_IMPORTS.has(specifier)) violations.push(`import not allowed: ${specifier}`);

@@ -234,3 +234,11 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Verification artifacts now expose the actual Node runtime version, expected stdout, actual stdout, SHA-256 of the executed code, policy id and `articleContractMatched` state.
 - Added `node-deterministic-v1` release policy: narrow checked-in snippets reject external packages, dynamic imports, network APIs, filesystem builtins, process execution APIs, eval/Function and non-output process access. Execution remains explicitly documented as checked-in child-process execution, not a security sandbox.
 - Full gate: 22 test files / 89 tests PASS, deterministic verifier/article contract PASS, lint/build/smoke PASS, Chromium 22/22 PASS.
+
+## 2026-08-28 — Reproducible verification command contract
+- Upgraded the deterministic verification artifact to schema v3.
+- Replaced `node --eval` execution with a policy-validated temporary `.mjs` file and a real `node <entry-file>` execution path.
+- The artifact now records `entryFile`, `minimumRuntimeMajor`, `reproductionCommand`, expected/actual stdout, execution mode, exact runtime and code SHA-256.
+- Added an article “Re-run what Postify verified” block with a copyable command and Expected vs Release Observed stdout.
+- Tightened verifier policy checks for safe `.mjs` basenames, minimum Node runtime and bounded required expected output.
+- Verification: schema-v3 artifact PASS (`node postify-node-json-check.mjs`, expected=actual=`PASS`); 22 unit/integration files / 92 tests PASS; lint/build/artifact smoke PASS; Chromium 23/23 PASS.

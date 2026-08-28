@@ -15,6 +15,7 @@ import LocalEvidenceActions from '../components/LocalEvidenceActions';
 import CommunityEvidenceDetails from '../components/CommunityEvidenceDetails';
 import VerificationRunbook from '../components/VerificationRunbook';
 import CopyableCodeBlock from '../components/CopyableCodeBlock';
+import VerificationContractBlock from '../components/VerificationContractBlock';
 import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading } from '../lib/articleStructure';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
@@ -228,6 +229,7 @@ const PostDetailPage = () => {
                 <div className={styles.body}>
                   <PlainArticleBody content={articleBody} />
                 </div>
+                <VerificationContractBlock post={post} />
                 <LocalEvidenceActions post={post} />
                 <CommunityEvidenceDetails post={post} />
                 {externalReferences.length > 0 && (

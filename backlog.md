@@ -78,6 +78,7 @@
 - [x] Turn article verification steps into a version-scoped interactive runbook
 - [x] Add copy actions for fenced code examples with clipboard fallback
 - [x] Bind displayed automatic-verification code, expected output, actual output and code hash to one release contract
+- [x] Publish the exact reproduction filename/command and Expected vs Release Observed stdout for automatically verified examples
 - [ ] Sync personal runbook progress to account state only after a reviewed persistence model exists
 
 ## Security hardening

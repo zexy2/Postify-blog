@@ -129,18 +129,32 @@ test.describe('Verified Knowledge execution', () => {
     expect(run.ok()).toBeTruthy();
     const runJson = await run.json();
     const execution = runJson.runs['node-json-parse-v1'];
-    expect(runJson.schemaVersion).toBe(2);
+    expect(runJson.schemaVersion).toBe(3);
     expect(execution.status).toBe('passed');
     expect(execution.actualStdout).toBe(execution.expectedStdout);
     expect(execution.codeSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(execution.articleContractMatched).toBe(true);
     expect(execution.policy).toBe('node-deterministic-v1');
+    expect(execution.executionMode).toBe('temporary-module-file');
+    expect(execution.entryFile).toBe('postify-node-json-check.mjs');
+    expect(execution.reproductionCommand).toBe('node postify-node-json-check.mjs');
     const runtimeMajor = Number(String(execution.runtimeVersion).match(/^v(\d+)/)?.[1]);
-    expect(runtimeMajor).toBeGreaterThanOrEqual(20);
+    expect(runtimeMajor).toBeGreaterThanOrEqual(execution.minimumRuntimeMajor);
     const knowledge = await request.get('/knowledge/node-json-dogrulama.tr.json');
     expect(knowledge.ok()).toBeTruthy();
     const artifact = await knowledge.json();
     expect(artifact.evidence.automaticVerification.status).toBe('passed');
+  });
+
+  test('verified example exposes a reproducible command and expected versus observed stdout', async ({ page }) => {
+    await page.goto('/posts/node-json-dogrulama');
+    const contract = page.getByRole('region', { name: /Postify’ın doğruladığını yeniden çalıştır|Re-run what Postify verified/i });
+    await expect(contract).toBeVisible();
+    await expect(contract.getByText('postify-node-json-check.mjs', { exact: true })).toBeVisible();
+    await expect(contract.getByText('node postify-node-json-check.mjs', { exact: true })).toBeVisible();
+    await expect(contract.getByRole('heading', { name: /Beklenen stdout|Expected stdout/i })).toBeVisible();
+    await expect(contract.getByRole('heading', { name: /Release gözlemi|Release observed/i })).toBeVisible();
+    await expect(contract.getByText('PASS', { exact: true })).toHaveCount(2);
   });
 
   test('postify verified discovery filter resolves to genuinely executed knowledge', async ({ page }) => {
