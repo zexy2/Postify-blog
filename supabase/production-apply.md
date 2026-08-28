@@ -11,6 +11,7 @@ Production project `fuiwcrqmxndguxymwoin` was migrated through authenticated Sup
 7. `migrations/20260828155643_publish_verified_node_example.sql`
 8. `migrations/20260828161849_private_rpc_boundary.sql`
 9. `migrations/20260828171756_update_node_verification_lts.sql`
+10. `migrations/20260828185717_strengthen_author_tested_evidence.sql`
 
 Do not repair or rewrite production migration history. Future migrations must be additive files after the last recorded version.
 
@@ -24,7 +25,7 @@ Do not repair or rewrite production migration history. Future migrations must be
 1. Link the CLI to the production project using owner credentials.
 2. Inspect remote migration history before `db push`; do not guess or repair history blindly.
 3. Run a remote migration dry-run where supported and inspect the SQL list.
-4. Apply only genuinely pending migrations in order; production currently has all nine versions above.
+4. Apply only genuinely pending migrations in order; production currently has all ten versions above.
 5. Run read-only schema probes for the added post evidence columns, tables, views, functions, trigger, constraints and RLS policies.
 6. Rebuild/deploy the frontend. The deploy export step must switch `knowledge-backend-status.json` from `ready:false` to `ready:true` only when the new public evidence views are actually queryable.
 
@@ -35,7 +36,7 @@ Do not repair or rewrite production migration history. Future migrations must be
 - Author cannot confirm their own post; one user cannot inflate a post with duplicate confirmations.
 - `get_post_failure_details(post_id)` rejects non-owners and returns owner/admin failure environment/note/date without contributor identity.
 - Public authenticated RPC wrappers remain SECURITY INVOKER; required privileged work is delegated only to authenticated-only helpers in the non-exposed `private` schema.
-- Author-tested status requires a test date, non-empty environment, and verification steps; future test timestamps are rejected.
+- Author-tested status requires a non-future test date, at least one meaningful environment entry (3+ trimmed characters), and at least one meaningful verification step (12+ trimmed characters). Re-verification enforces the same threshold before creating a revision snapshot.
 - `Postify verified` remains execution-derived from release artifacts and is not author-writable database metadata.
 - Authenticated shelf state and Knowledge Gap requests persist; anonymous mode remains local-only.
 - One author update creates revision history; re-verification advances the evidence version.

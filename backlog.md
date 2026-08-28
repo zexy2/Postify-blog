@@ -11,7 +11,7 @@
 ## Next — Author value
 - [x] Structured editor templates: Guide / Decision / Explainer / Field Note
 - [x] Explicit outcome, prerequisites, environment/version, verification, caveats and source fields
-- [x] Draft quality checklist before publish
+- [x] Separate real publication readiness, evidence claim status, and recommended quality signals before publish
 - [x] Local draft autosave/restore
 - [x] Reader filter by content format
 - [x] Repeatable test/lint/build/smoke release gate

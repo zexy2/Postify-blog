@@ -592,6 +592,15 @@
 .inputError, .inputError:focus { border-color: var(--error)!important; box-shadow: none!important; }
 .readinessPanel { margin: 1.5rem 0; padding: 1rem 0; background: transparent; border: 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); border-radius: 0; }
 .readyBadge,.draftBadge { border-radius: var(--radius-sm); }
+.readinessGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5rem; }
+.readinessTrack { min-width:0; }
+.readinessTrack + .readinessTrack { padding-left:1.5rem; border-left:1px solid var(--border-color); }
+.neutralBadge { padding:.28rem .5rem; color:var(--text-secondary); background:var(--bg-elevated); border:1px solid var(--border-color); border-radius:var(--radius-sm); font-size:.72rem; font-weight:750; }
+.readinessHint { margin:.75rem 0 0; color:var(--text-muted); font-size:.75rem; line-height:1.5; }
+.qualityTrack { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border-color); color:var(--text-muted); font-size:.72rem; font-weight:750; }
+.qualityTrack .readinessList { margin-top:.55rem; padding-top:.55rem; }
+@media (max-width:700px) { .readinessGrid { grid-template-columns:1fr; gap:1rem; } .readinessTrack + .readinessTrack { padding-top:1rem; padding-left:0; border-top:1px solid var(--border-color); border-left:0; } }
+
 .actions { position: sticky; bottom: 0; z-index: 5; margin-top: 2rem; padding: 1rem 0; background: color-mix(in srgb,var(--bg-primary) 94%,transparent); border-top: 1px solid var(--border-color); backdrop-filter: blur(12px); }
 .cancelButton { min-height: 42px; padding: .65rem .9rem; background: transparent; border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: .8rem; }
 .submitButton { min-height: 42px; padding: .65rem 1rem; color: var(--bg-primary); background: var(--text-primary); border: 1px solid var(--text-primary); border-radius: var(--radius-md); box-shadow: none; font-size: .8rem; }

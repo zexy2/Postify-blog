@@ -67,7 +67,7 @@ insert into public.profiles(id,email,username) values
 ('11111111-1111-1111-1111-111111111111','author@example.test','author'),
 ('22222222-2222-2222-2222-222222222222','reader@example.test','reader') on conflict(id) do nothing;
 insert into public.posts(id,slug,title,body,author_id,is_published,outcome,evidence_status,tested_at,environment,verification_steps)
-values('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','verified-test','Verified test','Body','11111111-1111-1111-1111-111111111111',true,'Outcome','author-tested',now(),'["Node 20"]','["Run check"]')
+values('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','verified-test','Verified test','Body','11111111-1111-1111-1111-111111111111',true,'Outcome','author-tested',now(),'["Node 20"]','["Run check and confirm output"]')
 on conflict(id) do nothing;
 
 -- Trust boundary: clients cannot claim Postify Verified in the database.
@@ -88,6 +88,28 @@ begin
     raise exception 'future tested_at unexpectedly succeeded';
   exception when others then
     if sqlerrm = 'future tested_at unexpectedly succeeded' then raise; end if;
+  end;
+end $$;
+
+-- Author-tested evidence cannot be promoted with token/placeholder strings.
+do $$
+begin
+  begin
+    update public.posts
+    set environment='["x"]'::jsonb
+    where id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    raise exception 'weak environment unexpectedly succeeded';
+  exception when others then
+    if sqlerrm = 'weak environment unexpectedly succeeded' then raise; end if;
+  end;
+
+  begin
+    update public.posts
+    set verification_steps='["ok"]'::jsonb
+    where id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    raise exception 'weak verification unexpectedly succeeded';
+  exception when others then
+    if sqlerrm = 'weak verification unexpectedly succeeded' then raise; end if;
   end;
 end $$;
 
@@ -168,6 +190,28 @@ begin
     raise exception 'author failure detail RPC did not return the expected report';
   end if;
 end $$;
+
+-- Re-verification must reject token evidence before creating revision noise.
+update public.posts
+set evidence_status='unverified', tested_at=null, environment='["x"]'::jsonb, verification_steps='["ok"]'::jsonb
+where id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+do $$
+begin
+  begin
+    perform public.reverify_post('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','weak reverify');
+    raise exception 'weak reverify unexpectedly succeeded';
+  exception when others then
+    if sqlerrm = 'weak reverify unexpectedly succeeded' then raise; end if;
+    if sqlerrm <> 'reverification requires meaningful author-tested evidence' then raise; end if;
+  end;
+  if exists(select 1 from public.post_revisions where post_id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') then
+    raise exception 'rejected reverify created revision noise';
+  end if;
+end $$;
+
+update public.posts
+set environment='["Node 24.20.0"]'::jsonb, verification_steps='["Run check and confirm output"]'::jsonb
+where id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 
 -- Author can snapshot + reverify own post.
 select (public.capture_post_revision('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','test revision')).revision_number;

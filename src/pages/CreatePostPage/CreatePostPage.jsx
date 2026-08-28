@@ -12,7 +12,7 @@ import { useCreatePost, usePost, useUpdatePost } from '../../hooks/usePosts';
 import { EDITOR_CONFIG } from '../../constants';
 import { getWritingStarter, getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
 import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draftStorage';
-import { getPublishReadiness } from '../../lib/publishReadiness';
+import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness } from '../../lib/publishReadiness';
 import { useKnowledgeBackendStatus } from '../../hooks/useKnowledge';
 import { getWritingMetrics } from '../../lib/writingMetrics';
 import { 
@@ -62,10 +62,13 @@ const CreatePostPage = () => {
   const [isDirty, setIsDirty] = useState(false);
   const [draftRestored, setDraftRestored] = useState(Boolean(initialDraft?.formData));
   const writingMetrics = getWritingMetrics(formData.body);
+  const maxTestedDate = getLocalDateInputValue();
   const publishReadiness = getPublishReadiness({
     ...formData,
     minTitleLength: EDITOR_CONFIG.MIN_TITLE_LENGTH,
+    maxTitleLength: EDITOR_CONFIG.MAX_TITLE_LENGTH,
     minBodyLength: EDITOR_CONFIG.MIN_BODY_LENGTH,
+    latestTestDate: maxTestedDate,
   });
 
   useEffect(() => {
@@ -101,24 +104,26 @@ const CreatePostPage = () => {
 
   const validateForm = useCallback(() => {
     const newErrors = {};
+    const normalizedTitle = formData.title.trim();
+    const normalizedBody = formData.body.trim();
 
-    if (!formData.title.trim()) {
+    if (!normalizedTitle) {
       newErrors.title = t('validation.required');
-    } else if (formData.title.length < EDITOR_CONFIG.MIN_TITLE_LENGTH) {
+    } else if (normalizedTitle.length < EDITOR_CONFIG.MIN_TITLE_LENGTH) {
       newErrors.title = t('validation.minLength', { min: EDITOR_CONFIG.MIN_TITLE_LENGTH });
-    } else if (formData.title.length > EDITOR_CONFIG.MAX_TITLE_LENGTH) {
+    } else if (normalizedTitle.length > EDITOR_CONFIG.MAX_TITLE_LENGTH) {
       newErrors.title = t('validation.maxLength', { max: EDITOR_CONFIG.MAX_TITLE_LENGTH });
     }
 
-    if (!formData.body.trim()) {
+    if (!normalizedBody) {
       newErrors.body = t('validation.required');
-    } else if (formData.body.length < EDITOR_CONFIG.MIN_BODY_LENGTH) {
+    } else if (normalizedBody.length < EDITOR_CONFIG.MIN_BODY_LENGTH) {
       newErrors.body = t('validation.minLength', { min: EDITOR_CONFIG.MIN_BODY_LENGTH });
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [formData, t]);
+    return publishReadiness.publication.ready && Object.keys(newErrors).length === 0;
+  }, [formData.body, formData.title, publishReadiness.publication.ready, t]);
 
   const handleTitleChange = (e) => {
     setFormData((prev) => ({ ...prev, title: e.target.value }));
@@ -147,7 +152,7 @@ const CreatePostPage = () => {
 
     if (!validateForm()) return;
     if (!knowledgeBackendReady) {
-      setErrors((prev) => ({ ...prev, backend: i18n.language?.startsWith('en') ? 'Verified publishing is waiting for the production knowledge backend upgrade. Your local draft is safe.' : 'Doğrulanmış yayınlama production bilgi backend yükseltmesini bekliyor. Yerel taslağın güvende.' }));
+      setErrors((prev) => ({ ...prev, backend: i18n.language?.startsWith('en') ? 'Publishing with persisted evidence is waiting for the production knowledge backend upgrade. Your local draft is safe.' : 'Kalıcı kanıtla yayınlama production bilgi backend yükseltmesini bekliyor. Yerel taslağın güvende.' }));
       return;
     }
 
@@ -161,8 +166,8 @@ const CreatePostPage = () => {
         contentType: writingMode,
         outcome: formData.outcome.trim(),
         evidence: {
-          level: formData.testedAt && formData.environment.trim() && formData.verificationSteps.trim() ? 'author-tested' : 'unverified',
-          testedAt: formData.testedAt ? `${formData.testedAt}T12:00:00.000Z` : null,
+          level: publishReadiness.evidence.level,
+          testedAt: formData.testedAt ? dateInputToTimestamp(formData.testedAt) : null,
           environment: formData.environment.split(/[·,\n]/).map((item) => item.trim()).filter(Boolean),
           prerequisites: formData.prerequisites.split('\n').map((item) => item.trim()).filter(Boolean),
           verificationSteps: formData.verificationSteps.split('\n').map((item) => item.trim()).filter(Boolean),
@@ -198,7 +203,7 @@ const CreatePostPage = () => {
     <div className="container">
       <div className={styles.page}>
         <header className={styles.header}>
-          <h1 className={styles.title}>{isEdit ? (i18n.language?.startsWith('en') ? 'Edit verified knowledge' : 'Doğrulanmış bilgiyi düzenle') : t('posts.createPost')}</h1>
+          <h1 className={styles.title}>{isEdit ? (i18n.language?.startsWith('en') ? 'Edit knowledge' : 'Bilgiyi düzenle') : t('posts.createPost')}</h1>
           <p className={styles.subtitle}>
             {t('posts.createSubtitle')}
           </p>
@@ -292,7 +297,7 @@ const CreatePostPage = () => {
             </div>
             <label>{i18n.language?.startsWith('en') ? 'Expected outcome' : 'Beklenen sonuç'}<input value={formData.outcome || ''} onChange={handleEvidenceChange('outcome')} placeholder={i18n.language?.startsWith('en') ? 'After this, the reader can…' : 'Bunun sonunda okuyucu…'} /></label>
             <div className={styles.evidenceGrid}>
-              <label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label>
+              <label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" max={maxTestedDate} value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label>
               <label>{i18n.language?.startsWith('en') ? 'Environment / versions' : 'Ortam / sürümler'}<input value={formData.environment || ''} onChange={handleEvidenceChange('environment')} placeholder="Node 22 · React 19" /></label>
             </div>
             <label>{i18n.language?.startsWith('en') ? 'Prerequisites' : 'Ön koşullar'}<textarea rows="3" value={formData.prerequisites || ''} onChange={handleEvidenceChange('prerequisites')} placeholder={i18n.language?.startsWith('en') ? 'One prerequisite per line' : 'Her satıra bir ön koşul'} /></label>
@@ -343,26 +348,61 @@ const CreatePostPage = () => {
             </div>
           </div>
 
-          <aside className={styles.readinessPanel} aria-label={i18n.language?.startsWith('en') ? 'Publish readiness' : 'Yayın hazırlığı'}>
-            <div className={styles.readinessHeader}>
-              <div>
-                <span>{i18n.language?.startsWith('en') ? 'Publish readiness' : 'Yayın hazırlığı'}</span>
-                <strong>{publishReadiness.score}%</strong>
-              </div>
-              <span className={publishReadiness.ready ? styles.readyBadge : styles.draftBadge}>
-                {publishReadiness.ready
-                  ? (i18n.language?.startsWith('en') ? 'Core checks ready' : 'Temel kontroller hazır')
-                  : (i18n.language?.startsWith('en') ? 'Draft needs work' : 'Taslak geliştirilmeli')}
-              </span>
+          <aside className={styles.readinessPanel} aria-label={i18n.language?.startsWith('en') ? 'Publishing and evidence readiness' : 'Yayın ve kanıt hazırlığı'}>
+            <div className={styles.readinessGrid}>
+              <section className={styles.readinessTrack}>
+                <div className={styles.readinessHeader}>
+                  <div><span>{i18n.language?.startsWith('en') ? 'Publication' : 'Yayın'}</span></div>
+                  <span className={publishReadiness.publication.ready ? styles.readyBadge : styles.draftBadge}>
+                    {publishReadiness.publication.ready
+                      ? (i18n.language?.startsWith('en') ? 'Ready to publish' : 'Yayınlanabilir')
+                      : (i18n.language?.startsWith('en') ? 'Needs title/content' : 'Başlık/içerik gerekli')}
+                  </span>
+                </div>
+                <ul className={styles.readinessList}>
+                  {publishReadiness.publication.checks.map((check) => {
+                    const labels = i18n.language?.startsWith('en')
+                      ? { title: 'Valid title', substance: 'Enough content' }
+                      : { title: 'Geçerli başlık', substance: 'Yeterli içerik' };
+                    return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
+                  })}
+                </ul>
+              </section>
+
+              <section className={styles.readinessTrack}>
+                <div className={styles.readinessHeader}>
+                  <div><span>{i18n.language?.startsWith('en') ? 'Evidence claim' : 'Kanıt iddiası'}</span></div>
+                  <span className={publishReadiness.evidence.ready ? styles.readyBadge : styles.neutralBadge}>
+                    {publishReadiness.evidence.ready
+                      ? (i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti')
+                      : (i18n.language?.startsWith('en') ? 'Unverified' : 'Doğrulanmamış')}
+                  </span>
+                </div>
+                <ul className={styles.readinessList}>
+                  {publishReadiness.evidence.checks.map((check) => {
+                    const labels = i18n.language?.startsWith('en')
+                      ? { testedAt: 'Test date', environment: 'Test environment', verification: 'Verification steps' }
+                      : { testedAt: 'Test tarihi', environment: 'Test ortamı', verification: 'Doğrulama adımları' };
+                    return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
+                  })}
+                </ul>
+                <p className={styles.readinessHint}>{publishReadiness.evidence.ready
+                  ? (i18n.language?.startsWith('en') ? 'This will publish as an author-tested claim; it is not independent Postify execution.' : 'Bu içerik “Yazar test etti” olarak yayınlanır; bağımsız Postify çalıştırması değildir.')
+                  : (i18n.language?.startsWith('en') ? 'You can still publish. It will stay Unverified until all three evidence fields are present.' : 'Yine de yayınlayabilirsin. Üç kanıt alanı da dolana kadar Unverified kalır.')}</p>
+              </section>
             </div>
-            <ul className={styles.readinessList}>
-              {publishReadiness.checks.map((check) => {
-                const labels = i18n.language?.startsWith('en')
-                  ? { title: 'Clear title', substance: 'Enough substance', structure: 'Scannable structure', outcome: 'Concrete outcome', environment: 'Test environment', verification: 'Verification evidence', provenance: 'Source or caveat' }
-                  : { title: 'Net başlık', substance: 'Yeterli içerik', structure: 'Taranabilir yapı', outcome: 'Somut sonuç', environment: 'Test ortamı', verification: 'Doğrulama kanıtı', provenance: 'Kaynak veya sınır' };
-                return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
-              })}
-            </ul>
+
+            <section className={styles.qualityTrack}>
+              <span>{i18n.language?.startsWith('en') ? 'Recommended quality signals' : 'Önerilen kalite sinyalleri'}</span>
+              <ul className={styles.readinessList}>
+                {publishReadiness.quality.checks.map((check) => {
+                  const labels = i18n.language?.startsWith('en')
+                    ? { outcome: 'Concrete outcome', structure: 'Scannable structure', provenance: 'Source or caveat' }
+                    : { outcome: 'Somut sonuç', structure: 'Taranabilir yapı', provenance: 'Kaynak veya sınır' };
+                  return <li key={check.id} data-passed={check.passed}>{check.passed ? '✓' : '○'} {labels[check.id]}</li>;
+                })}
+              </ul>
+            </section>
           </aside>
 
           {errors.backend && <p className={styles.backendNotice} role="status">{errors.backend}</p>}
@@ -394,7 +434,7 @@ const CreatePostPage = () => {
               )}
             </button>
           </div>
-          {!knowledgeBackendReady && <p id="verified-publish-status" className={styles.backendStatus}>{i18n.language?.startsWith('en') ? 'Drafting and autosave work now; verified publishing activates after the production schema migration.' : 'Taslak ve otomatik kayıt çalışıyor; doğrulanmış yayınlama production şema migration’ından sonra açılacak.'}</p>}
+          {!knowledgeBackendReady && <p id="verified-publish-status" className={styles.backendStatus}>{i18n.language?.startsWith('en') ? 'Drafting and autosave work now; publishing with persisted evidence activates after the production schema migration.' : 'Taslak ve otomatik kayıt çalışıyor; kalıcı kanıtla yayınlama production şema migration’ından sonra açılacak.'}</p>}
         </form>
       </div>
     </div>
