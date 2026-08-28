@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-08-28T17:12:44.367Z",
+  "generatedAt": "2026-08-28T17:23:13.540Z",
   "scope": "checked-in deterministic verification only",
   "runs": {
     "node-json-parse-v1": {
@@ -8,15 +8,17 @@
       "postSlug": "node-json-dogrulama",
       "status": "passed",
       "runtime": "node",
-      "runtimeVersion": "v20.20.2",
+      "runtimeVersion": "v24.20.0",
+      "requiredRuntimeMajor": 24,
+      "runtimeChannel": "lts",
       "policy": "node-deterministic-v1",
       "artifactFile": "node-json-parse-v1.mjs",
       "artifactUrl": "/verification/node-json-parse-v1.mjs",
       "reproduceCommand": "node node-json-parse-v1.mjs",
       "artifactSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
       "executionMode": "generated-artifact-file",
-      "verifiedAt": "2026-08-28T17:12:44.407Z",
-      "durationMs": 39,
+      "verifiedAt": "2026-08-28T17:23:13.587Z",
+      "durationMs": 46,
       "expectedStdout": "PASS",
       "actualStdout": "PASS",
       "codeSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
