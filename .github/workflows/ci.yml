@@ -30,10 +30,49 @@ jobs:
       - name: Run release verification
         run: npm run verify
 
+  schema-verify:
+    name: Verified Knowledge Schema & RLS
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postify
+          POSTGRES_DB: postify
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postify"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: postify
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+      - name: Bootstrap Supabase auth roles for dry-run
+        run: |
+          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify <<'SQL'
+          create schema auth;
+          create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}'::jsonb);
+          create or replace function auth.uid() returns uuid language sql stable as $$ select null::uuid $$;
+          create role anon nologin;
+          create role authenticated nologin;
+          SQL
+      - name: Apply current schema and Verified Knowledge migration
+        run: |
+          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/migrations/202608070000_postify_base_schema.sql
+          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/migrations/202608070001_postify_content_model.sql
+          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/migrations/202608280900_verified_knowledge.sql
+      - name: Verify RLS and abuse boundaries
+        run: psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/verify-verified-knowledge.sql
+
   deploy:
     name: Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: verify
+    needs: [verify, schema-verify]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
       contents: write
@@ -56,8 +95,8 @@ jobs:
       - name: Check deploy prerequisites
         id: prereq
         env:
-          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
@@ -70,10 +109,17 @@ jobs:
         if: steps.prereq.outputs.ready == 'true'
         run: npm run build
         env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_APP_URL: https://postify.zekiakgul.dev
           VITE_APP_NAME: Postify
+
+      - name: Export production machine-readable knowledge
+        if: steps.prereq.outputs.ready == 'true'
+        run: npm run export:knowledge
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Deploy to GitHub Pages
         if: steps.prereq.outputs.ready == 'true'
