@@ -207,3 +207,10 @@
 **Decision:** Dependabot checks npm and GitHub Actions weekly. Routine npm minor/patch version updates are grouped by production/development dependency type, while the config does not group security updates.
 
 **Why:** Grouping normal maintenance reduces PR noise without turning security remediation into a weekly batch. Whether repository-level Dependabot security updates are enabled remains a GitHub setting and is not inferred from the config file alone.
+
+Routine version-update automation is limited to SemVer minor/patch releases. Major upgrades stay manual because they require compatibility review; GitHub documents `allow.update-types` as a version-update restriction, while security updates are still created independently.
+
+## 2026-08-28 — Dependency security is a fail-closed release gate
+**Decision:** CI runs `npm run verify:security` immediately after `npm ci` and before normal release verification. The gate requires npm audit to report zero vulnerabilities, requires `@playwright/test` to be exact-pinned, and requires every pinned Playwright CI container to match that package version. Audit outages/non-JSON responses fail the release instead of being treated as clean.
+
+**Why:** A clean lock can regress on a future dependency PR, and Playwright package/browser-image skew can create misleading E2E failures. Keeping online audit out of `npm run verify` preserves deterministic local verification while making the hosted release pipeline fail closed on supply-chain/security drift.

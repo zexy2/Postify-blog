@@ -19,7 +19,8 @@
     "knowledge:artifacts": "node scripts/generate-knowledge-artifacts.mjs",
     "predev": "npm run verify:knowledge && npm run knowledge:artifacts",
     "prebuild": "npm run verify:knowledge && npm run knowledge:artifacts",
-    "export:knowledge": "node scripts/export-supabase-knowledge.mjs"
+    "export:knowledge": "node scripts/export-supabase-knowledge.mjs",
+    "verify:security": "node scripts/verify-release-security.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
@@ -56,7 +57,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "1.57.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

@@ -9,6 +9,7 @@
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
 
 ## Resolved — 2026-08-28
+- Dependency regressions are now release-blocking: CI fails closed if npm audit reports any vulnerability or is unavailable, and also blocks Playwright package/container version drift. Dependabot routine version PRs are limited to minor/patch updates; major upgrades require deliberate review.
 - Dependency lock security baseline is clean: independent npm audit reports 0 production and 0 full-tree vulnerabilities after a minimal non-force lock remediation; weekly Dependabot version monitoring is configured separately from urgent security updates.
 - Authenticated Verified Knowledge RPCs no longer execute as exposed SECURITY DEFINER functions; public wrappers are SECURITY INVOKER and privileged helpers live in the non-exposed `private` schema. Supabase security advisor now reports only the separate leaked-password-protection Auth warning.
 - Production knowledge export no longer leaves stale fallback-only JSON behind after a successful Supabase read; the canonical Node verification example now has a real production row and exact displayed-code binding.

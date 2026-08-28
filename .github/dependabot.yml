@@ -7,6 +7,11 @@ updates:
       day: "monday"
       time: "04:00"
       timezone: "Europe/Istanbul"
+    allow:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     groups:
       production-version-updates:
         applies-to: "version-updates"
@@ -17,6 +22,8 @@ updates:
       development-version-updates:
         applies-to: "version-updates"
         dependency-type: "development"
+        exclude-patterns:
+          - "@playwright/test"
         update-types:
           - "minor"
           - "patch"
@@ -28,3 +35,16 @@ updates:
       day: "monday"
       time: "04:30"
       timezone: "Europe/Istanbul"
+    allow:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+    groups:
+      github-actions-version-updates:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

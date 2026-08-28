@@ -276,3 +276,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Added `.github/dependabot.yml` for weekly npm and GitHub Actions version monitoring. Routine npm minor/patch version updates are grouped by dependency type; security updates are intentionally not grouped by this configuration.
 - Clean validation of the selected minimal lock PASS: Node 20 `npm ci`, deterministic verification, 22 Vitest files / 90 tests, lint, production build/smoke, official Playwright 1.57 Chromium 22/22, and final independent npm audit 0/0.
 - A broad semver refresh candidate also reached audit 0 but failed Chromium badly (21/22 failures), validating the smaller remediation strategy; it was not selected or committed.
+## 2026-08-28 — Fail-closed dependency release gate
+- Added `npm run verify:security` to CI immediately after clean install. The gate requires npm audit to report zero vulnerabilities and fails closed on audit/network/non-JSON errors instead of treating missing data as clean.
+- Exact-pinned `@playwright/test` at `1.57.0` and assert both Playwright CI container images match that package version, preventing browser/package drift from producing misleading E2E results.
+- Tightened Dependabot version-update automation to SemVer minor/patch only; major upgrades remain manual compatibility work. Playwright is excluded from the grouped development PR so its package + browser image update can be reviewed together. GitHub Actions minor/patch updates are grouped.
+- Clean Node 20 gate PASS: `npm ci`, online dependency audit 0 vulnerabilities, release security parity, deterministic verification, 22 Vitest files / 90 tests, lint, production build and build smoke.
+- Official Playwright v1.57 Chromium clean workspace PASS 22/22.
