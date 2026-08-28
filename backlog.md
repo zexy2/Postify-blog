@@ -79,3 +79,6 @@
 - [x] Add copy actions for fenced code examples with clipboard fallback
 - [x] Bind displayed automatic-verification code, expected output, actual output and code hash to one release contract
 - [ ] Sync personal runbook progress to account state only after a reviewed persistence model exists
+
+## Security hardening
+- [x] Harden user-controlled profile website URLs with an HTTP/HTTPS protocol allowlist

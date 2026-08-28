@@ -11,6 +11,7 @@ import { FaCamera, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
 import { storageService } from '../../services/storageService';
 import toast from 'react-hot-toast';
+import { safeHttpUrl } from '../../lib/seoUtils';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {
@@ -70,7 +71,14 @@ const ProfilePage = () => {
   };
 
   const handleSave = async () => {
-    const result = await updateProfile(formData);
+    const website = formData.website.trim();
+    const safeWebsite = website ? safeHttpUrl(website) : '';
+    if (website && !safeWebsite) {
+      toast.error(t('profile.websiteInvalid'));
+      return;
+    }
+
+    const result = await updateProfile({ ...formData, website: safeWebsite });
     if (result.success) {
       setIsEditing(false);
     }
@@ -113,6 +121,7 @@ const ProfilePage = () => {
   const displayName = profile.full_name || profile.name || user.email?.split('@')[0] || 'Kullanıcı';
   const displayUsername = profile.username || user.email?.split('@')[0] || 'user';
   const avatarUrl = profile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+  const profileWebsite = safeHttpUrl(profile.website);
 
   return (
     <div className={styles.container}>
@@ -230,11 +239,11 @@ const ProfilePage = () => {
             )}
 
             <div className={styles.infoGrid}>
-              {profile.website && (
+              {profileWebsite && (
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>{t('profile.website')}</span>
-                  <a href={profile.website} target="_blank" rel="noopener noreferrer">
-                    {profile.website}
+                  <a href={profileWebsite} target="_blank" rel="noopener noreferrer">
+                    {profileWebsite}
                   </a>
                 </div>
               )}

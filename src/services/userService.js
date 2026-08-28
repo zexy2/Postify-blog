@@ -2,6 +2,7 @@
 
 import { requireSupabase } from '../lib/supabase';
 import { FALLBACK_AUTHOR } from '../content/fallbackPosts';
+import { safeHttpUrl } from '../lib/seoUtils';
 
 const PROFILE_FIELDS = 'id, full_name, username, email, avatar_url, bio, role, website, location, created_at';
 
@@ -10,6 +11,7 @@ const normalizeProfile = (profile) => profile && ({
   name: profile.full_name || profile.username || 'Postify Editör',
   fullName: profile.full_name || profile.username || 'Postify Editör',
   avatarUrl: profile.avatar_url || null,
+  website: safeHttpUrl(profile.website),
 });
 
 export const userService = {

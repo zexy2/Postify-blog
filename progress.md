@@ -221,6 +221,13 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Successful apply re-reads migration history, probes the three new public evidence views with the production publishable key, then triggers the full main CI/deploy/production-browser pipeline.
 - No production migration is performed by normal push/PR events.
 
+## 2026-08-28 — Profile URL trust-boundary hardening
+- Supabase management access rechecked: CLI is installed but no authenticated access token is available; production migration remains untouched.
+- Added a shared HTTP/HTTPS-only URL normalizer for user-controlled public links.
+- Profile website saves now reject non-HTTP(S) schemes; previously stored unsafe values are not rendered as clickable links.
+- Profile service normalization applies the same boundary so future public profile consumers receive a safe URL or `null`.
+- Verification: focused URL tests PASS; full `npm run verify` PASS with 20 files / 81 tests; Chromium CI-parity E2E PASS 22/22.
+
 ## 2026-08-28 — Verification Contract V2
 - Removed verifier/article code duplication for the first Postify Verified Node.js example. The article now renders the exact code stored in the verification manifest.
 - The release verifier fails if an automatic verification manifest entry cannot find a matching article or if the article no longer contains the exact executed code.

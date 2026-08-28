@@ -155,6 +155,11 @@
 
 **Why:** Production schema access is privileged and remote migration history may differ from the repository. An automated guess could apply legacy migrations or repair history incorrectly. The safest automation is deterministic everywhere except the explicit owner-authorized apply boundary.
 
+## 2026-08-28 — User-controlled outbound URLs are protocol-allowlisted
+**Decision:** Any user-controlled public outbound URL must pass a shared absolute `http:`/`https:` allowlist before persistence or clickable rendering. Invalid legacy values remain non-clickable.
+
+**Why:** HTML `type=url` is not a security boundary and programmatic save flows can bypass native form validation. Centralizing the protocol boundary reduces stored-link/script-scheme risk without requiring a Supabase migration.
+
 ## 2026-08-28 — Displayed automatic-verification code must equal executed code
 **Decision:** Automatically verified examples use the verification manifest as the single source for the code shown in the article and the code executed by the release gate. A mismatch fails verification.
 
