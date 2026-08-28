@@ -19,16 +19,20 @@ export function absoluteAssetUrl(value, siteUrl = 'https://postify.zekiakgul.dev
 }
 
 
+export function safeHttpUrl(value) {
+  const candidate = String(value || '').trim();
+  if (!candidate) return null;
+
+  try {
+    const url = new URL(candidate);
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export function sanitizeHttpUrls(values = []) {
   return (Array.isArray(values) ? values : [])
-    .map((value) => String(value || '').trim())
-    .filter(Boolean)
-    .filter((value) => {
-      try {
-        const url = new URL(value);
-        return url.protocol === 'http:' || url.protocol === 'https:';
-      } catch {
-        return false;
-      }
-    });
+    .map((value) => safeHttpUrl(value))
+    .filter(Boolean);
 }

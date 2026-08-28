@@ -9,6 +9,7 @@
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
 
 ## Resolved — 2026-08-28
+- User-controlled profile website links are now restricted to absolute HTTP/HTTPS URLs on save, render, and profile normalization; script/data schemes are rejected.
 - GitHub HTTPS/CLI write authentication is available; branches, PRs, merges and workflow changes can be pushed from the Oracle workspace.
 - Real browser QA runs successfully in the official Playwright Chromium container; Snap Chromium cgroup limitations are no longer a blocker.
 - Verified Knowledge schema, persistence services, revision model, community evidence, Knowledge Gaps, shelf state, freshness and author dashboard are implemented and PostgreSQL/RLS tested; only production schema activation remains.

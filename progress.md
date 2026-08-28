@@ -220,3 +220,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - The workflow validates owner credentials, links the exact project, lists remote migration history, performs a dry-run without `--include-all`, and refuses apply unless the exact production confirmation is supplied.
 - Successful apply re-reads migration history, probes the three new public evidence views with the production publishable key, then triggers the full main CI/deploy/production-browser pipeline.
 - No production migration is performed by normal push/PR events.
+
+## 2026-08-28 — Profile URL trust-boundary hardening
+- Supabase management access rechecked: CLI is installed but no authenticated access token is available; production migration remains untouched.
+- Added a shared HTTP/HTTPS-only URL normalizer for user-controlled public links.
+- Profile website saves now reject non-HTTP(S) schemes; previously stored unsafe values are not rendered as clickable links.
+- Profile service normalization applies the same boundary so future public profile consumers receive a safe URL or `null`.
+- Verification: focused URL tests PASS; full `npm run verify` PASS with 20 files / 81 tests; Chromium CI-parity E2E PASS 22/22.
