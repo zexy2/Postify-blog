@@ -22,3 +22,5 @@
 
 ## Final validation note — 2026-08-28
 - GitHub Pages returns HTTP 404 for a direct SPA article path and serves `404.html`; the fallback JavaScript then redirects browsers into the SPA route. Build verification now guarantees that fallback exists and has current product identity, but HTTP-only smoke still observes the initial 404 by design. A browser-engine E2E check remains the best next verification step.
+
+- Final production release is operationally blocked by missing GitHub repository authentication on the Oracle host. The verified fix is committed locally, but cannot be pushed/deployed from this environment until an authenticated GitHub write path is available.

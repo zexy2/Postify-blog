@@ -103,3 +103,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Hardened the GitHub Pages SPA fallback release gate: `docs/404.html` is now a required build artifact and its redirect/product identity are verified.
 - Updated the fallback page from the stale “Postify Blog” identity to “Postify — Uygulanabilir Bilgi”.
 - Production root remains healthy; direct article requests currently return GitHub Pages HTTP 404 before client-side fallback, so release verification must distinguish HTTP status from browser redirect behavior.
+
+### Final deploy attempt — blocked by repository authentication
+- Final source commit created locally: `78ecfb4` (`fix: harden pages deep-link fallback`).
+- `git push -u origin chatgpt/postify-rethink` failed because the Oracle host has no GitHub HTTPS credential.
+- `gh auth status` confirms no authenticated GitHub session; SSH auth to `git@github.com` also fails with `Permission denied (publickey)`; no GH/GITHUB token environment variables are present.
+- Production remains healthy at the root (HTTP 200) but still serves the prior fallback identity (`Postify Blog`) at `/404.html`, proving the final fallback hardening has not been deployed yet.
