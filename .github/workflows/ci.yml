@@ -30,6 +30,42 @@ jobs:
       - name: Run release verification
         run: npm run verify
 
+  ui-e2e:
+    name: Chromium Product E2E
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.57.0-noble
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start product server
+        run: |
+          npm run dev -- --host 0.0.0.0 --port 4174 --strictPort > /tmp/postify-vite.log 2>&1 &
+          echo $! > /tmp/postify-vite.pid
+
+      - name: Wait for product server
+        run: |
+          node --input-type=module <<'NODE'
+          const deadline=Date.now()+30_000;
+          while(Date.now()<deadline){
+            try{const response=await fetch('http://127.0.0.1:4174/');if(response.ok)process.exit(0);}catch{}
+            await new Promise((resolve)=>setTimeout(resolve,500));
+          }
+          process.exit(1);
+          NODE
+
+      - name: Run Chromium product suite
+        run: npm run test:e2e:ui
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4174
+
+      - name: Show server log on failure
+        if: failure()
+        run: cat /tmp/postify-vite.log || true
+
   schema-verify:
     name: Verified Knowledge Schema & RLS
     runs-on: ubuntu-latest
@@ -58,24 +94,46 @@ jobs:
           create schema auth;
           create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}'::jsonb);
           create or replace function auth.uid() returns uuid language sql stable as $$ select null::uuid $$;
+          create schema storage;
+          create table storage.buckets(
+            id text primary key,
+            name text not null,
+            public boolean not null default false,
+            file_size_limit bigint,
+            allowed_mime_types text[]
+          );
+          create table storage.objects(
+            id uuid primary key default gen_random_uuid(),
+            bucket_id text,
+            name text not null,
+            owner_id text
+          );
+          alter table storage.objects enable row level security;
+          create or replace function storage.foldername(name text)
+          returns text[] language sql immutable
+          as $$ select string_to_array(name, '/') $$;
           create role anon nologin;
           create role authenticated nologin;
           SQL
-      - name: Apply current schema and Verified Knowledge migration
+      - name: Apply all migrations in order
         run: |
-          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/migrations/202608070000_postify_base_schema.sql
-          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/migrations/202608070001_postify_content_model.sql
-          psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/migrations/202608280900_verified_knowledge.sql
+          set -euo pipefail
+          for migration in supabase/migrations/*.sql; do
+            echo "Applying $migration"
+            psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f "$migration"
+          done
       - name: Verify RLS and abuse boundaries
         run: psql -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d postify -f supabase/verify-verified-knowledge.sql
 
   deploy:
     name: Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [verify, schema-verify]
+    needs: [verify, ui-e2e, schema-verify]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
       contents: write
+    outputs:
+      deployed: ${{ steps.prereq.outputs.ready }}
     concurrency:
       group: pages-deploy
       cancel-in-progress: true
@@ -102,7 +160,7 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "::warning title=Deploy skipped::Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Settings > Secrets and variables > Actions > Variables to enable automatic deployment."
+            echo "::warning title=Deploy skipped::Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Settings > Secrets and variables > Actions > Secrets to enable automatic deployment."
           fi
 
       - name: Build
@@ -121,9 +179,72 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
+      - name: Stamp release identity
+        if: steps.prereq.outputs.ready == 'true'
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFile } from 'node:fs/promises';
+          const release={sourceSha:process.env.GITHUB_SHA,builtAt:new Date().toISOString(),knowledgeBackend:'runtime-capability-artifact'};
+          await writeFile('docs/release.json',JSON.stringify(release,null,2)+'\n');
+          NODE
+
       - name: Deploy to GitHub Pages
         if: steps.prereq.outputs.ready == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
+
+
+  production-browser-smoke:
+    name: Production Chromium & Release Smoke
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.deploy.result == 'success' && needs.deploy.outputs.deployed == 'true'
+    container: mcr.microsoft.com/playwright:v1.57.0-noble
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for the exact source SHA on production
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          const expected=process.env.EXPECTED_SHA;
+          const deadline=Date.now()+360_000;
+          let last='unavailable';
+          while(Date.now()<deadline){
+            try{
+              const response=await fetch(`https://postify.zekiakgul.dev/release.json?expected=${expected}&t=${Date.now()}`,{cache:'no-store'});
+              if(response.ok){
+                const release=await response.json();
+                last=release.sourceSha||'missing-sha';
+                if(release.sourceSha===expected){console.log(`Production release matched ${expected}`);process.exit(0);}
+              }else last=`HTTP ${response.status}`;
+            }catch(error){last=error.message;}
+            await new Promise((resolve)=>setTimeout(resolve,5000));
+          }
+          console.error(`Production did not reach ${expected}; last observed ${last}`);
+          process.exit(1);
+          NODE
+
+      - name: Probe production capability and machine-readable artifacts
+        run: |
+          node --input-type=module <<'NODE'
+          for(const path of ['/','/llms.txt','/verification-runs.json','/knowledge-backend-status.json','/knowledge/node-json-dogrulama.tr.json']){
+            const response=await fetch(`https://postify.zekiakgul.dev${path}?smoke=${Date.now()}`,{cache:'no-store'});
+            if(!response.ok) throw new Error(`${path} returned ${response.status}`);
+            console.log(`${path} ${response.status}`);
+          }
+          const capability=await fetch(`https://postify.zekiakgul.dev/knowledge-backend-status.json?t=${Date.now()}`,{cache:'no-store'}).then((r)=>r.json());
+          console.log(`Verified Knowledge backend ready=${capability.ready} mode=${capability.mode}`);
+          NODE
+
+      - name: Run production Chromium product suite
+        env:
+          PLAYWRIGHT_BASE_URL: https://postify.zekiakgul.dev
+        run: npm run test:e2e:ui

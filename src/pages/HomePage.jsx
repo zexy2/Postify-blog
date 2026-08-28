@@ -15,7 +15,7 @@ import { getKnowledgeEvidence } from '../lib/knowledgeEvidence';
 import { addKnowledgeGap } from '../lib/localKnowledgeState';
 import { summarizeCommunityEvidence } from '../lib/communityEvidence';
 import { sortKnowledge } from '../lib/knowledgeRanking';
-import { useRequestGap } from '../hooks/useKnowledge';
+import { useKnowledgeBackendStatus, useRequestGap } from '../hooks/useKnowledge';
 import { useVerificationRuns } from '../hooks/useAutoVerification';
 import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
@@ -32,6 +32,8 @@ const HomePage = () => {
   const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const requestGapMutation = useRequestGap();
+  const knowledgeBackend = useKnowledgeBackendStatus();
+  const knowledgeBackendReady = knowledgeBackend.data?.ready === true;
   const verificationRuns = useVerificationRuns();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
@@ -240,7 +242,7 @@ const HomePage = () => {
             <FiSearch size={32} />
             <h3>{hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' ? t('common.noResults') : t('home.noContent')}</h3>
             <p>{hasSearch ? `${t('common.noResultsFor')}: “${query}”` : activeCategory !== 'all' ? t('home.noCategoryResults') : activeType !== 'all' ? (i18n.language?.startsWith('en') ? 'No stories match this format yet.' : 'Bu biçimde eşleşen yazı henüz yok.') : readingFilter !== 'all' ? (i18n.language?.startsWith('en') ? 'No quick reads match these filters yet.' : 'Bu filtrelerde kısa okuma bulunamadı.') : t('home.noContentHint')}</p>
-            {hasSearch && <button type="button" disabled={gapSaved || requestGapMutation.isPending} onClick={async () => { try { if (isAuthenticated) await requestGapMutation.mutateAsync(query); else addKnowledgeGap(window.localStorage, query); setGapSaved(true); } catch { addKnowledgeGap(window.localStorage, query); setGapSaved(true); } }}>{gapSaved ? (isAuthenticated ? (i18n.language?.startsWith('en') ? 'Need recorded' : 'İhtiyaç kaydedildi') : (i18n.language?.startsWith('en') ? 'Need saved on this device' : 'İhtiyaç bu cihaza kaydedildi')) : (i18n.language?.startsWith('en') ? 'I need this solution' : 'Bu çözüme ihtiyacım var')}</button>}
+            {hasSearch && <button type="button" disabled={gapSaved || requestGapMutation.isPending} onClick={async () => { try { if (isAuthenticated && knowledgeBackendReady) await requestGapMutation.mutateAsync(query); else addKnowledgeGap(window.localStorage, query); setGapSaved(true); } catch { addKnowledgeGap(window.localStorage, query); setGapSaved(true); } }}>{gapSaved ? (isAuthenticated && knowledgeBackendReady ? (i18n.language?.startsWith('en') ? 'Need recorded' : 'İhtiyaç kaydedildi') : (i18n.language?.startsWith('en') ? 'Need saved on this device' : 'İhtiyaç bu cihaza kaydedildi')) : (i18n.language?.startsWith('en') ? 'I need this solution' : 'Bu çözüme ihtiyacım var')}</button>}
             {(hasSearch || activeCategory !== 'all' || activeType !== 'all' || readingFilter !== 'all' || freshnessFilter !== 'all') && <button type="button" onClick={() => { setQuery(''); setActiveCategory('all'); setActiveType('all'); setReadingFilter('all'); setFreshnessFilter('all'); setSearchParams({}, { replace: true }); }}>{t('home.clearFilters')}</button>}
           </div>
         ) : (

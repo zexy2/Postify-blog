@@ -29,8 +29,20 @@ test.describe('Postify UI V2', () => {
     await expect(menu).toBeVisible();
     await menu.click();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByRole('link', { name: /hakkında|about/i })).toBeVisible();
   });
 
+
+
+  test('command search lazy-loads and stays keyboard operable', async ({ page }) => {
+    await page.goto('/');
+    await page.keyboard.press('Control+K');
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('searchbox')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+  });
 
   test('login surface remains clear and operable', async ({ page }) => {
     await page.goto('/auth/login');
@@ -125,4 +137,53 @@ test.describe('Verified Knowledge execution', () => {
     await expect(page.getByRole('heading', { name: /Node.js örneğini|Verify a Node.js example/i })).toBeVisible();
   });
 
+});
+
+test.describe('Verified Knowledge pre-migration compatibility', () => {
+  test('capability artifact prevents premature evidence backend requests', async ({ page }) => {
+    await page.route('**/knowledge-backend-status.json', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ schemaVersion: 1, ready: false, mode: 'e2e-schema-pending' }) });
+    });
+
+    const evidenceRequests = [];
+    page.on('request', (req) => {
+      if (/post_evidence_summary|post_confirmations|post_failure_reports|post_revision_history|post_revisions|get_post_failure_details|user_knowledge_shelf|knowledge_gaps/.test(req.url())) {
+        evidenceRequests.push(req.url());
+      }
+    });
+    await page.goto('/posts/ai-muhendisligi');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await page.waitForTimeout(400);
+    expect(evidenceRequests).toEqual([]);
+  });
+
+  test('anonymous worked evidence remains useful and durable on-device', async ({ page }) => {
+    await page.goto('/posts/ai-muhendisligi');
+    page.once('dialog', async (dialog) => dialog.accept('Node 22 · Chrome'));
+    await page.getByRole('button', { name: /^çalıştı$|^worked$/i }).click();
+    await expect(page.getByRole('status').filter({ hasText: /kanıt kaydedildi|evidence saved/i })).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole('button', { name: /^çalıştı$|^worked$/i })).toHaveAttribute('data-active', 'true');
+  });
+
+  test('critical public knowledge flow has no uncaught browser errors', async ({ page }) => {
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(`page:${error.message}`));
+    page.on('console', (message) => { if (message.type() === 'error') errors.push(`console:${message.text()}`); });
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await page.goto('/posts/node-json-dogrulama');
+    await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+
+  test('skip link reaches the main content with keyboard navigation', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
+    await page.keyboard.press('Tab');
+    const skip = page.getByRole('link', { name: /İçeriğe geç|Skip to content/i });
+    await expect(skip).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#main-content')).toBeFocused();
+  });
 });

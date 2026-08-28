@@ -94,3 +94,33 @@
 **Decision:** `Postify verified` is execution-derived, not author-selected. The first supported automatic verification is a checked-in deterministic Node.js snippet executed during the release gate. Community success percentages require at least 3 independent confirmations; domain credibility requires at least 3 author-tested posts and 5 confirmations. Self-confirmation is blocked by RLS.
 
 **Why:** The product differentiator is evidence quality. Small-sample percentages, self-confirmation, or a manually selectable Postify badge would create false certainty.
+
+## 2026-08-28 — Capability-gate persistent evidence until the production schema exists
+**Decision:** Ship `knowledge-backend-status.json` as an explicit deploy capability contract. New evidence tables/RPCs are queried only when the deployed artifact says the production schema is ready; otherwise reading remains backward-compatible and contribution/shelf/gap actions stay local.
+
+**Why:** A frontend release must remain compatible with the old production schema while owner-level migration access is pending. Treating schema presence as an explicit capability avoids noisy 4xx calls, accidental fallback of public content, and misleading persistence claims.
+
+## 2026-08-28 — Raw community evidence and revision snapshots are private
+**Decision:** Public surfaces expose aggregate failure counts and sanitized revision reason/date history only. Raw confirmation identity, free-text notes, environment strings, and revision snapshots are not public. Authenticated users can read only their own raw confirmation; raw revision snapshots are author/admin only.
+
+**Why:** Verification value does not require publishing contributor identity or potentially sensitive free text. Privacy-safe aggregates preserve the product signal without turning evidence collection into a data-leak surface.
+
+## 2026-08-28 — Automatic verification is outside author-writable post status
+**Decision:** Production `posts.evidence_status` permits only `unverified` and `author-tested`. `Postify verified` is derived from a successful release execution artifact, not a database value authors can select.
+
+**Why:** The strongest trust badge must be mechanically earned. Keeping it outside author-writable metadata prevents accidental or malicious false verification.
+
+## 2026-08-28 — Performance budgets are release gates
+**Decision:** Keep command search, mobile Radix sheet and knowledge services behind lazy boundaries, remove the AI barrel import from the eager Redux path, and fail build smoke if the production entry exceeds 320 KB minified or non-critical editor/motion/sheet/knowledge chunks are eagerly preloaded.
+
+**Why:** Postify's utility begins with fast discovery. Measured optimization reduced the main entry from about 338.6 KB to about 294 KB; a budget prevents future import regressions from silently undoing the gain.
+
+## 2026-08-28 — Failure detail is useful to authors, private from the public
+**Decision:** Public pages expose only failure count/latest time. The author/admin may request identity-free environment/note/date details through an ownership-checked RPC; contributor IDs are never returned by that RPC.
+
+**Why:** Failure reports are only actionable if the maintainer can diagnose them, but public or author-facing identity exposure is not required for that utility.
+
+## 2026-08-28 — Production success must prove the exact source SHA is live
+**Decision:** Every main deploy stamps `release.json`. The production smoke job waits until the custom domain reports the current `github.sha`, then probes critical artifacts and runs Chromium against production.
+
+**Why:** A green build/deploy action does not prove the CDN/custom domain is serving that commit. SHA-level attestation prevents stale-production false positives and gives the release pipeline an observable completion condition.

@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { authService } from "../services/authService";
+import { hasSupabaseConfig } from "../lib/supabase";
 import {
   setUser,
   setSession,
@@ -64,6 +65,11 @@ export const useAuth = () => {
    * Initialize auth state on mount
    */
   useEffect(() => {
+    if (!hasSupabaseConfig) {
+      dispatch(setLoading(false));
+      return undefined;
+    }
+
     let isMounted = true;
     let subscription;
 

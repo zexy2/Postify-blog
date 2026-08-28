@@ -13,6 +13,7 @@ import {
   useSetConfirmation,
   useSetShelf,
   useShelf,
+  useKnowledgeBackendStatus,
 } from '../hooks/useKnowledge';
 import { summarizeCommunityEvidence } from '../lib/communityEvidence';
 
@@ -20,7 +21,9 @@ export default function LocalEvidenceActions({ post }) {
   const { i18n } = useTranslation();
   const en = i18n.language?.startsWith('en');
   const { isAuthenticated } = useSelector((state) => state.user);
-  const persistent = isAuthenticated && !post.isFallback;
+  const backendStatus = useKnowledgeBackendStatus();
+  const backendReady = backendStatus.data?.ready === true;
+  const persistent = isAuthenticated && !post.isFallback && backendReady;
   const storage = typeof window === 'undefined' ? null : window.localStorage;
   const [localFeedback, setLocalFeedbackState] = useState(() => storage ? getLocalFeedback(storage, post.id) : null);
   const [localShelf, setLocalShelfState] = useState(() => storage ? getShelfState(storage, post.id) : null);
@@ -78,7 +81,9 @@ export default function LocalEvidenceActions({ post }) {
             <small>{en ? 'No independent community evidence yet.' : 'Henüz bağımsız topluluk kanıtı yok.'}</small>
           )}
         </div>
-        {!persistent && <small>{en ? 'Sign in to contribute to community evidence. Anonymous feedback stays only on this device.' : 'Topluluk kanıtına katkı için giriş yap. Girişsiz geri bildirim yalnız bu cihazda kalır.'}</small>}
+        {!persistent && <small>{isAuthenticated && !backendReady
+          ? (en ? 'Account sync is waiting for the Verified Knowledge backend upgrade. Your feedback stays on this device meanwhile.' : 'Hesap senkronu Verified Knowledge backend yükseltmesini bekliyor. Bu sırada geri bildirimin bu cihazda kalır.')
+          : (en ? 'Sign in to contribute to community evidence. Anonymous feedback stays only on this device.' : 'Topluluk kanıtına katkı için giriş yap. Girişsiz geri bildirim yalnız bu cihazda kalır.')}</small>}
       </div>
       <div className="local-evidence-actions__buttons">
         <button type="button" data-active={feedback?.result === 'worked'} disabled={confirmationMutation.isPending} onClick={() => record('worked')}>{en ? 'Worked' : 'Çalıştı'}</button>

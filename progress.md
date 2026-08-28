@@ -167,3 +167,30 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Added machine-readable verification and per-article JSON artifacts plus structured citations/alternate JSON metadata.
 - CI now includes a PostgreSQL schema/RLS gate. Deploy workflow now reads existing Supabase Action secrets correctly and exports production knowledge artifacts after build.
 - Local release verification: 19 test files / 67 tests PASS; lint/build/smoke PASS; Chromium 15/15 PASS.
+
+## 2026-08-28 — Pre-Supabase hardening and release-gate expansion
+- Added explicit `knowledge-backend-status.json` capability gating so the same frontend is compatible with both the current production schema and the future Verified Knowledge schema.
+- Public `postService` now retries legacy post fields when additive evidence columns are absent instead of dropping the whole live catalogue to fallback content.
+- Authenticated/community features remain honestly local-only while the production backend upgrade is pending; the Knowledge Health dashboard explains the pending state instead of firing broken requests.
+- Expanded author evidence UI with prerequisites, verification steps, caveats, sources, freshness window and revision reason. Publish is disabled until the persistent backend capability is active.
+- Sanitized structured-data citations to HTTP(S) URLs only.
+- Added immutable follow-up migration `202608281320_evidence_integrity_and_privacy.sql`: DB evidence integrity trigger/constraints, author-writable status restriction, private raw confirmations/revision snapshots, aggregate public failure view and sanitized public revision history.
+- PostgreSQL 16 full migration chain dry-run passes all five repository migrations plus RLS/privacy assertions, including cross-user confirmation privacy and anonymous raw-snapshot denial.
+- CI schema job now applies every migration in repository order and bootstraps the minimal Supabase Storage contract required for a faithful dry-run.
+- Added Chromium E2E as a deploy dependency; production cannot deploy when the 20-scenario browser suite fails.
+- First-load profiling removed eager `react-icons/fa`, Framer Motion/AI UI barrel loading, Command Palette, Radix mobile sheet and knowledge-service code from the discovery critical path.
+- Production main entry reduced from ~338.6 KB / 111.3 KB gzip to ~294.0 KB / 96.9 KB gzip. Build smoke now enforces a 320 KB entry budget and forbids eager preload of sheet/knowledgeService/editor/motion chunks.
+- Current gates: deterministic Node verifier PASS; 20 test files / 74 tests PASS; lint PASS; production build + artifact/performance smoke PASS; local Chromium product suite 20/20 PASS.
+
+## 2026-08-28 — Privacy, compatibility, performance and production-observability hardening
+- Added an immutable follow-up migration instead of rewriting the already-merged Verified Knowledge migration history.
+- Database trust enforcement now rejects author-written `postify-verified`, future `tested_at`, and incomplete `author-tested` evidence.
+- Raw confirmations are user-private; raw revision snapshots are author/admin-only. Public failure evidence is aggregate-only and public revision history excludes snapshots.
+- Added owner/admin-only `get_post_failure_details` RPC returning environment/note/date without contributor identity, plus an on-demand author dashboard panel.
+- Added HTTP(S)-only citation sanitization before JSON-LD output.
+- Added explicit backend capability gating and legacy post-read fallback so one frontend release works safely before and after production migration.
+- Verified publishing is disabled while backend capability is pending; local draft/autosave stays available instead of silently losing evidence fields.
+- CI now runs full Chromium product E2E as a deploy dependency and applies every repository migration in order in a fresh PostgreSQL schema job.
+- Deploy now stamps `release.json`; a post-deploy job waits for the exact source SHA on the custom domain, probes machine-readable artifacts/capability, then runs the Chromium suite against production.
+- First-load hardening lazy-loads Command Palette/mobile Sheet/knowledge service and removes the AI barrel from the eager Redux path. Entry chunk is ~294 KB versus ~338.6 KB before; build smoke enforces a 320 KB budget.
+- Current local gates: deterministic Node verification PASS; 20 test files / 75 tests PASS; lint/build/artifact/performance smoke PASS; full migration chain + RLS/privacy assertions PASS; Chromium 20/20 PASS.

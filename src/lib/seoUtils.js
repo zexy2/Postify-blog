@@ -17,3 +17,18 @@ export function absoluteAssetUrl(value, siteUrl = 'https://postify.zekiakgul.dev
     return siteUrl;
   }
 }
+
+
+export function sanitizeHttpUrls(values = []) {
+  return (Array.isArray(values) ? values : [])
+    .map((value) => String(value || '').trim())
+    .filter(Boolean)
+    .filter((value) => {
+      try {
+        const url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    });
+}

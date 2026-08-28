@@ -20,7 +20,7 @@ import uiReducer from './slices/uiSlice';
 import postsReducer from './slices/postsSlice';
 import bookmarksReducer from './slices/bookmarksSlice';
 import userReducer from './slices/userSlice';
-import { aiReducer } from '../features/ai-assistant';
+import aiReducer from '../features/ai-assistant/store/aiSlice';
 
 // Combine all reducers
 const rootReducer = combineReducers({
