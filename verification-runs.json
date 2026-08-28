@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T14:26:53.647Z",
+  "generatedAt": "2026-08-28T14:33:01.795Z",
   "scope": "checked-in deterministic verification only",
   "runs": {
     "node-json-parse-v1": {
@@ -8,8 +8,8 @@
       "status": "passed",
       "runtime": "node",
       "runtimeVersion": "20+",
-      "verifiedAt": "2026-08-28T14:26:53.682Z",
-      "durationMs": 35,
+      "verifiedAt": "2026-08-28T14:33:01.826Z",
+      "durationMs": 30,
       "expectedStdout": "PASS"
     }
   }
