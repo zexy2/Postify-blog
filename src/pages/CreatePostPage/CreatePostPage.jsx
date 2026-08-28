@@ -262,8 +262,10 @@ const CreatePostPage = () => {
             </div>
           </section>
 
-          {/* Title Input */}
-          <div className={styles.formGroup}>
+          <div className={styles.editorWorkspace}>
+            <div className={styles.writingColumn}>
+              {/* Title Input */}
+              <div className={styles.formGroup}>
             <label htmlFor="title" className={styles.label}>
               {t('posts.postTitle')}
               <span className={styles.required}>*</span>
@@ -287,31 +289,8 @@ const CreatePostPage = () => {
             </div>
           </div>
 
-          <section className={styles.evidenceFields} aria-labelledby="evidence-fields-title">
-            <div>
-              <span className={styles.formatEyebrow}>{i18n.language?.startsWith('en') ? 'Evidence' : 'Kanıt'}</span>
-              <h2 id="evidence-fields-title">{i18n.language?.startsWith('en') ? 'What did you actually test?' : 'Gerçekte neyi test ettin?'}</h2>
-              <p>{knowledgeBackendReady
-                ? (i18n.language?.startsWith('en') ? 'Evidence will be persisted with this knowledge unit.' : 'Kanıt bu bilgi birimiyle kalıcı olarak kaydedilecek.')
-                : (i18n.language?.startsWith('en') ? 'Keep drafting locally. Publishing evidence activates automatically after the production backend upgrade.' : 'Taslağa yerel olarak devam et. Kanıt yayınlama production backend yükseltmesinden sonra otomatik açılacak.')}</p>
-            </div>
-            <label>{i18n.language?.startsWith('en') ? 'Expected outcome' : 'Beklenen sonuç'}<input value={formData.outcome || ''} onChange={handleEvidenceChange('outcome')} placeholder={i18n.language?.startsWith('en') ? 'After this, the reader can…' : 'Bunun sonunda okuyucu…'} /></label>
-            <div className={styles.evidenceGrid}>
-              <label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" max={maxTestedDate} value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label>
-              <label>{i18n.language?.startsWith('en') ? 'Environment / versions' : 'Ortam / sürümler'}<input value={formData.environment || ''} onChange={handleEvidenceChange('environment')} placeholder="Node 22 · React 19" /></label>
-            </div>
-            <label>{i18n.language?.startsWith('en') ? 'Prerequisites' : 'Ön koşullar'}<textarea rows="3" value={formData.prerequisites || ''} onChange={handleEvidenceChange('prerequisites')} placeholder={i18n.language?.startsWith('en') ? 'One prerequisite per line' : 'Her satıra bir ön koşul'} /></label>
-            <label>{i18n.language?.startsWith('en') ? 'Verification steps' : 'Doğrulama adımları'}<textarea rows="4" value={formData.verificationSteps || ''} onChange={handleEvidenceChange('verificationSteps')} placeholder={i18n.language?.startsWith('en') ? 'One check per line' : 'Her satıra bir kontrol'} /></label>
-            <label>{i18n.language?.startsWith('en') ? 'Known caveats / failure conditions' : 'Bilinen sınırlar / hata koşulları'}<textarea rows="3" value={formData.caveats || ''} onChange={handleEvidenceChange('caveats')} placeholder={i18n.language?.startsWith('en') ? 'Where should a reader not trust this blindly?' : 'Okuyucu bunu hangi durumda körü körüne uygulamamalı?'} /></label>
-            <label>{i18n.language?.startsWith('en') ? 'Sources / evidence URLs' : 'Kaynaklar / kanıt URL’leri'}<textarea rows="3" value={formData.sources || ''} onChange={handleEvidenceChange('sources')} placeholder="https://…" /></label>
-            <div className={styles.evidenceGrid}>
-              <label>{i18n.language?.startsWith('en') ? 'Re-check after' : 'Tekrar kontrol süresi'}<select value={formData.staleAfterDays || '180'} onChange={handleEvidenceChange('staleAfterDays')}><option value="30">30 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="90">90 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="180">180 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="365">365 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option></select></label>
-              {isEdit && <label>{i18n.language?.startsWith('en') ? 'What changed?' : 'Ne değişti?'}<input value={formData.revisionReason || ''} onChange={handleEvidenceChange('revisionReason')} placeholder={i18n.language?.startsWith('en') ? 'Updated for Node 22 / fixed step 3' : 'Node 22 için güncellendi / 3. adım düzeltildi'} /></label>}
-            </div>
-          </section>
-
-          {/* Content Editor */}
-          <div className={styles.formGroup}>
+              {/* Content Editor */}
+              <div className={styles.formGroup}>
             <div className={styles.labelRow}>
               <label className={styles.label}>
                 {t('posts.postContent')}
@@ -348,7 +327,32 @@ const CreatePostPage = () => {
             </div>
           </div>
 
-          <aside className={styles.readinessPanel} aria-label={i18n.language?.startsWith('en') ? 'Publishing and evidence readiness' : 'Yayın ve kanıt hazırlığı'}>
+              <section className={styles.evidenceFields} aria-labelledby="evidence-fields-title">
+            <div>
+              <span className={styles.formatEyebrow}>{i18n.language?.startsWith('en') ? 'Evidence' : 'Kanıt'}</span>
+              <h2 id="evidence-fields-title">{i18n.language?.startsWith('en') ? 'What did you actually test?' : 'Gerçekte neyi test ettin?'}</h2>
+              <p>{knowledgeBackendReady
+                ? (i18n.language?.startsWith('en') ? 'Evidence will be persisted with this knowledge unit.' : 'Kanıt bu bilgi birimiyle kalıcı olarak kaydedilecek.')
+                : (i18n.language?.startsWith('en') ? 'Keep drafting locally. Publishing evidence activates automatically after the production backend upgrade.' : 'Taslağa yerel olarak devam et. Kanıt yayınlama production backend yükseltmesinden sonra otomatik açılacak.')}</p>
+            </div>
+            <label>{i18n.language?.startsWith('en') ? 'Expected outcome' : 'Beklenen sonuç'}<input value={formData.outcome || ''} onChange={handleEvidenceChange('outcome')} placeholder={i18n.language?.startsWith('en') ? 'After this, the reader can…' : 'Bunun sonunda okuyucu…'} /></label>
+            <div className={styles.evidenceGrid}>
+              <label>{i18n.language?.startsWith('en') ? 'Tested on' : 'Test tarihi'}<input type="date" max={maxTestedDate} value={formData.testedAt || ''} onChange={handleEvidenceChange('testedAt')} /></label>
+              <label>{i18n.language?.startsWith('en') ? 'Environment / versions' : 'Ortam / sürümler'}<input value={formData.environment || ''} onChange={handleEvidenceChange('environment')} placeholder="Node 22 · React 19" /></label>
+            </div>
+            <label>{i18n.language?.startsWith('en') ? 'Prerequisites' : 'Ön koşullar'}<textarea rows="3" value={formData.prerequisites || ''} onChange={handleEvidenceChange('prerequisites')} placeholder={i18n.language?.startsWith('en') ? 'One prerequisite per line' : 'Her satıra bir ön koşul'} /></label>
+            <label>{i18n.language?.startsWith('en') ? 'Verification steps' : 'Doğrulama adımları'}<textarea rows="4" value={formData.verificationSteps || ''} onChange={handleEvidenceChange('verificationSteps')} placeholder={i18n.language?.startsWith('en') ? 'One check per line' : 'Her satıra bir kontrol'} /></label>
+            <label>{i18n.language?.startsWith('en') ? 'Known caveats / failure conditions' : 'Bilinen sınırlar / hata koşulları'}<textarea rows="3" value={formData.caveats || ''} onChange={handleEvidenceChange('caveats')} placeholder={i18n.language?.startsWith('en') ? 'Where should a reader not trust this blindly?' : 'Okuyucu bunu hangi durumda körü körüne uygulamamalı?'} /></label>
+            <label>{i18n.language?.startsWith('en') ? 'Sources / evidence URLs' : 'Kaynaklar / kanıt URL’leri'}<textarea rows="3" value={formData.sources || ''} onChange={handleEvidenceChange('sources')} placeholder="https://…" /></label>
+            <div className={styles.evidenceGrid}>
+              <label>{i18n.language?.startsWith('en') ? 'Re-check after' : 'Tekrar kontrol süresi'}<select value={formData.staleAfterDays || '180'} onChange={handleEvidenceChange('staleAfterDays')}><option value="30">30 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="90">90 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="180">180 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option><option value="365">365 {i18n.language?.startsWith('en') ? 'days' : 'gün'}</option></select></label>
+              {isEdit && <label>{i18n.language?.startsWith('en') ? 'What changed?' : 'Ne değişti?'}<input value={formData.revisionReason || ''} onChange={handleEvidenceChange('revisionReason')} placeholder={i18n.language?.startsWith('en') ? 'Updated for Node 22 / fixed step 3' : 'Node 22 için güncellendi / 3. adım düzeltildi'} /></label>}
+            </div>
+          </section>
+
+            </div>
+
+            <aside className={styles.readinessPanel} aria-label={i18n.language?.startsWith('en') ? 'Publishing and evidence readiness' : 'Yayın ve kanıt hazırlığı'}>
             <div className={styles.readinessGrid}>
               <section className={styles.readinessTrack}>
                 <div className={styles.readinessHeader}>
@@ -404,6 +408,8 @@ const CreatePostPage = () => {
               </ul>
             </section>
           </aside>
+
+          </div>
 
           {errors.backend && <p className={styles.backendNotice} role="status">{errors.backend}</p>}
 

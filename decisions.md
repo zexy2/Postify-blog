@@ -244,3 +244,13 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Put the compact evidence/freshness state in the article header before the title, while keeping detailed evidence and the runbook in the reading flow. Long-form prose uses the primary sans-serif reading face; magazine-style drop caps and oversized cover/title treatment are removed.
 
 **Why:** Postify asks readers to act on technical guidance, so trust state and reading cost are decision inputs, not post-reading decoration. A quieter dossier hierarchy makes provenance visible early and improves sustained technical reading without duplicating the full evidence explanation.
+
+## 2026-08-28 — Writing comes before evidence metadata
+**Decision:** Create/Edit uses a writing-first workspace. Format choice, title and body form the primary authoring column; evidence fields follow the content. Publication/evidence readiness remains continuously visible in a sticky desktop inspector and collapses to a normal contextual block on narrower viewports.
+
+**Why:** Postify should encourage useful writing without presenting evidence metadata as an intimidating prerequisite form. The evidence contract remains strict in code and persistence, but the interface separates writing flow from trust-state inspection so authors understand both without confusing one for the other.
+
+## 2026-08-28 — Tiptap effects must not touch the view before mount
+**Decision:** RichTextEditor keyboard bindings resolve the mounted `.ProseMirror` node from the wrapper DOM instead of directly reading Tiptap's throwing `editor.view` getter during passive-effect startup. If the node is not mounted, the effect exits safely.
+
+**Why:** React/Tiptap can expose the editor object one effect tick before the editor view DOM exists. Direct access can crash the entire protected Create/Edit route through the ErrorBoundary even though the editor is otherwise healthy. Binding only to an existing mounted node removes that lifecycle race and now has regression coverage.

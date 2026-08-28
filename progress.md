@@ -336,3 +336,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Removed the legacy drop-cap and collapsed the accumulated V1/V2 CSS override layers into one coherent V3 stylesheet; every JSX CSS-module reference has a matching selector.
 - Responsive QA: desktop article width is 820px; mobile article is 358px inside a 390px document with exact 390/390 document width. Trust metadata remains above the H1 and the mobile cover resolves to 16:9.
 - Validation PASS: 23 Vitest files / 105 tests, lint, production Vite build, and official Playwright 1.57 Chromium UI suite 25/25 including trust-before-reading, mobile overflow and duration-fallback regression coverage.
+
+## 2026-08-28 — UI V3 focused writing workspace
+- Reordered Create/Edit around the author’s real task flow: choose a practical format, write the title/body first, then attach evidence. Evidence metadata no longer blocks the first writing interaction visually.
+- Rebuilt the desktop editor as a wide writing column plus a calm sticky publication/trust inspector. Tablet and mobile collapse to one column with the readiness inspector before the writing fields, preserving context without horizontal overflow.
+- Flattened the RichTextEditor chrome to match V3: restrained toolbar, editorial content surface, quieter focus states, technical-code treatment and no gradient/card-heavy shell.
+- Browser QA used an isolated local-only route bypass that was reverted before validation/commit. Measured exact document widths at 1440/1440, 820/820 and 390/390 with zero page errors; body editor appears before evidence fields and the desktop inspector is genuinely sticky.
+- QA exposed an existing Tiptap mount race: AI ghost-keyboard setup accessed `editor.view.dom` before EditorContent had mounted. The binding now targets the mounted `.ProseMirror` node through the editor wrapper and safely skips the effect until it exists.
+- Added a dedicated RichTextEditor regression test proving the editor mounts safely while AI ghost completion is enabled.
+- Final exact-worktree gates PASS: 24 Vitest files / 106 tests, lint, production Vite build (main entry 303,604 bytes), and official Playwright 1.57 Chromium public UI suite 25/25.

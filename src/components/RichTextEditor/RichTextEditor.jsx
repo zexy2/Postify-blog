@@ -230,7 +230,11 @@ const RichTextEditor = ({
       }
     };
 
-    const editorDom = editor.view.dom;
+    // EditorContent can exist one effect tick before Tiptap exposes editor.view.
+    // Bind to the mounted ProseMirror node instead of touching the throwing view getter.
+    const editorDom = editorRef.current?.querySelector('.ProseMirror');
+    if (!editorDom) return undefined;
+
     editorDom.addEventListener('keydown', handleKeyDown);
 
     return () => {

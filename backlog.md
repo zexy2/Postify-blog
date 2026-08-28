@@ -93,7 +93,7 @@
 - [x] Redesign header, home masthead, featured knowledge, topic nav, and discovery-filter hierarchy
 - [ ] Redesign standard / featured / compact post-card system around outcome, format, freshness, and evidence signals
 - [ ] Redesign article reading + trust surface as the primary product experience
-- [ ] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
+- [x] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
 - [ ] Bring profile, bookmarks, and Knowledge Dashboard into the same visual system
 - [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
 - [ ] Audit/delete legacy decorative components that remain unused after V3 conversion
@@ -102,6 +102,6 @@
 - [x] Replace startup-style discovery masthead with an editorial knowledge index entry point
 - [x] Rebuild the live EditorialFeed around evidence-first, high-density knowledge rows
 - [x] Reframe article detail around reading flow, evidence and actionability
-- [ ] Rebuild Create/Edit as a focused writing workspace instead of a form page
+- [x] Rebuild Create/Edit as a focused writing workspace instead of a form page
 - [ ] Align profile, bookmarks and knowledge dashboard with the same V3 system
 - [ ] Approve and commit screenshot-diff baselines after V3 core surfaces stabilize
