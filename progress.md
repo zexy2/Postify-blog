@@ -194,3 +194,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Deploy now stamps `release.json`; a post-deploy job waits for the exact source SHA on the custom domain, probes machine-readable artifacts/capability, then runs the Chromium suite against production.
 - First-load hardening lazy-loads Command Palette/mobile Sheet/knowledge service and removes the AI barrel from the eager Redux path. Entry chunk is ~294 KB versus ~338.6 KB before; build smoke enforces a 320 KB budget.
 - Current local gates: deterministic Node verification PASS; 20 test files / 75 tests PASS; lint/build/artifact/performance smoke PASS; full migration chain + RLS/privacy assertions PASS; Chromium 20/20 PASS.
+
+## 2026-08-28 — Production smoke compatibility fix
+- Production SHA attestation proved the live site was serving the exact merged source SHA.
+- Production Chromium/network probing found avoidable Supabase 400 responses before the Verified Knowledge schema migration: public post reads requested additive evidence columns first, then fell back to legacy fields.
+- Public post queries now consult the deployed knowledge capability contract first and choose legacy fields immediately while `ready:false`, eliminating expected pre-migration API 400 noise.
+- Production browser observability now distinguishes GitHub Pages' known initial deep-link document 404 from unexpected API/subresource 4xx/5xx responses; API/resource failures remain release-blocking.
+- GitHub Actions public Supabase URL/publishable key were aligned with the production client already served by the live site; this does not grant schema-management access.

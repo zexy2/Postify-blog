@@ -67,9 +67,15 @@ const knowledgeSchemaPendingError = (cause) => {
   return error;
 };
 
+export const getPostFieldsForCapability = (ready) => ready ? POST_FIELDS : LEGACY_POST_FIELDS;
+
 const runCompatiblePostQuery = async (queryFactory) => {
-  let result = await queryFactory(POST_FIELDS);
-  if (isKnowledgeSchemaMissing(result?.error)) result = await queryFactory(LEGACY_POST_FIELDS);
+  const backend = await getKnowledgeBackendStatus();
+  const preferredFields = getPostFieldsForCapability(backend.ready === true);
+  let result = await queryFactory(preferredFields);
+  if (preferredFields !== LEGACY_POST_FIELDS && isKnowledgeSchemaMissing(result?.error)) {
+    result = await queryFactory(LEGACY_POST_FIELDS);
+  }
   return result;
 };
 

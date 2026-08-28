@@ -6,7 +6,7 @@ const requireSupabase = vi.fn(() => {
 
 vi.mock('../lib/supabase', () => ({ requireSupabase }));
 
-const { default: postService, normalizeCoverImageUrl } = await import('./postService');
+const { default: postService, normalizeCoverImageUrl, getPostFieldsForCapability } = await import('./postService');
 
 describe('postService public fallback', () => {
   beforeEach(() => {
@@ -39,6 +39,13 @@ describe('postService public fallback', () => {
 });
 
 describe('Verified Knowledge schema compatibility', () => {
+  it('chooses legacy fields before migration so public reads do not generate avoidable 400s', () => {
+    expect(getPostFieldsForCapability(false)).not.toContain('evidence_status');
+    expect(getPostFieldsForCapability(false)).not.toContain('content_type');
+    expect(getPostFieldsForCapability(true)).toContain('evidence_status');
+    expect(getPostFieldsForCapability(true)).toContain('content_type');
+  });
+
   it('recognizes additive-schema absence without treating unrelated errors as migration state', async () => {
     const { isKnowledgeSchemaMissing } = await import('./postService');
     expect(isKnowledgeSchemaMissing({ code: '42703', message: 'column evidence_status does not exist' })).toBe(true);
