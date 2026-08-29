@@ -486,6 +486,22 @@
 .mobileActionBar { display: none; }
 .mobileShareWrap { display: flex; }
 
+
+.canonicalSource {
+  display: inline-flex;
+  margin-top: .75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .66rem;
+  font-weight: 750;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+
+.canonicalSource:hover,
+.canonicalSource:focus-visible { color: var(--primary); }
+
 @media (max-width: 980px) {
   .articleLayout { grid-template-columns: minmax(0, 760px); }
   .rail { display: none; }

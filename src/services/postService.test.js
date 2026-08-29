@@ -44,6 +44,8 @@ describe('Verified Knowledge schema compatibility', () => {
     expect(getPostFieldsForCapability(false)).not.toContain('content_type');
     expect(getPostFieldsForCapability(true)).toContain('evidence_status');
     expect(getPostFieldsForCapability(true)).toContain('content_type');
+    expect(getPostFieldsForCapability(true)).not.toContain('canonical_source_url');
+    expect(getPostFieldsForCapability(true, true)).toContain('canonical_source_url');
   });
 
 
@@ -56,6 +58,7 @@ describe('Verified Knowledge schema compatibility', () => {
     const { isKnowledgeSchemaMissing } = await import('./postService');
     expect(isKnowledgeSchemaMissing({ code: '42703', message: 'column evidence_status does not exist' })).toBe(true);
     expect(isKnowledgeSchemaMissing({ code: 'PGRST205', message: 'post_evidence_summary missing' })).toBe(true);
+    expect(isKnowledgeSchemaMissing({ code: 'PGRST204', message: 'canonical_source_url missing' })).toBe(true);
     expect(isKnowledgeSchemaMissing({ code: '42501', message: 'permission denied' })).toBe(false);
   });
 });

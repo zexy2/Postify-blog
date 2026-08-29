@@ -21,7 +21,7 @@ export function absoluteAssetUrl(value, siteUrl = 'https://postify.zekiakgul.dev
 
 export function safeHttpUrl(value) {
   const candidate = String(value || '').trim();
-  if (!candidate) return null;
+  if (!candidate || candidate.length > 2048) return null;
 
   try {
     const url = new URL(candidate);
@@ -29,6 +29,14 @@ export function safeHttpUrl(value) {
   } catch {
     return null;
   }
+}
+
+export function normalizeCanonicalSourceUrl(value) {
+  const safe = safeHttpUrl(value);
+  if (!safe) return null;
+  const url = new URL(safe);
+  url.hash = '';
+  return url.href;
 }
 
 export function sanitizeHttpUrls(values = []) {

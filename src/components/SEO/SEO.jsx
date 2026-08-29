@@ -5,7 +5,7 @@
  */
 
 import { Helmet } from 'react-helmet-async';
-import { absoluteAssetUrl, canonicalizeUrl, sanitizeHttpUrls } from '../../lib/seoUtils';
+import { absoluteAssetUrl, canonicalizeUrl, normalizeCanonicalSourceUrl, sanitizeHttpUrls } from '../../lib/seoUtils';
 
 const SEO = ({
   title,
@@ -20,6 +20,7 @@ const SEO = ({
   noIndex = false,
   citations = [],
   alternateJsonUrl,
+  canonicalUrl,
 }) => {
   const siteTitle = 'Postify';
   const defaultDescription = 'Postify, geliştiriciler ve ürün üretenler için uygulanabilir rehberler, karar notları, açıklayıcılar ve saha notları sunar.';
@@ -32,6 +33,7 @@ const SEO = ({
   const rawPageUrl = url || (typeof window !== 'undefined' ? window.location.href : siteUrl);
   const pageUrl = canonicalizeUrl(rawPageUrl, siteUrl);
   const safeCitations = sanitizeHttpUrls(citations);
+  const canonicalHref = normalizeCanonicalSourceUrl(canonicalUrl) || pageUrl;
 
   // JSON-LD structured data
   const structuredData = {
@@ -41,7 +43,7 @@ const SEO = ({
     description: pageDescription,
     image: pageImage,
     url: pageUrl,
-    ...(type === 'article' && { mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl } }),
+    ...(type === 'article' && { mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalHref } }),
     ...(author && {
       author: {
         '@type': 'Person',
@@ -100,7 +102,7 @@ const SEO = ({
       )}
 
       {/* Canonical URL */}
-      <link rel="canonical" href={pageUrl} />
+      <link rel="canonical" href={canonicalHref} />
       {alternateJsonUrl && <link rel="alternate" type="application/json" href={absoluteAssetUrl(alternateJsonUrl, siteUrl)} />}
 
       {/* JSON-LD Structured Data */}

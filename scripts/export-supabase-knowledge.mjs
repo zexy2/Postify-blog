@@ -33,6 +33,13 @@ if (postsError) throw postsError;
 if (summaryError) throw summaryError;
 
 const ids = (posts || []).map((post) => String(post.id));
+const canonicalResult = ids.length
+  ? await supabase.from('posts').select('id,canonical_source_url').in('id', ids)
+  : { data: [], error: null };
+const canonicalSourceReady = !isSchemaPending(canonicalResult.error);
+if (canonicalResult.error && canonicalSourceReady) throw canonicalResult.error;
+const canonicalById = new Map((canonicalResult.data || []).map((item) => [String(item.id), item.canonical_source_url || null]));
+
 const [{ data: translations, error: translationError }, { data: profiles, error: profilesError }] = await Promise.all([
   ids.length ? supabase.from('post_translations').select('post_id,locale,title,excerpt,body').in('post_id', ids) : Promise.resolve({ data: [], error: null }),
   supabase.from('profiles').select('id,full_name,username'),
@@ -96,10 +103,11 @@ for (const post of posts || []) {
         runtimeReleaseSignal: automaticVerificationId ? runtimeStatus.checks?.[automaticVerificationId] || null : null,
       },
       canonicalUrl: `https://postify.zekiakgul.dev/posts/${post.slug}`,
+      canonicalSourceUrl: canonicalById.get(String(post.id)) || null,
     };
     await writeFile(`docs/knowledge/${post.slug}.${translation.locale}.json`, `${JSON.stringify(artifact, null, 2)}\n`);
     count += 1;
   }
 }
-await writeFile('docs/knowledge-backend-status.json', `${JSON.stringify({ schemaVersion: 1, ready: true, mode: 'supabase', checkedAt: new Date().toISOString(), exportedArtifacts: count }, null, 2)}\n`);
+await writeFile('docs/knowledge-backend-status.json', `${JSON.stringify({ schemaVersion: 1, ready: true, mode: 'supabase', checkedAt: new Date().toISOString(), exportedArtifacts: count, capabilities: { canonicalSourceUrl: canonicalSourceReady } }, null, 2)}\n`);
 console.log(`Supabase knowledge export PASS: ${count} artifact(s)`);

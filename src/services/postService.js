@@ -49,6 +49,8 @@ const POST_FIELDS = [
   'evidence_version',
 ].join(',');
 
+const POST_FIELDS_WITH_CANONICAL = [POST_FIELDS, 'canonical_source_url'].join(',');
+
 export const isKnowledgeSchemaMissing = (error) => {
   if (!error) return false;
   const code = String(error.code || '');
@@ -57,6 +59,7 @@ export const isKnowledgeSchemaMissing = (error) => {
     || message.includes('post_evidence_summary')
     || message.includes('evidence_status')
     || message.includes('content_type')
+    || message.includes('canonical_source_url')
     || message.includes('capture_post_revision')
     || message.includes('reverify_post');
 };
@@ -68,11 +71,17 @@ const knowledgeSchemaPendingError = (cause) => {
   return error;
 };
 
-export const getPostFieldsForCapability = (ready) => ready ? POST_FIELDS : LEGACY_POST_FIELDS;
+export const getPostFieldsForCapability = (ready, canonicalSourceReady = false) => {
+  if (!ready) return LEGACY_POST_FIELDS;
+  return canonicalSourceReady ? POST_FIELDS_WITH_CANONICAL : POST_FIELDS;
+};
 
 const runCompatiblePostQuery = async (queryFactory) => {
   const backend = await getKnowledgeBackendStatus();
-  const preferredFields = getPostFieldsForCapability(backend.ready === true);
+  const preferredFields = getPostFieldsForCapability(
+    backend.ready === true,
+    backend.capabilities?.canonicalSourceUrl === true,
+  );
   let result = await queryFactory(preferredFields);
   if (preferredFields !== LEGACY_POST_FIELDS && isKnowledgeSchemaMissing(result?.error)) {
     result = await queryFactory(LEGACY_POST_FIELDS);
@@ -194,6 +203,7 @@ const normalizePost = (row, translation, author, commentCount = 0, evidenceSumma
   createdAt: row.created_at,
   publishedAt: row.published_at || row.created_at,
   updatedAt: row.updated_at || row.published_at || row.created_at,
+  canonicalSourceUrl: row.canonical_source_url || null,
   contentType: row.content_type || undefined,
   outcome: row.outcome || translation?.excerpt || row.excerpt || '',
   evidence: {
@@ -316,9 +326,15 @@ export const postService = {
     locale = 'tr',
     contentType = 'guide',
     outcome = '',
+    canonicalSourceUrl = null,
     evidence = {},
   }) => {
     const client = requireSupabase();
+    const backend = await getKnowledgeBackendStatus();
+    const canonicalSourceReady = backend.capabilities?.canonicalSourceUrl === true;
+    if (canonicalSourceUrl && !canonicalSourceReady) {
+      throw Object.assign(new Error('Canonical source persistence is waiting for the production schema migration.'), { code: 'CANONICAL_SCHEMA_PENDING' });
+    }
     const { data: authData, error: authError } = await client.auth.getUser();
     if (authError) throw authError;
     if (!authData.user) throw new Error('Yazı oluşturmak için giriş yapmalısınız.');
@@ -345,6 +361,7 @@ export const postService = {
         published_at: new Date().toISOString(),
         content_type: contentType,
         outcome,
+        ...(canonicalSourceUrl ? { canonical_source_url: canonicalSourceUrl } : {}),
         evidence_status: evidence.level || 'unverified',
         tested_at: evidence.testedAt || null,
         stale_after_days: evidence.staleAfterDays || 180,
@@ -354,7 +371,7 @@ export const postService = {
         caveats: evidence.caveats || [],
         sources: evidence.sources || [],
       })
-      .select(POST_FIELDS)
+      .select(getPostFieldsForCapability(backend.ready === true, canonicalSourceReady))
       .single();
     if (isKnowledgeSchemaMissing(error)) throw knowledgeSchemaPendingError(error);
     if (error) throw error;
@@ -374,6 +391,11 @@ export const postService = {
 
   update: async (id, data) => {
     const client = requireSupabase();
+    const backend = await getKnowledgeBackendStatus();
+    const canonicalSourceReady = backend.capabilities?.canonicalSourceUrl === true;
+    if (data.canonicalSourceUrl && !canonicalSourceReady) {
+      throw Object.assign(new Error('Canonical source persistence is waiting for the production schema migration.'), { code: 'CANONICAL_SCHEMA_PENDING' });
+    }
     const { error: revisionError } = await client.rpc('capture_post_revision', { target_post_id: id, revision_reason: data.revisionReason || 'Content/evidence update' });
     if (isKnowledgeSchemaMissing(revisionError)) throw knowledgeSchemaPendingError(revisionError);
     if (revisionError) throw revisionError;
@@ -388,6 +410,7 @@ export const postService = {
       ...(postData.readingTime !== undefined && { reading_time: postData.readingTime }),
       ...(postData.contentType !== undefined && { content_type: postData.contentType }),
       ...(postData.outcome !== undefined && { outcome: postData.outcome }),
+      ...(canonicalSourceReady && postData.canonicalSourceUrl !== undefined && { canonical_source_url: postData.canonicalSourceUrl || null }),
       ...(postData.evidence !== undefined && {
         evidence_status: postData.evidence.level || 'unverified',
         tested_at: postData.evidence.testedAt || null,

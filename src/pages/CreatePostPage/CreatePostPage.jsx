@@ -15,6 +15,7 @@ import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draf
 import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness, timestampToLocalDateInputValue } from '../../lib/publishReadiness';
 import { useKnowledgeBackendStatus } from '../../hooks/useKnowledge';
 import { getWritingMetrics } from '../../lib/writingMetrics';
+import { normalizeCanonicalSourceUrl } from '../../lib/seoUtils';
 import { buildMarkdownDocument, markdownFilename, MAX_MARKDOWN_IMPORT_BYTES, splitMarkdownDocument } from '../../lib/markdownTransfer';
 import { 
   selectAIEnabled, 
@@ -33,6 +34,7 @@ const CreatePostPage = () => {
   const updatePost = useUpdatePost();
   const knowledgeBackend = useKnowledgeBackendStatus();
   const knowledgeBackendReady = knowledgeBackend.data?.ready === true;
+  const canonicalSourceReady = knowledgeBackend.data?.capabilities?.canonicalSourceUrl === true;
   const { post: editingPost } = usePost(id);
   const editorRef = useRef(null);
   const markdownInputRef = useRef(null);
@@ -52,6 +54,7 @@ const CreatePostPage = () => {
     body: '',
     bodyHtml: '',
     outcome: '',
+    canonicalSourceUrl: '',
     testedAt: '',
     environment: '',
     prerequisites: '',
@@ -83,6 +86,7 @@ const CreatePostPage = () => {
       body: editingPost.body || '',
       bodyHtml: editingPost.bodyHtml || '',
       outcome: editingPost.outcome || editingPost.excerpt || '',
+      canonicalSourceUrl: editingPost.canonicalSourceUrl || '',
       testedAt: editingPost.evidence?.testedAt ? timestampToLocalDateInputValue(editingPost.evidence.testedAt) : '',
       environment: (editingPost.evidence?.environment || []).join(' · '),
       prerequisites: (editingPost.evidence?.prerequisites || []).join('\n'),
@@ -110,6 +114,7 @@ const CreatePostPage = () => {
     const newErrors = {};
     const normalizedTitle = formData.title.trim();
     const normalizedBody = formData.body.trim();
+    const canonicalSource = String(formData.canonicalSourceUrl || '').trim();
 
     if (!normalizedTitle) {
       newErrors.title = t('validation.required');
@@ -125,9 +130,15 @@ const CreatePostPage = () => {
       newErrors.body = t('validation.minLength', { min: EDITOR_CONFIG.MIN_BODY_LENGTH });
     }
 
+    if (canonicalSourceReady && canonicalSource && !normalizeCanonicalSourceUrl(canonicalSource)) {
+      newErrors.canonicalSourceUrl = i18n.language?.startsWith('en')
+        ? 'Use a full http:// or https:// URL.'
+        : 'Tam bir http:// veya https:// URL kullan.';
+    }
+
     setErrors(newErrors);
     return publishReadiness.publication.ready && Object.keys(newErrors).length === 0;
-  }, [formData.body, formData.title, publishReadiness.publication.ready, t]);
+  }, [canonicalSourceReady, formData.body, formData.canonicalSourceUrl, formData.title, i18n.language, publishReadiness.publication.ready, t]);
 
   const handleTitleChange = (e) => {
     setFormData((prev) => ({ ...prev, title: e.target.value }));
@@ -145,6 +156,14 @@ const CreatePostPage = () => {
     }
   };
 
+
+  const handleCanonicalSourceChange = (event) => {
+    setFormData((prev) => ({ ...prev, canonicalSourceUrl: event.target.value }));
+    setIsDirty(true);
+    if (errors.canonicalSourceUrl) {
+      setErrors((prev) => ({ ...prev, canonicalSourceUrl: undefined }));
+    }
+  };
 
   const handleEvidenceChange = (field) => (event) => {
     setFormData((prev) => ({ ...prev, [field]: event.target.value }));
@@ -236,6 +255,7 @@ const CreatePostPage = () => {
         locale: i18n.language?.startsWith('en') ? 'en' : 'tr',
         contentType: writingMode,
         outcome: formData.outcome.trim(),
+        canonicalSourceUrl: canonicalSourceReady ? normalizeCanonicalSourceUrl(formData.canonicalSourceUrl) : null,
         evidence: {
           level: publishReadiness.evidence.level,
           testedAt: formData.testedAt ? dateInputToTimestamp(formData.testedAt) : null,
@@ -485,6 +505,26 @@ const CreatePostPage = () => {
                   : (i18n.language?.startsWith('en') ? 'You can still publish. It will stay Unverified until all three evidence fields are present.' : 'Yine de yayınlayabilirsin. Üç kanıt alanı da dolana kadar Unverified kalır.')}</p>
               </section>
             </div>
+
+            {canonicalSourceReady && (
+              <section className={styles.canonicalTrack} aria-labelledby="canonical-source-label">
+                <label id="canonical-source-label" htmlFor="canonical-source-url">
+                  {i18n.language?.startsWith('en') ? 'Canonical source' : 'Canonical kaynak'}
+                </label>
+                <input
+                  id="canonical-source-url"
+                  type="url"
+                  value={formData.canonicalSourceUrl || ''}
+                  onChange={handleCanonicalSourceChange}
+                  placeholder="https://example.com/original"
+                  aria-invalid={Boolean(errors.canonicalSourceUrl)}
+                  aria-describedby="canonical-source-help"
+                />
+                <p id="canonical-source-help">{errors.canonicalSourceUrl || (i18n.language?.startsWith('en')
+                  ? 'Optional. Use only when this knowledge was published elsewhere first. This is SEO/provenance metadata, not evidence.'
+                  : 'İsteğe bağlı. Bu bilgi önce başka yerde yayınlandıysa kullan. Bu SEO/kaynak metadata’sıdır; kanıt değildir.')}</p>
+              </section>
+            )}
 
             <section className={styles.qualityTrack}>
               <span>{i18n.language?.startsWith('en') ? 'Recommended quality signals' : 'Önerilen kalite sinyalleri'}</span>

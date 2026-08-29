@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { absoluteAssetUrl, canonicalizeUrl, safeHttpUrl, sanitizeHttpUrls } from './seoUtils';
+import { absoluteAssetUrl, canonicalizeUrl, normalizeCanonicalSourceUrl, safeHttpUrl, sanitizeHttpUrls } from './seoUtils';
 
 describe('seoUtils', () => {
   it('removes query strings and fragments from canonicals', () => {
@@ -24,6 +24,13 @@ describe('seoUtils', () => {
     expect(safeHttpUrl('data:text/html,x')).toBeNull();
     expect(safeHttpUrl('//example.com')).toBeNull();
     expect(safeHttpUrl('example.com')).toBeNull();
+  });
+
+  it('normalizes an external canonical source without deleting meaningful query parameters', () => {
+    expect(normalizeCanonicalSourceUrl(' https://example.com/original?edition=2#section '))
+      .toBe('https://example.com/original?edition=2');
+    expect(normalizeCanonicalSourceUrl('javascript:alert(1)')).toBeNull();
+    expect(normalizeCanonicalSourceUrl(`https://example.com/${'a'.repeat(2040)}`)).toBeNull();
   });
 
   it('keeps only http/https citation URLs', () => {

@@ -1,6 +1,7 @@
 # Postify Known Issues
 
 ## Current — release relevant
+- **Canonical-source production migration cannot currently be applied by automation because GitHub Actions has no `SUPABASE_ACCESS_TOKEN` or `SUPABASE_DB_PASSWORD` secret configured.** Migration `20260829231500_canonical_source_url.sql` is additive, passes the full PostgreSQL 16 migration/RLS chain, and the frontend is capability-gated so production remains safe and the field stays hidden until the schema capability appears.
 - **Supabase Auth leaked-password protection is disabled.** Database/RLS migration is healthy; this separate Auth setting still needs to be enabled from Supabase Auth configuration because the connected management surface does not expose that toggle.
 - **GitHub Pages direct SPA paths return an initial HTTP 404 by hosting design.** The checked `404.html` redirect restores the route in browsers. Chromium E2E covers direct article navigation; HTTP-only probes must not mislabel the expected initial 404 as an application rendering failure.
 - **Automatic Postify verification intentionally supports only checked-in deterministic Node.js snippets.** Arbitrary user code, package installation, shell/network access and external-service verification remain unsupported until an isolated runtime is designed.

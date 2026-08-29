@@ -16,7 +16,8 @@
 - [x] Reader filter by content format
 - [x] Repeatable test/lint/build/smoke release gate
 - [x] Markdown import/export
-- [ ] Canonical URL support
+- [x] Canonical source URL product support (capability-gated)
+- [ ] Apply canonical source migration in production after management credentials are configured
 - [x] Revision history / changelog model
 
 - [x] Reader table of contents for structured articles

@@ -113,6 +113,31 @@ for (const viewport of viewports) {
 
 
 
+test('Editor canonical source is capability-gated, validated, and mobile-safe', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.route('**/knowledge-backend-status.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ready: true, mode: 'test', capabilities: { canonicalSourceUrl: true } }),
+    });
+  });
+  await page.goto('/e2e/visual/editor.html');
+
+  const canonicalInput = page.locator('#canonical-source-url');
+  await expect(canonicalInput).toBeVisible();
+  expect((await canonicalInput.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+  await canonicalInput.fill('javascript:alert(1)');
+  await page.getByRole('button', { name: /publish|yayınla/i }).click();
+  await expect(canonicalInput).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#canonical-source-help')).toContainText(/http:\/\/|https:\/\//i);
+
+  await canonicalInput.fill('https://example.com/original?edition=2#section');
+  await expect(canonicalInput).toHaveAttribute('aria-invalid', 'false');
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
 test('Editor Markdown import/export round-trip stays local and mobile-safe', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await stabilize(page);

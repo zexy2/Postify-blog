@@ -418,6 +418,41 @@
 .readinessList li[data-passed='true'] { color: var(--text-secondary); }
 .readinessHint { margin: .6rem 0 0; color: var(--text-muted); font-size: .67rem; line-height: 1.5; }
 
+.canonicalTrack {
+  display: grid;
+  gap: .42rem;
+  padding-top: .85rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.canonicalTrack label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .61rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.canonicalTrack input {
+  width: 100%;
+  min-height: 40px;
+  padding: .45rem .05rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  outline: 0;
+  font: inherit;
+  font-size: .72rem;
+}
+
+.canonicalTrack input:focus { border-color: var(--primary); }
+.canonicalTrack input[aria-invalid='true'] { border-color: var(--error); }
+.canonicalTrack p { margin: 0; color: var(--text-muted); font-size: .65rem; line-height: 1.45; }
+.canonicalTrack input[aria-invalid='true'] + p { color: var(--error); }
+
 .qualityTrack {
   padding-top: .85rem;
   border-top: 1px solid var(--border-color);
@@ -514,6 +549,7 @@
   .briefTopline { align-items: stretch; flex-direction: column; }
   .briefActions { justify-content: flex-start; }
   .outlineButton, .transferButton { min-height: 44px; }
+  .canonicalTrack input { min-height: 44px; }
   .readinessGrid { grid-template-columns: 1fr; }
   .readinessTrack + .readinessTrack { padding: .9rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }
   .evidenceGrid { grid-template-columns: 1fr; gap: .85rem; }

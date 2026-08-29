@@ -113,6 +113,7 @@ const PostDetailPage = () => {
         keywords={[post.category, presentation.typeLabel, ...(post.evidence?.environment || [])]}
         citations={post.evidence?.sources || []}
         alternateJsonUrl={post.slug ? `/knowledge/${post.slug}.${i18n.language?.startsWith('en') ? 'en' : 'tr'}.json` : undefined}
+        canonicalUrl={post.canonicalSourceUrl}
       />
       <ReadingProgress containerRef={articleRef} />
       <div className={styles.page}>
@@ -174,6 +175,17 @@ const PostDetailPage = () => {
                     </div>
                   </Link>
                 </div>
+
+                {post.canonicalSourceUrl && (
+                  <a
+                    href={post.canonicalSourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.canonicalSource}
+                  >
+                    {i18n.language?.startsWith('en') ? 'Original / canonical source ↗' : 'Orijinal / canonical kaynak ↗'}
+                  </a>
+                )}
               </header>
 
               <section className={styles.quickBrief} aria-label={t('article.quickBrief')}>

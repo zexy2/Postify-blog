@@ -328,3 +328,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Create/Edit imports and exports Markdown through Tiptap's native Markdown document model. Transfer happens entirely in the browser, a leading H1 maps to the Postify title, existing title/body content requires overwrite confirmation, and imported Markdown never populates evidence or provenance fields automatically. Canonical-source URL persistence remains a separate feature.
 
 **Why:** Markdown portability is useful only if it preserves the writing structure without weakening Postify's trust contract. Inferring test dates, environments, evidence, or canonical ownership from arbitrary Markdown would manufacture provenance. Keeping transfer local also avoids an unnecessary upload surface while giving authors a reversible way to move existing writing in and out of Postify.
+
+## 2026-08-30 — Canonical provenance is a separate capability, not evidence
+**Decision:** Store an optional `canonical_source_url` separately from evidence sources and keep Postify's own article URL as the public/share URL. The editor exposes canonical provenance only when the deployed capability artifact confirms the production column exists; reads and writes omit the field otherwise.
+
+**Why:** Republishing metadata should not manufacture evidence or make pre-migration clients fail. A capability-gated additive column lets schema and frontend roll out independently, keeps Postify URLs stable for sharing, and prevents a missing production migration from breaking public reads or author updates.
