@@ -220,6 +220,7 @@
   display: inline-flex;
   align-items: center;
   gap: .45rem;
+  min-height: 40px;
   padding: .4rem 0;
   color: var(--text-secondary);
   background: transparent;
@@ -284,6 +285,8 @@
   .systemLine > div:last-child {
     border-bottom: 0;
   }
+
+  .scrollTopButton { min-height: 44px; }
 
   .bottomBar {
     align-items: flex-start;

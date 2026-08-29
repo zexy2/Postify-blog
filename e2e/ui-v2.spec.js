@@ -34,6 +34,24 @@ test.describe('Postify UI V2', () => {
     await expect(article.getByText(/undefined\s*(dk|min)/i)).toHaveCount(0);
   });
 
+  test('mobile article and editor controls stay touch-safe and contained', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/posts/node-json-dogrulama');
+
+    const feedbackButtons = page.locator('#evidence-feedback button');
+    await expect(feedbackButtons.first()).toBeVisible();
+    for (const box of await feedbackButtons.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
+      expect(box).toBeGreaterThanOrEqual(44);
+    }
+
+    const copyCode = page.getByRole('button', { name: /^kopyala$|^copy$/i }).first();
+    await expect(copyCode).toBeVisible();
+    expect((await copyCode.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+
+    const articleOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(articleOverflow).toBeLessThanOrEqual(1);
+  });
+
   test('V3 public author portfolio stays mobile-safe and knowledge-first', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/users/fallback-editor');
@@ -100,6 +118,53 @@ test.describe('Postify UI V2', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.getByLabel(/email/i)).toBeVisible();
     await expect(page.locator('input[name="password"]')).toBeVisible();
+  });
+
+  test('auth validation is programmatic and mobile controls meet touch targets', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/auth/login');
+
+    const loginButton = page.getByRole('button', { name: /^giriş yap$|^login$|^sign in$/i });
+    await loginButton.click();
+    const email = page.locator('#email');
+    const password = page.locator('#password');
+    await expect(email).toHaveAttribute('aria-invalid', 'true');
+    await expect(email).toHaveAttribute('aria-describedby', 'login-email-error');
+    await expect(password).toHaveAttribute('aria-invalid', 'true');
+    await expect(password).toHaveAttribute('aria-describedby', 'login-password-error');
+
+    const touchTargets = [
+      page.getByRole('button', { name: /şifreyi göster|show password/i }),
+      page.getByRole('button', { name: 'Google' }),
+      page.getByRole('button', { name: 'GitHub' }),
+      page.getByRole('button', { name: /menüyü aç\/kapat|toggle menu/i }),
+    ];
+    for (const target of touchTargets) {
+      const box = await target.boundingBox();
+      expect(box?.height || 0).toBeGreaterThanOrEqual(44);
+    }
+
+    await page.getByRole('button', { name: /menüyü aç\/kapat|toggle menu/i }).click();
+    const language = page.getByRole('button', { name: /dili değiştir|change language/i });
+    const theme = page.getByRole('button', { name: /karanlık mod|dark mode|aydınlık mod|light mode/i });
+    await expect(language).toBeVisible();
+    await expect(theme).toBeVisible();
+    for (const target of [language, theme]) {
+      const box = await target.boundingBox();
+      expect(box?.height || 0).toBeGreaterThanOrEqual(44);
+    }
+
+    await page.goto('/auth/register');
+    await page.getByRole('button', { name: /hesap oluştur|create account/i }).click();
+    for (const selector of ['#fullName', '#username', '#email', '#password', '#confirmPassword']) {
+      await expect(page.locator(selector)).toHaveAttribute('aria-invalid', 'true');
+      await expect(page.locator(selector)).toHaveAttribute('aria-describedby', /register-.*-error/);
+    }
+
+    await page.goto('/auth/forgot-password');
+    await page.getByRole('button', { name: /kurtarma bağlantısı gönder|send recovery link/i }).click();
+    await expect(page.locator('#recovery-email')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#recovery-email')).toHaveAttribute('aria-describedby', 'recovery-form-error');
   });
 
   test('password recovery routes are real, responsive auth surfaces', async ({ page }) => {

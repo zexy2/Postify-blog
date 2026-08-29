@@ -92,6 +92,8 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
                     autoComplete="email"
                     placeholder="ornek@email.com"
                     disabled={isLoading}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={error ? 'recovery-form-error' : undefined}
                   />
                 </div>
               </div>
@@ -108,6 +110,8 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
                       onChange={(event) => setPassword(event.target.value)}
                       autoComplete="new-password"
                       disabled={isLoading}
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={error ? 'recovery-form-error' : undefined}
                     />
                     <button
                       type="button"
@@ -130,13 +134,15 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
                       onChange={(event) => setConfirmPassword(event.target.value)}
                       autoComplete="new-password"
                       disabled={isLoading}
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={error ? 'recovery-form-error' : undefined}
                     />
                   </div>
                 </div>
               </>
             )}
 
-            {error && <p className={styles.error} role="alert">{error}</p>}
+            {error && <p id="recovery-form-error" className={styles.error} role="alert">{error}</p>}
             <button type="submit" className={styles.submitButton} disabled={isLoading}>
               {isLoading
                 ? (en ? 'Working…' : 'İşleniyor…')

@@ -116,7 +116,7 @@
 @media (max-width: 680px) {
   .menuBar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .menuBar::-webkit-scrollbar { display: none; }
-  .menuButton { flex: 0 0 30px; }
+  .menuButton { flex: 0 0 44px; width: 44px; height: 44px; }
   .content { padding-top: 1rem; }
 }
 

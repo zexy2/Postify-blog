@@ -243,7 +243,12 @@ const Header = () => {
               <div className={styles.mobileFooter}>
                 <div className={styles.mobileUtilities}>
                   <LanguageSwitcher />
-                  <button type="button" onClick={toggleTheme} className={styles.iconButton}>
+                  <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className={styles.iconButton}
+                    aria-label={theme === 'light' ? t('theme.dark') : t('theme.light')}
+                  >
                     {theme === 'light' ? <FiMoon size={17} /> : <FiSun size={17} />}
                   </button>
                 </div>

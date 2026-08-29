@@ -104,9 +104,11 @@ const LoginPage = () => {
                 autoComplete="email"
                 className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                 disabled={isLoading}
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? 'login-email-error' : undefined}
               />
             </div>
-            {errors.email && <span className={styles.error}>{errors.email}</span>}
+            {errors.email && <span id="login-email-error" className={styles.error} role="alert">{errors.email}</span>}
           </div>
 
           <div className={styles.inputGroup}>
@@ -125,6 +127,8 @@ const LoginPage = () => {
                 autoComplete="current-password"
                 className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
                 disabled={isLoading}
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={errors.password ? 'login-password-error' : undefined}
               />
               <button
                 type="button"
@@ -135,7 +139,7 @@ const LoginPage = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            {errors.password && <span className={styles.error}>{errors.password}</span>}
+            {errors.password && <span id="login-password-error" className={styles.error} role="alert">{errors.password}</span>}
           </div>
 
           <div className={styles.forgotPassword}>

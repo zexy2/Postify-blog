@@ -122,9 +122,11 @@ const RegisterPage = () => {
                   autoComplete="name"
                   className={`${styles.input} ${errors.fullName ? styles.inputError : ''}`}
                   disabled={isLoading}
+                  aria-invalid={Boolean(errors.fullName)}
+                  aria-describedby={errors.fullName ? 'register-fullname-error' : undefined}
                 />
               </div>
-              {errors.fullName && <span className={styles.error}>{errors.fullName}</span>}
+              {errors.fullName && <span id="register-fullname-error" className={styles.error} role="alert">{errors.fullName}</span>}
             </div>
 
             <div className={styles.inputGroup}>
@@ -145,9 +147,11 @@ const RegisterPage = () => {
                     errors.username ? styles.inputError : ''
                   }`}
                   disabled={isLoading}
+                  aria-invalid={Boolean(errors.username)}
+                  aria-describedby={errors.username ? 'register-username-error' : undefined}
                 />
               </div>
-              {errors.username && <span className={styles.error}>{errors.username}</span>}
+              {errors.username && <span id="register-username-error" className={styles.error} role="alert">{errors.username}</span>}
             </div>
           </div>
 
@@ -167,9 +171,11 @@ const RegisterPage = () => {
                 autoComplete="email"
                 className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                 disabled={isLoading}
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? 'register-email-error' : undefined}
               />
             </div>
-            {errors.email && <span className={styles.error}>{errors.email}</span>}
+            {errors.email && <span id="register-email-error" className={styles.error} role="alert">{errors.email}</span>}
           </div>
 
           <div className={styles.inputGroup}>
@@ -188,6 +194,8 @@ const RegisterPage = () => {
                 autoComplete="new-password"
                 className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
                 disabled={isLoading}
+                  aria-invalid={Boolean(errors.password)}
+                  aria-describedby={errors.password ? 'register-password-error' : undefined}
               />
               <button
                 type="button"
@@ -198,7 +206,7 @@ const RegisterPage = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            {errors.password && <span className={styles.error}>{errors.password}</span>}
+            {errors.password && <span id="register-password-error" className={styles.error} role="alert">{errors.password}</span>}
           </div>
 
           <div className={styles.inputGroup}>
@@ -217,10 +225,12 @@ const RegisterPage = () => {
                 autoComplete="new-password"
                 className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
                 disabled={isLoading}
+                  aria-invalid={Boolean(errors.confirmPassword)}
+                  aria-describedby={errors.confirmPassword ? 'register-confirm-error' : undefined}
               />
             </div>
             {errors.confirmPassword && (
-              <span className={styles.error}>{errors.confirmPassword}</span>
+              <span id="register-confirm-error" className={styles.error} role="alert">{errors.confirmPassword}</span>
             )}
           </div>
 

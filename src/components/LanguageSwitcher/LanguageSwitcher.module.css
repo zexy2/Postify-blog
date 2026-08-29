@@ -8,7 +8,7 @@
 }
 
 /* Toggle Button */
-.button { display: inline-flex; align-items: center; gap: .4rem; min-width: 3.4rem; justify-content: center; padding: .55rem .65rem; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast); }
+.button { display: inline-flex; align-items: center; gap: .4rem; min-width: 3.4rem; min-height: 40px; justify-content: center; padding: .55rem .65rem; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast); }
 
 .button:hover { color: var(--text-primary); border-color: var(--primary); background: var(--bg-tertiary); }
 
@@ -175,6 +175,7 @@
 /* Responsive */
 @media (max-width: 640px) {
   .button {
+    min-height: 44px;
     padding: var(--space-xs) var(--space-sm);
   }
 

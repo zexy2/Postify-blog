@@ -310,3 +310,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Postify UI QA is performed against real rendered Chromium surfaces at desktop and mobile widths, not inferred from CSS or functional tests alone. Route audits may change layout density and must also close functional/data-contract defects exposed by the rendered UI. Authenticated surfaces use deterministic test-only provider/data harnesses rather than production auth bypasses.
 
 **Why:** Several real defects were invisible to build success: desktop account controls were absent, Profile looked unfinished despite working, Admin expected fields its service never returned, and mobile tables needed containment. Browser-level inspection plus deterministic visual baselines makes spacing, hierarchy, empty/data states and cross-layer UI/data drift release-visible without weakening production security.
+
+## 2026-08-29 — Mobile UI quality includes containment, touch targets, and programmatic errors
+**Decision:** Browser acceptance for interactive mobile surfaces requires no document/form overflow, 44px primary touch controls, and validation messages programmatically associated with their inputs. Horizontally scrollable editor toolbars may extend internally, but they must not expand the page or form.
+
+**Why:** These defects can survive unit tests and ordinary screenshots while still making the product visibly broken or difficult to operate on a phone. Real viewport geometry and accessibility state are therefore release-quality signals, not optional polish.

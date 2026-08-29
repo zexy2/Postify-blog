@@ -80,6 +80,12 @@ for (const viewport of viewports) {
     await page.goto('/e2e/visual/editor.html');
     await expect(page.getByRole('heading', { level: 1, name: /create new post/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /what did you actually test/i })).toBeVisible();
+    if (viewport.name === 'mobile') {
+      const formOverflow = await page.locator('form').evaluate((form) => form.scrollWidth - form.clientWidth);
+      expect(formOverflow).toBeLessThanOrEqual(1);
+      const boldButton = page.getByRole('button', { name: 'B', exact: true });
+      expect((await boldButton.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    }
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`editor-${viewport.name}.png`);
   });
@@ -205,4 +211,27 @@ for (const viewport of viewports) {
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`knowledge-${viewport.name}.png`);
   });
+}
+
+
+const publicSystemVisualRoutes = [
+  ['/auth/login', 'login'],
+  ['/auth/register', 'register'],
+  ['/auth/forgot-password', 'forgot-password'],
+  ['/auth/reset-password', 'reset-password'],
+  ['/definitely-not-a-postify-route', 'not-found'],
+];
+
+for (const viewport of viewports) {
+  for (const [route, snapshotName] of publicSystemVisualRoutes) {
+    test(`${snapshotName} ${viewport.name} baseline`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await stabilize(page);
+      await page.goto(route);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await settleVisualSurface(page);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await expect(page).toHaveScreenshot(`${snapshotName}-${viewport.name}.png`, { fullPage: false });
+    });
+  }
 }
