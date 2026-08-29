@@ -5,8 +5,10 @@
 - **GitHub Pages direct SPA paths return an initial HTTP 404 by hosting design.** The checked `404.html` redirect restores the route in browsers. Chromium E2E covers direct article navigation; HTTP-only probes must not mislabel the expected initial 404 as an application rendering failure.
 - **Automatic Postify verification intentionally supports only checked-in deterministic Node.js snippets.** Arbitrary user code, package installation, shell/network access and external-service verification remain unsupported until an isolated runtime is designed.
 - **Browserslist/caniuse-lite data is ~8 months old.** This is a maintenance warning, not a current release blocker.
-- **Pixel/screenshot baselines are not committed.** Chromium tests enforce functional/layout/accessibility invariants, not pixel-identical visual approval.
 - The Oracle host has no global Node/npm runtime; deterministic release checks use pinned Docker images.
+
+## Resolved — 2026-08-29
+- Deterministic screenshot-diff baselines are committed for Home, Article, and Editor at 1440px and 390px. The Playwright 1.57 visual suite is now a required Chromium CI step, so unintended visual drift blocks the main release before deploy.
 
 ## Resolved — 2026-08-28
 - Editor trust state no longer conflates publishability, writing quality, and evidence: publication eligibility matches the submit contract, `Author tested` requires meaningful evidence in both frontend and production DB paths, and future/same-day test-date handling is aligned with the database integrity trigger.

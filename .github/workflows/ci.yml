@@ -67,6 +67,11 @@ jobs:
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4174
 
+      - name: Run deterministic visual regression
+        run: npm run test:e2e:visual
+        env:
+          PLAYWRIGHT_VISUAL_PORT: 4175
+
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/postify-vite.log || true

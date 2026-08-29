@@ -408,3 +408,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Kept production authentication untouched. Editor visual coverage uses an `e2e/visual` harness that renders the real `CreatePostPage` with the real Redux and React Query providers, plus a fixed local draft that exercises writing, evidence, and readiness surfaces. No ProtectedRoute or auth bypass was added to shipped source.
 - First baseline generation PASS 6/6; immediate comparison-only rerun PASS 6/6 without updating snapshots, proving deterministic output on the same Playwright 1.57 Chromium runtime.
 - Production quality gates remain clean: 26 Vitest files / 102 tests PASS, lint PASS, production Vite/PWA build PASS, and the main entry remains exactly 305,818 bytes. The visual harness/config is test-only and does not enter the production dependency graph.
+
+## 2026-08-29 — UI V3 visual regression promoted to release gate
+- Promoted the deterministic six-snapshot Home / Article / Editor suite from a local QA tool into the `ui-e2e` GitHub Actions gate. CI runs it on a dedicated port after the functional Chromium suite and before the deploy job can become eligible.
+- Removed the stale known issue claiming pixel baselines were not committed. The baseline set is committed, compare-only rerun is 6/6 PASS, lint PASS, and the production build remains 305,818 bytes.
+- Visual CI uses the pinned Playwright 1.57 Chromium image already used by product E2E, with fixed language/theme/time and fallback public content, so release failures should represent real visual drift rather than changing production data.
