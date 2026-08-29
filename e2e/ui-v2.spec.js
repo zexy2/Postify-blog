@@ -166,13 +166,17 @@ test.describe('Postify UI V2', () => {
     expect(wrap).toBe('nowrap');
   });
 
-  test('V3 knowledge feed stays within the mobile content column', async ({ page }) => {
+  test('V3 knowledge card hierarchy exposes featured, standard and compact records without mobile overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     const feed = page.locator('#knowledge-feed');
     await expect(feed.getByText(/öncelikli okuma|priority read/i)).toBeVisible();
+    await expect(feed.locator('[data-card-variant="featured"]')).toHaveCount(1);
+    await expect(feed.locator('[data-card-variant="standard"]')).toHaveCount(3);
+    expect(await feed.locator('[data-card-variant="compact"]').count()).toBeGreaterThan(0);
+    await expect(feed.getByText(/^kanıt$|^evidence$/i).first()).toBeVisible();
+    await expect(feed.getByText(/^güncellik$|^freshness$/i).first()).toBeVisible();
     const articles = feed.locator('article');
-    await expect(articles.first()).toBeVisible();
     const overflow = await articles.evaluateAll((items) => items.map((item) => item.scrollWidth - item.clientWidth));
     expect(Math.max(...overflow)).toBeLessThanOrEqual(1);
   });

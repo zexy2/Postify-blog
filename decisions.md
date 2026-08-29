@@ -284,3 +284,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** A legacy component with no production import/re-export path should be removed with its private tests and helper chain rather than visually modernized for V3.
 
 **Why:** Redesigning unreachable components creates maintenance work without changing the product. Exact path audits plus unit/lint/build/browser gates provide stronger evidence than leaving speculative components around “just in case.” Test totals may decrease when tests cover only deleted unreachable code; that is not a production coverage regression.
+
+## 2026-08-29 — Discovery density is encoded as one knowledge-card system
+**Decision:** Discovery uses a single evidence-aware `KnowledgeCard` primitive with `featured`, `standard`, and `compact` variants. The variants change visual density, imagery, and outcome prominence, but they preserve the same trust vocabulary and interaction model.
+
+**Why:** Separate page-specific card implementations drift into inconsistent metadata, duplicated bookmark behavior, and decorative hierarchy. One primitive makes the information architecture testable: prominence may decrease down the feed, but evidence and freshness cannot disappear simply because a record becomes compact.
