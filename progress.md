@@ -413,3 +413,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Promoted the deterministic six-snapshot Home / Article / Editor suite from a local QA tool into the `ui-e2e` GitHub Actions gate. CI runs it on a dedicated port after the functional Chromium suite and before the deploy job can become eligible.
 - Removed the stale known issue claiming pixel baselines were not committed. The baseline set is committed, compare-only rerun is 6/6 PASS, lint PASS, and the production build remains 305,818 bytes.
 - Visual CI uses the pinned Playwright 1.57 Chromium image already used by product E2E, with fixed language/theme/time and fallback public content, so release failures should represent real visual drift rather than changing production data.
+
+## 2026-08-29 — Authenticated desktop account access restored
+- Fixed a real post-login desktop navigation gap reported from production: authenticated users could create content and see bookmarks, but the desktop Header exposed neither the account/profile surface nor a logout action. Those controls previously existed only inside the mobile sheet.
+- Added a compact authenticated account trigger that shows the user identity and opens a focused menu with Profile, Knowledge health, optional Admin, and Logout. The menu closes on route changes, outside pointer interaction, and Escape; narrower desktop widths collapse the trigger to its avatar without removing access.
+- Added direct Header regression coverage for authenticated account visibility, profile/knowledge routes, logout dispatch, Escape dismissal, and signed-out absence.
+- Added a test-only authenticated Header visual harness and committed desktop screenshot baseline so future visual regressions cannot silently remove the account affordance again.
+- Final exact-worktree gates PASS: 27 Vitest files / 105 tests, lint, production Vite/PWA build (main entry 307,812 bytes, under the 320 KB budget), functional Chromium 29/29, and deterministic visual regression 7/7.

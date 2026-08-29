@@ -84,3 +84,17 @@ for (const viewport of viewports) {
     await expect(page.locator('#root')).toHaveScreenshot(`editor-${viewport.name}.png`);
   });
 }
+
+
+test('Authenticated header account menu desktop baseline', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 300 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/header-auth.html');
+  const account = page.getByRole('button', { name: /account|hesap/i });
+  await expect(account).toBeVisible();
+  await account.click();
+  await expect(page.getByRole('menuitem', { name: /profile|profil/i })).toBeVisible();
+  await expect(page.getByRole('menuitem', { name: /logout|çıkış yap/i })).toBeVisible();
+  await settleVisualSurface(page);
+  await expect(page.locator('header')).toHaveScreenshot('authenticated-header-desktop.png');
+});

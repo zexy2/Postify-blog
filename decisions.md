@@ -294,3 +294,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Screenshot-diff coverage is maintained in a separate Playwright visual suite with committed Chromium baselines for Home, Article, and Editor at desktop/mobile widths, and that suite is release-blocking inside the Chromium CI job. Public captures force fallback content and fixed time/theme/language; Editor is rendered through an `e2e/visual` provider harness instead of weakening production auth.
 
 **Why:** A visual baseline is useful only when content, dates, theme, and motion are deterministic. Live Supabase content would create false diffs, while a production auth bypass would create a real security/maintenance liability just to make a screenshot possible. A test-only harness preserves the actual editor component tree without changing shipped access control.
+
+## 2026-08-29 — Authenticated identity must be visible in persistent desktop navigation
+**Decision:** When a session is authenticated, desktop Header chrome must expose a stable account affordance with identity, Profile, Knowledge health, role-appropriate Admin access, and Logout. These actions must not exist only in the mobile navigation drawer.
+
+**Why:** Authentication is incomplete as a product interaction if users can sign in but cannot discover account/session controls from the primary desktop surface. Keeping the affordance in the persistent Header makes session state legible and prevents logout/profile access from becoming viewport-dependent.

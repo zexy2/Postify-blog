@@ -1,9 +1,10 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   FiBookmark,
   FiActivity,
+  FiChevronDown,
   FiInfo,
   FiLogIn,
   FiLogOut,
@@ -33,12 +34,21 @@ const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState('⌘K');
+  const accountMenuRef = useRef(null);
 
   const { theme, toggle: toggleTheme } = useTheme();
   const { bookmarksCount } = useBookmarks();
   const { isAuthenticated, user, logout } = useAuth();
   const isAdmin = user?.profile?.role === 'admin';
+  const accountName = user?.profile?.full_name
+    || user?.user_metadata?.full_name
+    || user?.email?.split('@')[0]
+    || (i18n.language?.startsWith('en') ? 'Account' : 'Hesap');
+  const accountEmail = user?.email || '';
+  const accountLabel = i18n.language?.startsWith('en') ? 'Account' : 'Hesap';
+  const knowledgeLabel = i18n.language?.startsWith('en') ? 'Knowledge health' : 'Bilgi sağlığı';
 
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
   const openSearch = useCallback(() => {
@@ -49,7 +59,26 @@ const Header = () => {
   useEffect(() => {
     setIsMenuOpen(false);
     setIsCommandOpen(false);
+    setIsAccountOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isAccountOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!accountMenuRef.current?.contains(event.target)) setIsAccountOpen(false);
+    };
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') setIsAccountOpen(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isAccountOpen]);
 
   useEffect(() => {
     const handleShortcut = (event) => {
@@ -70,8 +99,9 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    logout();
+    setIsAccountOpen(false);
     closeMenu();
+    logout();
   };
 
   return (
@@ -113,6 +143,50 @@ const Header = () => {
             <Link to="/auth/login" className={styles.loginButton}>
               <FiLogIn size={15} /> {t('auth.login')}
             </Link>
+          )}
+
+          {isAuthenticated && (
+            <div className={styles.accountMenu} ref={accountMenuRef}>
+              <button
+                type="button"
+                className={`${styles.accountButton} ${isAccountOpen ? styles.accountButtonOpen : ''}`}
+                onClick={() => setIsAccountOpen((open) => !open)}
+                aria-label={accountLabel}
+                aria-haspopup="menu"
+                aria-expanded={isAccountOpen}
+              >
+                <span className={styles.accountAvatar} aria-hidden="true">
+                  {accountName.trim().charAt(0).toLocaleUpperCase(i18n.language || 'tr')}
+                </span>
+                <span className={styles.accountButtonName}>{accountName}</span>
+                <FiChevronDown size={14} aria-hidden="true" />
+              </button>
+
+              {isAccountOpen && (
+                <div className={styles.accountPopover} role="menu" aria-label={accountLabel}>
+                  <div className={styles.accountIdentity}>
+                    <strong>{accountName}</strong>
+                    {accountEmail && <span>{accountEmail}</span>}
+                  </div>
+                  <div className={styles.accountLinks}>
+                    <Link to="/profile" role="menuitem">
+                      <FiUser size={15} /> <span>{t('user.profile')}</span>
+                    </Link>
+                    <Link to="/knowledge" role="menuitem">
+                      <FiActivity size={15} /> <span>{knowledgeLabel}</span>
+                    </Link>
+                    {isAdmin && (
+                      <Link to="/admin" role="menuitem">
+                        <FiShield size={15} /> <span>{t('nav.admin')}</span>
+                      </Link>
+                    )}
+                  </div>
+                  <button type="button" className={styles.accountLogout} onClick={handleLogout} role="menuitem">
+                    <FiLogOut size={15} /> <span>{t('auth.logout')}</span>
+                  </button>
+                </div>
+              )}
+            </div>
           )}
 
           <div className={styles.utilityActions}>
