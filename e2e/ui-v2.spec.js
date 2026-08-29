@@ -103,14 +103,42 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  test('command search lazy-loads and stays keyboard operable', async ({ page }) => {
+  test('command search lazy-loads, traps focus, and restores the trigger', async ({ page }) => {
+    await page.goto('/');
+    const trigger = page.getByRole('button', { name: /ara|search/i }).first();
+    await trigger.focus();
+    await page.keyboard.press('Control+K');
+    const dialog = page.getByRole('dialog');
+    const close = dialog.getByRole('button', { name: /aramayı kapat|close search/i });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('searchbox')).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(dialog.getByRole('option').last()).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test('command palette stays contained and touch-safe on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.keyboard.press('Control+K');
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('searchbox')).toBeFocused();
-    await page.keyboard.press('Escape');
-    await expect(dialog).toBeHidden();
+    const close = dialog.getByRole('button', { name: /aramayı kapat|close search/i });
+    const closeBox = await close.boundingBox();
+    expect(closeBox?.width || 0).toBeGreaterThanOrEqual(44);
+    expect(closeBox?.height || 0).toBeGreaterThanOrEqual(44);
+    const geometry = await dialog.evaluate((node) => {
+      const rect = node.getBoundingClientRect();
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, viewportWidth: window.innerWidth, viewportHeight: window.innerHeight };
+    });
+    expect(geometry.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.right).toBeLessThanOrEqual(geometry.viewportWidth);
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
   });
 
   test('login surface remains clear and operable', async ({ page }) => {

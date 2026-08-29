@@ -253,44 +253,91 @@
 }
 
 @media (max-width: 560px) {
+  .footer { margin-top: 3rem; }
+
   .shell {
     width: min(calc(100% - 1.5rem), var(--container-max));
+    padding-top: 2rem;
+    padding-bottom: .65rem;
+  }
+
+  .statement {
+    gap: 1.25rem;
+    padding-bottom: 1.75rem;
   }
 
   .statementTitle {
-    font-size: clamp(2.2rem, 12vw, 3.65rem);
+    max-width: 12ch;
+    margin: .6rem 0 .75rem;
+    font-size: clamp(2.15rem, 10.5vw, 3rem);
+    line-height: .98;
   }
+
+  .statementText {
+    font-size: .9rem;
+    line-height: 1.58;
+  }
+
+  .primaryActions { gap: .5rem; }
 
   .indexGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem 1rem;
+    gap: 1.5rem .9rem;
+    padding: 1.75rem 0;
   }
 
   .brandBlock {
     grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .55rem 1rem;
+    align-items: center;
   }
 
+  .brandBlock p {
+    grid-column: 1 / -1;
+    max-width: 44ch;
+    font-size: .76rem;
+    line-height: 1.5;
+  }
+
+  .brandLink { min-height: 44px; }
+
+  .githubLink {
+    min-height: 44px;
+    justify-self: end;
+  }
+
+  .linkGroup a { min-height: 44px; }
+
   .systemLine {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .systemLine > div,
   .systemLine > div:first-child {
-    min-height: 44px;
-    padding: 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--border-color);
+    min-width: 0;
+    min-height: 48px;
+    justify-content: center;
+    gap: .35rem;
+    padding: 0 .35rem;
+    border-right: 1px solid var(--border-strong);
+    border-bottom: 0;
+    text-align: center;
   }
 
-  .systemLine > div:last-child {
-    border-bottom: 0;
-  }
+  .systemLine > div:last-child { border-right: 0; }
+  .systemLine strong { font-size: .58rem; letter-spacing: .015em; }
+  .systemLine span { font-size: .54rem; }
 
   .scrollTopButton { min-height: 44px; }
 
   .bottomBar {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 1rem 0;
+    min-height: 58px;
+    align-items: center;
+    flex-direction: row;
+    padding: .35rem 0;
   }
+
+  .bottomBar > span { max-width: 68%; line-height: 1.4; }
 }

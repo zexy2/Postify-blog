@@ -14,6 +14,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
+import SystemStatus from './components/SystemStatus';
 
 // Critical pages - eager load
 import HomePage from './pages/HomePage';
@@ -34,24 +35,17 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const KnowledgeDashboardPage = lazy(() => import('./pages/KnowledgeDashboardPage'));
 
-// Loading spinner component
-const PageLoader = () => (
-  <div role="status" aria-live="polite" aria-label="Loading" style={{
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '50vh',
-  }}>
-    <div style={{
-      width: '40px',
-      height: '40px',
-      border: '3px solid var(--border-color, #333)',
-      borderTopColor: 'var(--primary-color, #6366f1)',
-      borderRadius: '50%',
-      animation: 'spin 1s linear infinite',
-    }} />
-  </div>
-);
+// Route-level loading surface keeps lazy transitions inside the same product language.
+const PageLoader = () => {
+  const { t } = useTranslation();
+  return (
+    <SystemStatus
+      eyebrow="POSTIFY / LOADING"
+      title={t('common.loading')}
+      loading
+    />
+  );
+};
 
 // SSR-compatible useLayoutEffect
 const useIsomorphicLayoutEffect =

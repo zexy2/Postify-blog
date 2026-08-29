@@ -453,7 +453,7 @@
   .header { grid-template-columns: 1fr; gap: .75rem; }
   .subtitle { max-width: 62ch; }
   .editorWorkspace { grid-template-columns: 1fr; gap: 1.25rem; }
-  .readinessPanel { position: static; grid-row: 1; grid-template-columns: 1fr; margin-bottom: 1rem; }
+  .readinessPanel { position: static; grid-row: auto; grid-template-columns: 1fr; margin-top: .25rem; margin-bottom: 0; }
   .readinessGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
   .readinessTrack + .readinessTrack { padding: 0 0 0 1.1rem; border-top: 0; border-left: 1px solid var(--border-color); }
 }
@@ -478,9 +478,7 @@
 }
 
 @media (max-width: 430px) {
-  .formatGrid { grid-template-columns: 1fr; }
-  .formatButton { min-height: 78px; border-right: 0; border-bottom: 1px solid var(--border-color); }
-  .formatButton:last-child { border-bottom: 0; }
+  .formatButton { min-height: 92px; }
   .inputFooter { gap: .5rem; }
 }
 

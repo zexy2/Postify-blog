@@ -1,5 +1,5 @@
 .hero {
-  padding: 0 0 clamp(2.75rem, 6vw, 5rem);
+  padding: 0 0 clamp(1.75rem, 3.5vw, 3rem);
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
 }
@@ -26,9 +26,9 @@
 .masthead {
   display: grid;
   grid-template-columns: minmax(170px, .28fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 4vw, 4rem);
+  gap: clamp(1.35rem, 3vw, 3rem);
   align-items: start;
-  padding: clamp(2.25rem, 6vw, 5.5rem) 0 clamp(2rem, 5vw, 4.5rem);
+  padding: clamp(1.75rem, 4.2vw, 3.75rem) 0 clamp(1.5rem, 3.5vw, 3rem);
   border-bottom: 1px solid var(--border-strong);
 }
 
@@ -47,7 +47,7 @@
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: clamp(3.2rem, 7vw, 6.5rem);
+  font-size: clamp(3.2rem, 6.3vw, 5.8rem);
   font-weight: 760;
   letter-spacing: -.072em;
   line-height: .92;
@@ -58,8 +58,8 @@
   display: grid;
   grid-template-columns: minmax(0, .74fr) minmax(420px, 1.1fr);
   align-items: start;
-  gap: clamp(2rem, 6vw, 6rem);
-  padding-top: clamp(2rem, 4vw, 3.5rem);
+  gap: clamp(1.75rem, 4vw, 4rem);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 .copy { max-width: 560px; }
@@ -131,20 +131,21 @@
 }
 
 @media (max-width: 640px) {
-  .hero { padding-bottom: 2.75rem; }
+  .hero { padding-bottom: 1.75rem; }
   .utility { min-height: 38px; }
   .promiseLine { display: none; }
-  .masthead { padding: 2.2rem 0 1.8rem; }
-  .title { max-width: 9ch; font-size: clamp(3rem, 15vw, 4.5rem); }
-  .supportingGrid { gap: 2.25rem; padding-top: 1.7rem; }
-  .searchContainer { min-height: 52px; margin-top: 1.25rem; }
+  .masthead { padding: 1.55rem 0 1.35rem; }
+  .title { max-width: 12.5ch; font-size: clamp(2.8rem, 12.5vw, 3.5rem); line-height: .94; }
+  .supportingGrid { gap: 1.5rem; padding-top: 1.25rem; }
+  .subtitle { line-height: 1.58; }
+  .searchContainer { min-height: 50px; margin-top: 1rem; }
   .searchHint { display: none; }
   .heroActions { gap: .75rem; }
   .secondaryAction { padding-left: .75rem; }
-  .featured { grid-template-columns: 1fr; gap: 1rem; }
+  .featured { grid-template-columns: 1fr; gap: .8rem; }
   .featuredVisual { aspect-ratio: 16 / 9; }
   .featuredTopline { margin-bottom: 0; }
-  .featuredContent strong { margin-top: .85rem; font-size: clamp(1.65rem, 8vw, 2.25rem); }
+  .featuredContent strong { margin-top: .7rem; font-size: clamp(1.5rem, 7.2vw, 2rem); }
   .featuredMeta { margin-top: .25rem; }
 }
 

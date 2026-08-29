@@ -533,8 +533,11 @@
   .title { max-width: none; font-size: clamp(2.35rem, 11vw, 3.35rem); }
   .excerpt { font-size: 1rem; line-height: 1.58; }
   .quickBrief { margin-top: .85rem; padding: .85rem 0; }
-  .quickBriefMeta { grid-template-columns: 1fr; gap: .45rem; }
-  .quickBriefMeta div { padding: .4rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }
+  .quickBriefMeta { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; max-width: none; }
+  .quickBriefMeta div { padding: 0 .55rem; border-top: 0; border-left: 1px solid var(--border-color); }
+  .quickBriefMeta div:first-child { padding-left: 0; border-left: 0; }
+  .quickBriefMeta dt { font-size: .56rem; }
+  .quickBriefMeta dd { font-size: .68rem; }
   .coverWrapper { padding-top: 1rem; }
   .coverImage { max-height: none; aspect-ratio: 16 / 9; }
   .articleContent { padding-top: 1.2rem; }

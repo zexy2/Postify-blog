@@ -13,9 +13,12 @@ const CommandPalette = ({ open, onClose }) => {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef(null);
+  const dialogRef = useRef(null);
+  const previousFocusRef = useRef(null);
 
   useEffect(() => {
     if (!open) return undefined;
+    previousFocusRef.current = document.activeElement;
     setQuery('');
     setActiveIndex(0);
     const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 0);
@@ -24,6 +27,7 @@ const CommandPalette = ({ open, onClose }) => {
     return () => {
       window.clearTimeout(focusTimer);
       document.body.style.overflow = previousOverflow;
+      if (previousFocusRef.current instanceof HTMLElement) previousFocusRef.current.focus();
     };
   }, [open, onClose]);
 
@@ -50,6 +54,14 @@ const CommandPalette = ({ open, onClose }) => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         onClose();
+      } else if (event.key === 'Tab' && dialogRef.current) {
+        const focusable = [...dialogRef.current.querySelectorAll('button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')];
+        if (focusable.length) {
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
       } else if (event.key === 'ArrowDown' && results.length) {
         event.preventDefault();
         setActiveIndex((index) => Math.min(index + 1, results.length - 1));
@@ -70,7 +82,7 @@ const CommandPalette = ({ open, onClose }) => {
   return (
     <div className={styles.layer}>
       <button type="button" className={styles.backdrop} onClick={onClose} aria-label={t('common.closeSearch')} />
-      <div className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="command-palette-title">
+      <div ref={dialogRef} className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="command-palette-title">
         <div className={styles.header}>
           <div className={styles.titleGroup}>
             <span className={styles.icon}><FiCommand size={16} /></span>

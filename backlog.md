@@ -90,6 +90,7 @@
 - [x] Harden user-controlled profile website URLs with an HTTP/HTTPS protocol allowlist
 
 ## UI V3 — visible product redesign
+- [x] Complete a production screenshot-led 1440/390 route audit across public and authenticated UI surfaces, including before/after Chromium verification
 - [x] Establish repo-scoped Graphify + Postify UI Review workflow
 - [x] Redesign header, home masthead, featured knowledge, topic nav, and discovery-filter hierarchy
 - [x] Rebuild global Footer + Topic Index around evidence, freshness, reproducibility and URL-addressable topic state

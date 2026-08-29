@@ -6,10 +6,13 @@
 
 import { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
+import SystemStatus from '../SystemStatus';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
   const [timedOut, setTimedOut] = useState(false);
 
@@ -25,21 +28,11 @@ const ProtectedRoute = ({ children }) => {
   // If still loading and not timed out, show spinner
   if (isLoading && !timedOut && !user) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '50vh',
-      }}>
-        <div style={{
-          width: '40px',
-          height: '40px',
-          border: '3px solid var(--border-color)',
-          borderTopColor: 'var(--primary-color)',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-        }} />
-      </div>
+      <SystemStatus
+        eyebrow="POSTIFY / ACCOUNT"
+        title={t('common.loading')}
+        loading
+      />
     );
   }
 

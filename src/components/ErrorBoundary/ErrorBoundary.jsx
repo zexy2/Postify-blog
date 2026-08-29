@@ -6,7 +6,8 @@
 
 import { Component } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiAlertTriangle, FiRefreshCw, FiHome } from 'react-icons/fi';
+import { FiRefreshCw, FiHome } from 'react-icons/fi';
+import SystemStatus from '../SystemStatus';
 import styles from './ErrorBoundary.module.css';
 
 class ErrorBoundaryClass extends Component {
@@ -51,31 +52,32 @@ const ErrorFallback = ({ error, resetError }) => {
   const { t } = useTranslation();
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <FiAlertTriangle className={styles.icon} />
-        <h1 className={styles.title}>{t('error.title')}</h1>
-        <p className={styles.message}>{t('error.message')}</p>
-        
-        {import.meta.env.DEV && error && (
-          <details className={styles.details}>
-            <summary>{t('error.details')}</summary>
-            <pre className={styles.errorText}>{error.toString()}</pre>
-          </details>
-        )}
-
-        <div className={styles.actions}>
-          <button onClick={resetError} className={styles.retryButton}>
+    <SystemStatus
+      eyebrow="POSTIFY / RECOVERY"
+      title={t('error.title')}
+      message={t('error.message')}
+      fullPage
+      role="alert"
+      action={(
+        <>
+          <button onClick={resetError}>
             <FiRefreshCw />
             {t('error.retry')}
           </button>
-          <a href={import.meta.env.BASE_URL} className={styles.homeButton}>
+          <a href={import.meta.env.BASE_URL}>
             <FiHome />
             {t('error.home')}
           </a>
-        </div>
-      </div>
-    </div>
+        </>
+      )}
+    >
+      {import.meta.env.DEV && error && (
+        <details className={styles.details}>
+          <summary>{t('error.details')}</summary>
+          <pre className={styles.errorText}>{error.toString()}</pre>
+        </details>
+      )}
+    </SystemStatus>
   );
 };
 

@@ -226,11 +226,11 @@ const PostDetailPage = () => {
                     </ol>
                   </nav>
                 )}
-                <KnowledgeEvidencePanel post={post} />
-                <VerificationRunbook post={post} />
                 <div className={styles.body}>
                   <PlainArticleBody content={articleBody} />
                 </div>
+                <KnowledgeEvidencePanel post={post} />
+                <VerificationRunbook post={post} />
                 <LocalEvidenceActions post={post} />
                 <CommunityEvidenceDetails post={post} />
                 {externalReferences.length > 0 && (

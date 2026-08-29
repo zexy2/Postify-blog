@@ -173,33 +173,44 @@
 
 @media (max-width: 720px) {
   .authorHeader {
-    grid-template-columns: 1fr;
+    grid-template-columns: 3.75rem minmax(0, 1fr);
+    gap: .9rem;
   }
 
   .monogram {
-    width: 4.5rem;
-    height: 4.5rem;
-    font-size: 1.6rem;
+    width: 3.75rem;
+    height: 3.75rem;
+    font-size: 1.45rem;
   }
 
   .identity h1 {
-    font-size: clamp(3.2rem, 15vw, 5rem);
+    max-width: none;
+    font-size: clamp(2.65rem, 12vw, 3.65rem);
+    line-height: .94;
   }
 
   .authorStats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
   }
 
   .authorStats > div,
   .authorStats > div + div {
-    padding: .8rem 0;
-    border-top: 1px solid var(--border-color);
-    border-right: 0;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+    padding: .75rem .55rem;
+    border-top: 0;
+    border-right: 1px solid var(--border-color);
   }
 
-  .authorStats > div:first-child {
-    border-top: 0;
-  }
+  .authorStats > div:first-child { padding-left: 0; }
+  .authorStats > div:last-child { padding-right: 0; border-right: 0; }
+  .authorStats svg { display: none; }
+  .authorStats strong { font-size: 1.35rem; }
+  .authorStats span { line-height: 1.35; }
 }
 
 @media (max-width: 520px) {

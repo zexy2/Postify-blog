@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
+import SystemStatus from '../../components/SystemStatus';
 
 const CALLBACK_TIMEOUT_MS = 10000;
 
@@ -32,21 +33,23 @@ const AuthCallbackPage = () => {
 
   if (timedOut && !isAuthenticated) {
     return (
-      <section style={{ maxWidth: '36rem', margin: '8rem auto', padding: '2rem', textAlign: 'center' }}>
-        <h1>{t('auth.loginError')}</h1>
-        <p>{t('auth.oauthError', 'Google girişi tamamlanamadı. Lütfen tekrar deneyin.')}</p>
-        <Link to="/auth/login">{t('auth.login')}</Link>
-      </section>
+      <SystemStatus
+        eyebrow="POSTIFY / AUTH"
+        title={t('auth.loginError')}
+        message={t('auth.oauthError', 'Google girişi tamamlanamadı. Lütfen tekrar deneyin.')}
+        role="alert"
+        action={<Link to="/auth/login">{t('auth.login')}</Link>}
+      />
     );
   }
 
   return (
-    <section
-      aria-live="polite"
-      style={{ maxWidth: '36rem', margin: '8rem auto', padding: '2rem', textAlign: 'center' }}
-    >
-      <p>{t('common.loading')}</p>
-    </section>
+    <SystemStatus
+      eyebrow="POSTIFY / AUTH"
+      title={t('common.loading')}
+      message={t('auth.oauthPending', 'Kimliğin doğrulanıyor. Bu pencereyi kapatma.')}
+      loading
+    />
   );
 };
 

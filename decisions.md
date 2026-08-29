@@ -315,3 +315,7 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Browser acceptance for interactive mobile surfaces requires no document/form overflow, 44px primary touch controls, and validation messages programmatically associated with their inputs. Horizontally scrollable editor toolbars may extend internally, but they must not expand the page or form.
 
 **Why:** These defects can survive unit tests and ordinary screenshots while still making the product visibly broken or difficult to operate on a phone. Real viewport geometry and accessibility state are therefore release-quality signals, not optional polish.
+## 2026-08-29 — Reading/workflow content outranks diagnostic metadata
+**Decision:** Article evidence/runbook detail remains fully available but follows the readable article body, while the Editor keeps publication-readiness diagnostics after the writing and evidence inputs on narrow screens. Short quantitative summaries may collapse into compact 2×2/3-column mobile grids when they remain readable and touch-safe.
+
+**Why:** Real Chromium geometry showed that diagnostic/trust UI was delaying the primary user task by more than a full viewport: article content began around 2.7kpx down on mobile and editor title entry around 1.3kpx. Trust metadata should strengthen a task, not become a gate that forces readers or authors through an administrative wall before they can read or write.

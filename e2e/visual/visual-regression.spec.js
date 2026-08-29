@@ -123,6 +123,27 @@ for (const viewport of viewports) {
 }
 
 for (const viewport of viewports) {
+  test(`Authenticated profile editor ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/profile-auth.html');
+    await page.getByRole('button', { name: /edit profile|profili düzenle/i }).first().click();
+    const editor = page.locator('section[aria-label="Edit profile"], section[aria-label="Profili düzenle"]');
+    await expect(editor).toBeVisible();
+    if (viewport.name === 'mobile') {
+      for (const button of await editor.getByRole('button').all()) {
+        const box = await button.boundingBox();
+        expect(box?.height || 0).toBeGreaterThanOrEqual(44);
+      }
+      const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+      expect(width.document).toBeLessThanOrEqual(width.viewport);
+    }
+    await settleVisualSurface(page);
+    await expect(editor).toHaveScreenshot(`authenticated-profile-editor-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
   test(`About ${viewport.name} baseline`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page);
@@ -219,6 +240,7 @@ const publicSystemVisualRoutes = [
   ['/auth/register', 'register'],
   ['/auth/forgot-password', 'forgot-password'],
   ['/auth/reset-password', 'reset-password'],
+  ['/auth/callback', 'auth-callback'],
   ['/definitely-not-a-postify-route', 'not-found'],
 ];
 
@@ -234,4 +256,16 @@ for (const viewport of viewports) {
       await expect(page).toHaveScreenshot(`${snapshotName}-${viewport.name}.png`, { fullPage: false });
     });
   }
+}
+
+
+for (const viewport of viewports) {
+  test(`Error recovery ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/error-boundary.html');
+    await expect(page.getByRole('heading', { level: 1, name: /something went wrong|bir hata oluştu/i })).toBeVisible();
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`error-recovery-${viewport.name}.png`);
+  });
 }
