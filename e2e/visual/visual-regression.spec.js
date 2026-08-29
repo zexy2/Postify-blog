@@ -140,8 +140,10 @@ for (const viewport of viewports) {
     await stabilize(page);
     await page.goto('/users/fallback-editor');
     await expect(page.getByRole('heading', { level: 1, name: /Postify/i })).toBeVisible();
+    await expect(page.locator('#main-content article').first()).toBeVisible();
     await settleVisualSurface(page);
-    await expect(page.locator('#main-content')).toHaveScreenshot(`author-${viewport.name}.png`);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page).toHaveScreenshot(`author-${viewport.name}.png`, { fullPage: false });
   });
 }
 
