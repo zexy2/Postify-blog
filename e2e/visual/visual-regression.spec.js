@@ -98,3 +98,20 @@ test('Authenticated header account menu desktop baseline', async ({ page }) => {
   await settleVisualSurface(page);
   await expect(page.locator('header')).toHaveScreenshot('authenticated-header-desktop.png');
 });
+
+
+for (const viewport of viewports) {
+  test(`Authenticated profile dashboard ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/profile-auth.html');
+    await expect(page.getByRole('heading', { level: 1, name: 'Semanur' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Hesap özeti|Account summary/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /İçerik üretimi|Content production/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Bilgi sağlığı|Knowledge health/i })).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`authenticated-profile-${viewport.name}.png`);
+  });
+}

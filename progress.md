@@ -420,3 +420,12 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Added direct Header regression coverage for authenticated account visibility, profile/knowledge routes, logout dispatch, Escape dismissal, and signed-out absence.
 - Added a test-only authenticated Header visual harness and committed desktop screenshot baseline so future visual regressions cannot silently remove the account affordance again.
 - Final exact-worktree gates PASS: 27 Vitest files / 105 tests, lint, production Vite/PWA build (main entry 307,812 bytes, under the 320 KB budget), functional Chromium 29/29, and deterministic visual regression 7/7.
+
+## 2026-08-29 — Profile dashboard redesign
+- Rebuilt `/profile` from a sparse identity page into a dense account/creator dashboard based on the approved visual direction.
+- Added balanced identity + account-actions hero, real membership/role/post/bookmark stats, account summary, content production, saved knowledge, knowledge-health cards, and quick-access workspace links.
+- Kept all actions wired to existing real routes/data (`/users/:id`, `/posts/create`, `/bookmarks`, `/knowledge`) instead of inventing settings/draft surfaces that do not exist.
+- Preserved the existing profile edit/avatar workflow inside a focused expandable editor panel and added a direct logout action.
+- Added authenticated profile visual harness + desktop/mobile deterministic screenshot baselines and horizontal-overflow assertions.
+- QA: 27 test files / 106 unit tests PASS, lint PASS, production build PASS (main entry 307,812 bytes), Chromium functional 29/29 PASS, visual regression 9/9 PASS.
+- Browser layout measurement: desktop main profile content 922px high with 2-column hero + 4-column dashboard; tablet dashboard 2-column; mobile single-column; document overflow 0 at 1440/820/390 widths.

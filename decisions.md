@@ -299,3 +299,9 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** When a session is authenticated, desktop Header chrome must expose a stable account affordance with identity, Profile, Knowledge health, role-appropriate Admin access, and Logout. These actions must not exist only in the mobile navigation drawer.
 
 **Why:** Authentication is incomplete as a product interaction if users can sign in but cannot discover account/session controls from the primary desktop surface. Keeping the affordance in the persistent Header makes session state legible and prevents logout/profile access from becoming viewport-dependent.
+
+## 2026-08-29 — Profile should be an account workspace, not a decorative bio page
+- The authenticated profile surface uses its available desktop area for identity, account actions, production signals, saved knowledge, and evidence-health shortcuts rather than oversized whitespace.
+- Dashboard metrics must come from existing Postify data sources (published user posts, bookmarks, author knowledge dashboard). We do not show fake draft/activity counts or link to nonexistent settings routes just to fill space.
+- Editing remains progressively disclosed: the dashboard stays scannable until the user explicitly opens the profile editor.
+- Authenticated profile desktop/mobile screenshots are now deterministic visual-release contracts because this surface previously looked unfinished despite functional tests passing.
