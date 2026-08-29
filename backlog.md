@@ -15,7 +15,8 @@
 - [x] Local draft autosave/restore
 - [x] Reader filter by content format
 - [x] Repeatable test/lint/build/smoke release gate
-- [ ] Markdown import/export and canonical URL support
+- [x] Markdown import/export
+- [ ] Canonical URL support
 - [x] Revision history / changelog model
 
 - [x] Reader table of contents for structured articles

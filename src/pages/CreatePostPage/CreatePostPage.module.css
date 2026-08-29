@@ -34,6 +34,42 @@
   line-height: 1.65;
 }
 
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.transferButton {
+  min-height: 40px;
+  padding: .5rem .7rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: .7rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.transferButton:hover,
+.transferButton:focus-visible {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.transferStatus {
+  margin: -.25rem 0 0;
+  color: var(--text-muted);
+  font-size: .68rem;
+  line-height: 1.45;
+}
+
 .form { min-width: 0; }
 
 .draftNotice {
@@ -136,6 +172,14 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.briefActions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .45rem;
 }
 
 .writingBrief strong { color: var(--text-primary); font-size: .77rem; }
@@ -468,7 +512,8 @@
   .formatButton:nth-child(-n+2) { border-bottom: 1px solid var(--border-color); }
   .writingBrief ol { grid-template-columns: 1fr; }
   .briefTopline { align-items: stretch; flex-direction: column; }
-  .outlineButton { align-self: flex-start; min-height: 44px; }
+  .briefActions { justify-content: flex-start; }
+  .outlineButton, .transferButton { min-height: 44px; }
   .readinessGrid { grid-template-columns: 1fr; }
   .readinessTrack + .readinessTrack { padding: .9rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }
   .evidenceGrid { grid-template-columns: 1fr; gap: .85rem; }

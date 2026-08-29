@@ -3,10 +3,11 @@
  * TipTap-based rich text editor with formatting tools and AI assistance
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import { Markdown } from '@tiptap/markdown';
 import { useSelector } from 'react-redux';
 import { useAICompletion, selectAIEnabled, selectGhostCompletionEnabled } from '../../features/ai-assistant';
 import styles from './RichTextEditor.module.css';
@@ -125,14 +126,14 @@ const MenuBar = ({ editor }) => {
   );
 };
 
-const RichTextEditor = ({
+const RichTextEditor = forwardRef(({
   content = '',
   onChange,
   placeholder = 'İçeriğinizi buraya yazın...',
   minHeight = 200,
   maxHeight = 500,
   readOnly = false,
-}) => {
+}, forwardedRef) => {
   // AI feature state
   const aiEnabled = useSelector(selectAIEnabled);
   const ghostEnabled = useSelector(selectGhostCompletionEnabled);
@@ -149,6 +150,7 @@ const RichTextEditor = ({
       Placeholder.configure({
         placeholder,
       }),
+      Markdown,
     ],
     content,
     editable: !readOnly,
@@ -162,6 +164,16 @@ const RichTextEditor = ({
       }
     },
   });
+
+  useImperativeHandle(forwardedRef, () => ({
+    importMarkdown(markdown) {
+      if (!editor) return false;
+      return editor.commands.setContent(markdown || '', { contentType: 'markdown', emitUpdate: true });
+    },
+    getMarkdown() {
+      return editor?.getMarkdown?.() || '';
+    },
+  }), [editor]);
 
   // Sync only genuine external content changes (draft restore / starter outline).
   useEffect(() => {
@@ -274,6 +286,8 @@ const RichTextEditor = ({
       </div>
     </div>
   );
-};
+});
+
+RichTextEditor.displayName = 'RichTextEditor';
 
 export default RichTextEditor;

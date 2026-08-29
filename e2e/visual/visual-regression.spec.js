@@ -1,3 +1,5 @@
+import { Buffer } from 'node:buffer';
+import { readFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { getFallbackPosts } from '../../src/content/fallbackPosts.js';
 
@@ -109,6 +111,46 @@ for (const viewport of viewports) {
   });
 }
 
+
+
+test('Editor Markdown import/export round-trip stays local and mobile-safe', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/editor.html');
+  await expect(page.getByRole('heading', { level: 1, name: /create new post|yeni post/i })).toBeVisible();
+
+  const markdownFile = page.locator('input[type="file"][accept*=".md"]');
+  await markdownFile.setInputFiles({
+    name: 'release-guide.md',
+    mimeType: 'text/markdown',
+    buffer: Buffer.from('# Imported release guide\n\n## Steps\n\n- Build\n- Verify\n'),
+  });
+
+  await expect(page.locator('#title')).toHaveValue('Imported release guide');
+  await expect(page.locator('.ProseMirror')).toContainText('Steps');
+  await expect(page.locator('.ProseMirror')).toContainText('Build');
+  await expect(page.getByRole('status')).toContainText(/imported|içe aktarıldı/i);
+
+  for (const button of [
+    page.getByRole('button', { name: /import \.md|\.md içe al/i }),
+    page.getByRole('button', { name: /export \.md|\.md dışa aktar/i }),
+  ]) {
+    expect((await button.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+  }
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: /export \.md|\.md dışa aktar/i }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('imported-release-guide.md');
+  const downloadPath = await download.path();
+  const exported = await readFile(downloadPath, 'utf8');
+  expect(exported).toContain('# Imported release guide');
+  expect(exported).toContain('## Steps');
+  expect(exported).toContain('- Build');
+
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
 
 
 test('Authenticated header account menu desktop baseline', async ({ page }) => {

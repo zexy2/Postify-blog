@@ -77,6 +77,7 @@ Do not fabricate authenticated browser coverage, evidence counts, verification, 
 - keep publication eligibility separate from evidence claims and writing-quality suggestions
 - expand dependency/environment invalidation only when evidence declares trackable versions
 - improve remaining authenticated author/admin surfaces with real production behavior
+- keep browser-local Markdown import/export reliable while canonical-source URL persistence remains a separate authoring/SEO task
 - add grounded Ask Postify/API/MCP only after durable evidence/provenance coverage is broad enough
 
 ## Known boundaries
@@ -84,7 +85,7 @@ Do not fabricate authenticated browser coverage, evidence counts, verification, 
 - GitHub Pages deep SPA routes initially return hosting-level 404 before the checked `404.html` browser fallback restores the route
 - arbitrary user/package/network/shell execution is intentionally unsupported
 - package-level evidence invalidation is not yet implemented
-- screenshot-diff visual baselines are not committed
+- deterministic visual baselines are committed for stable product surfaces; hosted-raster-sensitive public mobile system routes use explicit geometry/touch contracts instead
 - Browserslist/caniuse-lite maintenance data is stale and should be refreshed separately
 
 ## Working rules

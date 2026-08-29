@@ -3,7 +3,7 @@
  * Form for creating new blog posts with rich text editor
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,6 +15,7 @@ import { clearDraft, createDraftKey, loadDraft, saveDraft } from '../../lib/draf
 import { dateInputToTimestamp, getLocalDateInputValue, getPublishReadiness, timestampToLocalDateInputValue } from '../../lib/publishReadiness';
 import { useKnowledgeBackendStatus } from '../../hooks/useKnowledge';
 import { getWritingMetrics } from '../../lib/writingMetrics';
+import { buildMarkdownDocument, markdownFilename, MAX_MARKDOWN_IMPORT_BYTES, splitMarkdownDocument } from '../../lib/markdownTransfer';
 import { 
   selectAIEnabled, 
   toggleAI,
@@ -33,6 +34,8 @@ const CreatePostPage = () => {
   const knowledgeBackend = useKnowledgeBackendStatus();
   const knowledgeBackendReady = knowledgeBackend.data?.ready === true;
   const { post: editingPost } = usePost(id);
+  const editorRef = useRef(null);
+  const markdownInputRef = useRef(null);
 
   // AI state
   const aiEnabled = useSelector(selectAIEnabled);
@@ -61,6 +64,7 @@ const CreatePostPage = () => {
   const [errors, setErrors] = useState({});
   const [isDirty, setIsDirty] = useState(false);
   const [draftRestored, setDraftRestored] = useState(Boolean(initialDraft?.formData));
+  const [markdownStatus, setMarkdownStatus] = useState('');
   const writingMetrics = getWritingMetrics(formData.body);
   const maxTestedDate = getLocalDateInputValue();
   const publishReadiness = getPublishReadiness({
@@ -145,6 +149,73 @@ const CreatePostPage = () => {
   const handleEvidenceChange = (field) => (event) => {
     setFormData((prev) => ({ ...prev, [field]: event.target.value }));
     setIsDirty(true);
+  };
+
+  const handleMarkdownImport = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    if (file.size > MAX_MARKDOWN_IMPORT_BYTES) {
+      setMarkdownStatus(i18n.language?.startsWith('en')
+        ? 'Markdown import is limited to 1 MB.'
+        : 'Markdown içe aktarma 1 MB ile sınırlıdır.');
+      return;
+    }
+
+    if ((formData.title.trim() || formData.body.trim()) && !window.confirm(
+      i18n.language?.startsWith('en')
+        ? 'Importing Markdown will replace the current title and body. Continue?'
+        : 'Markdown içe aktarma mevcut başlık ve gövdeyi değiştirecek. Devam edilsin mi?',
+    )) return;
+
+    try {
+      const imported = splitMarkdownDocument(await file.text());
+      if (!imported.title && !imported.body) {
+        setMarkdownStatus(i18n.language?.startsWith('en') ? 'That Markdown file is empty.' : 'Bu Markdown dosyası boş.');
+        return;
+      }
+
+      if (!editorRef.current) throw new Error('Editor is not ready for Markdown import');
+      const editorAccepted = editorRef.current.importMarkdown(imported.body || '');
+      if (editorAccepted === false) throw new Error('Editor rejected Markdown import');
+
+      setFormData((prev) => ({
+        ...prev,
+        ...(imported.title ? { title: imported.title } : {}),
+      }));
+      setErrors((prev) => ({ ...prev, title: undefined, body: undefined }));
+      setDraftRestored(false);
+      setIsDirty(true);
+      setMarkdownStatus(i18n.language?.startsWith('en')
+        ? `Imported ${file.name}. Review evidence before publishing.`
+        : `${file.name} içe aktarıldı. Yayınlamadan önce kanıt alanlarını gözden geçir.`);
+    } catch (error) {
+      console.error('Failed to import Markdown:', error);
+      setMarkdownStatus(i18n.language?.startsWith('en')
+        ? 'Markdown could not be imported.'
+        : 'Markdown içe aktarılamadı.');
+    }
+  };
+
+  const handleMarkdownExport = () => {
+    const markdownBody = editorRef.current?.getMarkdown?.() || formData.body;
+    const document = buildMarkdownDocument({ title: formData.title, body: markdownBody });
+    if (!document.trim()) {
+      setMarkdownStatus(i18n.language?.startsWith('en') ? 'There is nothing to export yet.' : 'Henüz dışa aktarılacak içerik yok.');
+      return;
+    }
+
+    const blob = new Blob([document], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = window.document.createElement('a');
+    link.href = url;
+    link.download = markdownFilename(formData.title);
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    setMarkdownStatus(i18n.language?.startsWith('en')
+      ? 'Markdown export created locally in your browser.'
+      : 'Markdown dışa aktarımı tarayıcında yerel olarak oluşturuldu.');
   };
 
   const handleSubmit = async (e) => {
@@ -243,19 +314,37 @@ const CreatePostPage = () => {
             <div className={styles.writingBrief}>
               <div className={styles.briefTopline}>
                 <strong>{writingTemplate.label}: {writingTemplate.promise}</strong>
-                <button
-                  type="button"
-                  className={styles.outlineButton}
-                  disabled={Boolean(formData.body.trim())}
-                  onClick={() => {
-                    const starter = getWritingStarter(writingMode, i18n.language);
-                    setFormData((prev) => ({ ...prev, body: starter.text, bodyHtml: starter.html }));
-                    setIsDirty(true);
-                  }}
-                >
-                  {i18n.language?.startsWith('en') ? 'Use outline' : 'İskeleti ekle'}
-                </button>
+                <div className={styles.briefActions} aria-label={i18n.language?.startsWith('en') ? 'Writing tools' : 'Yazma araçları'}>
+                  <input
+                    ref={markdownInputRef}
+                    className={styles.fileInput}
+                    type="file"
+                    accept=".md,.markdown,text/markdown,text/plain"
+                    onChange={handleMarkdownImport}
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    className={styles.outlineButton}
+                    disabled={Boolean(formData.body.trim())}
+                    onClick={() => {
+                      const starter = getWritingStarter(writingMode, i18n.language);
+                      setFormData((prev) => ({ ...prev, body: starter.text, bodyHtml: starter.html }));
+                      setIsDirty(true);
+                    }}
+                  >
+                    {i18n.language?.startsWith('en') ? 'Use outline' : 'İskeleti ekle'}
+                  </button>
+                  <button type="button" className={styles.transferButton} onClick={() => markdownInputRef.current?.click()}>
+                    {i18n.language?.startsWith('en') ? 'Import .md' : '.md içe al'}
+                  </button>
+                  <button type="button" className={styles.transferButton} onClick={handleMarkdownExport}>
+                    {i18n.language?.startsWith('en') ? 'Export .md' : '.md dışa aktar'}
+                  </button>
+                </div>
               </div>
+              {markdownStatus && <p className={styles.transferStatus} role="status">{markdownStatus}</p>}
               <ol>
                 {writingTemplate.prompts.map((prompt) => <li key={prompt}>{prompt}</li>)}
               </ol>
@@ -311,6 +400,7 @@ const CreatePostPage = () => {
               )}
             </div>
             <RichTextEditor
+              ref={editorRef}
               content={formData.bodyHtml || formData.body}
               onChange={handleEditorChange}
               placeholder={t('posts.bodyPlaceholder')}
