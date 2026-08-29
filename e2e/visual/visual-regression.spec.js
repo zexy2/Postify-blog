@@ -274,22 +274,36 @@ for (const [route, snapshotName] of publicSystemVisualRoutes) {
     await settleVisualSurface(page);
     await page.evaluate(() => window.scrollTo(0, 0));
 
-    const geometry = await page.evaluate(() => ({
-      viewportWidth: window.innerWidth,
-      documentWidth: document.documentElement.scrollWidth,
-    }));
+    await expect(heading).toBeVisible();
+    const geometry = await page.evaluate(() => {
+      const headingNode = document.querySelector('main h1, #main-content h1, h1');
+      const headingRect = headingNode?.getBoundingClientRect();
+      const controls = [...document.querySelectorAll('form input, form button')]
+        .filter((node) => {
+          const style = getComputedStyle(node);
+          const rect = node.getBoundingClientRect();
+          return style.visibility !== 'hidden' && style.display !== 'none' && rect.width > 0 && rect.height > 0;
+        })
+        .map((node) => {
+          const rect = node.getBoundingClientRect();
+          return { left: rect.left, right: rect.right, height: rect.height };
+        });
+
+      return {
+        viewportWidth: window.innerWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        heading: headingRect ? { left: headingRect.left, right: headingRect.right } : null,
+        controls,
+      };
+    });
     expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
-
-    const headingBox = await heading.boundingBox();
-    expect(headingBox?.x ?? -1).toBeGreaterThanOrEqual(0);
-    expect((headingBox?.x ?? 0) + (headingBox?.width ?? Infinity)).toBeLessThanOrEqual(390);
-
-    const controls = page.locator('form input:visible, form button:visible');
-    for (const control of await controls.all()) {
-      const box = await control.boundingBox();
-      expect(box?.height || 0).toBeGreaterThanOrEqual(44);
-      expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
-      expect((box?.x ?? 0) + (box?.width ?? Infinity)).toBeLessThanOrEqual(390);
+    expect(geometry.heading).not.toBeNull();
+    expect(geometry.heading.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.heading.right).toBeLessThanOrEqual(geometry.viewportWidth);
+    for (const control of geometry.controls) {
+      expect(control.height).toBeGreaterThanOrEqual(44);
+      expect(control.left).toBeGreaterThanOrEqual(0);
+      expect(control.right).toBeLessThanOrEqual(geometry.viewportWidth);
     }
   });
 }
