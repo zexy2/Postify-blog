@@ -92,6 +92,24 @@ for (const viewport of viewports) {
   });
 }
 
+for (const viewport of viewports) {
+  test(`Edit knowledge ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/editor-edit.html');
+    await expect(page.getByRole('heading', { level: 1, name: /edit knowledge|bilgiyi düzenle/i })).toBeVisible();
+    await expect(page.locator('#title')).toHaveValue(/AI feature is a system/i);
+    await expect(page.getByText(/what changed\?|ne değişti\?/i)).toBeVisible();
+    if (viewport.name === 'mobile') {
+      const formOverflow = await page.locator('form').evaluate((form) => form.scrollWidth - form.clientWidth);
+      expect(formOverflow).toBeLessThanOrEqual(1);
+    }
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`editor-edit-${viewport.name}.png`);
+  });
+}
+
+
 
 test('Authenticated header account menu desktop baseline', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 300 });
