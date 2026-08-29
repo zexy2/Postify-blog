@@ -99,7 +99,7 @@
 - [x] Bring profile and bookmarks into the same visual system (Knowledge Dashboard V3 complete)
 - [x] Rebuild About, Contact, and 404 as V3 public-system surfaces and close broken authoring navigation
 - [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
-- [ ] Audit/delete legacy decorative components that remain unused after V3 conversion
+- [x] Audit/delete legacy decorative components that remain unused after V3 conversion
 
 ## UI V3 — product-language rebuild
 - [x] Replace startup-style discovery masthead with an editorial knowledge index entry point

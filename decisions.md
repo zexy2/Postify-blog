@@ -279,3 +279,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** About, Contact and 404 are product-system surfaces rather than decorative marketing pages. About explains the inspectable knowledge contract; Contact treats reader corrections as a first-class maintenance input; 404 turns a navigation miss into a compact recovery index.
 
 **Why:** These routes often appear at moments where a visitor is deciding whether to trust the product, challenge information, or recover from a dead path. Generic portfolio cards, animated error decoration and broken authoring links weaken that trust. A quiet indexed structure makes the same V3 product language legible outside the core feed/article/editor flow.
+
+## 2026-08-28 — Delete unreachable UI systems instead of redesigning them
+**Decision:** A legacy component with no production import/re-export path should be removed with its private tests and helper chain rather than visually modernized for V3.
+
+**Why:** Redesigning unreachable components creates maintenance work without changing the product. Exact path audits plus unit/lint/build/browser gates provide stronger evidence than leaving speculative components around “just in case.” Test totals may decrease when tests cover only deleted unreachable code; that is not a production coverage regression.
