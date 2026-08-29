@@ -319,3 +319,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Article evidence/runbook detail remains fully available but follows the readable article body, while the Editor keeps publication-readiness diagnostics after the writing and evidence inputs on narrow screens. Short quantitative summaries may collapse into compact 2×2/3-column mobile grids when they remain readable and touch-safe.
 
 **Why:** Real Chromium geometry showed that diagnostic/trust UI was delaying the primary user task by more than a full viewport: article content began around 2.7kpx down on mobile and editor title entry around 1.3kpx. Trust metadata should strengthen a task, not become a gate that forces readers or authors through an administrative wall before they can read or write.
+
+## 2026-08-30 — Pixel baselines require deterministic rendering, not just deterministic data
+**Decision:** Keep strict pixel-diff baselines for core product surfaces and stable desktop system pages. For public-system mobile routes whose hosted Chromium raster output moves between otherwise identical runs, gate the same 390px UI with explicit geometry, overflow, hydration and 44px touch-target contracts instead of accepting a large pixel-diff tolerance.
+
+**Why:** Two hosted runs failed different auth-mobile screenshots while 36/38 then 37/38 contracts passed, and the exact Playwright 1.57 image passed the same committed snapshots locally. Raising global screenshot tolerance would weaken every visual gate. Route-specific structural contracts preserve the mobile defects we actually care about while keeping strict pixel protection everywhere it is reproducible.

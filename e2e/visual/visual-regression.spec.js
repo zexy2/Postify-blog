@@ -245,22 +245,53 @@ const publicSystemVisualRoutes = [
   ['/definitely-not-a-postify-route', 'not-found'],
 ];
 
-for (const viewport of viewports) {
-  for (const [route, snapshotName] of publicSystemVisualRoutes) {
-    test(`${snapshotName} ${viewport.name} baseline`, async ({ page }) => {
-      await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await stabilize(page);
-      await page.goto(route);
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-      const firstAuthInput = page.locator('form input').first();
-      if (await firstAuthInput.count()) {
-        await expect(firstAuthInput).toBeEnabled();
-      }
-      await settleVisualSurface(page);
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await expect(page).toHaveScreenshot(`${snapshotName}-${viewport.name}.png`, { fullPage: false });
-    });
-  }
+for (const [route, snapshotName] of publicSystemVisualRoutes) {
+  test(`${snapshotName} desktop baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await stabilize(page);
+    await page.goto(route);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const firstAuthInput = page.locator('form input').first();
+    if (await firstAuthInput.count()) {
+      await expect(firstAuthInput).toBeEnabled();
+    }
+    await settleVisualSurface(page);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page).toHaveScreenshot(`${snapshotName}-desktop.png`, { fullPage: false });
+  });
+
+  test(`${snapshotName} mobile layout contract`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await stabilize(page);
+    await page.goto(route);
+
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toBeVisible();
+    const firstAuthInput = page.locator('form input').first();
+    if (await firstAuthInput.count()) {
+      await expect(firstAuthInput).toBeEnabled();
+    }
+    await settleVisualSurface(page);
+    await page.evaluate(() => window.scrollTo(0, 0));
+
+    const geometry = await page.evaluate(() => ({
+      viewportWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+    }));
+    expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
+
+    const headingBox = await heading.boundingBox();
+    expect(headingBox?.x ?? -1).toBeGreaterThanOrEqual(0);
+    expect((headingBox?.x ?? 0) + (headingBox?.width ?? Infinity)).toBeLessThanOrEqual(390);
+
+    const controls = page.locator('form input:visible, form button:visible');
+    for (const control of await controls.all()) {
+      const box = await control.boundingBox();
+      expect(box?.height || 0).toBeGreaterThanOrEqual(44);
+      expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
+      expect((box?.x ?? 0) + (box?.width ?? Infinity)).toBeLessThanOrEqual(390);
+    }
+  });
 }
 
 
