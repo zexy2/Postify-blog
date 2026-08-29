@@ -135,6 +135,9 @@ jobs:
             if(!response.ok) throw new Error(`${resource} probe returned ${response.status}: ${(await response.text()).slice(0,300)}`);
             console.log(`${resource} ${response.status}`);
           }
+          const canonicalResponse=await fetch(`${base}/rest/v1/posts?select=id,canonical_source_url&limit=1`,{headers});
+          if(!canonicalResponse.ok) throw new Error(`canonical_source_url probe returned ${canonicalResponse.status}: ${(await canonicalResponse.text()).slice(0,300)}`);
+          console.log(`canonical_source_url ${canonicalResponse.status}`);
           NODE
 
       - name: Trigger full main release verification after migration

@@ -15,6 +15,17 @@ grant execute on function public.capture_post_revision(uuid,text) to authenticat
 grant execute on function public.reverify_post(uuid,text) to authenticated;
 grant execute on function public.get_post_failure_details(uuid) to authenticated;
 
+-- Canonical source is additive provenance metadata and must be present before the frontend exposes it.
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='posts' and column_name='canonical_source_url'
+  ) then
+    raise exception 'canonical source column is missing';
+  end if;
+end $$;
+
 -- Exposed RPCs must never execute as SECURITY DEFINER. Privileged operations
 -- belong behind non-exposed helpers in the private schema.
 do $$
@@ -66,9 +77,22 @@ insert into auth.users(id,email) values
 insert into public.profiles(id,email,username) values
 ('11111111-1111-1111-1111-111111111111','author@example.test','author'),
 ('22222222-2222-2222-2222-222222222222','reader@example.test','reader') on conflict(id) do nothing;
-insert into public.posts(id,slug,title,body,author_id,is_published,outcome,evidence_status,tested_at,environment,verification_steps)
-values('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','verified-test','Verified test','Body','11111111-1111-1111-1111-111111111111',true,'Outcome','author-tested',now(),'["Node 20"]','["Run check and confirm output"]')
+insert into public.posts(id,slug,title,body,author_id,is_published,outcome,evidence_status,tested_at,environment,verification_steps,canonical_source_url)
+values('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','verified-test','Verified test','Body','11111111-1111-1111-1111-111111111111',true,'Outcome','author-tested',now(),'["Node 20"]','["Run check and confirm output"]','https://example.com/original?edition=2')
 on conflict(id) do nothing;
+
+-- Canonical source accepts only trimmed HTTP(S) URLs.
+do $$
+begin
+  if (select canonical_source_url from public.posts where id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') <> 'https://example.com/original?edition=2' then
+    raise exception 'canonical source was not persisted';
+  end if;
+  begin
+    update public.posts set canonical_source_url='javascript:alert(1)' where id='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    raise exception 'invalid canonical source unexpectedly succeeded';
+  exception when check_violation then null;
+  end;
+end $$;
 
 -- Trust boundary: clients cannot claim Postify Verified in the database.
 do $$
