@@ -44,14 +44,15 @@ async function settleVisualSurface(page) {
   });
   await page.addStyleTag({ content: `
     *, *::before, *::after {
-      animation-duration: 0s !important;
-      animation-delay: 0s !important;
-      transition-duration: 0s !important;
-      transition-delay: 0s !important;
+      animation: none !important;
+      transition: none !important;
       caret-color: transparent !important;
     }
     html { scroll-behavior: auto !important; }
   ` });
+  await page.evaluate(() => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  }));
 }
 
 for (const viewport of viewports) {
@@ -251,6 +252,10 @@ for (const viewport of viewports) {
       await stabilize(page);
       await page.goto(route);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      const firstAuthInput = page.locator('form input').first();
+      if (await firstAuthInput.count()) {
+        await expect(firstAuthInput).toBeEnabled();
+      }
       await settleVisualSurface(page);
       await page.evaluate(() => window.scrollTo(0, 0));
       await expect(page).toHaveScreenshot(`${snapshotName}-${viewport.name}.png`, { fullPage: false });
