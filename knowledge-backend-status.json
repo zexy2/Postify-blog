@@ -2,6 +2,9 @@
   "schemaVersion": 1,
   "ready": true,
   "mode": "supabase",
-  "checkedAt": "2026-08-29T23:21:16.167Z",
-  "exportedArtifacts": 18
+  "checkedAt": "2026-08-29T23:29:00.500Z",
+  "exportedArtifacts": 18,
+  "capabilities": {
+    "canonicalSourceUrl": false
+  }
 }
