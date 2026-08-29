@@ -48,7 +48,7 @@
 - [x] Flatten feed/category navigation and strengthen editorial hierarchy
 - [x] Align bookmarks/profile/public author pages with the new visual system
 - [x] Add Chromium desktop/article/mobile/reduced-motion smoke coverage
-- [ ] Add screenshot-diff baselines for the key UI V2 viewports once a stable visual baseline is approved
+- [x] Add screenshot-diff baselines for the key UI V2 viewports once a stable visual baseline is approved
 - [ ] Continue legacy surface cleanup: analytics/admin/secondary share controls where old gradient/card styles remain
 - [x] Align auth/404 and analytics/admin secondary surfaces with UI V2
 - [x] Rebuild Login/Register in UI V3 and complete the missing forgot/reset password route chain
@@ -98,7 +98,7 @@
 - [x] Redesign Create/Edit into a focused writing surface with a calm evidence inspector
 - [x] Bring profile and bookmarks into the same visual system (Knowledge Dashboard V3 complete)
 - [x] Rebuild About, Contact, and 404 as V3 public-system surfaces and close broken authoring navigation
-- [ ] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
+- [x] Approve and commit screenshot-diff baselines for desktop/mobile Home, Article, and Editor
 - [x] Audit/delete legacy decorative components that remain unused after V3 conversion
 
 ## UI V3 — product-language rebuild
@@ -107,4 +107,4 @@
 - [x] Reframe article detail around reading flow, evidence and actionability
 - [x] Rebuild Create/Edit as a focused writing workspace instead of a form page
 - [x] Align profile and bookmarks with the same V3 system (knowledge dashboard complete)
-- [ ] Approve and commit screenshot-diff baselines after V3 core surfaces stabilize
+- [x] Approve and commit screenshot-diff baselines after V3 core surfaces stabilize

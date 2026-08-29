@@ -21,7 +21,8 @@
     "prebuild": "npm run verify:knowledge && npm run runtime:status && npm run knowledge:artifacts",
     "export:knowledge": "node scripts/export-supabase-knowledge.mjs",
     "verify:security": "node scripts/verify-release-security.mjs",
-    "runtime:status": "node scripts/refresh-runtime-status.mjs"
+    "runtime:status": "node scripts/refresh-runtime-status.mjs",
+    "test:e2e:visual": "playwright test -c playwright.visual.config.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
