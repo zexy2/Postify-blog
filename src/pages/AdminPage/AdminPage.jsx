@@ -6,11 +6,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { FiUsers, FiFileText, FiShield, FiActivity, FiTrash2, FiEdit, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiUsers, FiFileText, FiShield, FiActivity, FiTrash2, FiEdit, FiEye, FiEyeOff, FiMessageSquare } from 'react-icons/fi';
 import adminService, { USER_ROLES } from '../../services/adminService';
 import styles from './AdminPage.module.css';
 
-const AdminPage = () => {
+const AdminPage = ({ service = adminService }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   
@@ -25,13 +25,13 @@ const AdminPage = () => {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        await adminService.checkAdminAuth();
+        await service.checkAdminAuth();
       } catch {
         navigate('/');
       }
     };
     checkAccess();
-  }, [navigate]);
+  }, [navigate, service]);
 
   // Load data based on active tab
   useEffect(() => {
@@ -41,13 +41,13 @@ const AdminPage = () => {
       
       try {
         if (activeTab === 'dashboard') {
-          const dashboardStats = await adminService.getDashboardStats();
+          const dashboardStats = await service.getDashboardStats();
           setStats(dashboardStats);
         } else if (activeTab === 'users') {
-          const allUsers = await adminService.getAllUsers();
+          const allUsers = await service.getAllUsers();
           setUsers(allUsers);
         } else if (activeTab === 'posts') {
-          const allPosts = await adminService.getAllPosts();
+          const allPosts = await service.getAllPosts();
           setPosts(allPosts);
         }
       } catch (err) {
@@ -58,23 +58,12 @@ const AdminPage = () => {
     };
 
     loadData();
-  }, [activeTab]);
+  }, [activeTab, service]);
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      await adminService.updateUserRole(userId, newRole);
+      await service.updateUserRole(userId, newRole);
       setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) return;
-    
-    try {
-      await adminService.deleteUser(userId);
-      setUsers(users.filter(u => u.id !== userId));
     } catch (err) {
       alert(err.message);
     }
@@ -84,7 +73,7 @@ const AdminPage = () => {
     if (!window.confirm('Bu postu silmek istediğinizden emin misiniz?')) return;
     
     try {
-      await adminService.deletePost(postId);
+      await service.deletePost(postId);
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {
       alert(err.message);
@@ -93,7 +82,7 @@ const AdminPage = () => {
 
   const handleTogglePostVisibility = async (postId) => {
     try {
-      const updatedPost = await adminService.togglePostVisibility(postId);
+      const updatedPost = await service.togglePostVisibility(postId);
       setPosts(posts.map(p => p.id === postId ? updatedPost : p));
     } catch (err) {
       alert(err.message);
@@ -138,6 +127,14 @@ const AdminPage = () => {
                 <span className={styles.statLabel}>Moderatör</span>
               </div>
             </div>
+
+            <div className={styles.statCard}>
+              <FiMessageSquare className={styles.statIcon} />
+              <div className={styles.statInfo}>
+                <span className={styles.statNumber}>{stats.totalComments}</span>
+                <span className={styles.statLabel}>Yorum</span>
+              </div>
+            </div>
           </div>
 
           <div className={styles.recentSection}>
@@ -146,12 +143,12 @@ const AdminPage = () => {
               {stats.recentUsers?.map(user => (
                 <li key={user.id} className={styles.recentItem}>
                   <img 
-                    src={user.user_metadata?.avatar_url} 
-                    alt={user.user_metadata?.username}
+                    src={user.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.full_name || user.username || user.email || 'U')}`}
+                    alt={user.full_name || user.username || user.email || 'Kullanıcı'}
                     className={styles.avatar}
                   />
                   <div className={styles.userInfo}>
-                    <span className={styles.userName}>{user.user_metadata?.full_name}</span>
+                    <span className={styles.userName}>{user.full_name || user.username || 'İsimsiz kullanıcı'}</span>
                     <span className={styles.userEmail}>{user.email}</span>
                   </div>
                   <span className={`${styles.roleBadge} ${styles[user.role]}`}>
@@ -170,6 +167,7 @@ const AdminPage = () => {
     <div className={styles.usersSection}>
       <h2>Kullanıcı Yönetimi</h2>
       
+      <div className={styles.tableWrap}>
       <table className={styles.table}>
         <thead>
           <tr>
@@ -186,11 +184,11 @@ const AdminPage = () => {
               <td>
                 <div className={styles.userCell}>
                   <img 
-                    src={u.user_metadata?.avatar_url} 
-                    alt={u.user_metadata?.username}
+                    src={u.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(u.full_name || u.username || u.email || 'U')}`}
+                    alt={u.full_name || u.username || u.email || 'Kullanıcı'}
                     className={styles.tableAvatar}
                   />
-                  <span>{u.user_metadata?.full_name || u.user_metadata?.username}</span>
+                  <span>{u.full_name || u.username || 'İsimsiz kullanıcı'}</span>
                 </div>
               </td>
               <td>{u.email}</td>
@@ -208,19 +206,15 @@ const AdminPage = () => {
               </td>
               <td>{new Date(u.created_at).toLocaleDateString('tr-TR')}</td>
               <td>
-                <button
-                  onClick={() => handleDeleteUser(u.id)}
-                  className={styles.deleteBtn}
-                  disabled={u.id === user?.id}
-                  title="Kullanıcıyı Sil"
-                >
-                  <FiTrash2 />
-                </button>
+                <span className={styles.serverOnly} title="Kullanıcı silme işlemi güvenli server-side Admin API gerektirir">
+                  Server API gerekli
+                </span>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 
@@ -231,6 +225,7 @@ const AdminPage = () => {
       {posts.length === 0 ? (
         <p className={styles.noPosts}>Henüz post bulunmuyor.</p>
       ) : (
+        <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
             <tr>
@@ -279,6 +274,7 @@ const AdminPage = () => {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );
@@ -293,30 +289,35 @@ const AdminPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>
-          <FiShield className={styles.headerIcon} />
-          Admin Panel
-        </h1>
-        <p>Hoş geldiniz, {user?.user_metadata?.full_name || 'Admin'}</p>
-      </div>
+      <header className={styles.header}>
+        <span className={styles.eyebrow}>YÖNETİM KONSOLU</span>
+        <h1>Postify operasyonlarını yönet.</h1>
+        <p>Kullanıcı rolleri, yayın durumu ve topluluk operasyonlarını tek çalışma alanından kontrol et.</p>
+        <span className={styles.operator}>Aktif yönetici · {user?.user_metadata?.full_name || user?.email || 'Admin'}</span>
+      </header>
 
-      <div className={styles.tabs}>
+      <div className={styles.tabs} role="tablist" aria-label="Yönetim bölümleri">
         <button
           className={`${styles.tab} ${activeTab === 'dashboard' ? styles.active : ''}`}
           onClick={() => setActiveTab('dashboard')}
+          role="tab"
+          aria-selected={activeTab === 'dashboard'}
         >
           <FiActivity /> Dashboard
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'users' ? styles.active : ''}`}
           onClick={() => setActiveTab('users')}
+          role="tab"
+          aria-selected={activeTab === 'users'}
         >
           <FiUsers /> Kullanıcılar
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'posts' ? styles.active : ''}`}
           onClick={() => setActiveTab('posts')}
+          role="tab"
+          aria-selected={activeTab === 'posts'}
         >
           <FiFileText /> Postlar
         </button>

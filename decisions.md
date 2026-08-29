@@ -305,3 +305,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 - Dashboard metrics must come from existing Postify data sources (published user posts, bookmarks, author knowledge dashboard). We do not show fake draft/activity counts or link to nonexistent settings routes just to fill space.
 - Editing remains progressively disclosed: the dashboard stays scannable until the user explicitly opens the profile editor.
 - Authenticated profile desktop/mobile screenshots are now deterministic visual-release contracts because this surface previously looked unfinished despite functional tests passing.
+
+## 2026-08-29 — UI acceptance is browser-led, route-by-route, and data-aware
+**Decision:** Postify UI QA is performed against real rendered Chromium surfaces at desktop and mobile widths, not inferred from CSS or functional tests alone. Route audits may change layout density and must also close functional/data-contract defects exposed by the rendered UI. Authenticated surfaces use deterministic test-only provider/data harnesses rather than production auth bypasses.
+
+**Why:** Several real defects were invisible to build success: desktop account controls were absent, Profile looked unfinished despite working, Admin expected fields its service never returned, and mobile tables needed containment. Browser-level inspection plus deterministic visual baselines makes spacing, hierarchy, empty/data states and cross-layer UI/data drift release-visible without weakening production security.

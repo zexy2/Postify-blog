@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  padding: clamp(2.75rem, 7vw, 6.5rem) 0 0;
+  padding: clamp(2.25rem, 5vw, 4.5rem) 0 0;
 }
 
 .container {
@@ -12,7 +12,7 @@
   display: grid;
   grid-template-columns: 110px minmax(0, 1fr);
   gap: clamp(1.5rem, 5vw, 4rem);
-  padding-bottom: clamp(3rem, 7vw, 6rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4.25rem);
   border-bottom: 1px solid var(--border-strong);
 }
 
@@ -46,7 +46,7 @@
   margin: .85rem 0 1.2rem;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(3rem, 7.4vw, 6.9rem);
+  font-size: clamp(3rem, 6.1vw, 5.6rem);
   font-weight: 650;
   letter-spacing: -.06em;
   line-height: .94;
@@ -69,7 +69,7 @@
 }
 
 .statement {
-  padding: clamp(3rem, 7vw, 5.5rem) 0;
+  padding: clamp(2.5rem, 5vw, 4.25rem) 0;
   border-bottom: 1px solid var(--border-strong);
 }
 
@@ -80,7 +80,7 @@
   margin: .55rem 0 .9rem;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-size: clamp(2rem, 3.8vw, 3.25rem);
   font-weight: 620;
   letter-spacing: -.045em;
   line-height: 1.02;
@@ -95,7 +95,7 @@
 
 .model,
 .formats {
-  padding: clamp(3rem, 7vw, 5.5rem) 0;
+  padding: clamp(2.5rem, 5vw, 4.25rem) 0;
   border-bottom: 1px solid var(--border-strong);
 }
 
@@ -160,7 +160,7 @@
 
 .cta {
   align-items: end;
-  padding: clamp(3rem, 7vw, 5.5rem) 0;
+  padding: clamp(2.5rem, 5vw, 4.25rem) 0;
 }
 
 .ctaActions {

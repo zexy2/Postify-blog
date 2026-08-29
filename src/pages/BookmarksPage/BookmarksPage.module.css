@@ -1,6 +1,6 @@
 .page,
 .emptyState {
-  padding: clamp(2.5rem, 6vw, 5.5rem) 0 6rem;
+  padding: clamp(2.25rem, 5vw, 4.5rem) 0 5rem;
 }
 
 .header {
@@ -43,7 +43,7 @@
 
 .title {
   max-width: 11ch;
-  font-size: clamp(3.2rem, 7vw, 6rem);
+  font-size: clamp(3rem, 5.8vw, 5.2rem);
   line-height: .9;
 }
 
@@ -228,7 +228,7 @@
 
 .emptyTitle {
   max-width: 12ch;
-  font-size: clamp(2.8rem, 7vw, 5.3rem);
+  font-size: clamp(2.8rem, 5.8vw, 4.8rem);
   line-height: .94;
 }
 

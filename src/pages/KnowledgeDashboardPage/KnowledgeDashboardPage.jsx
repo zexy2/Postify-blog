@@ -32,13 +32,15 @@ const getFreshnessLabel = (freshness, en) => {
   return labels[freshness] || labels.unknown;
 };
 
-export default function KnowledgeDashboardPage() {
+export default function KnowledgeDashboardPage({ dataOverride = null, backendReadyOverride = null, reverifyOverride = null }) {
   const { i18n } = useTranslation();
   const en = i18n.language?.startsWith('en');
   const backend = useKnowledgeBackendStatus();
-  const dashboard = useAuthorDashboard();
+  const dashboard = useAuthorDashboard({ enabled: dataOverride === null });
   const reverify = useReverifyPost();
-  const data = dashboard.data || { posts: [], gaps: [] };
+  const reverifyAction = reverifyOverride || reverify;
+  const data = dataOverride || dashboard.data || { posts: [], gaps: [] };
+  const backendReady = backendReadyOverride ?? backend.data?.ready;
   const credibility = getDomainCredibility(data.posts);
   const enrichedPosts = data.posts.map((post) => ({
     post,
@@ -51,11 +53,11 @@ export default function KnowledgeDashboardPage() {
   const confirmationCount = enrichedPosts.reduce((total, item) => total + item.summary.total, 0);
   const topGap = data.gaps[0] || null;
 
-  if (backend.isLoading || dashboard.isLoading) {
+  if ((backendReadyOverride === null && backend.isLoading) || (dataOverride === null && dashboard.isLoading)) {
     return <div className={`container ${styles.status}`}>{en ? 'Loading knowledge health…' : 'Bilgi sağlığı yükleniyor…'}</div>;
   }
 
-  if (backend.data?.ready !== true) {
+  if (backendReady !== true) {
     return (
       <div className={`container ${styles.page}`}>
         <header className={styles.header}>
@@ -154,8 +156,8 @@ export default function KnowledgeDashboardPage() {
                   <Link to={`/posts/${post.id}/edit`}><FiEdit3 />{en ? 'Edit evidence' : 'Kanıtı düzenle'}</Link>
                   <button
                     type="button"
-                    disabled={reverify.isPending || !canReverify}
-                    onClick={() => reverify.mutate({ postId: post.id, reason: 'Author re-verified current environment and checks' })}
+                    disabled={reverifyAction.isPending || !canReverify}
+                    onClick={() => reverifyAction.mutate({ postId: post.id, reason: 'Author re-verified current environment and checks' })}
                   >
                     <FiRefreshCw />{en ? 'Re-verify' : 'Yeniden doğrula'}
                   </button>

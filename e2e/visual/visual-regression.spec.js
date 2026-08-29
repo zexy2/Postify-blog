@@ -115,3 +115,92 @@ for (const viewport of viewports) {
     await expect(page.locator('#root')).toHaveScreenshot(`authenticated-profile-${viewport.name}.png`);
   });
 }
+
+for (const viewport of viewports) {
+  test(`About ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/about');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await settleVisualSurface(page);
+    await expect(page.locator('#main-content')).toHaveScreenshot(`about-${viewport.name}.png`);
+  });
+
+  test(`Contact ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/contact');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await settleVisualSurface(page);
+    await expect(page.locator('#main-content')).toHaveScreenshot(`contact-${viewport.name}.png`);
+  });
+
+  test(`Author portfolio ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/users/fallback-editor');
+    await expect(page.getByRole('heading', { level: 1, name: /Postify/i })).toBeVisible();
+    await settleVisualSurface(page);
+    await expect(page.locator('#main-content')).toHaveScreenshot(`author-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
+  test(`Admin dashboard ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/admin-auth.html');
+    await expect(page.getByRole('heading', { level: 1, name: /Postify operasyonlarını yönet/i })).toBeVisible();
+    await expect(page.getByText('128')).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`admin-dashboard-${viewport.name}.png`);
+  });
+}
+
+test('Admin management tables remain contained on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/admin-auth.html');
+  await page.getByRole('tab', { name: /Kullanıcılar/i }).click();
+  await expect(page.getByText('Semanur').first()).toBeVisible();
+  let width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+  expect(width.document).toBeLessThanOrEqual(width.viewport);
+  const usersTable = page.locator('table').first();
+  expect(await usersTable.evaluate((element) => element.scrollWidth > element.parentElement.clientWidth)).toBe(true);
+
+  await page.getByRole('tab', { name: /Postlar/i }).click();
+  await expect(page.getByText(/Node\.js doğrulama/i)).toBeVisible();
+  await expect(page.getByText('Semanur').first()).toBeVisible();
+  width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+  expect(width.document).toBeLessThanOrEqual(width.viewport);
+});
+
+for (const viewport of viewports) {
+  test(`Bookmarks shelf ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/bookmarks-auth.html');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('article')).toHaveCount(3);
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`bookmarks-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
+  test(`Knowledge health ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/knowledge-auth.html');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByText(/Bakım kuyruğu|Maintenance queue/i)).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`knowledge-${viewport.name}.png`);
+  });
+}

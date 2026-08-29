@@ -9,6 +9,28 @@ export const USER_ROLES = {
   ADMIN: 'admin',
 };
 
+export const buildAdminDashboardStats = (profiles = [], stats = {}) => ({
+  totalUsers: profiles.length,
+  totalPosts: stats.posts || 0,
+  totalComments: stats.comments || 0,
+  adminCount: profiles.filter((profile) => profile.role === USER_ROLES.ADMIN).length,
+  moderatorCount: profiles.filter((profile) => profile.role === USER_ROLES.MODERATOR).length,
+  recentUsers: profiles.slice(0, 5),
+});
+
+export const enrichAdminPosts = (rows = [], authorProfiles = []) => {
+  const authors = new Map(authorProfiles.map((profile) => [String(profile.id), profile]));
+  return rows.map((post) => {
+    const author = authors.get(String(post.author_id));
+    return {
+      ...post,
+      isPublished: post.is_published,
+      createdAt: post.created_at,
+      author: author?.full_name || author?.username || author?.email || 'Anonim',
+    };
+  });
+};
+
 const getCurrentProfile = async () => {
   const client = requireSupabase();
   const { data: authData, error: authError } = await client.auth.getUser();
@@ -35,19 +57,22 @@ export const adminService = {
 
   getDashboardStats: async () => {
     await checkAdminAuth();
-    const stats = await postService.getStats();
-    const { count: users, error } = await requireSupabase()
-      .from('profiles')
-      .select('id', { count: 'exact', head: true });
-    if (error) throw error;
-    return { totalUsers: users || 0, totalPosts: stats.posts, totalComments: stats.comments };
+    const [stats, profilesResult] = await Promise.all([
+      postService.getStats(),
+      requireSupabase()
+        .from('profiles')
+        .select('id, email, full_name, username, avatar_url, role, created_at')
+        .order('created_at', { ascending: false }),
+    ]);
+    if (profilesResult.error) throw profilesResult.error;
+    return buildAdminDashboardStats(profilesResult.data || [], stats);
   },
 
   getAllUsers: async () => {
     await checkAdminAuth();
     const { data, error } = await requireSupabase()
       .from('profiles')
-      .select('id, email, full_name, username, role, created_at')
+      .select('id, email, full_name, username, avatar_url, role, created_at')
       .order('created_at', { ascending: false });
     if (error) throw error;
     return data || [];
@@ -73,16 +98,24 @@ export const adminService = {
 
   getAllPosts: async () => {
     await checkAdminAuth();
-    const { data, error } = await requireSupabase()
+    const client = requireSupabase();
+    const { data, error } = await client
       .from('posts')
       .select('id, slug, title, category, author_id, is_published, created_at, published_at')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return (data || []).map((post) => ({
-      ...post,
-      isPublished: post.is_published,
-      createdAt: post.created_at,
-    }));
+    const rows = data || [];
+    const authorIds = [...new Set(rows.map((post) => post.author_id).filter(Boolean))];
+    let authorProfiles = [];
+    if (authorIds.length) {
+      const result = await client
+        .from('profiles')
+        .select('id, full_name, username, email')
+        .in('id', authorIds);
+      if (result.error) throw result.error;
+      authorProfiles = result.data || [];
+    }
+    return enrichAdminPosts(rows, authorProfiles);
   },
 
   deletePost: async (postId) => {
