@@ -338,6 +338,37 @@ test('Editor keyboard focus stays visible inside mobile scroll surfaces', async 
   expect(titleOutline).toBeGreaterThanOrEqual(2);
 });
 
+test('Editor validation names the content field and focuses the first invalid control', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.route('**/knowledge-backend-status.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ready: true, mode: 'test', capabilities: { canonicalSourceUrl: true } }),
+    });
+  });
+  await page.goto('/e2e/visual/editor.html');
+  await expect(page.getByRole('heading', { level: 1, name: /create new post/i })).toBeVisible();
+
+  const title = page.locator('#title');
+  const editor = page.locator('.ProseMirror[contenteditable="true"]');
+  const publish = page.getByRole('button', { name: /publish|yayınla/i });
+
+  await expect(editor).toHaveAttribute('aria-labelledby', 'post-content-label');
+  await expect(editor).toHaveAttribute('aria-invalid', 'false');
+  await expect(editor).toHaveAttribute('aria-describedby', 'body-count');
+
+  await publish.click();
+  await expect(title).toBeFocused();
+  await expect(editor).toHaveAttribute('aria-invalid', 'true');
+  await expect(editor).toHaveAttribute('aria-describedby', 'body-error body-count');
+  await expect(page.locator('#body-error')).toHaveAttribute('role', 'alert');
+
+  await title.fill('A practical validation title');
+  await publish.click();
+  await expect(editor).toBeFocused();
+});
+
 test('Editor canonical source is capability-gated, validated, and mobile-safe', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.route('**/knowledge-backend-status.json', async (route) => {

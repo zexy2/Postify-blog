@@ -413,3 +413,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** On touch-layout Articles, the floating action bar remains available for pointer/touch users and in the keyboard tab order, but retreats whenever `:focus-visible` belongs to another Article control. When focus enters the bar itself it reappears. The behavior is expressed in CSS using the page’s focus state rather than hiding the bar permanently on short screens.
 
 **Why:** Short landscape Chromium runs showed the 59px fixed bar partially covering focused evidence and navigation controls. Simply disabling the bar would remove the only persistent mobile Bookmark control, while scroll margins did not fully eliminate overlap for large focus boxes. Yielding only during external keyboard focus preserves functionality and touch convenience while preventing focus obscuration.
+
+## 2026-08-30 — Custom editors own native-equivalent validation semantics
+**Decision:** A custom contenteditable used as a required form field must expose the same label, invalid-state, descriptive-error and focus-recovery semantics as a native input. Validation errors are attached to the actual editable node, not only to its visual wrapper, and invalid submission moves focus to the first actionable invalid field after the error state renders.
+
+**Why:** The TipTap editor looked correctly labeled visually, but the browser accessibility tree had no programmatic relationship between `Content` and the editable surface. Body errors were also plain text while focus stayed on Publish, leaving keyboard and screen-reader users far from the problem they needed to fix. Treating the custom editor as a first-class form control closes that gap without changing the visual layout.

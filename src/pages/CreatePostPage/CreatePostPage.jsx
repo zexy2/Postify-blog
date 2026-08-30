@@ -137,6 +137,19 @@ const CreatePostPage = () => {
     }
 
     setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0 && typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => {
+        if (newErrors.title) {
+          window.document.getElementById('title')?.focus();
+        } else if (newErrors.body) {
+          editorRef.current?.focus?.();
+        } else if (newErrors.canonicalSourceUrl) {
+          window.document.getElementById('canonical-source-url')?.focus();
+        }
+      });
+    }
+
     return publishReadiness.publication.ready && Object.keys(newErrors).length === 0;
   }, [canonicalSourceReady, formData.body, formData.canonicalSourceUrl, formData.title, i18n.language, publishReadiness.publication.ready, t]);
 
@@ -403,7 +416,7 @@ const CreatePostPage = () => {
               {/* Content Editor */}
               <div className={styles.formGroup}>
             <div className={styles.labelRow}>
-              <label className={styles.label}>
+              <label id="post-content-label" className={styles.label}>
                 {t('posts.postContent')}
                 <span className={styles.required}>*</span>
               </label>
@@ -434,10 +447,13 @@ const CreatePostPage = () => {
               placeholder={t('posts.bodyPlaceholder')}
               minHeight={300}
               maxHeight={600}
+              ariaLabelledBy="post-content-label"
+              ariaInvalid={Boolean(errors.body)}
+              ariaDescribedBy={errors.body ? "body-error body-count" : "body-count"}
             />
             <div className={styles.inputFooter}>
-              {errors.body && <span className={styles.error}>{errors.body}</span>}
-              <span className={styles.charCount}>
+              {errors.body && <span id="body-error" className={styles.error} role="alert">{errors.body}</span>}
+              <span id="body-count" className={styles.charCount}>
                 {i18n.language?.startsWith('en')
                   ? `${writingMetrics.words} words · ${writingMetrics.readingMinutes || 0} min`
                   : `${writingMetrics.words} kelime · ${writingMetrics.readingMinutes || 0} dk`}

@@ -139,6 +139,9 @@ const RichTextEditor = forwardRef(({
   minHeight = 200,
   maxHeight = 500,
   readOnly = false,
+  ariaLabelledBy,
+  ariaInvalid = false,
+  ariaDescribedBy,
 }, forwardedRef) => {
   const { t } = useTranslation();
   const resolvedPlaceholder = placeholder || t('posts.bodyPlaceholder');
@@ -181,6 +184,9 @@ const RichTextEditor = forwardRef(({
     },
     getMarkdown() {
       return editor?.getMarkdown?.() || '';
+    },
+    focus() {
+      return editor?.commands.focus?.() || false;
     },
   }), [editor]);
 
@@ -262,6 +268,21 @@ const RichTextEditor = forwardRef(({
       editorDom.removeEventListener('keydown', handleKeyDown);
     };
   }, [editor, suggestion, aiEnabled, ghostEnabled, acceptSuggestion, dismissSuggestion, acceptWord]);
+
+  // Keep the actual contenteditable node connected to its external form semantics.
+  useEffect(() => {
+    if (!editor) return;
+    const editorDom = editorRef.current?.querySelector('.ProseMirror');
+    if (!editorDom) return;
+
+    if (ariaLabelledBy) editorDom.setAttribute('aria-labelledby', ariaLabelledBy);
+    else editorDom.removeAttribute('aria-labelledby');
+
+    editorDom.setAttribute('aria-invalid', ariaInvalid ? 'true' : 'false');
+
+    if (ariaDescribedBy) editorDom.setAttribute('aria-describedby', ariaDescribedBy);
+    else editorDom.removeAttribute('aria-describedby');
+  }, [editor, ariaLabelledBy, ariaInvalid, ariaDescribedBy]);
 
   // Show ghost text when suggestion is available
   useEffect(() => {

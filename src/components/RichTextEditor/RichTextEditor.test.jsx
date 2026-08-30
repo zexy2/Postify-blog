@@ -26,6 +26,38 @@ describe('RichTextEditor', () => {
     unmount();
     consoleError.mockRestore();
   });
+
+  it('binds external validation semantics to the contenteditable surface', async () => {
+    const store = configureStore({ reducer: { ai: aiReducer } });
+    const editorRef = createRef();
+
+    const { container } = render(
+      <Provider store={store}>
+        <div>
+          <span id="content-label">Content</span>
+          <span id="content-error">Required</span>
+          <RichTextEditor
+            ref={editorRef}
+            content=""
+            onChange={vi.fn()}
+            ariaLabelledBy="content-label"
+            ariaInvalid
+            ariaDescribedBy="content-error"
+          />
+        </div>
+      </Provider>,
+    );
+
+    await waitFor(() => expect(container.querySelector('.ProseMirror')).toBeInTheDocument());
+    const editable = container.querySelector('.ProseMirror');
+    expect(editable).toHaveAttribute('aria-labelledby', 'content-label');
+    expect(editable).toHaveAttribute('aria-invalid', 'true');
+    expect(editable).toHaveAttribute('aria-describedby', 'content-error');
+
+    expect(editorRef.current.focus()).toBe(true);
+    await waitFor(() => expect(editable).toHaveFocus());
+  });
+
   it('imports and exports markdown through the editor document model', async () => {
     const store = configureStore({ reducer: { ai: aiReducer } });
     const onChange = vi.fn();
