@@ -60,6 +60,7 @@
 .mobileSearch span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .mobileNav { display:grid; border-top:1px solid var(--border-color); }
 .mobileNav a { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.9rem .1rem; color:var(--text-primary); border-bottom:1px solid var(--border-color); font-size:.9rem; font-weight:720; text-decoration:none; }
+.mobileNav a[aria-current="page"] { color:var(--primary); }
 .mobileNav a small { color:var(--text-muted); font-family:var(--font-mono); font-size:.62rem; }
 .mobileFooter { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:auto; padding-top:1.35rem; }
 .mobileUtilities { display:flex; align-items:center; gap:.3rem; }

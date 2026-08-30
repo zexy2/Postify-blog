@@ -18,7 +18,7 @@
 .retryButton, .noResults button { min-height: 44px; padding: .75rem 1.1rem; color: #fff; background: var(--primary); border: 0; border-radius: var(--radius-md); font: inherit; font-weight: 700; cursor: pointer; }
 .retryButton:hover, .noResults button:hover { background: var(--primary-hover); }
 
-.postsSection { padding-top: clamp(1.4rem, 2.4vw, 2rem); padding-bottom: var(--space-3xl); }
+.postsSection { scroll-margin-top: 76px; padding-top: clamp(1.15rem, 2vw, 1.65rem); padding-bottom: var(--space-3xl); }
 .sectionHeader { display: flex; justify-content: space-between; margin-bottom: clamp(1rem, 2vw, 1.5rem); }
 .sectionTitle { display: flex; align-items: center; gap: .5rem; margin: .4rem 0 .25rem; color: var(--text-primary); font-family: var(--font-sans); font-size: clamp(1.75rem, 3vw, 2.7rem); font-weight: 760; letter-spacing: -.045em; line-height: 1; }
 .sectionSubtitle { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
@@ -41,12 +41,12 @@
 .typeFilter {
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
-  margin-bottom: 1.25rem;
+  gap: .1rem .18rem;
+  margin-bottom: .85rem;
   padding: 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid var(--border-strong);
+  border-bottom: 0;
   border-radius: 0;
 }
 
@@ -71,7 +71,7 @@
 .typeFilter .typeFilterActive { color: var(--text-primary); background: transparent; border-bottom-color: var(--primary); box-shadow: none; }
 
 
-.filterDivider { width: 1px; height: 1.2rem; align-self: center; margin: 0 .25rem; background: var(--border-strong); }
+.filterDivider { display: none; }
 @media (max-width: 600px) { .filterDivider { display: none; } }
 
 @media (max-width: 620px) {

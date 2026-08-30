@@ -383,3 +383,13 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Overlay acceptance is defined by user-visible behavior: the dialog remains inside the viewport, background scrolling is locked, dismissal restores the previous scroll/focus context, and controls preserve their keyboard model. Tests must not require a particular scroll-lock implementation such as `body { position: fixed }`. Visual screenshot tests also wait for a meaningful rendered product marker before capture; readiness timeout may absorb runner startup jitter without relaxing pixel-diff tolerance.
 
 **Why:** The body-fixed implementation itself helped cause the scrolled Command Palette to render offscreen, while an old functional test incorrectly treated that implementation as the contract. Separately, 50 independent Home contexts rendered in under 1 second at p99, yet a heavily loaded 98-test visual run exceeded Playwright's generic 5-second assertion window once. Outcome-based overlay assertions and marker-based visual readiness protect actual UX defects without encoding a broken technique or weakening screenshot comparisons.
+
+## 2026-08-30 — Primary format navigation must visibly complete the navigation
+**Decision:** Header format links keep the canonical Home `type` query but also target `#knowledge-feed`, derive their active state from that query, and expose it with `aria-current`. Explore and the brand reset the query context and return the viewport to the top. Mobile uses the same format identities and active semantics.
+
+**Why:** Changing the filter in the URL was technically correct but not enough UX feedback while a large hero remained above the results. A successful navigation must visibly land the user on the changed content and clearly identify the active destination; otherwise a working filter feels like a broken button.
+
+## 2026-08-30 — Discovery density uses hierarchy and whitespace instead of table borders
+**Decision:** Home keeps its editorial masthead and evidence metadata, but reduces hero/feed vertical expansion and removes most per-cell topic/filter separators. Grouping should come from spacing, typography, selected-state tone and a small number of structural rules rather than a border around every option or fact.
+
+**Why:** The real desktop screenshots showed that the former combination of oversized hero, long card rhythm and dense dividers read more like a poster followed by a spreadsheet than a practical knowledge product. Tightening density brings useful records into the first viewport while preserving the distinctive evidence-first information architecture.

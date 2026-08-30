@@ -11,6 +11,43 @@ test.describe('Postify UI V2', () => {
     await expect(page.locator('body')).not.toHaveCSS('overflow-x', 'scroll');
   });
 
+  test('desktop format navigation activates, filters, and lands on the selected feed', async ({ page }) => {
+    await page.setViewportSize({ width: 1304, height: 844 });
+    await page.goto('/');
+
+    const primaryNav = page.locator('header nav[aria-label="Primary"]');
+    const explore = primaryNav.getByRole('link', { name: /keşfet|explore/i });
+    await expect(explore).toHaveAttribute('aria-current', 'page');
+
+    const cases = [
+      { link: /rehberler|guides/i, filter: /^rehber$|^guide$/i, type: 'guide' },
+      { link: /kararlar|decisions/i, filter: /karar notu|decision note/i, type: 'decision' },
+      { link: /saha notları|field notes/i, filter: /saha notu|field note/i, type: 'fieldNote' },
+    ];
+
+    for (const item of cases) {
+      const link = primaryNav.getByRole('link', { name: item.link });
+      await link.click();
+      await expect(page).toHaveURL(new RegExp(`[?&]type=${item.type}#knowledge-feed$`));
+      await expect(link).toHaveAttribute('aria-current', 'page');
+      await expect(explore).not.toHaveAttribute('aria-current', 'page');
+
+      const activeFilter = page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i })
+        .getByRole('button', { name: item.filter });
+      await expect(activeFilter).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator('#knowledge-feed')).toBeInViewport();
+      expect(await page.locator('#knowledge-feed [data-card-variant]').count()).toBeGreaterThan(0);
+
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+    }
+
+    await explore.click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(explore).toHaveAttribute('aria-current', 'page');
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(4);
+  });
+
   test('direct article renders a readable editorial surface', async ({ page }) => {
     await page.goto('/posts/ai-muhendisligi');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -401,6 +438,27 @@ test.describe('Postify UI V2', () => {
     const filter = allFormats.locator('..');
     const wrap = await filter.evaluate((element) => getComputedStyle(element).flexWrap);
     expect(wrap).toBe('nowrap');
+  });
+
+  test('mobile format navigation closes the drawer and lands on the selected feed', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+
+    const menu = page.locator('header button[aria-expanded]').first();
+    await menu.click();
+    const drawer = page.getByRole('dialog');
+    await expect(drawer).toBeVisible();
+
+    const guides = drawer.getByRole('link', { name: /^rehberler$|^guides$/i });
+    await guides.click();
+
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await expect(page).toHaveURL(/[?&]type=guide#knowledge-feed$/);
+    await expect(page.getByRole('button', { name: /^rehber$|^guide$/i })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#knowledge-feed')).toBeInViewport();
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 
   test('V3 knowledge card hierarchy exposes featured, standard and compact records without mobile overflow', async ({ page }) => {

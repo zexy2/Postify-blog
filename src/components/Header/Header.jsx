@@ -50,8 +50,21 @@ const Header = () => {
   const accountEmail = user?.email || '';
   const accountLabel = i18n.language?.startsWith('en') ? 'Account' : 'Hesap';
   const knowledgeLabel = i18n.language?.startsWith('en') ? 'Knowledge health' : 'Bilgi sağlığı';
+  const isHome = location.pathname === '/';
+  const activeType = isHome ? new URLSearchParams(location.search).get('type') : null;
+  const formatLinks = [
+    ['guide', i18n.language?.startsWith('en') ? 'Guides' : 'Rehberler'],
+    ['decision', i18n.language?.startsWith('en') ? 'Decisions' : 'Kararlar'],
+    ['fieldNote', i18n.language?.startsWith('en') ? 'Field notes' : 'Saha notları'],
+  ];
 
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+  const handleHomeNavigation = useCallback(() => {
+    closeMenu();
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
+  }, [closeMenu]);
   const openSearch = useCallback(() => {
     closeMenu();
     setIsCommandOpen(true);
@@ -110,16 +123,33 @@ const Header = () => {
       {isCommandOpen && <Suspense fallback={null}><CommandPalette open onClose={() => setIsCommandOpen(false)} /></Suspense>}
 
       <div className={styles.container}>
-        <Link to="/" className={styles.logo} aria-label="Postify" onClick={closeMenu}>
+        <Link to="/" className={styles.logo} aria-label="Postify" onClick={handleHomeNavigation}>
           <BrandMark size="md" />
           <span>Postify</span>
         </Link>
 
         <nav className={styles.desktopNav} aria-label="Primary">
-          <Link to="/" className={location.pathname === '/' ? styles.active : ''}>{t('nav.home')}</Link>
-          <Link to="/?type=guide">{i18n.language?.startsWith('en') ? 'Guides' : 'Rehberler'}</Link>
-          <Link to="/?type=decision">{i18n.language?.startsWith('en') ? 'Decisions' : 'Kararlar'}</Link>
-          <Link to="/?type=fieldNote">{i18n.language?.startsWith('en') ? 'Field notes' : 'Saha notları'}</Link>
+          <Link
+            to="/"
+            className={isHome && !activeType ? styles.active : ''}
+            aria-current={isHome && !activeType ? 'page' : undefined}
+            onClick={handleHomeNavigation}
+          >
+            {t('nav.home')}
+          </Link>
+          {formatLinks.map(([type, label]) => {
+            const isActive = isHome && activeType === type;
+            return (
+              <Link
+                key={type}
+                to={`/?type=${type}#knowledge-feed`}
+                className={isActive ? styles.active : ''}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className={styles.desktopActions}>
@@ -228,7 +258,7 @@ const Header = () => {
               <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
               <div className={styles.mobilePanel}>
               <div className={styles.mobileTop}>
-                <Link to="/" className={styles.logo} onClick={closeMenu}>
+                <Link to="/" className={styles.logo} onClick={handleHomeNavigation}>
                   <BrandMark size="md" /><span>Postify</span>
                 </Link>
                 <p>{t('home.subtitle')}</p>
@@ -240,7 +270,23 @@ const Header = () => {
               </button>
 
               <nav className={styles.mobileNav}>
-                <Link to="/" onClick={closeMenu}><span>{t('nav.home')}</span><small>01</small></Link>
+                <Link
+                  to="/"
+                  onClick={handleHomeNavigation}
+                  aria-current={isHome && !activeType ? 'page' : undefined}
+                >
+                  <span>{t('nav.home')}</span><small aria-hidden="true">01</small>
+                </Link>
+                {formatLinks.map(([type, label], index) => (
+                  <Link
+                    key={type}
+                    to={`/?type=${type}#knowledge-feed`}
+                    onClick={closeMenu}
+                    aria-current={isHome && activeType === type ? 'page' : undefined}
+                  >
+                    <span>{label}</span><small aria-hidden="true">{String(index + 2).padStart(2, '0')}</small>
+                  </Link>
+                ))}
                 {isAuthenticated && <Link to="/posts/create" onClick={closeMenu}><span>{t('nav.createPost')}</span><FiPlus size={16} /></Link>}
                 {isAuthenticated && <Link to="/knowledge" onClick={closeMenu}><span>{i18n.language?.startsWith('en') ? 'Knowledge health' : 'Bilgi sağlığı'}</span><FiActivity size={16} /></Link>}
                 {isAuthenticated && <Link to="/bookmarks" onClick={closeMenu}><span>{t('nav.bookmarks')}</span><small>{bookmarksCount || '—'}</small></Link>}

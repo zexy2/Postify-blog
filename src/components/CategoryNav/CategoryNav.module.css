@@ -5,8 +5,8 @@
 .inner {
   max-width: var(--container-max);
   display: grid;
-  grid-template-columns: 140px minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: 124px minmax(0, 1fr);
+  gap: .6rem;
   align-items: stretch;
   margin: 0 auto;
   padding: 0 var(--space-lg);
@@ -19,8 +19,7 @@
   justify-content: center;
   gap: .22rem;
   min-height: 54px;
-  padding-right: .85rem;
-  border-right: 1px solid var(--border-color);
+  padding-right: .55rem;
 }
 
 .kicker,
@@ -47,6 +46,7 @@
 
 .items {
   display: flex;
+  gap: .12rem;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -67,7 +67,7 @@
   color: var(--text-secondary);
   background: transparent;
   border: 0;
-  border-right: 1px solid var(--border-color);
+  border-right: 0;
   border-radius: 0;
   font: inherit;
   font-size: .76rem;
@@ -83,16 +83,16 @@
 
 .item.active {
   color: var(--text-primary);
-  background: transparent;
+  background: var(--bg-secondary);
   font-weight: 800;
 }
 
 .item.active::after {
   content: '';
   position: absolute;
-  right: .8rem;
-  bottom: 0;
-  left: .8rem;
+  right: .7rem;
+  bottom: .28rem;
+  left: .7rem;
   height: 2px;
   background: var(--text-primary);
 }

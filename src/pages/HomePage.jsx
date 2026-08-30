@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { FiArrowRight, FiSearch } from 'react-icons/fi';
 import Hero from '../components/Hero';
 import CategoryNav from '../components/CategoryNav';
@@ -24,6 +24,7 @@ import styles from './HomePage.module.css';
 
 const HomePage = () => {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
   const typeParam = searchParams.get('type');
@@ -53,6 +54,16 @@ const HomePage = () => {
   useEffect(() => {
     setActiveCategory(categoryParam || 'all');
   }, [categoryParam]);
+
+  useEffect(() => {
+    if (location.hash !== '#knowledge-feed' || !typeParam) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById('knowledge-feed')?.scrollIntoView({ block: 'start' });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.hash, typeParam]);
 
   useEffect(() => {
     setActiveType(typeParam || 'all');
