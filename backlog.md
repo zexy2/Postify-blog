@@ -51,7 +51,8 @@
 - [x] Align bookmarks/profile/public author pages with the new visual system
 - [x] Add Chromium desktop/article/mobile/reduced-motion smoke coverage
 - [x] Add screenshot-diff baselines for the key UI V2 viewports once a stable visual baseline is approved
-- [ ] Continue legacy surface cleanup: analytics/admin/secondary share controls where old gradient/card styles remain
+- [x] Remove the unreachable legacy Analytics surface and its chart-only dependency instead of polishing dead UI
+- [x] Remove unreachable legacy ShareButtons/ImageUpload/CommentSection UI instead of carrying overridden styling and unused interaction code
 - [x] Align auth/404 and analytics/admin secondary surfaces with UI V2
 - [x] Rebuild Login/Register in UI V3 and complete the missing forgot/reset password route chain
 - [x] Restrain share/bookmark/fallback-card control styling

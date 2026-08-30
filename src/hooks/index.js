@@ -10,6 +10,3 @@ export { useBookmarks } from './useBookmarks';
 export { useTheme } from './useTheme';
 export { useSearch } from './useSearch';
 export { useAuth } from './useAuth';
-export { useComments, commentQueryKeys } from './useComments';
-export { useInfiniteScroll } from './useInfiniteScroll';
-export { useImageUpload } from './useImageUpload';

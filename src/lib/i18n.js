@@ -143,18 +143,6 @@ const resources = {
         removeFromBookmarks: "Favorilerden Kaldır",
         clearAll: "Tümünü Temizle",
       },
-      // Analytics
-      analytics: {
-        title: "İstatistikler",
-        subtitle: "Blog istatistiklerinizi ve performansınızı takip edin",
-        totalPosts: "Toplam Yazı",
-        totalAuthors: "Toplam Yazar",
-        totalComments: "Toplam Yorum",
-        avgCommentsPerPost: "Yazı Başına Yorum",
-        postsByAuthor: "Yazara Göre Yazılar",
-        postsOverTime: "Zaman İçinde Yazılar",
-        topAuthors: "En Aktif Yazarlar",
-      },
       // User
       user: {
         profile: "Profil",
@@ -281,19 +269,6 @@ const resources = {
         likeError: "Yorum beğenisi güncellenemedi.",
         you: "Siz",
         reader: "Postify okuru",
-      },
-      // Upload
-      upload: {
-        dragDrop: "Dosyaları sürükleyip bırakın",
-        or: "veya",
-        browse: "Dosya Seç",
-        hint: "Maksimum {{max}} dosya yükleyebilirsiniz",
-        dropHere: "Dosyaları buraya bırakın",
-        uploading: "Yükleniyor... %{{progress}}",
-        removed: "Dosya silindi",
-        fileTooLarge: "{{name}} dosyası çok büyük",
-        invalidType: "{{name}} dosya türü desteklenmiyor",
-        maxFilesExceeded: "Maksimum {{max}} dosya yüklenebilir",
       },
       // Share
       share: {
@@ -490,18 +465,6 @@ const resources = {
         removeFromBookmarks: "Remove from Bookmarks",
         clearAll: "Clear All",
       },
-      // Analytics
-      analytics: {
-        title: "Analytics",
-        subtitle: "Track your blog statistics and performance",
-        totalPosts: "Total Posts",
-        totalAuthors: "Total Authors",
-        totalComments: "Total Comments",
-        avgCommentsPerPost: "Comments per Post",
-        postsByAuthor: "Posts by Author",
-        postsOverTime: "Posts Over Time",
-        topAuthors: "Top Authors",
-      },
       // User
       user: {
         profile: "Profile",
@@ -629,19 +592,6 @@ const resources = {
         likeError: "The comment like could not be updated.",
         you: "You",
         reader: "Postify reader",
-      },
-      // Upload
-      upload: {
-        dragDrop: "Drag and drop files here",
-        or: "or",
-        browse: "Browse Files",
-        hint: "You can upload up to {{max}} files",
-        dropHere: "Drop files here",
-        uploading: "Uploading... {{progress}}%",
-        removed: "File removed",
-        fileTooLarge: "{{name}} is too large",
-        invalidType: "{{name}} file type not supported",
-        maxFilesExceeded: "Maximum {{max}} files allowed",
       },
       // Share
       share: {

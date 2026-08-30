@@ -29,15 +29,15 @@ const editorDraft = {
   },
 };
 
-async function stabilize(page, { editor = false } = {}) {
+async function stabilize(page, { editor = false, theme = 'light' } = {}) {
   await page.clock.setFixedTime(fixedNow);
-  await page.addInitScript(({ editorDraft, editor }) => {
+  await page.addInitScript(({ editorDraft, editor, theme }) => {
     localStorage.setItem('postify_language', 'en');
-    localStorage.setItem('postify_theme', 'light');
+    localStorage.setItem('postify_theme', theme);
     if (editor) {
       localStorage.setItem('postify:create-draft:local:en:new', JSON.stringify(editorDraft));
     }
-  }, { editorDraft, editor });
+  }, { editorDraft, editor, theme });
 }
 
 async function settleVisualSurface(page) {
@@ -680,5 +680,138 @@ for (const viewport of viewports) {
     await expect(page.getByRole('heading', { level: 1, name: /something went wrong|bir hata oluştu/i })).toBeVisible();
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`error-recovery-${viewport.name}.png`);
+  });
+}
+
+
+for (const viewport of viewports) {
+  test(`Dark theme Home ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page, { theme: 'dark' });
+    await page.goto('/');
+    await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await settleVisualSurface(page);
+    await expect(page.locator('#main-content')).toHaveScreenshot(`home-dark-${viewport.name}.png`);
+  });
+
+  test(`Dark theme Article ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page, { theme: 'dark' });
+    await page.goto(`/posts/${fallbackPost.slug}`);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await settleVisualSurface(page);
+    await expect(page.locator('#main-content')).toHaveScreenshot(`article-dark-${viewport.name}.png`);
+  });
+
+  test(`Dark theme Editor ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page, { editor: true, theme: 'dark' });
+    await page.goto('/e2e/visual/editor.html');
+    await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+    await expect(page.getByRole('heading', { level: 1, name: /create new post/i })).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`editor-dark-${viewport.name}.png`);
+  });
+
+  test(`Dark theme authenticated profile ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page, { theme: 'dark' });
+    await page.goto('/e2e/visual/profile-auth.html');
+    await expect(page.getByRole('heading', { level: 1, name: 'Semanur' })).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`authenticated-profile-dark-${viewport.name}.png`);
+  });
+
+
+}
+
+
+for (const viewport of viewports) {
+  for (const [name, route, ready] of [
+    ['Bookmarks', '/e2e/visual/bookmarks-auth.html', /bookmarks|favorilerim/i],
+    ['Knowledge health', '/e2e/visual/knowledge-auth.html', /knowledge health|bilgi sağlığı/i],
+    ['Admin dashboard', '/e2e/visual/admin-auth.html', /Postify operasyonlarını yönet/i],
+  ]) {
+    test(`Dark theme ${name} ${viewport.name} baseline`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await stabilize(page, { theme: 'dark' });
+      await page.goto(route);
+      await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+      if (name === 'Bookmarks') {
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      } else if (name === 'Knowledge health') {
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+        await expect(page.getByText(/Maintenance queue|Bakım kuyruğu/i)).toBeVisible();
+      } else {
+        await expect(page.getByRole('heading', { level: 1, name: ready })).toBeVisible();
+      }
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+      await settleVisualSurface(page);
+      await expect(page.locator('#root')).toHaveScreenshot(`${name.toLowerCase().replaceAll(' ', '-')}-dark-${viewport.name}.png`);
+    });
+  }
+}
+for (const [route, name] of [
+  ['/auth/login', 'login'],
+  ['/definitely-not-a-postify-route', 'not-found'],
+]) {
+  test(`Dark theme ${name} desktop baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await stabilize(page, { theme: 'dark' });
+    await page.goto(route);
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toBeVisible();
+    const firstAuthInput = page.locator('form input').first();
+    if (await firstAuthInput.count()) await expect(firstAuthInput).toBeEnabled();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await settleVisualSurface(page);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page).toHaveScreenshot(`${name}-dark-desktop.png`, { fullPage: false });
+  });
+
+  test(`Dark theme ${name} mobile layout contract`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await stabilize(page, { theme: 'dark' });
+    await page.goto(route);
+    const heading = page.getByRole('heading', { level: 1 });
+    await expect(heading).toBeVisible();
+    const firstAuthInput = page.locator('form input').first();
+    if (await firstAuthInput.count()) await expect(firstAuthInput).toBeEnabled();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    const geometry = await page.evaluate(() => {
+      const h1 = document.querySelector('main h1, #main-content h1, h1')?.getBoundingClientRect();
+      const controls = [...document.querySelectorAll('form input, form button, main a[href^="/auth/"], #main-content a[href^="/auth/"]')]
+        .filter((node, index, items) => items.indexOf(node) === index)
+        .filter((node) => {
+          const style = getComputedStyle(node);
+          const rect = node.getBoundingClientRect();
+          return style.visibility !== 'hidden' && style.display !== 'none' && rect.width > 0 && rect.height > 0;
+        })
+        .map((node) => {
+          const rect = node.getBoundingClientRect();
+          return { left: rect.left, right: rect.right, height: rect.height };
+        });
+      return {
+        viewportWidth: innerWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        heading: h1 ? { left: h1.left, right: h1.right } : null,
+        controls,
+      };
+    });
+    expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth);
+    expect(geometry.heading).not.toBeNull();
+    expect(geometry.heading.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.heading.right).toBeLessThanOrEqual(geometry.viewportWidth);
+    for (const control of geometry.controls) {
+      expect(control.height).toBeGreaterThanOrEqual(44);
+      expect(control.left).toBeGreaterThanOrEqual(0);
+      expect(control.right).toBeLessThanOrEqual(geometry.viewportWidth);
+    }
   });
 }

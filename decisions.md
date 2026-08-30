@@ -363,3 +363,13 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Shared light/dark text and status tokens must meet at least 4.5:1 contrast against Postify’s primary, secondary and elevated surfaces when they are used for normal-size text. Decorative separators may remain visually quiet only when they are removed from the accessibility tree. Inline-code styling must not leak into dark code blocks.
 
 **Why:** The browser audit found `--text-muted` around 3.3–3.8:1 on light surfaces, green/yellow status labels below that, and a global inline-code background overriding the verified article’s dark code block. These are system-level defects: fixing tokens and containment preserves hierarchy across routes while making the contract measurable in release tests.
+
+## 2026-08-30 — Dark mode is a visual release surface, not only a token variant
+**Decision:** Core public and authenticated Postify surfaces keep deterministic dark-theme pixel baselines at desktop and mobile widths in addition to shared contrast checks. Standalone visual harnesses apply theme state after navigation when they do not mount the production App theme lifecycle.
+
+**Why:** Numeric contrast can prove readability but cannot catch hierarchy, border, elevation, spacing or theme-specific cascade regressions. The first dark Editor attempt also proved that test initialization timing can manufacture false layout drift, so dark baselines must represent the same rendered lifecycle users receive rather than a pre-parser attribute artifact.
+
+## 2026-08-30 — Unreachable product surfaces are removed instead of visually modernized
+**Decision:** A legacy screen that is no longer reachable from the product router and has no live imports is deleted together with dependencies used only by that screen. Analytics, the old interactive CommentSection, ShareButtons, ImageUpload and their unused hooks were removed under this rule; chart/share/dropzone-only dependencies were removed with them, while live public comment reading, CopyLinkButton sharing and avatar storage remain. Stale E2E navigation assumptions were updated to the current root-hosted router.
+
+**Why:** Polishing dead UI increases maintenance and dependency surface without improving the product. Route inventory is authoritative: if a feature is intentionally absent, keeping its dashboard, chart code and package tree creates misleading technical debt and future security/update work.
