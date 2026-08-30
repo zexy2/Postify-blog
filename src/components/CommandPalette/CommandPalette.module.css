@@ -30,6 +30,10 @@ kbd { padding: .18rem .35rem; color: var(--text-muted); background: var(--bg-ele
 @keyframes commandIn { from { opacity: 0; transform: translateY(-8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @media (prefers-reduced-motion: reduce) { .dialog { animation: none; } }
 
+@media (max-width: 960px) {
+  .close { width: 46px; height: 46px; }
+}
+
 @media (max-width: 560px) {
   .layer { padding: 4.5rem .75rem 1rem; }
   .close { width: 46px; height: 46px; }
@@ -37,4 +41,10 @@ kbd { padding: .18rem .35rem; color: var(--text-muted); background: var(--bg-ele
   .inputWrap { margin: .8rem .85rem .65rem; }
   .footer { display: none; }
   .results { max-height: min(54vh, 430px); }
+}
+
+@media (max-height: 520px) {
+  .layer { padding: .75rem 1rem; }
+  .results { max-height: min(36vh, 160px); }
+  .footer { display: none; }
 }

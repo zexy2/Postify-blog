@@ -154,6 +154,34 @@ test('Command palette stays in the viewport and locks background scroll', async 
   expect(await page.evaluate(() => window.scrollY)).toBe(before);
 });
 
+test('Command palette stays contained in short touch viewports', async ({ page }) => {
+  await stabilize(page);
+  for (const viewport of [
+    { width: 844, height: 390 },
+    { width: 667, height: 375 },
+    { width: 568, height: 320 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible({ timeout: 15_000 });
+    await page.keyboard.press('Control+K');
+
+    const palette = page.getByRole('dialog', { name: /search|ara/i });
+    await expect(palette).toBeVisible();
+    const box = await palette.boundingBox();
+    expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
+    expect((box?.y ?? viewport.height + 1) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+
+    const close = palette.getByRole('button', { name: /close search|aramayı kapat/i });
+    const closeBox = await close.boundingBox();
+    expect(closeBox?.width || 0).toBeGreaterThanOrEqual(44);
+    expect(closeBox?.height || 0).toBeGreaterThanOrEqual(44);
+
+    await page.keyboard.press('Escape');
+    await expect(palette).toHaveCount(0);
+  }
+});
+
 test('Mobile command palette open baseline', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await stabilize(page);
