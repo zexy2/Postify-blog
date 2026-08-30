@@ -26,8 +26,6 @@ const CommandPalette = ({ open, onClose }) => {
 
     const html = document.documentElement;
     const body = document.body;
-    const lockedScrollX = window.scrollX;
-    const lockedScrollY = window.scrollY;
     const scrollbarWidth = Math.max(0, window.innerWidth - html.clientWidth);
     const previousStyles = {
       htmlOverflow: html.style.overflow,
@@ -48,7 +46,6 @@ const CommandPalette = ({ open, onClose }) => {
       html.style.overflow = previousStyles.htmlOverflow;
       body.style.overflow = previousStyles.bodyOverflow;
       body.style.paddingRight = previousStyles.bodyPaddingRight;
-      window.scrollTo(lockedScrollX, lockedScrollY);
       if (previousFocusRef.current instanceof HTMLElement) previousFocusRef.current.focus({ preventScroll: true });
     };
   }, [open]);

@@ -3,7 +3,7 @@
  * Main application component with routing
  */
 
-import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { useEffect, useLayoutEffect, useRef, Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -53,22 +53,80 @@ const useIsomorphicLayoutEffect =
 
 function App() {
   const location = useLocation();
+  const navigationType = useNavigationType();
   const theme = useSelector(selectTheme);
   const { i18n } = useTranslation();
   const previousPathnameRef = useRef(location.pathname);
+  const scrollPositionsRef = useRef(new Map());
+  const activeLocationKeyRef = useRef(location.key);
+  const previousLocationKeyRef = useRef(location.key);
+  const restorableLocationKeysRef = useRef(new Set());
+  const isHistoryRestore = navigationType === 'POP' && restorableLocationKeysRef.current.has(location.key);
 
-  // Scroll to top on route change
+  useEffect(() => {
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+    return () => { window.history.scrollRestoration = previousRestoration; };
+  }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    const previousKey = previousLocationKeyRef.current;
+    if (previousKey !== location.key) {
+      restorableLocationKeysRef.current.add(previousKey);
+      previousLocationKeyRef.current = location.key;
+    }
+    activeLocationKeyRef.current = location.key;
+  }, [location.key]);
+
+  useEffect(() => {
+    const locationKey = location.key;
+    const locationSignature = `${location.pathname}${location.search}${location.hash}`;
+    const savePosition = () => {
+      const currentSignature = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      if (activeLocationKeyRef.current !== locationKey || currentSignature !== locationSignature) return;
+      scrollPositionsRef.current.set(locationKey, { left: window.scrollX, top: window.scrollY });
+    };
+    savePosition();
+    window.addEventListener('scroll', savePosition, { passive: true });
+    return () => window.removeEventListener('scroll', savePosition);
+  }, [location.hash, location.key, location.pathname, location.search]);
+
+  // Preserve history-entry scroll positions without interfering with in-page filters.
   useIsomorphicLayoutEffect(() => {
     const pathnameChanged = previousPathnameRef.current !== location.pathname;
-    window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+    const savedPosition = isHistoryRestore ? scrollPositionsRef.current.get(location.key) : null;
+    let restoreTimer;
+    let restoreFrame;
+
+    if (savedPosition) {
+      let attempts = 0;
+      const restore = () => {
+        const maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        window.scrollTo(savedPosition.left, Math.min(savedPosition.top, maxTop));
+        attempts += 1;
+        if (Math.abs(window.scrollY - savedPosition.top) > 1 && attempts < 40) {
+          restoreTimer = window.setTimeout(restore, 50);
+        }
+      };
+      restoreFrame = window.requestAnimationFrame(() => {
+        restoreFrame = window.requestAnimationFrame(restore);
+      });
+    } else if (navigationType !== 'POP' && pathnameChanged) {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
 
     if (pathnameChanged) {
       document.getElementById('main-content')?.focus({ preventScroll: true });
     }
     previousPathnameRef.current = location.pathname;
-  }, [location.pathname]);
+
+    return () => {
+      if (restoreFrame) window.cancelAnimationFrame(restoreFrame);
+      if (restoreTimer) window.clearTimeout(restoreTimer);
+    };
+  }, [isHistoryRestore, location.key, location.pathname, navigationType]);
 
   // Apply theme on mount
   useEffect(() => {
@@ -103,7 +161,7 @@ function App() {
         >
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<HomePage isHistoryRestore={isHistoryRestore} />} />
               <Route path="/auth/login" element={<LoginPage />} />
               <Route path="/auth/register" element={<RegisterPage />} />
               <Route path="/auth/forgot-password" element={<PasswordRecoveryPage mode="request" />} />

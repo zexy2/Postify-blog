@@ -70,6 +70,39 @@ test.describe('Postify UI V2', () => {
     }
   });
 
+  test('filtered deep links and browser history preserve the discovery position', async ({ page }) => {
+    for (const width of [390, 1304]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/?type=guide#knowledge-feed');
+
+      const feed = page.locator('#knowledge-feed');
+      await expect(feed).toBeVisible();
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+      await expect(feed).toBeInViewport();
+
+      const latest = page.getByRole('button', { name: /^latest$|^en yeni$/i });
+      await latest.scrollIntoViewIfNeeded();
+      const beforeFilter = await page.evaluate(() => window.scrollY);
+      await latest.click();
+      await expect(page).toHaveURL(/type=guide.*sort=latest$/);
+      await expect.poll(() => page.evaluate((top) => Math.abs(window.scrollY - top), beforeFilter)).toBeLessThanOrEqual(1);
+
+      const card = feed.locator('[data-card-variant]').last();
+      await card.scrollIntoViewIfNeeded();
+      const beforeArticle = await page.evaluate(() => window.scrollY);
+      const articleLink = card.locator('a[href^="/posts/"]').filter({ hasText: /./ }).first();
+      await articleLink.click();
+      await expect(page).toHaveURL(/\/posts\//);
+      await expect(page.locator('[data-mobile-article-tools]')).toBeAttached();
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+
+      await page.goBack();
+      await expect(page).toHaveURL(/type=guide.*sort=latest$/);
+      await expect(feed).toBeVisible();
+      await expect.poll(() => page.evaluate((top) => Math.abs(window.scrollY - top), beforeArticle), { timeout: 3000 }).toBeLessThanOrEqual(1);
+    }
+  });
+
   test('footer controls stay touch-safe across the tablet navigation range', async ({ page }) => {
     for (const width of [600, 820, 960]) {
       await page.setViewportSize({ width, height: 844 });
@@ -370,7 +403,6 @@ test.describe('Postify UI V2', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
     await page.evaluate(() => window.scrollTo(0, 700));
-    const before = await page.evaluate(() => window.scrollY);
     const markerBefore = await page.locator('#knowledge-feed').evaluate((element) => element.getBoundingClientRect().top);
 
     await page.keyboard.press('Control+K');
@@ -392,7 +424,9 @@ test.describe('Postify UI V2', () => {
 
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
-    expect(await page.evaluate(() => window.scrollY)).toBe(before);
+    const markerClosed = await page.locator('#knowledge-feed').evaluate((element) => element.getBoundingClientRect().top);
+    expect(Math.abs(markerClosed - markerBefore)).toBeLessThanOrEqual(1);
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
   });
 
   test('command palette stays contained and touch-safe on mobile', async ({ page }) => {

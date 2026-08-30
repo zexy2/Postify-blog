@@ -9,6 +9,7 @@ import { getCategoryLabel } from '../lib/categoryLabels';
 import EditorialFeed from '../components/EditorialFeed';
 import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
+import { useScrollAnchorTransition } from '../hooks/useScrollAnchorTransition';
 import { useSearch } from '../hooks/useSearch';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { getPostReadingMinutes, getPostType } from '../lib/postPresentation';
@@ -22,7 +23,7 @@ import { getAutomaticVerificationState } from '../lib/runtimeReleaseSignal';
 import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
 
-const HomePage = () => {
+const HomePage = ({ isHistoryRestore = false }) => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,19 +52,21 @@ const HomePage = () => {
   const [sortMode, setSortMode] = useState(sortParam === 'latest' ? 'latest' : 'evidence');
   const [gapSaved, setGapSaved] = useState(false);
 
+  useScrollAnchorTransition({ active: isFallback, selector: '#knowledge-feed' });
+
   useEffect(() => {
     setActiveCategory(categoryParam || 'all');
   }, [categoryParam]);
 
   useEffect(() => {
-    if (location.hash !== '#knowledge-feed' || !typeParam) return undefined;
+    if (isHistoryRestore || isLoading || location.hash !== '#knowledge-feed' || !typeParam) return undefined;
 
     const frame = window.requestAnimationFrame(() => {
       document.getElementById('knowledge-feed')?.scrollIntoView({ block: 'start' });
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [location.hash, typeParam]);
+  }, [isHistoryRestore, isLoading, location.hash, typeParam]);
 
   useEffect(() => {
     setActiveType(typeParam || 'all');
