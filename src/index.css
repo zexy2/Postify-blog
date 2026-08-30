@@ -167,6 +167,7 @@
   /* Container - Linear Style */
   --container-max: 1220px;
   --container-narrow: 740px;
+  --toast-bottom-offset: 1rem;
 }
 
 /* ========================================
@@ -718,6 +719,10 @@ button {
 .skipLink:focus { transform: translateY(0); }
 #main-content:focus { outline: none; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+@media (max-width: 640px) {
+  :root { --toast-bottom-offset: calc(5.75rem + env(safe-area-inset-bottom, 0px)); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

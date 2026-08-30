@@ -428,3 +428,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** UI components with no live route/component consumers are removed rather than localized or visually polished. For the AI assistant, keep only the runtime hook/service/store and the editor integration that is actually reachable; remove the orphaned AISettings/GhostText presentation exports.
 
 **Why:** The unreachable settings surface contained stale copy and interaction patterns, and its barrel exports pulled a large unused dependency graph into build analysis. Removing it reduced Vite's transformed-module count from 877 to 476 without changing the product UI or test baselines.
+
+## 2026-08-30 — Global feedback layers must reserve persistent mobile controls
+**Decision:** On <=640px viewports, Postify's global bottom-right toast stack reserves vertical space for the fixed Article action bar instead of sharing the same bottom edge. Desktop/tablet toast placement remains unchanged.
+
+**Why:** Real production bookmark feedback overlapped the mobile Article toolbar after its entrance animation settled, obscuring controls despite zero document overflow. A shared narrow-screen bottom-offset token keeps transient feedback and persistent actions spatially distinct without moving desktop notifications or removing the toolbar.

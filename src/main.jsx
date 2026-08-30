@@ -55,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </SmoothScrollProvider>
               <Toaster
                 position="bottom-right"
+                containerStyle={{ bottom: 'var(--toast-bottom-offset, 1rem)' }}
                 toastOptions={{
                   duration: 3000,
                   style: {

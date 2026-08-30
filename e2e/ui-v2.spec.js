@@ -184,6 +184,35 @@ test.describe('Postify UI V2', () => {
     await expect(mobileActionBar).toHaveCSS('opacity', '0');
   });
 
+  test('mobile article toast clears the floating action bar', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 568, height: 320 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto('/posts/node-json-dogrulama');
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+      const bookmark = page.getByRole('button', { name: /add to bookmarks|remove from bookmarks|favorilere ekle|favorilerden kaldır/i }).last();
+      const actionBar = page.locator('[class*="mobileActionBar"]').first();
+      await expect(bookmark).toBeVisible();
+      await bookmark.click();
+
+      const toastStatus = page.locator('[data-rht-toaster] [role="status"]').filter({ hasText: /bookmark|favori/i }).first();
+      await expect(toastStatus).toBeVisible();
+      await page.waitForTimeout(450);
+
+      const [barBox, toastBox] = await Promise.all([
+        actionBar.boundingBox(),
+        toastStatus.locator('..').boundingBox(),
+      ]);
+      expect(barBox).not.toBeNull();
+      expect(toastBox).not.toBeNull();
+
+      const overlapX = Math.max(0, Math.min(barBox.x + barBox.width, toastBox.x + toastBox.width) - Math.max(barBox.x, toastBox.x));
+      const overlapY = Math.max(0, Math.min(barBox.y + barBox.height, toastBox.y + toastBox.height) - Math.max(barBox.y, toastBox.y));
+      expect(overlapX * overlapY).toBe(0);
+      expect(toastBox.y + toastBox.height).toBeLessThanOrEqual(barBox.y - 8);
+    }
+  });
+
   test('V3 public author portfolio stays mobile-safe and knowledge-first', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/users/fallback-editor');
