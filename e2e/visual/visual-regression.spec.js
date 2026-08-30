@@ -416,6 +416,13 @@ test('Authenticated header account menu desktop baseline', async ({ page }) => {
   await expect(page.getByRole('button', { name: /logout|çıkış yap/i })).toBeVisible();
   await settleVisualSurface(page);
   await expect(page.locator('header')).toHaveScreenshot('authenticated-header-desktop.png');
+
+  const profileLink = page.getByRole('link', { name: /profile|profil/i });
+  await profileLink.focus();
+  await expect(profileLink).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#header-account-popover')).toHaveCount(0);
+  await expect(account).toBeFocused();
 });
 
 

@@ -59,12 +59,16 @@ describe('Header authenticated account controls', () => {
     expect(document.getElementById('header-account-popover')).not.toBeInTheDocument();
   });
 
-  it('closes the account menu with Escape', () => {
+  it('closes the account menu with Escape and restores focus to its trigger', () => {
     render(<MemoryRouter><Header /></MemoryRouter>);
-    fireEvent.click(screen.getByRole('button', { name: 'Hesap' }));
+    const trigger = screen.getByRole('button', { name: 'Hesap' });
+    fireEvent.click(trigger);
     expect(document.getElementById('header-account-popover')).toBeVisible();
+    screen.getByRole('link', { name: /Profil/i }).focus();
+    expect(screen.getByRole('link', { name: /Profil/i })).toHaveFocus();
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(document.getElementById('header-account-popover')).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 
   it('keeps the account control absent for signed-out users', () => {

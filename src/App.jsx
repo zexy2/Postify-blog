@@ -4,7 +4,7 @@
  */
 
 import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect, useLayoutEffect, Suspense, lazy } from 'react';
+import { useEffect, useLayoutEffect, useRef, Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { selectTheme } from './store/slices/uiSlice';
@@ -55,12 +55,19 @@ function App() {
   const location = useLocation();
   const theme = useSelector(selectTheme);
   const { i18n } = useTranslation();
+  const previousPathnameRef = useRef(location.pathname);
 
   // Scroll to top on route change
   useIsomorphicLayoutEffect(() => {
+    const pathnameChanged = previousPathnameRef.current !== location.pathname;
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+
+    if (pathnameChanged) {
+      document.getElementById('main-content')?.focus({ preventScroll: true });
+    }
+    previousPathnameRef.current = location.pathname;
   }, [location.pathname]);
 
   // Apply theme on mount

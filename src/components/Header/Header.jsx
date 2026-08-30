@@ -37,6 +37,7 @@ const Header = () => {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState('⌘K');
   const accountMenuRef = useRef(null);
+  const accountButtonRef = useRef(null);
   const menuButtonRef = useRef(null);
 
   const { theme, toggle: toggleTheme } = useTheme();
@@ -83,7 +84,9 @@ const Header = () => {
       if (!accountMenuRef.current?.contains(event.target)) setIsAccountOpen(false);
     };
     const handleEscape = (event) => {
-      if (event.key === 'Escape') setIsAccountOpen(false);
+      if (event.key !== 'Escape') return;
+      setIsAccountOpen(false);
+      accountButtonRef.current?.focus({ preventScroll: true });
     };
 
     document.addEventListener('pointerdown', handlePointerDown);
@@ -179,6 +182,7 @@ const Header = () => {
           {isAuthenticated && (
             <div className={styles.accountMenu} ref={accountMenuRef}>
               <button
+                ref={accountButtonRef}
                 type="button"
                 className={`${styles.accountButton} ${isAccountOpen ? styles.accountButtonOpen : ''}`}
                 onClick={() => setIsAccountOpen((open) => !open)}

@@ -95,6 +95,27 @@ test.describe('Postify UI V2', () => {
     }
   });
 
+  test('pathname navigation moves focus to main while in-page filters keep their trigger focus', async ({ page }) => {
+    await page.setViewportSize({ width: 1304, height: 844 });
+    await page.goto('/');
+
+    const about = page.locator('footer').getByRole('link', { name: /about|hakkında/i });
+    await about.scrollIntoViewIfNeeded();
+    await about.focus();
+    await about.press('Enter');
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(page.locator('#main-content')).toBeFocused();
+    expect(await page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+
+    await page.goto('/');
+    const guides = page.locator('header nav[aria-label="Primary"]').getByRole('link', { name: /guides|rehberler/i });
+    await guides.focus();
+    await guides.press('Enter');
+    await expect(page).toHaveURL(/[?&]type=guide#knowledge-feed$/);
+    await expect(guides).toBeFocused();
+    await expect(page.locator('#main-content')).not.toBeFocused();
+  });
+
   test('direct article renders a readable editorial surface', async ({ page }) => {
     await page.goto('/posts/ai-muhendisligi');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -521,6 +542,18 @@ test.describe('Postify UI V2', () => {
     const articles = feed.locator('article');
     const overflow = await articles.evaluateAll((items) => items.map((item) => item.scrollWidth - item.clientWidth));
     expect(Math.max(...overflow)).toBeLessThanOrEqual(1);
+  });
+
+  test('reduced motion makes footer back-to-top immediate', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
+
+    await page.getByRole('button', { name: /başa dön|back to top/i }).click();
+    await page.waitForTimeout(50);
+    expect(await page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
   });
 
   test('reduced motion preference keeps the page usable', async ({ page }) => {
