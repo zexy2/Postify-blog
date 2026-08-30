@@ -408,3 +408,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Modal and command surfaces must remain fully operable in short landscape viewports, not only at standard phone/desktop heights. When vertical space is scarce, Postify removes non-essential overlay chrome and constrains the scrollable result region instead of allowing fixed dialog content to escape the viewport. Touch-target guarantees remain valid during entrance transforms, not just after animation settles.
 
 **Why:** Real 844×390 and 568×320 Chromium renders showed the Command Palette extending 82–115px below the visible viewport even though width/overflow tests passed. Width-only responsive QA misses this class of defect, and a nominal 44px control can temporarily fall below 44px when its parent is scaled during entrance animation.
+
+## 2026-08-30 — Floating utilities yield to visible keyboard focus rather than removing functionality
+**Decision:** On touch-layout Articles, the floating action bar remains available for pointer/touch users and in the keyboard tab order, but retreats whenever `:focus-visible` belongs to another Article control. When focus enters the bar itself it reappears. The behavior is expressed in CSS using the page’s focus state rather than hiding the bar permanently on short screens.
+
+**Why:** Short landscape Chromium runs showed the 59px fixed bar partially covering focused evidence and navigation controls. Simply disabling the bar would remove the only persistent mobile Bookmark control, while scroll margins did not fully eliminate overlap for large focus boxes. Yielding only during external keyboard focus preserves functionality and touch convenience while preventing focus obscuration.

@@ -97,6 +97,29 @@ test('Core text and status tokens keep accessible contrast in light and dark the
   }
 });
 
+test('Article action bar yields to keyboard focus in short touch viewports', async ({ page }) => {
+  await page.setViewportSize({ width: 568, height: 320 });
+  await stabilize(page);
+  await page.goto('/posts/node-json-dogrulama');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+  const actionBar = page.locator('[class*=mobileActionBar]').filter({ has: page.getByRole('button', { name: /add to bookmarks|favorilere ekle/i }) }).first();
+  await expect(actionBar).toBeVisible();
+
+  await page.keyboard.press('Tab');
+  const verificationLink = page.getByRole('link', { name: /verification during the build|doğrulama/i }).first();
+  await verificationLink.focus();
+  await expect(verificationLink).toBeFocused();
+  await expect.poll(async () => Number.parseFloat(await actionBar.evaluate((element) => getComputedStyle(element).opacity))).toBeLessThan(0.1);
+  await expect.poll(async () => actionBar.evaluate((element) => getComputedStyle(element).pointerEvents)).toBe('none');
+
+  const back = actionBar.getByRole('link', { name: /^back$|^geri$/i });
+  await back.focus();
+  await expect(back).toBeFocused();
+  await expect.poll(async () => Number.parseFloat(await actionBar.evaluate((element) => getComputedStyle(element).opacity))).toBeGreaterThan(0.9);
+  expect(Math.round((await back.boundingBox())?.height || 0)).toBeGreaterThanOrEqual(44);
+});
+
 test('Verified article code block keeps readable code contrast', async ({ page }) => {
   await stabilize(page);
   await page.goto('/posts/node-json-dogrulama');
