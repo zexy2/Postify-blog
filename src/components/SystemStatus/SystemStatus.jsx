@@ -14,6 +14,7 @@ const SystemStatus = ({
     className={`${styles.shell} ${fullPage ? styles.fullPage : ''}`}
     role={role}
     aria-live={role === 'alert' ? 'assertive' : 'polite'}
+    aria-busy={loading || undefined}
   >
     <div className={styles.frame}>
       <span className={styles.index} aria-hidden="true">00 / SYS</span>

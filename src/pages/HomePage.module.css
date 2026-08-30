@@ -1,12 +1,5 @@
 .page { min-height: 100vh; }
-.loadingSection, .errorSection { padding: var(--space-3xl) 0; }
-
-.loadingLine { width: 180px; height: 16px; margin-bottom: 1.5rem; background: var(--bg-secondary); border-radius: var(--radius-sm); }
-.loadingCards { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 1rem; }
-.loadingCards div { min-height: 240px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
-
-.wakeUpMessage { max-width: 640px; margin: 1.5rem auto 0; padding: 1rem 1.25rem; color: var(--text-secondary); background: var(--primary-subtle); border: 1px solid var(--primary-light); border-radius: var(--radius-lg); line-height: 1.5; text-align: center; }
-.wakeUpMessage strong { display: block; margin-bottom: .25rem; color: var(--text-primary); }
+.errorSection { padding: var(--space-3xl) 0; }
 
 .fallbackNotice { display: flex; flex-wrap: wrap; gap: .35rem .75rem; align-items: baseline; margin: 1.25rem auto 0; padding: .85rem 0; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); line-height: 1.5; }
 .fallbackNotice strong { color: var(--text-primary); }
@@ -32,7 +25,6 @@
 .loadMoreButton:hover { border-color: var(--primary); color: var(--primary); }
 
 @media (max-width: 620px) {
-  .loadingCards { grid-template-columns: 1fr; }
   .fallbackNotice { margin-top: 1rem; }
   .postsSection { padding-top: 1.75rem; }
 }

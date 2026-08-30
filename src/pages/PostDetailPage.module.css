@@ -3,27 +3,6 @@
   padding: clamp(2.25rem, 5vw, 4.5rem) 0 7rem;
 }
 
-.status {
-  min-height: 55vh;
-  padding-top: 5rem;
-  color: var(--text-secondary);
-}
-
-.status h1 { color: var(--text-primary); }
-.status p { max-width: 55ch; }
-
-.retryButton {
-  min-height: 44px;
-  padding: .7rem 1rem;
-  color: #fff;
-  background: var(--primary);
-  border: 0;
-  border-radius: var(--radius-md);
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .articleLayout {
   display: grid;
   grid-template-columns: 5rem minmax(0, 820px);

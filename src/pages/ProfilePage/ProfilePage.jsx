@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   FiActivity,
@@ -26,19 +26,18 @@ import { useAuthorDashboard } from '../../hooks/useKnowledge';
 import { storageService } from '../../services/storageService';
 import toast from 'react-hot-toast';
 import { safeHttpUrl } from '../../lib/seoUtils';
+import SystemStatus from '../../components/SystemStatus';
 import styles from './ProfilePage.module.css';
 
 const ProfilePage = () => {
   const { t, i18n } = useTranslation();
   const en = i18n.language?.startsWith('en');
-  const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading, updateProfile, logout } = useAuth();
+  const { user, updateProfile, logout } = useAuth();
   const { bookmarksCount, bookmarkedPosts } = useBookmarks();
   const userPostsQuery = useUserPosts(user?.id);
   const authorDashboard = useAuthorDashboard({ enabled: Boolean(user?.id) });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [localLoading, setLocalLoading] = useState(true);
   const [formData, setFormData] = useState({
     full_name: '',
     username: '',
@@ -47,19 +46,6 @@ const ProfilePage = () => {
     location: '',
   });
   const [avatarUploading, setAvatarUploading] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLocalLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading) setLocalLoading(false);
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (!localLoading && !isAuthenticated) navigate('/auth/login');
-  }, [localLoading, isAuthenticated, navigate]);
 
   useEffect(() => {
     const profileData = user?.profile || user?.user_metadata;
@@ -107,15 +93,17 @@ const ProfilePage = () => {
     }
   };
 
-  if (localLoading && !user) {
-    return <div className={styles.loading}><div className={styles.spinner} /></div>;
-  }
-
   if (!user) {
     return (
-      <div className={styles.loading}>
-        <p>{en ? 'User not found. Please sign in.' : 'Kullanıcı bulunamadı. Lütfen giriş yapın.'}</p>
-      </div>
+      <SystemStatus
+        eyebrow={en ? 'POSTIFY / ACCOUNT' : 'POSTIFY / HESAP'}
+        title={en ? 'Account profile is temporarily unavailable.' : 'Hesap profili geçici olarak kullanılamıyor.'}
+        message={en
+          ? 'Your session is still protected. Reload the page to retry account hydration.'
+          : 'Oturumun korunuyor. Hesap bilgilerini yeniden yüklemek için sayfayı yenile.'}
+        role="alert"
+        action={<button type="button" onClick={() => window.location.reload()}>{t('common.retry')}</button>}
+      />
     );
   }
 

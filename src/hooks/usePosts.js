@@ -122,7 +122,7 @@ export function useCreatePost() {
       queryClient.invalidateQueries({ queryKey: postKeys.all });
       toast.success(t('success.postCreated'));
     },
-    onError: (error) => toast.error(error.message || t('auth.registerError')),
+    onError: (error) => toast.error(error.message || t('errors.postCreateFailed')),
   });
 }
 
@@ -132,7 +132,7 @@ export function useUpdatePost() {
   return useMutation({
     mutationFn: ({ id, data }) => postService.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: postKeys.all }),
-    onError: (error) => toast.error(error.message || t('success.postUpdated')),
+    onError: (error) => toast.error(error.message || t('errors.postUpdateFailed')),
   });
 }
 
@@ -142,6 +142,6 @@ export function useDeletePost() {
   return useMutation({
     mutationFn: postService.delete,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: postKeys.all }),
-    onError: (error) => toast.error(error.message || t('success.postDeleted')),
+    onError: (error) => toast.error(error.message || t('errors.postDeleteFailed')),
   });
 }

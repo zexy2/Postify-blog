@@ -17,6 +17,7 @@ import CommunityEvidenceDetails from '../components/CommunityEvidenceDetails';
 import VerificationRunbook from '../components/VerificationRunbook';
 import EvidenceBadge from '../components/EvidenceBadge';
 import CopyableCodeBlock from '../components/CopyableCodeBlock';
+import SystemStatus from '../components/SystemStatus';
 import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading } from '../lib/articleStructure';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
@@ -56,7 +57,7 @@ const PostDetailPage = () => {
   const { id } = useParams();
   const articleRef = useRef(null);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
-  const { post, comments, isLoading, isError, error, refetch, commentsUnavailable } = usePost(id);
+  const { post, comments, isLoading, isError, refetch, commentsUnavailable } = usePost(id);
   const { posts } = usePosts();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
 
@@ -79,16 +80,35 @@ const PostDetailPage = () => {
   }, [id, post, posts]);
 
   if (isLoading) {
-    return <div className={`container ${styles.status}`}>{t('common.loading')}</div>;
+    return (
+      <SystemStatus
+        eyebrow={i18n.language?.startsWith('en') ? 'POSTIFY / READING' : 'POSTIFY / OKUMA'}
+        title={t('common.loading')}
+        loading
+      />
+    );
   }
 
-  if (isError || !post) {
+  if (isError) {
     return (
-      <div className={`container ${styles.status}`}>
-        <h1>{t('errors.notFound')}</h1>
-        <p>{error?.message || t('errors.serverError')}</p>
-        <button type="button" onClick={() => refetch()} className={styles.retryButton}>{t('common.retry')}</button>
-      </div>
+      <SystemStatus
+        eyebrow={i18n.language?.startsWith('en') ? 'POSTIFY / READING' : 'POSTIFY / OKUMA'}
+        title={t('errors.articleUnavailable')}
+        message={t('errors.articleUnavailableHint')}
+        role="alert"
+        action={<button type="button" onClick={() => refetch()}>{t('common.retry')}</button>}
+      />
+    );
+  }
+
+  if (!post) {
+    return (
+      <SystemStatus
+        eyebrow={i18n.language?.startsWith('en') ? 'POSTIFY / READING' : 'POSTIFY / OKUMA'}
+        title={t('errors.articleNotFound')}
+        message={t('errors.articleNotFoundHint')}
+        action={<Link to="/">{t('nav.home')}</Link>}
+      />
     );
   }
 

@@ -27,6 +27,10 @@ describe('postService public fallback', () => {
     expect(posts[0].title).toBe('An AI feature is a system, not a model call');
   });
 
+  it('surfaces a service failure for unknown details that have no local fallback', async () => {
+    await expect(postService.getById('live-only-story', 'en')).rejects.toThrow('Supabase unavailable');
+  });
+
   it('keeps detail, author posts, and stats available offline', async () => {
     const post = await postService.getById('ai-muhendisligi', 'tr');
     const authorPosts = await postService.getByUserId('fallback-editor', 'tr');

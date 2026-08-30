@@ -33,7 +33,7 @@ const HomePage = ({ isHistoryRestore = false }) => {
   const freshnessParam = searchParams.get('freshness');
   const evidenceParam = searchParams.get('evidence');
   const sortParam = searchParams.get('sort');
-  const { posts, isLoading, isFetching, isError, error, refetch, isFallback } = usePosts();
+  const { posts, isFetching, isError, error, refetch, isFallback } = usePosts();
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const requestGapMutation = useRequestGap();
   const knowledgeBackend = useKnowledgeBackendStatus();
@@ -42,7 +42,6 @@ const HomePage = ({ isHistoryRestore = false }) => {
   const runtimeReleaseStatus = useRuntimeReleaseStatus();
   const { query, debouncedQuery, setQuery } = useSearch();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
-  const [showWakeUp, setShowWakeUp] = useState(false);
   const [visiblePostCount, setVisiblePostCount] = useState(9);
   const [activeCategory, setActiveCategory] = useState(categoryParam || 'all');
   const [activeType, setActiveType] = useState(typeParam || 'all');
@@ -59,14 +58,14 @@ const HomePage = ({ isHistoryRestore = false }) => {
   }, [categoryParam]);
 
   useEffect(() => {
-    if (isHistoryRestore || isLoading || location.hash !== '#knowledge-feed' || !typeParam) return undefined;
+    if (isHistoryRestore || location.hash !== '#knowledge-feed' || !typeParam) return undefined;
 
     const frame = window.requestAnimationFrame(() => {
       document.getElementById('knowledge-feed')?.scrollIntoView({ block: 'start' });
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [isHistoryRestore, isLoading, location.hash, typeParam]);
+  }, [isHistoryRestore, location.hash, typeParam]);
 
   useEffect(() => {
     setActiveType(typeParam || 'all');
@@ -102,12 +101,6 @@ const HomePage = ({ isHistoryRestore = false }) => {
     setReadingFilter(next);
     updateFilterParam('reading', next);
   };
-
-  useEffect(() => {
-    if (!isLoading && !(isFetching && isFallback)) return undefined;
-    const timer = window.setTimeout(() => setShowWakeUp(true), 3000);
-    return () => window.clearTimeout(timer);
-  }, [isFetching, isFallback, isLoading]);
 
   useEffect(() => {
     setVisiblePostCount(9);
@@ -152,25 +145,6 @@ const HomePage = ({ isHistoryRestore = false }) => {
     ? rankedPosts
     : rankedPosts.slice(1);
   const featuredPost = evidenceAwarePosts[0];
-
-  if (isLoading) {
-    return (
-      <div className={styles.page}>
-        <Hero showSearch={false} />
-        <section className={`container ${styles.loadingSection}`}>
-          <div className={styles.loadingLine} />
-          <div className={styles.loadingCards}>
-            <div /><div /><div />
-          </div>
-          {showWakeUp && (
-            <p className={styles.wakeUpMessage} role="status">
-              <strong>{t('home.wakeUp')}</strong> {t('home.wakeUpHint')}
-            </p>
-          )}
-        </section>
-      </div>
-    );
-  }
 
   if (isError) {
     const isTimeout = error?.code === 'CONTENT_TIMEOUT';

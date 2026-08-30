@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import SystemStatus from '../SystemStatus';
@@ -25,8 +25,24 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
 
-  // If still loading and not timed out, show spinner
-  if (isLoading && !timedOut && !user) {
+  // Keep the route neutral while auth is still unresolved. A slow session
+  // check should not be interpreted as an unauthenticated result.
+  if (isLoading && !user) {
+    if (timedOut) {
+      return (
+        <SystemStatus
+          eyebrow="POSTIFY / ACCOUNT"
+          title={t('auth.sessionCheckSlowTitle')}
+          message={t('auth.sessionCheckSlowMessage')}
+          action={(
+            <Link to="/auth/login" state={{ from: location }}>
+              {t('auth.continueToLogin')}
+            </Link>
+          )}
+        />
+      );
+    }
+
     return (
       <SystemStatus
         eyebrow="POSTIFY / ACCOUNT"

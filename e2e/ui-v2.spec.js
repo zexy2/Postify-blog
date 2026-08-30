@@ -538,6 +538,26 @@ test.describe('Postify UI V2', () => {
     await expect(page.locator('#recovery-email')).toHaveAttribute('aria-describedby', 'recovery-form-error');
   });
 
+  test('Turkish auth validation never leaks translation keys', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.setItem('postify_language', 'tr'));
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/auth/register');
+
+    await page.locator('#fullName').fill('Zeki Test');
+    await page.locator('#username').fill('geçersiz kullanıcı');
+    await page.locator('#email').fill('zeki@example.com');
+    await page.locator('#password').fill('secure-pass-123');
+    await page.locator('#confirmPassword').fill('different-pass-456');
+    await page.getByRole('button', { name: /^hesap oluştur$/i }).click();
+
+    await expect(page.locator('#register-username-error')).toHaveText('Yalnızca harf, rakam ve alt çizgi kullanın');
+    await expect(page.locator('#register-confirm-error')).toHaveText('Şifreler eşleşmiyor');
+    await expect(page.locator('body')).not.toContainText('validation.usernameFormat');
+    await expect(page.locator('body')).not.toContainText('validation.passwordMismatch');
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test('password recovery routes are real, responsive auth surfaces', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/auth/forgot-password');

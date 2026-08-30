@@ -294,8 +294,10 @@ export const postService = {
       if (!row) return null;
       const [post] = await mapRows([row], locale);
       return post;
-    } catch {
-      return getFallbackPost(identifier, locale);
+    } catch (error) {
+      const fallback = getFallbackPost(identifier, locale);
+      if (fallback) return fallback;
+      throw error;
     }
   },
 

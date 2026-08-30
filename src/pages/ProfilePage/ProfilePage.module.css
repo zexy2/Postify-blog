@@ -4,10 +4,6 @@
   padding: clamp(2rem, 4vw, 3.25rem) 0 4.5rem;
 }
 
-.loading { min-height: 55vh; display: grid; place-items: center; color: var(--text-secondary); }
-.spinner { width: 34px; height: 34px; border: 2px solid var(--border-color); border-top-color: var(--text-primary); border-radius: 50%; animation: spin .85s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
 .profileGrid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(340px, .85fr); gap: 1rem; align-items: stretch; }
 .identityCard, .actionsCard, .dashboardCard, .editorPanel { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 14px; }
 .identityCard { padding: clamp(1.25rem, 2.5vw, 2rem); }

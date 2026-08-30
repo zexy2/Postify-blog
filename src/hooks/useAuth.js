@@ -78,16 +78,25 @@ export const useAuth = () => {
 
       dispatch(setSession(session));
 
+      let currentUser;
       try {
-        const currentUser = await authService.getCurrentUser();
-        if (!currentUser || !isMounted) return;
-
-        const profile = await authService.getProfile(currentUser.id);
-        if (isMounted) {
-          dispatch(setUser({ ...currentUser, profile }));
-        }
+        currentUser = await authService.getCurrentUser();
       } catch (err) {
-        // Session remains valid even when profile hydration is unavailable.
+        console.error("Auth user hydration error:", err);
+        return;
+      }
+
+      if (!currentUser || !isMounted) return;
+
+      // Keep the authenticated identity usable even when the optional profile
+      // record is temporarily unavailable. Profile data enriches the user; it
+      // must not decide whether a valid Supabase session counts as signed in.
+      dispatch(setUser({ ...currentUser, profile: null }));
+
+      try {
+        const profile = await authService.getProfile(currentUser.id);
+        if (isMounted) dispatch(setUser({ ...currentUser, profile }));
+      } catch (err) {
         console.error("Auth profile hydration error:", err);
       }
     };
@@ -179,8 +188,15 @@ export const useAuth = () => {
         dispatch(setSession(newSession));
 
         if (newUser) {
-          const profile = await authService.getProfile(newUser.id);
-          dispatch(setUser({ ...newUser, profile }));
+          dispatch(setUser({ ...newUser, profile: null }));
+          try {
+            const profile = await authService.getProfile(newUser.id);
+            dispatch(setUser({ ...newUser, profile }));
+          } catch (profileError) {
+            // Authentication already succeeded; profile enrichment may retry
+            // independently without presenting a false login failure.
+            console.error("Login profile hydration error:", profileError);
+          }
         }
 
         toast.success(t("auth.loginSuccess"));

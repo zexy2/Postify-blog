@@ -67,6 +67,15 @@ describe('ProfilePage', () => {
     expect(screen.getByRole('button', { name: /Kaydet/i })).toBeVisible();
   });
 
+  it('keeps a valid session on an account recovery surface when user hydration is unavailable', () => {
+    useAuthMock.mockReturnValue({ user: null, isAuthenticated: true, isLoading: false, updateProfile, logout });
+    render(<MemoryRouter><ProfilePage /></MemoryRouter>);
+
+    expect(screen.getByRole('heading', { name: 'Hesap profili geçici olarak kullanılamıyor.' })).toBeVisible();
+    expect(screen.getByText('Oturumun korunuyor. Hesap bilgilerini yeniden yüklemek için sayfayı yenile.')).toBeVisible();
+    expect(screen.getByRole('button', { name: /Tekrar Dene/i })).toBeVisible();
+  });
+
   it('wires the account logout action to the authenticated session', () => {
     render(<MemoryRouter><ProfilePage /></MemoryRouter>);
     fireEvent.click(screen.getByRole('button', { name: /Çıkış Yap/i }));

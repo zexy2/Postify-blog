@@ -15,6 +15,7 @@ import { getDomainCredibility } from '../../lib/domainCredibility';
 import { getCategoryLabel } from '../../lib/categoryLabels';
 import styles from './KnowledgeDashboardPage.module.css';
 import AuthorFailurePanel from './AuthorFailurePanel';
+import SystemStatus from '../../components/SystemStatus';
 
 const asPost = (row) => ({
   evidence: {
@@ -55,7 +56,14 @@ export default function KnowledgeDashboardPage({ dataOverride = null, backendRea
   const topGap = data.gaps[0] || null;
 
   if ((backendReadyOverride === null && backend.isLoading) || (dataOverride === null && dashboard.isLoading)) {
-    return <div className={`container ${styles.status}`}>{en ? 'Loading knowledge health…' : 'Bilgi sağlığı yükleniyor…'}</div>;
+    return (
+      <SystemStatus
+        eyebrow={en ? 'POSTIFY / KNOWLEDGE' : 'POSTIFY / BİLGİ'}
+        title={en ? 'Loading knowledge health…' : 'Bilgi sağlığı yükleniyor…'}
+        message={en ? 'Checking evidence freshness and account maintenance signals.' : 'Kanıt güncelliği ve hesap bakım sinyalleri kontrol ediliyor.'}
+        loading
+      />
+    );
   }
 
   if (backendReady !== true) {
