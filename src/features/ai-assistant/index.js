@@ -17,10 +17,6 @@ export {
 // Hooks
 export { useAICompletion } from './hooks/useAICompletion';
 
-// Components
-export { default as GhostText, GhostTextOverlay } from './components/GhostText';
-export { default as AISettings } from './components/AISettings';
-
 // Store
 export { default as aiReducer } from './store/aiSlice';
 export {

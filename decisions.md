@@ -423,3 +423,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Invalid form submission should not only announce errors; it must return keyboard focus to the first actionable invalid field. Multi-field credentials must mark only the field responsible for the current validation failure when the error can be attributed precisely.
 
 **Why:** Login, Register and Recovery already rendered readable alerts, but real Chromium showed focus remaining on the submit button after failure. Password reset also marked both inputs invalid for a short-password error. Moving focus and narrowing `aria-invalid` to the responsible control shortens recovery for keyboard users and makes the accessibility state match the visible validation message.
+
+## 2026-08-30 — Remove unreachable UI instead of polishing it
+**Decision:** UI components with no live route/component consumers are removed rather than localized or visually polished. For the AI assistant, keep only the runtime hook/service/store and the editor integration that is actually reachable; remove the orphaned AISettings/GhostText presentation exports.
+
+**Why:** The unreachable settings surface contained stale copy and interaction patterns, and its barrel exports pulled a large unused dependency graph into build analysis. Removing it reduced Vite's transformed-module count from 877 to 476 without changing the product UI or test baselines.
