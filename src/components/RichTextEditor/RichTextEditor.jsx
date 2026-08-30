@@ -9,101 +9,105 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from '@tiptap/markdown';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useAICompletion, selectAIEnabled, selectGhostCompletionEnabled } from '../../features/ai-assistant';
 import styles from './RichTextEditor.module.css';
 
 const MenuBar = ({ editor }) => {
+  const { i18n } = useTranslation();
   if (!editor) return null;
+  const en = i18n.language?.startsWith('en');
+  const label = (english, turkish) => (en ? english : turkish);
 
   const buttons = [
     {
       action: () => editor.chain().focus().toggleBold().run(),
       isActive: editor.isActive('bold'),
       icon: 'B',
-      title: 'Bold',
+      title: label('Bold', 'Kalın'),
       className: styles.bold,
     },
     {
       action: () => editor.chain().focus().toggleItalic().run(),
       isActive: editor.isActive('italic'),
       icon: 'I',
-      title: 'Italic',
+      title: label('Italic', 'İtalik'),
       className: styles.italic,
     },
     {
       action: () => editor.chain().focus().toggleStrike().run(),
       isActive: editor.isActive('strike'),
       icon: 'S',
-      title: 'Strikethrough',
+      title: label('Strikethrough', 'Üstü çizili'),
       className: styles.strike,
     },
     {
       action: () => editor.chain().focus().toggleCode().run(),
       isActive: editor.isActive('code'),
       icon: '</>',
-      title: 'Code',
+      title: label('Code', 'Kod'),
     },
     { type: 'divider' },
     {
       action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
       isActive: editor.isActive('heading', { level: 1 }),
       icon: 'H1',
-      title: 'Heading 1',
+      title: label('Heading 1', 'Başlık 1'),
     },
     {
       action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
       isActive: editor.isActive('heading', { level: 2 }),
       icon: 'H2',
-      title: 'Heading 2',
+      title: label('Heading 2', 'Başlık 2'),
     },
     {
       action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       isActive: editor.isActive('heading', { level: 3 }),
       icon: 'H3',
-      title: 'Heading 3',
+      title: label('Heading 3', 'Başlık 3'),
     },
     { type: 'divider' },
     {
       action: () => editor.chain().focus().toggleBulletList().run(),
       isActive: editor.isActive('bulletList'),
       icon: '•',
-      title: 'Bullet List',
+      title: label('Bullet list', 'Madde işaretli liste'),
     },
     {
       action: () => editor.chain().focus().toggleOrderedList().run(),
       isActive: editor.isActive('orderedList'),
       icon: '1.',
-      title: 'Numbered List',
+      title: label('Numbered list', 'Numaralı liste'),
     },
     {
       action: () => editor.chain().focus().toggleBlockquote().run(),
       isActive: editor.isActive('blockquote'),
       icon: '"',
-      title: 'Quote',
+      title: label('Quote', 'Alıntı'),
     },
     {
       action: () => editor.chain().focus().toggleCodeBlock().run(),
       isActive: editor.isActive('codeBlock'),
       icon: '{ }',
-      title: 'Code Block',
+      title: label('Code block', 'Kod bloğu'),
     },
     { type: 'divider' },
     {
       action: () => editor.chain().focus().undo().run(),
       disabled: !editor.can().chain().focus().undo().run(),
       icon: '↩',
-      title: 'Undo',
+      title: label('Undo', 'Geri al'),
     },
     {
       action: () => editor.chain().focus().redo().run(),
       disabled: !editor.can().chain().focus().redo().run(),
       icon: '↪',
-      title: 'Redo',
+      title: label('Redo', 'Yinele'),
     },
   ];
 
   return (
-    <div className={styles.menuBar}>
+    <div className={styles.menuBar} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
       {buttons.map((button, index) => {
         if (button.type === 'divider') {
           return <div key={index} className={styles.divider} />;
@@ -117,6 +121,8 @@ const MenuBar = ({ editor }) => {
             disabled={button.disabled}
             className={`${styles.menuButton} ${button.isActive ? styles.active : ''} ${button.className || ''}`}
             title={button.title}
+            aria-label={button.title}
+            aria-pressed={button.isActive || undefined}
           >
             {button.icon}
           </button>
@@ -129,11 +135,14 @@ const MenuBar = ({ editor }) => {
 const RichTextEditor = forwardRef(({
   content = '',
   onChange,
-  placeholder = 'İçeriğinizi buraya yazın...',
+  placeholder,
   minHeight = 200,
   maxHeight = 500,
   readOnly = false,
 }, forwardedRef) => {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder || t('posts.bodyPlaceholder');
+
   // AI feature state
   const aiEnabled = useSelector(selectAIEnabled);
   const ghostEnabled = useSelector(selectGhostCompletionEnabled);
@@ -148,7 +157,7 @@ const RichTextEditor = forwardRef(({
         },
       }),
       Placeholder.configure({
-        placeholder,
+        placeholder: resolvedPlaceholder,
       }),
       Markdown,
     ],

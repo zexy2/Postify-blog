@@ -36,7 +36,7 @@ const AuthCallbackPage = () => {
       <SystemStatus
         eyebrow="POSTIFY / AUTH"
         title={t('auth.loginError')}
-        message={t('auth.oauthError', 'Google girişi tamamlanamadı. Lütfen tekrar deneyin.')}
+        message={t('auth.oauthError')}
         role="alert"
         action={<Link to="/auth/login">{t('auth.login')}</Link>}
       />
@@ -47,7 +47,7 @@ const AuthCallbackPage = () => {
     <SystemStatus
       eyebrow="POSTIFY / AUTH"
       title={t('common.loading')}
-      message={t('auth.oauthPending', 'Kimliğin doğrulanıyor. Bu pencereyi kapatma.')}
+      message={t('auth.oauthPending')}
       loading
     />
   );

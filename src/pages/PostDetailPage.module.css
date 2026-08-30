@@ -485,6 +485,7 @@
 
 .mobileActionBar { display: none; }
 .mobileShareWrap { display: flex; }
+.mobileActionBarHidden { opacity: 0; pointer-events: none; }
 
 
 .canonicalSource {
@@ -521,6 +522,13 @@
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(14px);
     transform: translateX(-50%);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .mobileActionBarHidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, calc(100% + 2rem));
   }
 
   .mobileActionBtn {
@@ -560,6 +568,13 @@
   .articleContent { padding-top: 1.2rem; }
   .plainBody { font-size: 1rem; line-height: 1.72; }
   .plainBody h2 { margin-top: 2.3rem; }
+  .articleOutline a,
+  .references a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
   .sectionHeading { align-items: flex-start; flex-direction: column; }
   .adjacent { grid-template-columns: 1fr; gap: 0; }
   .newer { align-items: flex-start; text-align: left; }

@@ -177,6 +177,11 @@
   box-shadow: none;
 }
 
+.input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .inputError,
 .inputError:focus {
   border-color: var(--error);
@@ -361,8 +366,10 @@
 
   .footer a {
     display: inline-flex;
-    align-items: center;
+    min-width: 44px;
     min-height: 44px;
+    align-items: center;
+    justify-content: center;
   }
 
   .socialButton { min-height: 46px; }

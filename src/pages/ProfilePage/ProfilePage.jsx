@@ -120,7 +120,7 @@ const ProfilePage = () => {
   }
 
   const profile = user.profile || user.user_metadata || {};
-  const displayName = profile.full_name || profile.name || user.email?.split('@')[0] || 'Kullanıcı';
+  const displayName = profile.full_name || profile.name || user.email?.split('@')[0] || (en ? 'User' : 'Kullanıcı');
   const displayUsername = profile.username || user.email?.split('@')[0] || 'user';
   const avatarUrl = profile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
   const profileWebsite = safeHttpUrl(profile.website);

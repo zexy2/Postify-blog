@@ -50,10 +50,10 @@ export const useAuth = () => {
     if (error || errorDescription) {
       const cleanDesc = errorDescription
         ? decodeURIComponent(errorDescription).replace(/\+/g, ' ')
-        : t('auth.oauthError', 'Google girişinde bir doğrulama hatası oluştu.');
+        : t('auth.oauthError');
 
       console.warn('OAuth Auth Error:', error, cleanDesc);
-      toast.error(`Giriş Yapılamadı: ${cleanDesc}`, { duration: 6000 });
+      toast.error(`${t('auth.loginError')}: ${cleanDesc}`, { duration: 6000 });
 
       // Clean up raw error query and hash params from browser address bar
       const cleanUrl = window.location.origin + window.location.pathname;

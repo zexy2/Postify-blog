@@ -60,8 +60,23 @@ test.describe('Postify UI V2', () => {
       expect((await artifactLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
     }
 
+    const outlineCodeLink = page.getByRole('link', { name: 'Code', exact: true });
+    const evidenceSourceLink = page.getByRole('link', { name: 'nodejs.org', exact: true });
+    for (const target of [outlineCodeLink, evidenceSourceLink]) {
+      await expect(target).toBeVisible();
+      const box = await target.boundingBox();
+      expect(box?.height || 0).toBeGreaterThanOrEqual(44);
+      expect(box?.width || 0).toBeGreaterThanOrEqual(44);
+    }
+
     const articleOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(articleOverflow).toBeLessThanOrEqual(1);
+
+    const mobileActionBar = page.locator('[class*="mobileActionBar"]').first();
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(page.locator('footer')).toBeInViewport();
+    await expect(mobileActionBar).toHaveCSS('pointer-events', 'none');
+    await expect(mobileActionBar).toHaveCSS('opacity', '0');
   });
 
   test('V3 public author portfolio stays mobile-safe and knowledge-first', async ({ page }) => {
@@ -90,6 +105,22 @@ test.describe('Postify UI V2', () => {
     for (const target of touchTargets) {
       await expect(target).toBeVisible();
       expect((await target.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    }
+
+    const titleLinks = page.locator('#knowledge-feed a[class*="titleLink"]');
+    expect(await titleLinks.count()).toBeGreaterThan(0);
+    for (const height of await titleLinks.evaluateAll((links) => links.map((link) => link.getBoundingClientRect().height))) {
+      expect(height).toBeGreaterThanOrEqual(44);
+    }
+
+    for (const railButton of [
+      page.getByRole('navigation', { name: /topics|konu başlıkları/i }).getByRole('button').last(),
+      page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i }).getByRole('button').last(),
+    ]) {
+      await railButton.focus();
+      const railBox = await railButton.boundingBox();
+      expect(railBox?.x || 0).toBeGreaterThanOrEqual(0);
+      expect((railBox?.x || 0) + (railBox?.width || 0)).toBeLessThanOrEqual(390);
     }
 
     const menu = page.locator('header button[aria-expanded]').first();
@@ -196,6 +227,35 @@ test.describe('Postify UI V2', () => {
     await expect(trigger).toBeFocused();
   });
 
+  test('command palette locks background scroll and restores the reading position', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, 700));
+    const before = await page.evaluate(() => window.scrollY);
+    const markerBefore = await page.locator('#knowledge-feed').evaluate((element) => element.getBoundingClientRect().top);
+
+    await page.keyboard.press('Control+K');
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(page.locator('html')).toHaveCSS('overflow', 'hidden');
+    await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
+    const dialogBox = await dialog.boundingBox();
+    expect(dialogBox?.y ?? -1).toBeGreaterThanOrEqual(0);
+    expect((dialogBox?.y ?? 845) + (dialogBox?.height ?? 0)).toBeLessThanOrEqual(844);
+    const markerOpen = await page.locator('#knowledge-feed').evaluate((element) => element.getBoundingClientRect().top);
+    expect(Math.abs(markerOpen - markerBefore)).toBeLessThanOrEqual(1);
+
+    await page.mouse.move(4, 4);
+    await page.mouse.wheel(0, 600);
+    await page.keyboard.press('PageDown');
+    const markerLocked = await page.locator('#knowledge-feed').evaluate((element) => element.getBoundingClientRect().top);
+    expect(Math.abs(markerLocked - markerBefore)).toBeLessThanOrEqual(1);
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    expect(await page.evaluate(() => window.scrollY)).toBe(before);
+  });
+
   test('command palette stays contained and touch-safe on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
@@ -231,6 +291,11 @@ test.describe('Postify UI V2', () => {
     await loginButton.click();
     const email = page.locator('#email');
     const password = page.locator('#password');
+    await email.focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    const emailFocusOutline = await email.evaluate((element) => Number.parseFloat(getComputedStyle(element).outlineWidth));
+    expect(emailFocusOutline).toBeGreaterThanOrEqual(2);
     await expect(email).toHaveAttribute('aria-invalid', 'true');
     await expect(email).toHaveAttribute('aria-describedby', 'login-email-error');
     await expect(password).toHaveAttribute('aria-invalid', 'true');
@@ -258,6 +323,10 @@ test.describe('Postify UI V2', () => {
     }
 
     await page.goto('/auth/register');
+    const registerLoginLink = page.getByRole('link', { name: /^giriş yap$|^login$/i });
+    const registerLoginBox = await registerLoginLink.boundingBox();
+    expect(registerLoginBox?.width || 0).toBeGreaterThanOrEqual(44);
+    expect(registerLoginBox?.height || 0).toBeGreaterThanOrEqual(44);
     await page.getByRole('button', { name: /hesap oluştur|create account/i }).click();
     for (const selector of ['#fullName', '#username', '#email', '#password', '#confirmPassword']) {
       await expect(page.locator(selector)).toHaveAttribute('aria-invalid', 'true');

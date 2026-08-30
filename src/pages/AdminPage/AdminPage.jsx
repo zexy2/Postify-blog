@@ -4,15 +4,51 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FiUsers, FiFileText, FiShield, FiActivity, FiTrash2, FiEdit, FiEye, FiEyeOff, FiMessageSquare } from 'react-icons/fi';
 import adminService, { USER_ROLES } from '../../services/adminService';
 import styles from './AdminPage.module.css';
 
+const ADMIN_COPY = {
+  en: {
+    dashboard: 'Dashboard', totalUsers: 'Total users', totalPosts: 'Content items', admin: 'Admin', moderator: 'Moderator', comments: 'Comments',
+    recentUsers: 'Recently registered users', noRecentUsers: 'No new users yet.', userManagement: 'User management', noUsers: 'No users yet.',
+    user: 'User', email: 'Email', role: 'Role', registered: 'Registered', actions: 'Actions', unnamedUser: 'Unnamed user',
+    serverOnlyTitle: 'Deleting users requires a secure server-side Admin API.', serverOnly: 'Server API required',
+    contentModeration: 'Content moderation', noPosts: 'No content items yet.', title: 'Title', author: 'Author', date: 'Date', status: 'Status', anonymous: 'Anonymous',
+    published: 'Published', draft: 'Draft', unpublish: 'Unpublish', publish: 'Publish', edit: 'Edit', delete: 'Delete',
+    loading: 'Loading…', eyebrow: 'ADMIN CONSOLE', headline: 'Manage Postify operations.', description: 'Control user roles, publishing state, and community operations from one workspace.',
+    activeAdmin: 'Active administrator', tabsLabel: 'Administration sections', usersTab: 'Users', postsTab: 'Content', retry: 'Try again',
+    loadError: 'Administration data could not be loaded.', confirmDelete: 'Delete this content item? This action cannot be undone.', actionFailed: 'The admin action could not be completed.',
+  },
+  tr: {
+    dashboard: 'Genel bakış', totalUsers: 'Toplam kullanıcı', totalPosts: 'Toplam içerik', admin: 'Yönetici', moderator: 'Moderatör', comments: 'Yorum',
+    recentUsers: 'Son kayıt olan kullanıcılar', noRecentUsers: 'Henüz yeni kullanıcı yok.', userManagement: 'Kullanıcı yönetimi', noUsers: 'Henüz kullanıcı bulunmuyor.',
+    user: 'Kullanıcı', email: 'E-posta', role: 'Rol', registered: 'Kayıt tarihi', actions: 'İşlemler', unnamedUser: 'İsimsiz kullanıcı',
+    serverOnlyTitle: 'Kullanıcı silme işlemi güvenli server-side Admin API gerektirir.', serverOnly: 'Server API gerekli',
+    contentModeration: 'İçerik moderasyonu', noPosts: 'Henüz içerik bulunmuyor.', title: 'Başlık', author: 'Yazar', date: 'Tarih', status: 'Durum', anonymous: 'Anonim',
+    published: 'Yayında', draft: 'Taslak', unpublish: 'Yayından kaldır', publish: 'Yayınla', edit: 'Düzenle', delete: 'Sil',
+    loading: 'Yükleniyor…', eyebrow: 'YÖNETİM KONSOLU', headline: 'Postify operasyonlarını yönet.', description: 'Kullanıcı rolleri, yayın durumu ve topluluk operasyonlarını tek çalışma alanından kontrol et.',
+    activeAdmin: 'Aktif yönetici', tabsLabel: 'Yönetim bölümleri', usersTab: 'Kullanıcılar', postsTab: 'İçerikler', retry: 'Tekrar dene',
+    loadError: 'Yönetim verileri yüklenemedi.', confirmDelete: 'Bu içeriği silmek istiyor musun? Bu işlem geri alınamaz.', actionFailed: 'Yönetim işlemi tamamlanamadı.',
+  },
+};
+
 const AdminPage = ({ service = adminService }) => {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const { user } = useSelector((state) => state.user);
+  const en = i18n.language?.startsWith('en');
+  const copy = ADMIN_COPY[en ? 'en' : 'tr'];
+  const dateLocale = en ? 'en-US' : 'tr-TR';
+  const roleLabel = (role) => ({
+    admin: copy.admin,
+    moderator: copy.moderator,
+    user: copy.user,
+  }[role] || role);
   
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState(null);
@@ -52,7 +88,8 @@ const AdminPage = ({ service = adminService }) => {
           setPosts(allPosts);
         }
       } catch (err) {
-        setError(err.message);
+        console.error('Failed to load admin data:', err);
+        setError(err);
       } finally {
         setLoading(false);
       }
@@ -84,18 +121,18 @@ const AdminPage = ({ service = adminService }) => {
       await service.updateUserRole(userId, newRole);
       setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || copy.actionFailed);
     }
   };
 
   const handleDeletePost = async (postId) => {
-    if (!window.confirm('Bu postu silmek istediğinizden emin misiniz?')) return;
+    if (!window.confirm(copy.confirmDelete)) return;
     
     try {
       await service.deletePost(postId);
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || copy.actionFailed);
     }
   };
 
@@ -104,13 +141,13 @@ const AdminPage = ({ service = adminService }) => {
       const updatedPost = await service.togglePostVisibility(postId);
       setPosts(posts.map(p => p.id === postId ? updatedPost : p));
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || copy.actionFailed);
     }
   };
 
   const renderDashboard = () => (
     <div className={styles.dashboard}>
-      <h2>Dashboard</h2>
+      <h2>{copy.dashboard}</h2>
       
       {stats && (
         <>
@@ -119,7 +156,7 @@ const AdminPage = ({ service = adminService }) => {
               <FiUsers className={styles.statIcon} />
               <div className={styles.statInfo}>
                 <span className={styles.statNumber}>{stats.totalUsers}</span>
-                <span className={styles.statLabel}>Toplam Kullanıcı</span>
+                <span className={styles.statLabel}>{copy.totalUsers}</span>
               </div>
             </div>
             
@@ -127,7 +164,7 @@ const AdminPage = ({ service = adminService }) => {
               <FiFileText className={styles.statIcon} />
               <div className={styles.statInfo}>
                 <span className={styles.statNumber}>{stats.totalPosts}</span>
-                <span className={styles.statLabel}>Toplam Post</span>
+                <span className={styles.statLabel}>{copy.totalPosts}</span>
               </div>
             </div>
             
@@ -135,7 +172,7 @@ const AdminPage = ({ service = adminService }) => {
               <FiShield className={styles.statIcon} />
               <div className={styles.statInfo}>
                 <span className={styles.statNumber}>{stats.adminCount}</span>
-                <span className={styles.statLabel}>Admin</span>
+                <span className={styles.statLabel}>{copy.admin}</span>
               </div>
             </div>
             
@@ -143,7 +180,7 @@ const AdminPage = ({ service = adminService }) => {
               <FiActivity className={styles.statIcon} />
               <div className={styles.statInfo}>
                 <span className={styles.statNumber}>{stats.moderatorCount}</span>
-                <span className={styles.statLabel}>Moderatör</span>
+                <span className={styles.statLabel}>{copy.moderator}</span>
               </div>
             </div>
 
@@ -151,34 +188,34 @@ const AdminPage = ({ service = adminService }) => {
               <FiMessageSquare className={styles.statIcon} />
               <div className={styles.statInfo}>
                 <span className={styles.statNumber}>{stats.totalComments}</span>
-                <span className={styles.statLabel}>Yorum</span>
+                <span className={styles.statLabel}>{copy.comments}</span>
               </div>
             </div>
           </div>
 
           <div className={styles.recentSection}>
-            <h3>Son Kayıt Olan Kullanıcılar</h3>
+            <h3>{copy.recentUsers}</h3>
             {stats.recentUsers?.length ? (
               <ul className={styles.recentList}>
               {stats.recentUsers.map(user => (
                 <li key={user.id} className={styles.recentItem}>
                   <img 
                     src={user.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.full_name || user.username || user.email || 'U')}`}
-                    alt={user.full_name || user.username || user.email || 'Kullanıcı'}
+                    alt={user.full_name || user.username || user.email || copy.user}
                     className={styles.avatar}
                   />
                   <div className={styles.userInfo}>
-                    <span className={styles.userName}>{user.full_name || user.username || 'İsimsiz kullanıcı'}</span>
+                    <span className={styles.userName}>{user.full_name || user.username || copy.unnamedUser}</span>
                     <span className={styles.userEmail}>{user.email}</span>
                   </div>
                   <span className={`${styles.roleBadge} ${styles[user.role]}`}>
-                    {user.role}
+                    {roleLabel(user.role)}
                   </span>
                 </li>
               ))}
               </ul>
             ) : (
-              <p className={styles.noPosts}>Henüz yeni kullanıcı yok.</p>
+              <p className={styles.noPosts}>{copy.noRecentUsers}</p>
             )}
           </div>
         </>
@@ -188,20 +225,20 @@ const AdminPage = ({ service = adminService }) => {
 
   const renderUsers = () => (
     <div className={styles.usersSection}>
-      <h2>Kullanıcı Yönetimi</h2>
+      <h2>{copy.userManagement}</h2>
       
       {users.length === 0 ? (
-        <p className={styles.noPosts}>Henüz kullanıcı bulunmuyor.</p>
+        <p className={styles.noPosts}>{copy.noUsers}</p>
       ) : (
         <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Kullanıcı</th>
-              <th>E-posta</th>
-              <th>Rol</th>
-              <th>Kayıt Tarihi</th>
-              <th>İşlemler</th>
+              <th>{copy.user}</th>
+              <th>{copy.email}</th>
+              <th>{copy.role}</th>
+              <th>{copy.registered}</th>
+              <th>{copy.actions}</th>
             </tr>
           </thead>
           <tbody>
@@ -211,10 +248,10 @@ const AdminPage = ({ service = adminService }) => {
                 <div className={styles.userCell}>
                   <img 
                     src={u.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(u.full_name || u.username || u.email || 'U')}`}
-                    alt={u.full_name || u.username || u.email || 'Kullanıcı'}
+                    alt={u.full_name || u.username || u.email || copy.user}
                     className={styles.tableAvatar}
                   />
-                  <span>{u.full_name || u.username || 'İsimsiz kullanıcı'}</span>
+                  <span>{u.full_name || u.username || copy.unnamedUser}</span>
                 </div>
               </td>
               <td>{u.email}</td>
@@ -223,18 +260,18 @@ const AdminPage = ({ service = adminService }) => {
                   value={u.role || USER_ROLES.USER}
                   onChange={(e) => handleRoleChange(u.id, e.target.value)}
                   className={styles.roleSelect}
-                  aria-label={`${u.full_name || u.username || u.email || 'Kullanıcı'} rolü`}
+                  aria-label={en ? `${u.full_name || u.username || u.email || copy.user} role` : `${u.full_name || u.username || u.email || copy.user} rolü`}
                   disabled={u.id === user?.id}
                 >
-                  <option value={USER_ROLES.USER}>User</option>
-                  <option value={USER_ROLES.MODERATOR}>Moderator</option>
-                  <option value={USER_ROLES.ADMIN}>Admin</option>
+                  <option value={USER_ROLES.USER}>{copy.user}</option>
+                  <option value={USER_ROLES.MODERATOR}>{copy.moderator}</option>
+                  <option value={USER_ROLES.ADMIN}>{copy.admin}</option>
                 </select>
               </td>
-              <td>{new Date(u.created_at).toLocaleDateString('tr-TR')}</td>
+              <td>{new Date(u.created_at).toLocaleDateString(dateLocale)}</td>
               <td>
-                <span className={styles.serverOnly} title="Kullanıcı silme işlemi güvenli server-side Admin API gerektirir">
-                  Server API gerekli
+                <span className={styles.serverOnly} title={copy.serverOnlyTitle}>
+                  {copy.serverOnly}
                 </span>
               </td>
             </tr>
@@ -248,31 +285,31 @@ const AdminPage = ({ service = adminService }) => {
 
   const renderPosts = () => (
     <div className={styles.postsSection}>
-      <h2>Post Moderasyonu</h2>
+      <h2>{copy.contentModeration}</h2>
       
       {posts.length === 0 ? (
-        <p className={styles.noPosts}>Henüz post bulunmuyor.</p>
+        <p className={styles.noPosts}>{copy.noPosts}</p>
       ) : (
         <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Başlık</th>
-              <th>Yazar</th>
-              <th>Tarih</th>
-              <th>Durum</th>
-              <th>İşlemler</th>
+              <th>{copy.title}</th>
+              <th>{copy.author}</th>
+              <th>{copy.date}</th>
+              <th>{copy.status}</th>
+              <th>{copy.actions}</th>
             </tr>
           </thead>
           <tbody>
             {posts.map(post => (
               <tr key={post.id}>
                 <td className={styles.postTitle}>{post.title}</td>
-                <td>{post.author || 'Anonim'}</td>
-                <td>{new Date(post.createdAt || post.created_at || Date.now()).toLocaleDateString('tr-TR')}</td>
+                <td>{post.author || copy.anonymous}</td>
+                <td>{new Date(post.createdAt || post.created_at || Date.now()).toLocaleDateString(dateLocale)}</td>
                 <td>
                   <span className={`${styles.statusBadge} ${post.isPublished !== false ? styles.published : styles.draft}`}>
-                    {post.isPublished !== false ? 'Yayında' : 'Taslak'}
+                    {post.isPublished !== false ? copy.published : copy.draft}
                   </span>
                 </td>
                 <td className={styles.actions}>
@@ -280,8 +317,8 @@ const AdminPage = ({ service = adminService }) => {
                     type="button"
                     onClick={() => handleTogglePostVisibility(post.id)}
                     className={styles.actionBtn}
-                    aria-label={post.isPublished !== false ? `${post.title} yazısını yayından kaldır` : `${post.title} yazısını yayınla`}
-                    title={post.isPublished !== false ? 'Yayından Kaldır' : 'Yayınla'}
+                    aria-label={post.isPublished !== false ? `${copy.unpublish}: ${post.title}` : `${copy.publish}: ${post.title}`}
+                    title={post.isPublished !== false ? copy.unpublish : copy.publish}
                   >
                     {post.isPublished !== false ? <FiEyeOff /> : <FiEye />}
                   </button>
@@ -289,8 +326,8 @@ const AdminPage = ({ service = adminService }) => {
                     type="button"
                     onClick={() => navigate(`/posts/${post.id}/edit`)}
                     className={styles.actionBtn}
-                    aria-label={`${post.title} yazısını düzenle`}
-                    title="Düzenle"
+                    aria-label={`${copy.edit}: ${post.title}`}
+                    title={copy.edit}
                   >
                     <FiEdit />
                   </button>
@@ -298,8 +335,8 @@ const AdminPage = ({ service = adminService }) => {
                     type="button"
                     onClick={() => handleDeletePost(post.id)}
                     className={styles.deleteBtn}
-                    aria-label={`${post.title} yazısını sil`}
-                    title="Sil"
+                    aria-label={`${copy.delete}: ${post.title}`}
+                    title={copy.delete}
                   >
                     <FiTrash2 />
                   </button>
@@ -316,7 +353,7 @@ const AdminPage = ({ service = adminService }) => {
   if (loading && activeTab === 'dashboard' && !stats) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>Yükleniyor...</div>
+        <div className={styles.loading}>{copy.loading}</div>
       </div>
     );
   }
@@ -324,13 +361,13 @@ const AdminPage = ({ service = adminService }) => {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <span className={styles.eyebrow}>YÖNETİM KONSOLU</span>
-        <h1>Postify operasyonlarını yönet.</h1>
-        <p>Kullanıcı rolleri, yayın durumu ve topluluk operasyonlarını tek çalışma alanından kontrol et.</p>
-        <span className={styles.operator}>Aktif yönetici · {user?.user_metadata?.full_name || user?.email || 'Admin'}</span>
+        <span className={styles.eyebrow}>{copy.eyebrow}</span>
+        <h1>{copy.headline}</h1>
+        <p>{copy.description}</p>
+        <span className={styles.operator}>{copy.activeAdmin} · {user?.user_metadata?.full_name || user?.email || copy.admin}</span>
       </header>
 
-      <div className={styles.tabs} role="tablist" aria-label="Yönetim bölümleri">
+      <div className={styles.tabs} role="tablist" aria-label={copy.tabsLabel}>
         <button
           type="button"
           id="admin-tab-dashboard"
@@ -342,7 +379,7 @@ const AdminPage = ({ service = adminService }) => {
           aria-controls="admin-panel-dashboard"
           tabIndex={activeTab === 'dashboard' ? 0 : -1}
         >
-          <FiActivity /> Dashboard
+          <FiActivity /> {copy.dashboard}
         </button>
         <button
           type="button"
@@ -355,7 +392,7 @@ const AdminPage = ({ service = adminService }) => {
           aria-controls="admin-panel-users"
           tabIndex={activeTab === 'users' ? 0 : -1}
         >
-          <FiUsers /> Kullanıcılar
+          <FiUsers /> {copy.usersTab}
         </button>
         <button
           type="button"
@@ -368,14 +405,14 @@ const AdminPage = ({ service = adminService }) => {
           aria-controls="admin-panel-posts"
           tabIndex={activeTab === 'posts' ? 0 : -1}
         >
-          <FiFileText /> Postlar
+          <FiFileText /> {copy.postsTab}
         </button>
       </div>
 
       {error && (
         <div className={styles.error} role="alert">
-          <span>{error}</span>
-          <button type="button" onClick={() => setReloadKey((key) => key + 1)}>Tekrar dene</button>
+          <span>{copy.loadError}</span>
+          <button type="button" onClick={() => setReloadKey((key) => key + 1)}>{copy.retry}</button>
         </div>
       )}
 
@@ -386,7 +423,7 @@ const AdminPage = ({ service = adminService }) => {
         aria-labelledby={`admin-tab-${activeTab}`}
       >
         {loading ? (
-          <div className={styles.loading}>Yükleniyor...</div>
+          <div className={styles.loading}>{copy.loading}</div>
         ) : (
           <>
             {activeTab === 'dashboard' && renderDashboard()}

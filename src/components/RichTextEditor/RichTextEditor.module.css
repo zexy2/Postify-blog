@@ -7,6 +7,7 @@
 }
 
 .editor:focus-within { border-color: var(--primary); }
+.content :global(.ProseMirror):focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
 
 .menuBar {
   display: flex;

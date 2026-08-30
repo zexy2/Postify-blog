@@ -5,6 +5,7 @@
  */
 
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { absoluteAssetUrl, canonicalizeUrl, normalizeCanonicalSourceUrl, sanitizeHttpUrls } from '../../lib/seoUtils';
 
 const SEO = ({
@@ -22,8 +23,11 @@ const SEO = ({
   alternateJsonUrl,
   canonicalUrl,
 }) => {
+  const { i18n } = useTranslation();
   const siteTitle = 'Postify';
-  const defaultDescription = 'Postify, geliştiriciler ve ürün üretenler için uygulanabilir rehberler, karar notları, açıklayıcılar ve saha notları sunar.';
+  const defaultDescription = i18n.language?.startsWith('en')
+    ? 'Postify offers practical guides, decision notes, explainers, and field notes for developers and product builders.'
+    : 'Postify, geliştiriciler ve ürün üretenler için uygulanabilir rehberler, karar notları, açıklayıcılar ve saha notları sunar.';
   const defaultImage = '/images/posts/ai-muhendisligi.webp';
   const siteUrl = import.meta.env.VITE_APP_URL || 'https://postify.zekiakgul.dev';
 

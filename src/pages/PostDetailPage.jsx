@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft, FiArrowRight, FiMessageCircle, FiBookmark, FiClock } from 'react-icons/fi';
@@ -55,9 +55,19 @@ const PostDetailPage = () => {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
   const articleRef = useRef(null);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const { post, comments, isLoading, isError, error, refetch, commentsUnavailable } = usePost(id);
   const { posts } = usePosts();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
+
+  useEffect(() => {
+    if (!post?.id || typeof IntersectionObserver === 'undefined') return undefined;
+    const footer = document.querySelector('footer');
+    if (!footer) return undefined;
+    const observer = new IntersectionObserver(([entry]) => setIsFooterVisible(entry.isIntersecting));
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [post?.id]);
 
   const adjacentPosts = useMemo(() => {
     if (!post || !posts.length) return { newer: null, older: null };
@@ -310,7 +320,7 @@ const PostDetailPage = () => {
         </div>
 
         {/* Mobile Sticky Action Bar */}
-        <div className={styles.mobileActionBar} aria-label={t('article.tools')}>
+        <div className={`${styles.mobileActionBar} ${isFooterVisible ? styles.mobileActionBarHidden : ''}`} aria-label={t('article.tools')}>
           <Link to="/" className={styles.mobileActionBtn} aria-label={t('common.back')}>
             <FiArrowLeft size={18} />
           </Link>

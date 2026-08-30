@@ -305,6 +305,11 @@
   .compact .trustStrip > div:nth-child(n+3) { display: none; }
   .compact .title { font-size: 1.08rem; }
   .compact .readLink { display: none; }
+  .titleLink {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+  }
   .featured .readLink,
   .standard .readLink { min-height: 44px; }
   .bookmark { width: 44px; height: 44px; }

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import AdminPage from '../../src/pages/AdminPage/AdminPage';
 import userReducer from '../../src/store/slices/userSlice';
+import '../../src/lib/i18n';
 import '../../src/index.css';
 
 const avatar = (label, background = '#ead8cf') => `data:image/svg+xml,${encodeURIComponent(`

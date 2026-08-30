@@ -166,6 +166,11 @@
   box-shadow: none;
 }
 
+.input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .inputError,
 .inputError:focus {
   border-color: var(--error);

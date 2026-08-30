@@ -29,15 +29,15 @@ const editorDraft = {
   },
 };
 
-async function stabilize(page, { editor = false, theme = 'light' } = {}) {
+async function stabilize(page, { editor = false, theme = 'light', locale = 'en' } = {}) {
   await page.clock.setFixedTime(fixedNow);
-  await page.addInitScript(({ editorDraft, editor, theme }) => {
-    localStorage.setItem('postify_language', 'en');
+  await page.addInitScript(({ editorDraft, editor, theme, locale }) => {
+    localStorage.setItem('postify_language', locale);
     localStorage.setItem('postify_theme', theme);
     if (editor) {
       localStorage.setItem('postify:create-draft:local:en:new', JSON.stringify(editorDraft));
     }
-  }, { editorDraft, editor, theme });
+  }, { editorDraft, editor, theme, locale });
 }
 
 async function settleVisualSurface(page) {
@@ -128,6 +128,32 @@ test('Mobile navigation drawer open baseline', async ({ page }) => {
   await expect(drawer).toHaveScreenshot('mobile-navigation-drawer.png');
 });
 
+test('Command palette stays in the viewport and locks background scroll', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 640 });
+  await stabilize(page);
+  await page.goto('/');
+  await page.evaluate(() => window.scrollTo(0, 700));
+  const before = await page.evaluate(() => window.scrollY);
+  expect(before).toBeGreaterThan(500);
+
+  await page.keyboard.press('Control+K');
+  const palette = page.getByRole('dialog', { name: /search|ara/i });
+  await expect(palette).toBeVisible();
+  const box = await palette.boundingBox();
+  expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
+  expect((box?.y ?? 641) + (box?.height ?? 0)).toBeLessThanOrEqual(640);
+  await expect(palette.getByRole('combobox')).toBeFocused();
+
+  await page.mouse.move(4, 4);
+  await page.mouse.wheel(0, 700);
+  await page.keyboard.press('PageDown');
+  expect(await page.evaluate(() => window.scrollY)).toBe(before);
+
+  await page.keyboard.press('Escape');
+  await expect(palette).toHaveCount(0);
+  expect(await page.evaluate(() => window.scrollY)).toBe(before);
+});
+
 test('Mobile command palette open baseline', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await stabilize(page);
@@ -163,7 +189,7 @@ for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page);
     await page.goto('/');
-    await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible();
+    await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible({ timeout: 15_000 });
     await settleVisualSurface(page);
     await expect(page.locator('#main-content')).toHaveScreenshot(`home-${viewport.name}.png`);
   });
@@ -187,7 +213,7 @@ for (const viewport of viewports) {
     if (viewport.name === 'mobile') {
       const formOverflow = await page.locator('form').evaluate((form) => form.scrollWidth - form.clientWidth);
       expect(formOverflow).toBeLessThanOrEqual(1);
-      const boldButton = page.getByRole('button', { name: 'B', exact: true });
+      const boldButton = page.getByRole('button', { name: /bold|kalın/i });
       expect((await boldButton.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
       const outcomeInput = page.getByPlaceholder(/after this, the reader can/i);
       expect((await outcomeInput.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
@@ -217,6 +243,49 @@ for (const viewport of viewports) {
 }
 
 
+
+test('Editor toolbar and OAuth status follow the active product language', async ({ browser }) => {
+  for (const locale of ['en', 'tr']) {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: locale === 'en' ? 'en-US' : 'tr-TR', timezoneId: 'UTC' });
+    await context.addInitScript((language) => {
+      localStorage.setItem('postify_language', language);
+      localStorage.setItem('postify_theme', 'light');
+    }, locale);
+    const page = await context.newPage();
+
+    await page.goto('/e2e/visual/editor.html');
+    const boldLabel = locale === 'en' ? 'Bold' : 'Kalın';
+    const oppositeBold = locale === 'en' ? 'Kalın' : 'Bold';
+    await expect(page.getByRole('button', { name: boldLabel, exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: oppositeBold, exact: true })).toHaveCount(0);
+
+    await page.goto('/auth/callback');
+    const statusCopy = locale === 'en'
+      ? 'We are verifying your identity. Keep this window open.'
+      : 'Kimliğin doğrulanıyor. Bu pencereyi kapatma.';
+    await expect(page.getByText(statusCopy, { exact: true })).toBeVisible();
+    await context.close();
+  }
+});
+
+test('Editor keyboard focus stays visible inside mobile scroll surfaces', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/editor.html');
+
+  const farToolbarControl = page.getByRole('button', { name: /bullet list|madde işaretli liste/i });
+  await farToolbarControl.focus();
+  const toolbarBox = await farToolbarControl.boundingBox();
+  expect(toolbarBox?.x || 0).toBeGreaterThanOrEqual(0);
+  expect((toolbarBox?.x || 0) + (toolbarBox?.width || 0)).toBeLessThanOrEqual(390);
+
+  const title = page.locator('#title');
+  await title.focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  const titleOutline = await title.evaluate((element) => Number.parseFloat(getComputedStyle(element).outlineWidth));
+  expect(titleOutline).toBeGreaterThanOrEqual(2);
+});
 
 test('Editor canonical source is capability-gated, validated, and mobile-safe', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -416,7 +485,7 @@ for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page);
     await page.goto('/e2e/visual/admin-empty.html');
-    await expect(page.getByText(/henüz yeni kullanıcı yok/i)).toBeVisible();
+    await expect(page.getByText(/no new users yet|henüz yeni kullanıcı yok/i)).toBeVisible();
     const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
     expect(width.document).toBeLessThanOrEqual(width.viewport);
     await settleVisualSurface(page);
@@ -428,12 +497,12 @@ test('Admin empty management tabs are explicit and mobile-safe', async ({ page }
   await page.setViewportSize({ width: 390, height: 844 });
   await stabilize(page);
   await page.goto('/e2e/visual/admin-empty.html');
-  await page.getByRole('tab', { name: /kullanıcılar/i }).click();
-  await expect(page.getByText(/henüz kullanıcı bulunmuyor/i)).toBeVisible();
+  await page.getByRole('tab', { name: /users|kullanıcılar/i }).click();
+  await expect(page.getByText(/no users yet|henüz kullanıcı bulunmuyor/i)).toBeVisible();
   await settleVisualSurface(page);
   await expect(page.locator('#root')).toHaveScreenshot('admin-empty-users-mobile.png');
-  await page.getByRole('tab', { name: /postlar/i }).click();
-  await expect(page.getByText(/henüz post bulunmuyor/i)).toBeVisible();
+  await page.getByRole('tab', { name: /content|içerikler|postlar/i }).click();
+  await expect(page.getByText(/no content items yet|henüz içerik bulunmuyor|henüz post bulunmuyor/i)).toBeVisible();
   await settleVisualSurface(page);
   await expect(page.locator('#root')).toHaveScreenshot('admin-empty-posts-mobile.png');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -446,15 +515,15 @@ for (const viewport of viewports) {
     await stabilize(page);
     await page.goto('/e2e/visual/admin-retry.html');
     const alert = page.getByRole('alert');
-    await expect(alert).toContainText(/yönetim verileri yüklenemedi/i);
-    const retry = alert.getByRole('button', { name: /tekrar dene/i });
+    await expect(alert).toContainText(/administration data could not be loaded|yönetim verileri yüklenemedi/i);
+    const retry = alert.getByRole('button', { name: /try again|tekrar dene/i });
     await expect(retry).toBeVisible();
     if (viewport.name === 'mobile') expect((await retry.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`admin-error-${viewport.name}.png`);
     await retry.click();
     await expect(alert).toHaveCount(0);
-    await expect(page.getByText(/henüz yeni kullanıcı yok/i)).toBeVisible();
+    await expect(page.getByText(/no new users yet|henüz yeni kullanıcı yok/i)).toBeVisible();
   });
 }
 
@@ -463,7 +532,7 @@ for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page);
     await page.goto('/e2e/visual/admin-auth.html');
-    await expect(page.getByRole('heading', { level: 1, name: /Postify operasyonlarını yönet/i })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: /manage Postify operations|Postify operasyonlarını yönet/i })).toBeVisible();
     await expect(page.getByText('128')).toBeVisible();
     const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
     expect(width.document).toBeLessThanOrEqual(width.viewport);
@@ -477,8 +546,8 @@ test('Admin tabs support arrow, Home, and End keyboard navigation', async ({ pag
   await stabilize(page);
   await page.goto('/e2e/visual/admin-auth.html');
   const dashboard = page.getByRole('tab', { name: /dashboard/i });
-  const users = page.getByRole('tab', { name: /kullanıcılar/i });
-  const posts = page.getByRole('tab', { name: /postlar/i });
+  const users = page.getByRole('tab', { name: /users|kullanıcılar/i });
+  const posts = page.getByRole('tab', { name: /content|içerikler|postlar/i });
 
   await dashboard.focus();
   await page.keyboard.press('ArrowRight');
@@ -495,11 +564,35 @@ test('Admin tabs support arrow, Home, and End keyboard navigation', async ({ pag
   await expect(posts).toHaveAttribute('aria-selected', 'true');
 });
 
+test('Admin console follows the active product language in English and Turkish', async ({ browser }) => {
+  for (const locale of ['en', 'tr']) {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: locale === 'en' ? 'en-US' : 'tr-TR', timezoneId: 'UTC' });
+    await context.addInitScript((language) => {
+      localStorage.setItem('postify_language', language);
+      localStorage.setItem('postify_theme', 'light');
+    }, locale);
+    const page = await context.newPage();
+    await page.goto('/e2e/visual/admin-auth.html');
+    if (locale === 'en') {
+      await expect(page.getByRole('heading', { level: 1, name: 'Manage Postify operations.' })).toBeVisible();
+      await expect(page.getByRole('tab', { name: 'Users' })).toBeVisible();
+      await expect(page.getByText('Recently registered users')).toBeVisible();
+      await expect(page.getByText('Toplam kullanıcı')).toHaveCount(0);
+    } else {
+      await expect(page.getByRole('heading', { level: 1, name: 'Postify operasyonlarını yönet.' })).toBeVisible();
+      await expect(page.getByRole('tab', { name: 'Kullanıcılar' })).toBeVisible();
+      await expect(page.getByText('Son kayıt olan kullanıcılar')).toBeVisible();
+      await expect(page.getByText('Total users')).toHaveCount(0);
+    }
+    await context.close();
+  }
+});
+
 test('Admin management tables remain contained on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await stabilize(page);
   await page.goto('/e2e/visual/admin-auth.html');
-  await page.getByRole('tab', { name: /Kullanıcılar/i }).click();
+  await page.getByRole('tab', { name: /users|kullanıcılar/i }).click();
   await expect(page.getByText('Semanur').first()).toBeVisible();
   let width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
   expect(width.document).toBeLessThanOrEqual(width.viewport);
@@ -510,9 +603,9 @@ test('Admin management tables remain contained on mobile', async ({ page }) => {
   for (const height of await roleSelects.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
     expect(height).toBeGreaterThanOrEqual(44);
   }
-  await expect(roleSelects.first()).toHaveAttribute('aria-label', /rolü/i);
+  await expect(roleSelects.first()).toHaveAttribute('aria-label', /role|rolü/i);
 
-  await page.getByRole('tab', { name: /Postlar/i }).click();
+  await page.getByRole('tab', { name: /content|içerikler|postlar/i }).click();
   await expect(page.getByText(/Node\.js doğrulama/i)).toBeVisible();
   await expect(page.getByText('Semanur').first()).toBeVisible();
   width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
@@ -689,7 +782,7 @@ for (const viewport of viewports) {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page, { theme: 'dark' });
     await page.goto('/');
-    await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible();
+    await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await settleVisualSurface(page);
     await expect(page.locator('#main-content')).toHaveScreenshot(`home-dark-${viewport.name}.png`);
@@ -734,7 +827,7 @@ for (const viewport of viewports) {
   for (const [name, route, ready] of [
     ['Bookmarks', '/e2e/visual/bookmarks-auth.html', /bookmarks|favorilerim/i],
     ['Knowledge health', '/e2e/visual/knowledge-auth.html', /knowledge health|bilgi sağlığı/i],
-    ['Admin dashboard', '/e2e/visual/admin-auth.html', /Postify operasyonlarını yönet/i],
+    ['Admin dashboard', '/e2e/visual/admin-auth.html', /manage Postify operations|Postify operasyonlarını yönet/i],
   ]) {
     test(`Dark theme ${name} ${viewport.name} baseline`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });

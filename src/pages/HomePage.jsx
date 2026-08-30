@@ -192,7 +192,7 @@ const HomePage = () => {
       <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
       <section id="knowledge-feed" className={`container ${styles.postsSection}`}>
-        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'}>
+        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
           <button
             type="button"
             className={activeType === 'all' ? styles.typeFilterActive : ''}

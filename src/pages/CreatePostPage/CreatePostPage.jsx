@@ -269,7 +269,7 @@ const CreatePostPage = () => {
         },
       };
       if (isEdit) {
-        await updatePost.mutateAsync({ id, data: { ...payload, revisionReason: formData.revisionReason.trim() || 'Author edited content or evidence' } });
+        await updatePost.mutateAsync({ id, data: { ...payload, revisionReason: formData.revisionReason.trim() || (i18n.language?.startsWith('en') ? 'Author edited content or evidence' : 'Yazar içerik veya kanıtı düzenledi') } });
       } else {
         await createPost.mutateAsync(payload);
       }
@@ -283,7 +283,9 @@ const CreatePostPage = () => {
 
   const handleCancel = () => {
     if (isDirty) {
-      const confirmed = window.confirm('Değişiklikler kaydedilmedi. Çıkmak istediğinize emin misiniz?');
+      const confirmed = window.confirm(i18n.language?.startsWith('en')
+        ? 'Your changes are not saved. Leave this editor?'
+        : 'Değişiklikler kaydedilmedi. Bu düzenleyiciden çıkmak istiyor musun?');
       if (!confirmed) return;
     }
     if (typeof window !== 'undefined') clearDraft(window.localStorage, draftKey);
@@ -411,7 +413,13 @@ const CreatePostPage = () => {
                   type="button"
                   onClick={() => dispatch(toggleAI())}
                   className={`${styles.aiToggle} ${aiEnabled ? styles.aiActive : ''}`}
-                  title={aiEnabled ? 'AI Asistan Açık' : 'AI Asistan Kapalı'}
+                  aria-pressed={aiEnabled}
+                  aria-label={aiEnabled
+                    ? (i18n.language?.startsWith('en') ? 'AI assistant on' : 'AI asistan açık')
+                    : (i18n.language?.startsWith('en') ? 'AI assistant off' : 'AI asistan kapalı')}
+                  title={aiEnabled
+                    ? (i18n.language?.startsWith('en') ? 'AI assistant on' : 'AI asistan açık')
+                    : (i18n.language?.startsWith('en') ? 'AI assistant off' : 'AI asistan kapalı')}
                 >
                   <span className={styles.aiIcon}>✨</span>
                   <span className={styles.aiLabel}>AI</span>

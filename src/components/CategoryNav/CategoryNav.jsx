@@ -15,7 +15,7 @@ const CategoryNav = ({ categories, activeCategory, onChange }) => {
           <span className={styles.current}>{activeCategory === 'all' ? t('home.allCategories') : getCategoryLabel(activeCategory, i18n.language)}</span>
         </div>
 
-        <div className={styles.items}>
+        <div className={styles.items} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
           {topics.map((topic, index) => {
             const isActive = activeCategory === topic.value;
             return (

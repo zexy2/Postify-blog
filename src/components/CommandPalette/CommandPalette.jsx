@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiCommand, FiSearch, FiX } from 'react-icons/fi';
@@ -22,15 +23,35 @@ const CommandPalette = ({ open, onClose }) => {
     previousFocusRef.current = document.activeElement;
     setQuery('');
     setActiveIndex(0);
-    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 0);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+
+    const html = document.documentElement;
+    const body = document.body;
+    const lockedScrollX = window.scrollX;
+    const lockedScrollY = window.scrollY;
+    const scrollbarWidth = Math.max(0, window.innerWidth - html.clientWidth);
+    const previousStyles = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPaddingRight: body.style.paddingRight,
+    };
+
+    // Keep the document at its current scroll position without shifting <body>.
+    // A fixed body with a negative top offset also offsets fixed descendants,
+    // which can push this palette above the viewport when opened after scrolling.
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 0);
     return () => {
       window.clearTimeout(focusTimer);
-      document.body.style.overflow = previousOverflow;
-      if (previousFocusRef.current instanceof HTMLElement) previousFocusRef.current.focus();
+      html.style.overflow = previousStyles.htmlOverflow;
+      body.style.overflow = previousStyles.bodyOverflow;
+      body.style.paddingRight = previousStyles.bodyPaddingRight;
+      window.scrollTo(lockedScrollX, lockedScrollY);
+      if (previousFocusRef.current instanceof HTMLElement) previousFocusRef.current.focus({ preventScroll: true });
     };
-  }, [open, onClose]);
+  }, [open]);
 
   const results = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase(i18n.language);
@@ -80,7 +101,7 @@ const CommandPalette = ({ open, onClose }) => {
 
   if (!open) return null;
 
-  return (
+  return createPortal(
     <div className={styles.layer}>
       <button type="button" className={styles.backdrop} onClick={onClose} aria-label={t('common.closeSearch')} />
       <div ref={dialogRef} className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="command-palette-title">
@@ -142,7 +163,8 @@ const CommandPalette = ({ open, onClose }) => {
         </div>
         <div className={styles.footer}><span>{t('search.navigate')}</span><span><kbd>↵</kbd> {t('search.open')}</span></div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 
