@@ -14,16 +14,17 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
   const [complete, setComplete] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+    setError(null);
 
     if (!updating) {
       if (!/\S+@\S+\.\S+/.test(email)) {
-        setError(en ? 'Enter a valid email address.' : 'Geçerli bir e-posta adresi gir.');
+        setError({ field: 'email', message: en ? 'Enter a valid email address.' : 'Geçerli bir e-posta adresi gir.' });
+        if (typeof window !== 'undefined') window.requestAnimationFrame(() => window.document.getElementById('recovery-email')?.focus());
         return;
       }
       const result = await resetPassword(email.trim());
@@ -32,11 +33,13 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
     }
 
     if (password.length < 8) {
-      setError(en ? 'Use at least 8 characters.' : 'En az 8 karakter kullan.');
+      setError({ field: 'password', message: en ? 'Use at least 8 characters.' : 'En az 8 karakter kullan.' });
+      if (typeof window !== 'undefined') window.requestAnimationFrame(() => window.document.getElementById('new-password')?.focus());
       return;
     }
     if (password !== confirmPassword) {
-      setError(en ? 'Passwords do not match.' : 'Şifreler eşleşmiyor.');
+      setError({ field: 'confirmPassword', message: en ? 'Passwords do not match.' : 'Şifreler eşleşmiyor.' });
+      if (typeof window !== 'undefined') window.requestAnimationFrame(() => window.document.getElementById('confirm-new-password')?.focus());
       return;
     }
 
@@ -88,12 +91,12 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
                     id="recovery-email"
                     type="email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) => { setEmail(event.target.value); if (error?.field === 'email') setError(null); }}
                     autoComplete="email"
                     placeholder="ornek@email.com"
                     disabled={isLoading}
-                    aria-invalid={Boolean(error)}
-                    aria-describedby={error ? 'recovery-form-error' : undefined}
+                    aria-invalid={error?.field === 'email'}
+                    aria-describedby={error?.field === 'email' ? 'recovery-form-error' : undefined}
                   />
                 </div>
               </div>
@@ -107,11 +110,11 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
                       id="new-password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
-                      onChange={(event) => setPassword(event.target.value)}
+                      onChange={(event) => { setPassword(event.target.value); if (error?.field === 'password') setError(null); }}
                       autoComplete="new-password"
                       disabled={isLoading}
-                      aria-invalid={Boolean(error)}
-                      aria-describedby={error ? 'recovery-form-error' : undefined}
+                      aria-invalid={error?.field === 'password'}
+                      aria-describedby={error?.field === 'password' ? 'recovery-form-error' : undefined}
                     />
                     <button
                       type="button"
@@ -131,18 +134,18 @@ const PasswordRecoveryPage = ({ mode = 'request' }) => {
                       id="confirm-new-password"
                       type={showPassword ? 'text' : 'password'}
                       value={confirmPassword}
-                      onChange={(event) => setConfirmPassword(event.target.value)}
+                      onChange={(event) => { setConfirmPassword(event.target.value); if (error?.field === 'confirmPassword') setError(null); }}
                       autoComplete="new-password"
                       disabled={isLoading}
-                      aria-invalid={Boolean(error)}
-                      aria-describedby={error ? 'recovery-form-error' : undefined}
+                      aria-invalid={error?.field === 'confirmPassword'}
+                      aria-describedby={error?.field === 'confirmPassword' ? 'recovery-form-error' : undefined}
                     />
                   </div>
                 </div>
               </>
             )}
 
-            {error && <p id="recovery-form-error" className={styles.error} role="alert">{error}</p>}
+            {error && <p id="recovery-form-error" className={styles.error} role="alert">{error.message}</p>}
             <button type="submit" className={styles.submitButton} disabled={isLoading}>
               {isLoading
                 ? (en ? 'Working…' : 'İşleniyor…')

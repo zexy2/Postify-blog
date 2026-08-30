@@ -418,3 +418,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** A custom contenteditable used as a required form field must expose the same label, invalid-state, descriptive-error and focus-recovery semantics as a native input. Validation errors are attached to the actual editable node, not only to its visual wrapper, and invalid submission moves focus to the first actionable invalid field after the error state renders.
 
 **Why:** The TipTap editor looked correctly labeled visually, but the browser accessibility tree had no programmatic relationship between `Content` and the editable surface. Body errors were also plain text while focus stayed on Publish, leaving keyboard and screen-reader users far from the problem they needed to fix. Treating the custom editor as a first-class form control closes that gap without changing the visual layout.
+
+## 2026-08-30 — Form validation identifies one actionable correction point
+**Decision:** Invalid form submission should not only announce errors; it must return keyboard focus to the first actionable invalid field. Multi-field credentials must mark only the field responsible for the current validation failure when the error can be attributed precisely.
+
+**Why:** Login, Register and Recovery already rendered readable alerts, but real Chromium showed focus remaining on the submit button after failure. Password reset also marked both inputs invalid for a short-password error. Moving focus and narrowing `aria-invalid` to the responsible control shortens recovery for keyboard users and makes the accessibility state match the visible validation message.

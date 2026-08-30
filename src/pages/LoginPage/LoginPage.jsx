@@ -39,6 +39,10 @@ const LoginPage = () => {
     }
 
     setErrors(newErrors);
+    const firstInvalidField = Object.keys(newErrors)[0];
+    if (firstInvalidField && typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => window.document.getElementById(firstInvalidField)?.focus());
+    }
     return Object.keys(newErrors).length === 0;
   };
 

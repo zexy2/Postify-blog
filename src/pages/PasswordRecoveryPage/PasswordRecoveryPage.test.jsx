@@ -35,6 +35,47 @@ describe('PasswordRecoveryPage', () => {
     await waitFor(() => expect(screen.getByText('Kurtarma e-postası gönderildi.')).toBeVisible());
   });
 
+
+  it('focuses and marks only the invalid recovery field', async () => {
+    render(
+      <MemoryRouter>
+        <PasswordRecoveryPage mode="request" />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Kurtarma bağlantısı gönder' }));
+    const email = screen.getByLabelText('Hesap e-postası');
+    await waitFor(() => expect(email).toHaveFocus());
+    expect(email).toHaveAttribute('aria-invalid', 'true');
+    expect(email).toHaveAttribute('aria-describedby', 'recovery-form-error');
+  });
+
+  it('routes reset-password validation to the field that needs correction', async () => {
+    render(
+      <MemoryRouter>
+        <PasswordRecoveryPage mode="update" />
+      </MemoryRouter>,
+    );
+
+    const password = screen.getByLabelText('Yeni şifre');
+    const confirm = screen.getByLabelText('Yeni şifreyi doğrula');
+    const submit = screen.getByRole('button', { name: 'Şifreyi güncelle' });
+
+    fireEvent.click(submit);
+    await waitFor(() => expect(password).toHaveFocus());
+    expect(password).toHaveAttribute('aria-invalid', 'true');
+    expect(confirm).toHaveAttribute('aria-invalid', 'false');
+
+    fireEvent.change(password, { target: { value: 'secure-pass-123' } });
+    fireEvent.change(confirm, { target: { value: 'different-pass-456' } });
+    fireEvent.click(submit);
+
+    await waitFor(() => expect(confirm).toHaveFocus());
+    expect(password).toHaveAttribute('aria-invalid', 'false');
+    expect(confirm).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByRole('alert')).toHaveTextContent('Şifreler eşleşmiyor.');
+  });
+
   it('updates the password when the recovery session has matching credentials', async () => {
     render(
       <MemoryRouter>

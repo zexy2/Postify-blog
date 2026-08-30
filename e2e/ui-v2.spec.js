@@ -396,6 +396,7 @@ test.describe('Postify UI V2', () => {
     await loginButton.click();
     const email = page.locator('#email');
     const password = page.locator('#password');
+    await expect(email).toBeFocused();
     await email.focus();
     await page.keyboard.press('Tab');
     await page.keyboard.press('Shift+Tab');
@@ -433,6 +434,7 @@ test.describe('Postify UI V2', () => {
     expect(registerLoginBox?.width || 0).toBeGreaterThanOrEqual(44);
     expect(registerLoginBox?.height || 0).toBeGreaterThanOrEqual(44);
     await page.getByRole('button', { name: /hesap oluştur|create account/i }).click();
+    await expect(page.locator('#fullName')).toBeFocused();
     for (const selector of ['#fullName', '#username', '#email', '#password', '#confirmPassword']) {
       await expect(page.locator(selector)).toHaveAttribute('aria-invalid', 'true');
       await expect(page.locator(selector)).toHaveAttribute('aria-describedby', /register-.*-error/);
@@ -440,6 +442,7 @@ test.describe('Postify UI V2', () => {
 
     await page.goto('/auth/forgot-password');
     await page.getByRole('button', { name: /kurtarma bağlantısı gönder|send recovery link/i }).click();
+    await expect(page.locator('#recovery-email')).toBeFocused();
     await expect(page.locator('#recovery-email')).toHaveAttribute('aria-invalid', 'true');
     await expect(page.locator('#recovery-email')).toHaveAttribute('aria-describedby', 'recovery-form-error');
   });
@@ -453,8 +456,25 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
 
     await page.goto('/auth/reset-password');
-    await expect(page.getByLabel(/^yeni şifre$|^new password$/i)).toBeVisible();
-    await expect(page.getByLabel(/yeni şifreyi doğrula|confirm new password/i)).toBeVisible();
+    const newPassword = page.getByLabel(/^yeni şifre$|^new password$/i);
+    const confirmPassword = page.getByLabel(/yeni şifreyi doğrula|confirm new password/i);
+    await expect(newPassword).toBeVisible();
+    await expect(confirmPassword).toBeVisible();
+
+    const updatePasswordButton = page.getByRole('button', { name: /şifreyi güncelle|update password/i });
+    await updatePasswordButton.click();
+    await expect(newPassword).toBeFocused();
+    await expect(newPassword).toHaveAttribute('aria-invalid', 'true');
+    await expect(confirmPassword).toHaveAttribute('aria-invalid', 'false');
+
+    await newPassword.fill('secure-pass-123');
+    await confirmPassword.fill('different-pass-456');
+    await updatePasswordButton.click();
+    await expect(confirmPassword).toBeFocused();
+    await expect(newPassword).toHaveAttribute('aria-invalid', 'false');
+    await expect(confirmPassword).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#recovery-form-error')).toContainText(/eşleşmiyor|do not match/i);
+
     overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
   });
