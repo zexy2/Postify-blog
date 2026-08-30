@@ -233,6 +233,15 @@
   color: var(--text-primary);
 }
 
+@media (max-width: 960px) {
+  .brandLink,
+  .githubLink,
+  .linkGroup a,
+  .scrollTopButton {
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 860px) {
   .statement {
     grid-template-columns: 1fr;

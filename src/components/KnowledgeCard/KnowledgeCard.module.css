@@ -316,6 +316,12 @@
   .bookmark { width: 44px; height: 44px; }
 }
 
+
+@media (max-width: 960px) {
+  .bookmark { width: 44px; height: 44px; }
+  .readLink { min-height: 44px; align-items: center; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .image,
   .readLink svg { transition: none; }

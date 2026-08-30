@@ -48,6 +48,53 @@ test.describe('Postify UI V2', () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(4);
   });
 
+  test('footer format navigation lands on the filtered feed and home actions reset to the top', async ({ page }) => {
+    for (const width of [390, 1304]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/');
+
+      const footer = page.locator('footer');
+      await footer.scrollIntoViewIfNeeded();
+      const formatNav = footer.getByRole('navigation', { name: /içerik biçimleri|content formats/i });
+      const guides = formatNav.getByRole('link', { name: /^rehberler$|^guides$/i });
+      await guides.click();
+
+      await expect(page).toHaveURL(/[?&]type=guide#knowledge-feed$/);
+      await expect(page.getByRole('button', { name: /^rehber$|^guide$/i })).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator('#knowledge-feed')).toBeInViewport();
+
+      await footer.scrollIntoViewIfNeeded();
+      await footer.getByRole('link', { name: /bilgiyi keşfet|explore knowledge/i }).click();
+      await expect(page).toHaveURL(/\/$/);
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test('footer controls stay touch-safe across the tablet navigation range', async ({ page }) => {
+    for (const width of [600, 820, 960]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto('/');
+      const footer = page.locator('footer');
+      await footer.scrollIntoViewIfNeeded();
+
+      const targets = [
+        footer.getByRole('link', { name: 'Postify home' }),
+        footer.getByRole('link', { name: /github/i }),
+        footer.getByRole('navigation', { name: /içerik biçimleri|content formats/i }).getByRole('link').first(),
+        footer.getByRole('navigation', { name: /postify sayfaları|postify pages/i }).getByRole('link').first(),
+        footer.getByRole('button', { name: /başa dön|back to top/i }),
+      ];
+
+      for (const target of targets) {
+        await expect(target).toBeVisible();
+        expect((await target.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+      }
+
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+    }
+  });
+
   test('direct article renders a readable editorial surface', async ({ page }) => {
     await page.goto('/posts/ai-muhendisligi');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

@@ -310,3 +310,9 @@
     grid-row: 2;
   }
 }
+
+
+@media (max-width: 960px) {
+  .clearButton { min-height: 44px; }
+  .removeButton { width: 44px; height: 44px; }
+}

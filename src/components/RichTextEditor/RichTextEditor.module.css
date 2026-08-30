@@ -114,7 +114,7 @@
   40% { opacity: 1; transform: scale(1); }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 960px) {
   .menuBar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .menuBar::-webkit-scrollbar { display: none; }
   .menuButton { flex: 0 0 44px; width: 44px; height: 44px; }

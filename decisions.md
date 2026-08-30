@@ -393,3 +393,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Home keeps its editorial masthead and evidence metadata, but reduces hero/feed vertical expansion and removes most per-cell topic/filter separators. Grouping should come from spacing, typography, selected-state tone and a small number of structural rules rather than a border around every option or fact.
 
 **Why:** The real desktop screenshots showed that the former combination of oversized hero, long card rhythm and dense dividers read more like a poster followed by a spreadsheet than a practical knowledge product. Tightening density brings useful records into the first viewport while preserving the distinctive evidence-first information architecture.
+
+## 2026-08-30 — Touch geometry follows the product interaction breakpoint
+**Decision:** When Postify enters touch-oriented navigation at <=960px, primary interactive controls across discovery, maintenance, profile, editor and Footer surfaces must preserve at least a 44px effective hit area even if their visual layout does not reflow until a narrower breakpoint. Layout breakpoints remain content-driven; hit-area breakpoints follow the interaction mode.
+
+**Why:** Real 600–960px Chromium rendering showed a hidden gap between phone and desktop QA: controls that were intentionally 44px at <=520/620/680/720px shrank back to 30–40px while the Header had already switched to its mobile drawer. Treating tablet widths as touch-capable closes that inconsistency without inflating the 1440 desktop interface or forcing unnecessary layout changes.

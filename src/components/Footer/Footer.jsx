@@ -13,6 +13,12 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleHomeNavigation = () => {
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
+  };
+
   const formatLinks = [
     ['guide', isEnglish ? 'Guides' : 'Rehberler'],
     ['decision', isEnglish ? 'Decisions' : 'Karar notları'],
@@ -37,7 +43,7 @@ const Footer = () => {
           </div>
 
           <div className={styles.primaryActions}>
-            <Link to="/" className={styles.primaryLink}>
+            <Link to="/" className={styles.primaryLink} onClick={handleHomeNavigation}>
               {isEnglish ? 'Explore knowledge' : 'Bilgiyi keşfet'}
               <FiArrowUpRight aria-hidden="true" />
             </Link>
@@ -49,7 +55,7 @@ const Footer = () => {
 
         <div className={styles.indexGrid}>
           <div className={styles.brandBlock}>
-            <Link to="/" className={styles.brandLink} aria-label="Postify home">
+            <Link to="/" className={styles.brandLink} aria-label="Postify home" onClick={handleHomeNavigation}>
               <BrandMark size="md" />
               <span>Postify</span>
             </Link>
@@ -69,8 +75,8 @@ const Footer = () => {
           <nav className={styles.linkGroup} aria-label={isEnglish ? 'Content formats' : 'İçerik biçimleri'}>
             <span className={styles.groupLabel}>{isEnglish ? 'READ BY FORMAT' : 'BİÇİME GÖRE OKU'}</span>
             {formatLinks.map(([type, label], index) => (
-              <Link key={type} to={`/?type=${type}`}>
-                <span className={styles.linkIndex}>{String(index + 1).padStart(2, '0')}</span>
+              <Link key={type} to={`/?type=${type}#knowledge-feed`}>
+                <span className={styles.linkIndex} aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                 <span>{label}</span>
               </Link>
             ))}
@@ -78,10 +84,10 @@ const Footer = () => {
 
           <nav className={styles.linkGroup} aria-label={isEnglish ? 'Postify pages' : 'Postify sayfaları'}>
             <span className={styles.groupLabel}>POSTIFY</span>
-            <Link to="/about"><span className={styles.linkIndex}>01</span><span>{t('nav.about')}</span></Link>
-            <Link to="/contact"><span className={styles.linkIndex}>02</span><span>{t('nav.contact')}</span></Link>
-            <Link to="/bookmarks"><span className={styles.linkIndex}>03</span><span>{t('nav.bookmarks')}</span></Link>
-            <Link to="/knowledge"><span className={styles.linkIndex}>04</span><span>{isEnglish ? 'Knowledge health' : 'Bilgi sağlığı'}</span></Link>
+            <Link to="/about"><span className={styles.linkIndex} aria-hidden="true">01</span><span>{t('nav.about')}</span></Link>
+            <Link to="/contact"><span className={styles.linkIndex} aria-hidden="true">02</span><span>{t('nav.contact')}</span></Link>
+            <Link to="/bookmarks"><span className={styles.linkIndex} aria-hidden="true">03</span><span>{t('nav.bookmarks')}</span></Link>
+            <Link to="/knowledge"><span className={styles.linkIndex} aria-hidden="true">04</span><span>{isEnglish ? 'Knowledge health' : 'Bilgi sağlığı'}</span></Link>
           </nav>
         </div>
 

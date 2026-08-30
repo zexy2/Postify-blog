@@ -502,3 +502,10 @@
     grid-row: 1 / span 2;
   }
 }
+
+
+@media (max-width: 960px) {
+  .actions a,
+  .actions button,
+  .failureToggle { min-height: 44px; }
+}

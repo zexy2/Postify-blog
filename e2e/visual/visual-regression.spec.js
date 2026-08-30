@@ -352,6 +352,59 @@ test('Editor Markdown import/export round-trip stays local and mobile-safe', asy
 });
 
 
+test('Tablet touch mode keeps primary work controls at least 44px', async ({ page }) => {
+  await stabilize(page, { editor: true });
+
+  const expectTouchSafe = async (targets) => {
+    for (const target of targets) {
+      await expect(target).toBeVisible();
+      const box = await target.boundingBox();
+      expect(box?.height || 0).toBeGreaterThanOrEqual(44);
+    }
+  };
+
+  for (const width of [820, 960]) {
+    await page.setViewportSize({ width, height: 844 });
+
+    await page.goto('/');
+    await expectTouchSafe([
+      page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i }).getByRole('button').first(),
+      page.getByRole('button', { name: /add to bookmarks|favorilere ekle/i }).first(),
+    ]);
+
+    await page.goto('/e2e/visual/bookmarks-auth.html');
+    await expectTouchSafe([
+      page.getByRole('button', { name: /clear all|tümünü temizle/i }),
+      page.getByRole('button', { name: /remove from bookmarks|favorilerden kaldır/i }).first(),
+    ]);
+
+    await page.goto('/e2e/visual/knowledge-auth.html');
+    await expectTouchSafe([
+      page.getByRole('button', { name: /re-verify|yeniden doğrula/i }).first(),
+    ]);
+
+    await page.goto('/e2e/visual/profile-auth.html');
+    await expectTouchSafe([
+      page.getByRole('button', { name: /edit account details|hesap detaylarını düzenle/i }),
+    ]);
+
+    await page.goto('/e2e/visual/editor.html');
+    await expectTouchSafe([
+      page.getByRole('button', { name: /use outline|iskeleti ekle/i }),
+      page.getByRole('button', { name: /import \.md|\.md içe al/i }),
+      page.getByRole('button', { name: /export \.md|\.md dışa aktar/i }),
+      page.getByRole('button', { name: /^bold$|^kalın$/i }),
+      page.getByPlaceholder(/after this, the reader can|bunun sonunda okuyucu/i),
+      page.locator('form select').last(),
+      page.getByRole('button', { name: /^cancel$|^iptal$/i }).last(),
+      page.getByRole('button', { name: /publish|yayınla/i }),
+    ]);
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  }
+});
+
 test('Authenticated header account menu desktop baseline', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 300 });
   await stabilize(page);

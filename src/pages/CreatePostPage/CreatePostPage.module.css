@@ -570,6 +570,17 @@
   .inputFooter { gap: .5rem; }
 }
 
+
+@media (max-width: 960px) {
+  .outlineButton,
+  .transferButton,
+  .canonicalTrack input,
+  .evidenceFields input,
+  .evidenceFields select,
+  .cancelButton,
+  .submitButton { min-height: 44px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }
   .formatButton { transition: none; }
