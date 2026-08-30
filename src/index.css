@@ -721,7 +721,18 @@ button {
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 
 @media (max-width: 640px) {
-  :root { --toast-bottom-offset: calc(5.75rem + env(safe-area-inset-bottom, 0px)); }
+  body:has([data-mobile-article-tools]) {
+    --toast-bottom-offset: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+[data-rht-toaster] {
+  transition: opacity var(--transition-fast);
+}
+
+body:has([role="dialog"]) [data-rht-toaster] {
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

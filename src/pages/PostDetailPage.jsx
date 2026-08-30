@@ -320,7 +320,7 @@ const PostDetailPage = () => {
         </div>
 
         {/* Mobile Sticky Action Bar */}
-        <div className={`${styles.mobileActionBar} ${isFooterVisible ? styles.mobileActionBarHidden : ''}`} aria-label={t('article.tools')}>
+        <div data-mobile-article-tools className={`${styles.mobileActionBar} ${isFooterVisible ? styles.mobileActionBarHidden : ''}`} aria-label={t('article.tools')}>
           <Link to="/" className={styles.mobileActionBtn} aria-label={t('common.back')}>
             <FiArrowLeft size={18} />
           </Link>

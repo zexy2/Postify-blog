@@ -433,3 +433,10 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** On <=640px viewports, Postify's global bottom-right toast stack reserves vertical space for the fixed Article action bar instead of sharing the same bottom edge. Desktop/tablet toast placement remains unchanged.
 
 **Why:** Real production bookmark feedback overlapped the mobile Article toolbar after its entrance animation settled, obscuring controls despite zero document overflow. A shared narrow-screen bottom-offset token keeps transient feedback and persistent actions spatially distinct without moving desktop notifications or removing the toolbar.
+
+**Scope refinement:** The elevated toast offset is conditional on an Article tool marker, not viewport width alone. Global feedback on Home/auth/other narrow routes keeps the standard 16px edge offset; only a page that actually mounts the persistent mobile Article tools reserves the larger clearance.
+
+## 2026-08-30 — Transient feedback yields to modal interaction layers
+**Decision:** Keep toast status nodes mounted for announcement/timing, but visually suppress the global toaster while a real dialog is open. The toaster returns after the dialog unmounts. This applies to Command Palette and mobile drawer instead of trying to stack transient feedback above modal content.
+
+**Why:** At 568×320 a bottom toast obscured the Command Palette by roughly 9.4k px², and on both short and normal mobile heights it rendered above the drawer because the toaster owns z-index 9999. There is no reliable free edge around a full-height modal, so hiding the transient visual layer is safer than moving it into another interactive region.

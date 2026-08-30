@@ -185,6 +185,11 @@ test.describe('Postify UI V2', () => {
   });
 
   test('mobile article toast clears the floating action bar', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await expect(page.locator('#knowledge-feed')).toBeVisible();
+    await expect.poll(() => page.locator('[data-rht-toaster]').evaluate((element) => getComputedStyle(element).bottom)).toBe('16px');
+
     for (const viewport of [{ width: 390, height: 844 }, { width: 568, height: 320 }]) {
       await page.setViewportSize(viewport);
       await page.goto('/posts/node-json-dogrulama');
@@ -408,6 +413,29 @@ test.describe('Postify UI V2', () => {
     expect(geometry.right).toBeLessThanOrEqual(geometry.viewportWidth);
     expect(geometry.top).toBeGreaterThanOrEqual(0);
     expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+  });
+
+  test('transient toasts yield to modal overlays', async ({ page }) => {
+    await page.setViewportSize({ width: 568, height: 320 });
+    await page.goto('/');
+    await expect(page.locator('#knowledge-feed')).toBeVisible();
+
+    const toaster = page.locator('[data-rht-toaster]');
+    await page.getByRole('button', { name: /add to bookmarks|remove from bookmarks|favorilere ekle|favorilerden kaldır/i }).first().click();
+    await expect(toaster.getByRole('status').first()).toBeVisible();
+
+    await page.keyboard.press('Control+K');
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(toaster).toHaveCSS('opacity', '0');
+    await expect(toaster).toHaveCSS('pointer-events', 'none');
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(toaster).toHaveCSS('opacity', '1');
+
+    await page.getByRole('button', { name: /toggle menu|menüyü aç\/kapat/i }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(toaster).toHaveCSS('opacity', '0');
+    await expect(toaster).toHaveCSS('pointer-events', 'none');
   });
 
   test('login surface remains clear and operable', async ({ page }) => {
