@@ -11,7 +11,7 @@ import '../../src/index.css';
 
 const userId = '11111111-1111-4111-8111-111111111111';
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-queryClient.setQueryData(['users', userId], {
+queryClient.setQueryData(['users', userId, 'en'], {
   id: userId,
   name: 'Ada Example',
   fullName: 'Ada Example',

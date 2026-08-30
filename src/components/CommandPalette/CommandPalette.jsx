@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FiArrowUpRight, FiCommand, FiSearch, FiX } from 'react-icons/fi';
 import { usePosts } from '../../hooks/usePosts';
 import ContentImage from '../ContentImage/ContentImage';
+import { getCategoryLabel } from '../../lib/categoryLabels';
 import styles from './CommandPalette.module.css';
 
 const CommandPalette = ({ open, onClose }) => {
@@ -36,7 +37,7 @@ const CommandPalette = ({ open, onClose }) => {
     if (!normalizedQuery) return posts.slice(0, 6);
 
     return posts
-      .filter((post) => [post.title, post.excerpt, post.category, post.author?.name]
+      .filter((post) => [post.title, post.excerpt, post.category, getCategoryLabel(post.category, i18n.language), post.author?.name]
         .filter(Boolean)
         .some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery)))
       .slice(0, 6);
@@ -131,7 +132,7 @@ const CommandPalette = ({ open, onClose }) => {
               </span>
               <span className={styles.resultCopy}>
                 <strong>{post.title}</strong>
-                <small>{post.category} · {post.readingTime} {t('common.minutes')}</small>
+                <small>{getCategoryLabel(post.category, i18n.language)} · {post.readingTime} {t('common.minutes')}</small>
               </span>
               <FiArrowUpRight className={styles.resultArrow} size={17} />
             </button>

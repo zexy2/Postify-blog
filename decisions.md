@@ -373,3 +373,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** A legacy screen that is no longer reachable from the product router and has no live imports is deleted together with dependencies used only by that screen. Analytics, the old interactive CommentSection, ShareButtons, ImageUpload and their unused hooks were removed under this rule; chart/share/dropzone-only dependencies were removed with them, while live public comment reading, CopyLinkButton sharing and avatar storage remain. Stale E2E navigation assumptions were updated to the current root-hosted router.
 
 **Why:** Polishing dead UI increases maintenance and dependency surface without improving the product. Route inventory is authoritative: if a feature is intentionally absent, keeping its dashboard, chart code and package tree creates misleading technical debt and future security/update work.
+
+## 2026-08-30 — Taxonomy identity stays canonical; localization is presentation
+**Decision:** Post category values remain stable canonical data for persistence, filtering and URLs. Locale-specific category names are derived at the display/search boundary instead of rewriting stored category strings. Known fallback-author aliases likewise normalize to one canonical fallback identity, while the visible author copy is localized per requested locale.
+
+**Why:** Translating persisted taxonomy would make filters and backend data language-dependent and could fragment existing content. Rendering localized labels preserves data stability while giving English users a coherent interface. The same separation prevents alias handling from drifting between profile and post queries and avoids serving Turkish fallback identity copy from an English query cache.

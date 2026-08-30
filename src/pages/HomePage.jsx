@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { FiArrowRight, FiSearch } from 'react-icons/fi';
 import Hero from '../components/Hero';
 import CategoryNav from '../components/CategoryNav';
+import { getCategoryLabel } from '../lib/categoryLabels';
 import EditorialFeed from '../components/EditorialFeed';
 import SEO from '../components/SEO';
 import { usePosts } from '../hooks/usePosts';
@@ -125,7 +126,7 @@ const HomePage = () => {
       if (!matchesCategory || !matchesType || !matchesReading || !matchesFreshness || !matchesEvidence) return false;
       if (!normalizedQuery) return true;
 
-      return [post.title, post.excerpt, post.body, post.category, post.author?.name, post.author?.username]
+      return [post.title, post.excerpt, post.body, post.category, getCategoryLabel(post.category, i18n.language), post.author?.name, post.author?.username]
         .filter(Boolean)
         .some((field) => field.toLocaleLowerCase(i18n.language).includes(normalizedQuery));
     });
@@ -234,7 +235,7 @@ const HomePage = () => {
           <div>
             <span className={styles.sectionEyebrow}>{hasSearch ? t('home.searchLabel') : t('home.latest')}</span>
             <h2 className={styles.sectionTitle}>
-              {hasSearch ? <><FiSearch size={22} /> “{query}”</> : activeCategory !== 'all' ? activeCategory : t('home.feedTitle')}
+              {hasSearch ? <><FiSearch size={22} /> “{query}”</> : activeCategory !== 'all' ? getCategoryLabel(activeCategory, i18n.language) : t('home.feedTitle')}
             </h2>
             <p className={styles.sectionSubtitle}>{t('home.resultCount', { count: filteredPosts.length })}</p>
           </div>

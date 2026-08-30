@@ -130,6 +130,37 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
+  test('English discovery localizes backend categories and fallback author aliases consistently', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('postify_language', 'en');
+      localStorage.setItem('postify_theme', 'light');
+    });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+
+    const topicNav = page.getByRole('navigation', { name: 'Topics' });
+    for (const label of ['Product design', 'Developer tools']) {
+      await expect(topicNav.getByRole('button', { name: new RegExp(label, 'i') })).toBeVisible();
+    }
+    for (const rawLabel of ['Ürün tasarımı', 'Geliştirici araçları']) {
+      await expect(topicNav.getByRole('button', { name: new RegExp(rawLabel, 'i') })).toHaveCount(0);
+    }
+
+    const search = page.getByRole('searchbox');
+    await search.fill('Product design');
+    await expect(page.locator('#knowledge-feed').getByText('Product design', { exact: true }).first()).toBeVisible();
+
+    await page.goto('/users/postify');
+    await expect(page.getByRole('heading', { level: 1, name: 'Postify Editor' })).toBeVisible();
+    await expect(page.getByText('Editorial notes on technology, product decisions, and software development for Postify.')).toBeVisible();
+    const stats = page.locator('section[aria-label="Author knowledge summary"]');
+    await expect(stats.getByText('9', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('No published stories yet.')).toHaveCount(0);
+    await expect(page.locator('#main-content article').first()).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test('V3 footer exposes the trust model and stays mobile-safe', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/about');

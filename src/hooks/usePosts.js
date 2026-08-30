@@ -18,7 +18,7 @@ export const postKeys = {
 
 export const userKeys = {
   all: ['users'],
-  detail: (id) => [...userKeys.all, id],
+  detail: (id, locale) => [...userKeys.all, id, locale],
 };
 
 export function usePosts({ enabled = true } = {}) {
@@ -103,9 +103,11 @@ export function useUserPosts(userId) {
 }
 
 export function useUser(userId) {
+  const { i18n } = useTranslation();
+  const locale = i18n.language.startsWith('en') ? 'en' : 'tr';
   return useQuery({
-    queryKey: userKeys.detail(userId),
-    queryFn: () => import('../services/userService').then(({ default: service }) => service.getById(userId)),
+    queryKey: userKeys.detail(userId, locale),
+    queryFn: () => import('../services/userService').then(({ default: service }) => service.getById(userId, locale)),
     enabled: Boolean(userId),
     staleTime: 1000 * 60 * 10,
   });

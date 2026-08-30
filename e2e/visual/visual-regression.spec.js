@@ -757,10 +757,7 @@ for (const viewport of viewports) {
     });
   }
 }
-for (const [route, name] of [
-  ['/auth/login', 'login'],
-  ['/definitely-not-a-postify-route', 'not-found'],
-]) {
+for (const [route, name] of publicSystemVisualRoutes) {
   test(`Dark theme ${name} desktop baseline`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await stabilize(page, { theme: 'dark' });
@@ -814,4 +811,34 @@ for (const [route, name] of [
       expect(control.right).toBeLessThanOrEqual(geometry.viewportWidth);
     }
   });
+}
+
+for (const viewport of viewports) {
+  for (const [name, route] of [
+    ['about', '/about'],
+    ['contact', '/contact'],
+    ['author', '/users/postify'],
+  ]) {
+    test(`Dark theme ${name} public surface ${viewport.name} baseline`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await stabilize(page, { theme: 'dark' });
+      await page.goto(route);
+      const heading = page.getByRole('heading', { level: 1 });
+      await expect(heading).toBeVisible();
+      if (name === 'author') {
+        await expect(heading).toHaveText('Postify Editor');
+        await expect(page.locator('#main-content article').first()).toBeVisible();
+      }
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+      await settleVisualSurface(page);
+      if (name === 'author') {
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await expect(page).toHaveScreenshot(`author-dark-${viewport.name}.png`, { fullPage: false });
+      } else {
+        await expect(page.locator('#main-content')).toHaveScreenshot(`${name}-dark-${viewport.name}.png`);
+      }
+    });
+  }
 }

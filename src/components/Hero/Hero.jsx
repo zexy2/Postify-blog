@@ -4,6 +4,7 @@ import { FiArrowDown, FiArrowUpRight, FiClock, FiEdit3, FiSearch } from 'react-i
 import styles from './Hero.module.css';
 import ContentImage from '../ContentImage/ContentImage';
 import { getPostPresentation } from '../../lib/postPresentation';
+import { getCategoryLabel } from '../../lib/categoryLabels';
 
 export default function Hero({
   showSearch = true,
@@ -81,7 +82,7 @@ export default function Hero({
                 <strong>{featuredPost.title}</strong>
                 <span className={styles.featuredExcerpt}>{presentation?.outcome}</span>
                 <span className={styles.featuredMeta}>
-                  <span>{featuredPost.category}</span>
+                  <span>{getCategoryLabel(featuredPost.category, i18n.language)}</span>
                   <span className={styles.dot} aria-hidden="true">·</span>
                   <span><FiClock size={13} /> {featuredPost.readingTime} {t('common.minutes')}</span>
                   {presentation?.formattedDate && (

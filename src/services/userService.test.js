@@ -8,8 +8,15 @@ vi.mock('../lib/supabase', () => ({ requireSupabase: vi.fn() }));
 describe('userService.getById', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('keeps the explicit fallback author aliases available', async () => {
+  it('keeps explicit fallback author aliases available and localizes their public profile copy', async () => {
     await expect(userService.getById('fallback-editor')).resolves.toEqual(FALLBACK_AUTHOR);
+    await expect(userService.getById('postify', 'en')).resolves.toMatchObject({
+      id: 'fallback-editor',
+      name: 'Postify Editor',
+      fullName: 'Postify Editor',
+      username: 'postify',
+      bio: 'Editorial notes on technology, product decisions, and software development for Postify.',
+    });
     expect(requireSupabase).not.toHaveBeenCalled();
   });
 

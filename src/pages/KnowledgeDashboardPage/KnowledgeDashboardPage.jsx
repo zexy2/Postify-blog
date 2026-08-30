@@ -12,6 +12,7 @@ import { getKnowledgeEvidence } from '../../lib/knowledgeEvidence';
 import { hasMeaningfulEvidenceEntry } from '../../lib/publishReadiness';
 import { summarizeCommunityEvidence } from '../../lib/communityEvidence';
 import { getDomainCredibility } from '../../lib/domainCredibility';
+import { getCategoryLabel } from '../../lib/categoryLabels';
 import styles from './KnowledgeDashboardPage.module.css';
 import AuthorFailurePanel from './AuthorFailurePanel';
 
@@ -140,7 +141,7 @@ export default function KnowledgeDashboardPage({ dataOverride = null, backendRea
                 <div className={styles.queueMain}>
                   <div className={styles.queueMeta}>
                     <span className={styles.state}>{stateIcon}{getFreshnessLabel(evidence.freshness, en)}</span>
-                    <span>{post.category || (en ? 'General' : 'Genel')}</span>
+                    <span>{post.category ? getCategoryLabel(post.category, i18n.language) : (en ? 'General' : 'Genel')}</span>
                     <span>{post.evidence_status === 'author-tested' ? (en ? 'Author tested' : 'Yazar test etti') : (en ? 'Unverified' : 'Doğrulanmamış')}</span>
                   </div>
                   <h3><Link to={`/posts/${post.slug || post.id}`}>{post.title}</Link></h3>

@@ -30,10 +30,13 @@ describe('postService public fallback', () => {
   it('keeps detail, author posts, and stats available offline', async () => {
     const post = await postService.getById('ai-muhendisligi', 'tr');
     const authorPosts = await postService.getByUserId('fallback-editor', 'tr');
+    const aliasedAuthorPosts = await postService.getByUserId('postify', 'en');
     const stats = await postService.getStats();
 
     expect(post.isFallback).toBe(true);
     expect(authorPosts).toHaveLength(9);
+    expect(aliasedAuthorPosts).toHaveLength(9);
+    expect(aliasedAuthorPosts[0].author.name).toBe('Postify Editor');
     expect(stats).toEqual({ posts: 9, authors: 1, comments: 0, isFallback: true });
   });
 });

@@ -6,6 +6,7 @@ import EvidenceBadge from '../EvidenceBadge';
 import { summarizeCommunityEvidence } from '../../lib/communityEvidence';
 import { getEvidenceCopy } from '../../lib/knowledgeEvidence';
 import { getPostPresentation, getPostReadingMinutes } from '../../lib/postPresentation';
+import { getCategoryLabel } from '../../lib/categoryLabels';
 import styles from './KnowledgeCard.module.css';
 
 const VARIANTS = new Set(['featured', 'standard', 'compact']);
@@ -58,7 +59,7 @@ const KnowledgeCard = ({
 
         <div className={styles.meta}>
           <span className={styles.type}>{presentation.typeLabel}</span>
-          {post.category && <span className={styles.category}>{post.category}</span>}
+          {post.category && <span className={styles.category}>{getCategoryLabel(post.category, i18n.language)}</span>}
           {presentation.formattedDate && <span className={styles.date}>{presentation.formattedDate}</span>}
         </div>
 

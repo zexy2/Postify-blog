@@ -2,17 +2,39 @@ import { getVerificationCheck } from './verificationManifest.js';
 
 const NODE_JSON_VERIFICATION = getVerificationCheck('node-json-parse-v1');
 
-export const FALLBACK_AUTHOR = {
+const FALLBACK_AUTHOR_BASE = {
   id: 'fallback-editor',
-  name: 'Postify Editör',
-  fullName: 'Postify Editör',
   username: 'postify',
   email: '',
   avatarUrl: null,
   avatar_url: null,
-  bio: 'Postify için teknoloji, ürün ve geliştirme üzerine editoryal notlar.',
   role: 'editor',
 };
+
+const FALLBACK_AUTHOR_COPY = {
+  tr: {
+    name: 'Postify Editör',
+    bio: 'Postify için teknoloji, ürün ve geliştirme üzerine editoryal notlar.',
+  },
+  en: {
+    name: 'Postify Editor',
+    bio: 'Editorial notes on technology, product decisions, and software development for Postify.',
+  },
+};
+
+const FALLBACK_AUTHOR_ALIASES = new Set(['fallback-editor', 'postify', 'editor']);
+
+export const isFallbackAuthorIdentifier = (identifier) => (
+  !identifier || FALLBACK_AUTHOR_ALIASES.has(String(identifier).toLocaleLowerCase('en-US'))
+);
+
+export const getFallbackAuthor = (locale = 'tr') => {
+  const language = locale?.startsWith('en') ? 'en' : 'tr';
+  const copy = FALLBACK_AUTHOR_COPY[language];
+  return { ...FALLBACK_AUTHOR_BASE, ...copy, fullName: copy.name };
+};
+
+export const FALLBACK_AUTHOR = getFallbackAuthor('tr');
 
 const FALLBACK_CATALOG = [
   {
@@ -389,7 +411,7 @@ const localize = (post, locale) => {
     category: post.category,
     readingTime: post.readingTime,
     authorId: FALLBACK_AUTHOR.id,
-    author: FALLBACK_AUTHOR,
+    author: getFallbackAuthor(locale),
     isPublished: true,
     createdAt: post.publishedAt,
     publishedAt: post.publishedAt,
@@ -411,7 +433,7 @@ export const getFallbackPost = (identifier, locale = 'tr') => {
 };
 
 export const getFallbackUserPosts = (userId, locale = 'tr') => (
-  userId === FALLBACK_AUTHOR.id ? getFallbackPosts(locale) : []
+  isFallbackAuthorIdentifier(userId) ? getFallbackPosts(locale) : []
 );
 
 export const getFallbackStats = () => ({

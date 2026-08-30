@@ -1,15 +1,15 @@
 /** Profile service backed by Supabase. */
 
 import { requireSupabase } from '../lib/supabase';
-import { FALLBACK_AUTHOR } from '../content/fallbackPosts';
+import { getFallbackAuthor, isFallbackAuthorIdentifier } from '../content/fallbackPosts';
 import { safeHttpUrl } from '../lib/seoUtils';
 
 const PROFILE_FIELDS = 'id, full_name, username, email, avatar_url, bio, role, website, location, created_at';
 
-const normalizeProfile = (profile) => profile && ({
+const normalizeProfile = (profile, locale = 'tr') => profile && ({
   ...profile,
-  name: profile.full_name || profile.username || 'Postify Editör',
-  fullName: profile.full_name || profile.username || 'Postify Editör',
+  name: profile.full_name || profile.username || (locale?.startsWith('en') ? 'Postify Editor' : 'Postify Editör'),
+  fullName: profile.full_name || profile.username || (locale?.startsWith('en') ? 'Postify Editor' : 'Postify Editör'),
   avatarUrl: profile.avatar_url || null,
   website: safeHttpUrl(profile.website),
 });
@@ -21,9 +21,9 @@ export const userService = {
     return (data || []).map(normalizeProfile);
   },
 
-  getById: async (id) => {
-    if (!id || id === FALLBACK_AUTHOR.id || id === 'postify' || id === 'editor' || id === 'fallback-editor') {
-      return FALLBACK_AUTHOR;
+  getById: async (id, locale = 'tr') => {
+    if (isFallbackAuthorIdentifier(id)) {
+      return getFallbackAuthor(locale);
     }
 
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
@@ -36,7 +36,7 @@ export const userService = {
       .maybeSingle();
     if (error) throw error;
     if (!data) return null;
-    return normalizeProfile(data);
+    return normalizeProfile(data, locale);
   },
 };
 

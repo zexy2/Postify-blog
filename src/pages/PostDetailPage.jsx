@@ -10,6 +10,7 @@ import ReadingProgress from '../components/ReadingProgress';
 import SEO from '../components/SEO';
 import styles from './PostDetailPage.module.css';
 import { getPostPresentation, getPostReadingMinutes } from '../lib/postPresentation';
+import { getCategoryLabel } from '../lib/categoryLabels';
 import KnowledgeEvidencePanel from '../components/KnowledgeEvidencePanel';
 import LocalEvidenceActions from '../components/LocalEvidenceActions';
 import CommunityEvidenceDetails from '../components/CommunityEvidenceDetails';
@@ -155,7 +156,7 @@ const PostDetailPage = () => {
               <header className={styles.articleHeader}>
                 <div className={styles.meta}>
                   <span className={styles.contentType}>{presentation.typeLabel}</span>
-                  <span className={styles.category}>{post.category}</span>
+                  <span className={styles.category}>{getCategoryLabel(post.category, i18n.language)}</span>
                   <span className={styles.metaDot}>•</span>
                   <time dateTime={post.publishedAt}>{publishedDate}</time>
                   {isUpdated && <span>({t('article.updated')} {updatedDate})</span>}
