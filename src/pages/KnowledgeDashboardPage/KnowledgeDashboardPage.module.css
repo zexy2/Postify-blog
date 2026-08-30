@@ -436,6 +436,9 @@
     grid-column: 2;
     flex-wrap: wrap;
   }
+
+  .actions a,
+  .actions button { min-height: 44px; }
 }
 
 @media (max-width: 520px) {

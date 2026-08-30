@@ -214,7 +214,11 @@ const Header = () => {
 
         {isMenuOpen && <Suspense fallback={null}>
           <Sheet open onOpenChange={setIsMenuOpen} modal>
-            <SheetContent side="right" className={styles.sheet}>
+            <SheetContent
+              side="right"
+              className={styles.sheet}
+              closeLabel={i18n.language?.startsWith('en') ? 'Close menu' : 'Menüyü kapat'}
+            >
               <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
               <div className={styles.mobilePanel}>
               <div className={styles.mobileTop}>

@@ -17,7 +17,7 @@ const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => (
 ));
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-const SheetContent = React.forwardRef(({ side = 'right', children, className, ...props }, ref) => (
+const SheetContent = React.forwardRef(({ side = 'right', children, className, closeLabel = 'Close', ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <DialogPrimitive.Content
@@ -26,7 +26,7 @@ const SheetContent = React.forwardRef(({ side = 'right', children, className, ..
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className={styles.sheetCloseButton} aria-label="Close">
+      <DialogPrimitive.Close className={styles.sheetCloseButton} aria-label={closeLabel}>
         <FiX size={20} />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

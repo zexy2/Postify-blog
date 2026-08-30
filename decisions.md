@@ -333,3 +333,8 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** Store an optional `canonical_source_url` separately from evidence sources and keep Postify's own article URL as the public/share URL. The editor exposes canonical provenance only when the deployed capability artifact confirms the production column exists; reads and writes omit the field otherwise.
 
 **Why:** Republishing metadata should not manufacture evidence or make pre-migration clients fail. A capability-gated additive column lets schema and frontend roll out independently, keeps Postify URLs stable for sharing, and prevents a missing production migration from breaking public reads or author updates.
+
+## 2026-08-30 — Mobile hit areas are measured on the actionable surface
+**Decision:** A mobile control is accepted when the actual clickable/focusable surface is at least 44px in the constrained dimension; a visually small native input may remain smaller when it is correctly wrapped by a larger interactive label. Drawers and modal-like sheets must also expose an explicit visible close control rather than relying only on backdrop, Escape, or navigation side effects.
+
+**Why:** Raw element rectangles can create false positives (for example 13px checkboxes inside 48px labels or a compact search input inside a 54px label), while genuinely undersized icon/link targets remain hard to operate despite looking visually tidy. Measuring the user-operable hit area preserves compact editorial density without sacrificing touch access or recovery from overlays.

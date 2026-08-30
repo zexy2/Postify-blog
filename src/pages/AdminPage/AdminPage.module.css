@@ -400,6 +400,10 @@
 }
 
 @media (max-width: 640px) {
+  .roleSelect { min-height: 44px; }
+  .actionBtn,
+  .deleteBtn { width: 44px; height: 44px; }
+
   .container {
     width: min(100% - 1.5rem, 1180px);
     padding-top: 2rem;

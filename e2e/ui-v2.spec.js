@@ -48,6 +48,14 @@ test.describe('Postify UI V2', () => {
     await expect(copyCode).toBeVisible();
     expect((await copyCode.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
 
+    const authorLink = page.locator('article').getByRole('link').filter({ hasText: /@postify/i }).first();
+    await expect(authorLink).toBeVisible();
+    expect((await authorLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    const artifactLink = page.getByRole('link', { name: /exact executed \.mjs|çalıştırılan \.mjs/i });
+    if (await artifactLink.count()) {
+      expect((await artifactLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    }
+
     const articleOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(articleOverflow).toBeLessThanOrEqual(1);
   });
@@ -67,11 +75,31 @@ test.describe('Postify UI V2', () => {
     await expect(page.locator('header')).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
+
+    const touchTargets = [
+      page.locator('header a').filter({ hasText: /^Postify$/ }).first(),
+      page.getByRole('link', { name: /browse the library|bilgi arşivine göz at/i }),
+      page.getByRole('link', { name: /contribute|katkı yap/i }),
+      page.getByRole('button', { name: /add to bookmarks|favorilere ekle/i }).first(),
+      page.locator('main').getByRole('button', { name: /all formats|tüm formatlar/i }).first(),
+    ];
+    for (const target of touchTargets) {
+      await expect(target).toBeVisible();
+      expect((await target.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    }
+
     const menu = page.locator('header button[aria-expanded]').first();
     await expect(menu).toBeVisible();
     await menu.click();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.getByRole('link', { name: /hakkında|about/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /^hakkında$|^about$/i })).toBeVisible();
+    const closeMenu = page.getByRole('button', { name: /menüyü kapat|close menu/i });
+    await expect(closeMenu).toBeVisible();
+    const closeBox = await closeMenu.boundingBox();
+    expect(closeBox?.width || 0).toBeGreaterThanOrEqual(44);
+    expect(closeBox?.height || 0).toBeGreaterThanOrEqual(44);
+    await closeMenu.click();
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
   });
 
 

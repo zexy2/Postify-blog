@@ -141,6 +141,7 @@
   .searchContainer { min-height: 50px; margin-top: 1rem; }
   .searchHint { display: none; }
   .heroActions { gap: .75rem; }
+  .primaryAction, .secondaryAction { min-height: 44px; }
   .secondaryAction { padding-left: .75rem; }
   .featured { grid-template-columns: 1fr; gap: .8rem; }
   .featuredVisual { aspect-ratio: 16 / 9; }

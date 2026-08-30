@@ -62,7 +62,19 @@
 }
 
 .sheetCloseButton {
-  display: none;
+  position: absolute;
+  top: .85rem;
+  right: .85rem;
+  z-index: 2;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--bg-primary) 94%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
 }
 
 .sheetCloseButton:hover {

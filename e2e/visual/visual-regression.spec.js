@@ -88,6 +88,10 @@ for (const viewport of viewports) {
       expect(formOverflow).toBeLessThanOrEqual(1);
       const boldButton = page.getByRole('button', { name: 'B', exact: true });
       expect((await boldButton.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+      const outcomeInput = page.getByPlaceholder(/after this, the reader can/i);
+      expect((await outcomeInput.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+      const recheckSelect = page.locator('form select').last();
+      expect((await recheckSelect.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
     }
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`editor-${viewport.name}.png`);
@@ -284,12 +288,26 @@ test('Admin management tables remain contained on mobile', async ({ page }) => {
   expect(width.document).toBeLessThanOrEqual(width.viewport);
   const usersTable = page.locator('table').first();
   expect(await usersTable.evaluate((element) => element.scrollWidth > element.parentElement.clientWidth)).toBe(true);
+  const roleSelects = page.getByRole('combobox');
+  expect(await roleSelects.count()).toBeGreaterThan(0);
+  for (const height of await roleSelects.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
+    expect(height).toBeGreaterThanOrEqual(44);
+  }
+  await expect(roleSelects.first()).toHaveAttribute('aria-label', /rolü/i);
 
   await page.getByRole('tab', { name: /Postlar/i }).click();
   await expect(page.getByText(/Node\.js doğrulama/i)).toBeVisible();
   await expect(page.getByText('Semanur').first()).toBeVisible();
   width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
   expect(width.document).toBeLessThanOrEqual(width.viewport);
+  const postActions = page.locator('tbody button');
+  expect(await postActions.count()).toBeGreaterThan(0);
+  for (const height of await postActions.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
+    expect(height).toBeGreaterThanOrEqual(44);
+  }
+  for (const name of await postActions.evaluateAll((items) => items.map((item) => item.getAttribute('aria-label')))) {
+    expect(name).toBeTruthy();
+  }
 });
 
 for (const viewport of viewports) {
@@ -301,6 +319,13 @@ for (const viewport of viewports) {
     await expect(page.locator('article')).toHaveCount(3);
     const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
     expect(width.document).toBeLessThanOrEqual(width.viewport);
+    if (viewport.name === 'mobile') {
+      expect((await page.getByRole('button', { name: /clear all|tümünü temizle/i }).boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+      const removeButtons = page.getByRole('button', { name: /remove from bookmarks|favorilerden kaldır/i });
+      for (const height of await removeButtons.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
+        expect(height).toBeGreaterThanOrEqual(44);
+      }
+    }
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`bookmarks-${viewport.name}.png`);
   });
@@ -315,6 +340,12 @@ for (const viewport of viewports) {
     await expect(page.getByText(/Bakım kuyruğu|Maintenance queue/i)).toBeVisible();
     const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
     expect(width.document).toBeLessThanOrEqual(width.viewport);
+    if (viewport.name === 'mobile') {
+      const maintenanceActions = page.locator('article').getByRole('link', { name: /edit evidence|kanıtı düzenle/i }).or(page.locator('article').getByRole('button', { name: /re-verify|yeniden doğrula/i }));
+      for (const height of await maintenanceActions.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
+        expect(height).toBeGreaterThanOrEqual(44);
+      }
+    }
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`knowledge-${viewport.name}.png`);
   });
@@ -363,7 +394,8 @@ for (const [route, snapshotName] of publicSystemVisualRoutes) {
     const geometry = await page.evaluate(() => {
       const headingNode = document.querySelector('main h1, #main-content h1, h1');
       const headingRect = headingNode?.getBoundingClientRect();
-      const controls = [...document.querySelectorAll('form input, form button')]
+      const controls = [...document.querySelectorAll('form input, form button, main a[href^="/auth/"], #main-content a[href^="/auth/"]')]
+        .filter((node, index, items) => items.indexOf(node) === index)
         .filter((node) => {
           const style = getComputedStyle(node);
           const rect = node.getBoundingClientRect();

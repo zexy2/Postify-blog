@@ -543,6 +543,7 @@
 
 @media (max-width: 640px) {
   .page { padding: 1.7rem 0 6.5rem; }
+  .author { min-height: 44px; }
   .articleHeader { gap: .8rem; }
   .metaDot { display: none; }
   .meta :global(.evidence-badge) { flex-basis: 100%; margin: .1rem 0 0; }

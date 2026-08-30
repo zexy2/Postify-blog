@@ -85,6 +85,6 @@
     -webkit-overflow-scrolling: touch;
   }
   .typeFilter::-webkit-scrollbar { display: none; }
-  .typeFilter button { flex: 0 0 auto; white-space: nowrap; min-height: 42px; }
+  .typeFilter button { flex: 0 0 auto; white-space: nowrap; min-height: 44px; }
   .sectionTitle { font-size: clamp(1.9rem, 10vw, 2.6rem); }
 }

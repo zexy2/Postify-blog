@@ -67,5 +67,5 @@
 @media (max-width:1180px){.accountButtonName{display:none}.accountButton{width:40px;padding:0;justify-content:center}.accountButton>svg:last-child{display:none}}
 @media (max-width:1100px){.searchButton span{display:none}.searchButton{width:40px;padding:0;justify-content:center}.searchButton kbd{display:none}}
 @media (max-width:960px){.container{grid-template-columns:1fr auto}.desktopNav,.desktopActions{display:none}.menuButton{display:block}.mobileUtilities .iconButton,.mobileLogin,.logoutButton{min-height:44px}.mobileUtilities .iconButton{width:44px}}
-@media (max-width:520px){.container{width:min(calc(100% - 1.25rem),var(--container-max));height:58px}.logo{font-size:1.02rem}}
+@media (max-width:520px){.container{width:min(calc(100% - 1.25rem),var(--container-max));height:58px}.logo{min-height:44px;font-size:1.02rem}}
 @media (prefers-reduced-motion:reduce){.menuButton span{transition:none}}

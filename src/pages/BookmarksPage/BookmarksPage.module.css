@@ -278,6 +278,9 @@
 }
 
 @media (max-width: 520px) {
+  .clearButton { min-height: 44px; }
+  .removeButton { width: 44px; height: 44px; }
+
   .page,
   .emptyState {
     padding-top: 2rem;

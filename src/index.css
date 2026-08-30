@@ -769,4 +769,4 @@ button {
 .knowledge-evidence__contract dd { min-width:0; margin:0; color:var(--text-primary); }
 .knowledge-evidence__contract code { overflow-wrap:anywhere; }
 .knowledge-evidence__artifact { width:fit-content; color:var(--primary); font-size:.76rem; font-weight:800; text-decoration:underline; text-underline-offset:3px; }
-@media(max-width:620px){.knowledge-evidence__contract>div{grid-template-columns:1fr;gap:.2rem}}
+@media(max-width:620px){.knowledge-evidence__contract>div{grid-template-columns:1fr;gap:.2rem}.knowledge-evidence__artifact{display:inline-flex;align-items:center;min-height:44px}}

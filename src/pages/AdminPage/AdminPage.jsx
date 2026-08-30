@@ -197,6 +197,7 @@ const AdminPage = ({ service = adminService }) => {
                   value={u.role || USER_ROLES.USER}
                   onChange={(e) => handleRoleChange(u.id, e.target.value)}
                   className={styles.roleSelect}
+                  aria-label={`${u.full_name || u.username || u.email || 'Kullanıcı'} rolü`}
                   disabled={u.id === user?.id}
                 >
                   <option value={USER_ROLES.USER}>User</option>
@@ -249,22 +250,28 @@ const AdminPage = ({ service = adminService }) => {
                 </td>
                 <td className={styles.actions}>
                   <button
+                    type="button"
                     onClick={() => handleTogglePostVisibility(post.id)}
                     className={styles.actionBtn}
+                    aria-label={post.isPublished !== false ? `${post.title} yazısını yayından kaldır` : `${post.title} yazısını yayınla`}
                     title={post.isPublished !== false ? 'Yayından Kaldır' : 'Yayınla'}
                   >
                     {post.isPublished !== false ? <FiEyeOff /> : <FiEye />}
                   </button>
                   <button
+                    type="button"
                     onClick={() => navigate(`/posts/${post.id}/edit`)}
                     className={styles.actionBtn}
+                    aria-label={`${post.title} yazısını düzenle`}
                     title="Düzenle"
                   >
                     <FiEdit />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDeletePost(post.id)}
                     className={styles.deleteBtn}
+                    aria-label={`${post.title} yazısını sil`}
                     title="Sil"
                   >
                     <FiTrash2 />

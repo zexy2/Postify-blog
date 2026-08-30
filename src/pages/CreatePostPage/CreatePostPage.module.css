@@ -553,6 +553,8 @@
   .readinessGrid { grid-template-columns: 1fr; }
   .readinessTrack + .readinessTrack { padding: .9rem 0 0; border-top: 1px solid var(--border-color); border-left: 0; }
   .evidenceGrid { grid-template-columns: 1fr; gap: .85rem; }
+  .evidenceFields input,
+  .evidenceFields select { min-height: 44px; }
   .input { font-size: clamp(1.85rem, 10vw, 2.7rem); }
   .actions { margin-inline: 0; padding-inline: 0; }
   .cancelButton, .submitButton { min-height: 44px; }
