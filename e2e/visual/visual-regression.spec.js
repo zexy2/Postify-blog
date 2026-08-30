@@ -57,6 +57,107 @@ async function settleVisualSurface(page) {
   }));
 }
 
+function parseRgb(value) {
+  const normalized = String(value).trim();
+  const hex = normalized.match(/^#([0-9a-f]{6})$/i);
+  if (hex) return [0, 2, 4].map((offset) => Number.parseInt(hex[1].slice(offset, offset + 2), 16));
+  const match = normalized.match(/rgba?\(([^)]+)\)/i);
+  if (!match) throw new Error(`Unsupported CSS color: ${value}`);
+  const [r, g, b] = match[1].split(',').map((part) => Number.parseFloat(part.trim()));
+  return [r, g, b];
+}
+
+function contrastRatio(foreground, background) {
+  const channel = (value) => {
+    const normalized = value / 255;
+    return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  const luminance = (rgb) => (0.2126 * channel(rgb[0])) + (0.7152 * channel(rgb[1])) + (0.0722 * channel(rgb[2]));
+  const fg = luminance(parseRgb(foreground));
+  const bg = luminance(parseRgb(background));
+  return (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
+}
+
+test('Core text and status tokens keep accessible contrast in light and dark themes', async ({ page }) => {
+  await page.goto('/');
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate((nextTheme) => document.documentElement.setAttribute('data-theme', nextTheme), theme);
+    const tokens = await page.evaluate(() => {
+      const styles = getComputedStyle(document.documentElement);
+      return Object.fromEntries([
+        '--text-muted', '--success', '--warning', '--error',
+        '--bg-primary', '--bg-secondary', '--bg-elevated',
+      ].map((token) => [token, styles.getPropertyValue(token).trim()]));
+    });
+    for (const foreground of ['--text-muted', '--success', '--warning', '--error']) {
+      for (const background of ['--bg-primary', '--bg-secondary', '--bg-elevated']) {
+        expect(contrastRatio(tokens[foreground], tokens[background]), `${theme} ${foreground} on ${background}`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+  }
+});
+
+test('Verified article code block keeps readable code contrast', async ({ page }) => {
+  await stabilize(page);
+  await page.goto('/posts/node-json-dogrulama');
+  const copy = page.getByRole('button', { name: /^copy$|^kopyala$/i }).first();
+  await expect(copy).toBeVisible();
+  const colors = await copy.locator('xpath=ancestor::div[contains(@class, "codeBlock")]').locator('pre code').evaluate((code) => ({
+    foreground: getComputedStyle(code).color,
+    background: getComputedStyle(code.closest('pre')).backgroundColor,
+  }));
+  expect(contrastRatio(colors.foreground, colors.background)).toBeGreaterThanOrEqual(4.5);
+});
+
+test('Mobile navigation drawer open baseline', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/');
+  const menu = page.locator('header button[aria-expanded]').first();
+  await expect(menu).toBeVisible();
+  await menu.click();
+  await expect(menu).toHaveAttribute('aria-expanded', 'true');
+  const drawer = page.getByRole('dialog').first();
+  await expect(drawer).toBeVisible();
+  const close = drawer.getByRole('button', { name: /close menu|menüyü kapat/i });
+  await expect(close).toBeVisible();
+  const closeBox = await close.boundingBox();
+  expect(closeBox?.width || 0).toBeGreaterThanOrEqual(44);
+  expect(closeBox?.height || 0).toBeGreaterThanOrEqual(44);
+  await settleVisualSurface(page);
+  await expect(drawer).toHaveScreenshot('mobile-navigation-drawer.png');
+});
+
+test('Mobile command palette open baseline', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/');
+  await page.keyboard.press('Control+K');
+  const palette = page.getByRole('dialog', { name: /search|ara/i });
+  await expect(palette).toBeVisible();
+  const combobox = palette.getByRole('combobox');
+  await expect(combobox).toBeFocused();
+  const initialActive = await combobox.getAttribute('aria-activedescendant');
+  await page.keyboard.press('ArrowDown');
+  await expect(combobox).toBeFocused();
+  expect(await combobox.getAttribute('aria-activedescendant')).not.toBe(initialActive);
+  await page.keyboard.press('ArrowUp');
+  await expect(combobox).toHaveAttribute('aria-activedescendant', initialActive);
+  const close = palette.getByRole('button', { name: /close search|aramayı kapat/i });
+  expect((await close.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+  const options = palette.getByRole('option');
+  expect(await options.count()).toBeGreaterThan(0);
+  for (const height of await options.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height))) {
+    expect(height).toBeGreaterThanOrEqual(44);
+  }
+  await page.keyboard.press('Tab');
+  await expect(close).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(combobox).toBeFocused();
+  await settleVisualSurface(page);
+  await expect(palette).toHaveScreenshot('mobile-command-palette.png');
+});
+
 for (const viewport of viewports) {
   test(`Home ${viewport.name} baseline`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
@@ -189,8 +290,8 @@ test('Authenticated header account menu desktop baseline', async ({ page }) => {
   const account = page.getByRole('button', { name: /account|hesap/i });
   await expect(account).toBeVisible();
   await account.click();
-  await expect(page.getByRole('menuitem', { name: /profile|profil/i })).toBeVisible();
-  await expect(page.getByRole('menuitem', { name: /logout|çıkış yap/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: /profile|profil/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /logout|çıkış yap/i })).toBeVisible();
   await settleVisualSurface(page);
   await expect(page.locator('header')).toHaveScreenshot('authenticated-header-desktop.png');
 });
@@ -262,6 +363,99 @@ for (const viewport of viewports) {
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(page).toHaveScreenshot(`author-${viewport.name}.png`, { fullPage: false });
   });
+
+
+  test(`Author not found ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/users/missing-author');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const recovery = page.getByRole('link', { name: /explore useful knowledge|işe yarayan bilgileri keşfet/i });
+    await expect(recovery).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    if (viewport.name === 'mobile') expect((await recovery.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    await settleVisualSurface(page);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(page).toHaveScreenshot(`author-not-found-${viewport.name}.png`, { fullPage: false });
+  });
+
+  test(`Author service unavailable ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/author-error.html');
+    await expect(page.getByRole('heading', { level: 1, name: /temporarily unavailable|şu anda alınamıyor/i })).toBeVisible();
+    const retry = page.getByRole('button', { name: /try again|tekrar dene/i });
+    await expect(retry).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    if (viewport.name === 'mobile') expect((await retry.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`author-error-${viewport.name}.png`);
+  });
+
+  test(`Author published-work unavailable ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/author-posts-error.html');
+    await expect(page.getByRole('heading', { level: 1, name: /Ada Example/i })).toBeVisible();
+    const message = page.getByText(/published work is temporarily unavailable|yayınlanan çalışmalar şu anda alınamıyor/i);
+    await expect(message).toBeVisible();
+    const retry = page.getByRole('button', { name: /try again|tekrar dene/i });
+    await expect(retry).toBeVisible();
+    if (viewport.name === 'mobile') expect((await retry.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`author-posts-error-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
+  test(`Admin empty dashboard ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/admin-empty.html');
+    await expect(page.getByText(/henüz yeni kullanıcı yok/i)).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`admin-empty-dashboard-${viewport.name}.png`);
+  });
+}
+
+test('Admin empty management tabs are explicit and mobile-safe', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/admin-empty.html');
+  await page.getByRole('tab', { name: /kullanıcılar/i }).click();
+  await expect(page.getByText(/henüz kullanıcı bulunmuyor/i)).toBeVisible();
+  await settleVisualSurface(page);
+  await expect(page.locator('#root')).toHaveScreenshot('admin-empty-users-mobile.png');
+  await page.getByRole('tab', { name: /postlar/i }).click();
+  await expect(page.getByText(/henüz post bulunmuyor/i)).toBeVisible();
+  await settleVisualSurface(page);
+  await expect(page.locator('#root')).toHaveScreenshot('admin-empty-posts-mobile.png');
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+for (const viewport of viewports) {
+  test(`Admin error recovery ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/admin-retry.html');
+    const alert = page.getByRole('alert');
+    await expect(alert).toContainText(/yönetim verileri yüklenemedi/i);
+    const retry = alert.getByRole('button', { name: /tekrar dene/i });
+    await expect(retry).toBeVisible();
+    if (viewport.name === 'mobile') expect((await retry.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`admin-error-${viewport.name}.png`);
+    await retry.click();
+    await expect(alert).toHaveCount(0);
+    await expect(page.getByText(/henüz yeni kullanıcı yok/i)).toBeVisible();
+  });
 }
 
 for (const viewport of viewports) {
@@ -277,6 +471,29 @@ for (const viewport of viewports) {
     await expect(page.locator('#root')).toHaveScreenshot(`admin-dashboard-${viewport.name}.png`);
   });
 }
+
+test('Admin tabs support arrow, Home, and End keyboard navigation', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/admin-auth.html');
+  const dashboard = page.getByRole('tab', { name: /dashboard/i });
+  const users = page.getByRole('tab', { name: /kullanıcılar/i });
+  const posts = page.getByRole('tab', { name: /postlar/i });
+
+  await dashboard.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(users).toBeFocused();
+  await expect(users).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('End');
+  await expect(posts).toBeFocused();
+  await expect(posts).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('Home');
+  await expect(dashboard).toBeFocused();
+  await expect(dashboard).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('ArrowLeft');
+  await expect(posts).toBeFocused();
+  await expect(posts).toHaveAttribute('aria-selected', 'true');
+});
 
 test('Admin management tables remain contained on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -311,6 +528,22 @@ test('Admin management tables remain contained on mobile', async ({ page }) => {
 });
 
 for (const viewport of viewports) {
+  test(`Empty bookmarks ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/bookmarks-empty.html');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const action = page.getByRole('link', { name: /explore useful knowledge|işe yarayan bilgileri keşfet/i });
+    await expect(action).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    if (viewport.name === 'mobile') expect((await action.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`bookmarks-empty-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
   test(`Bookmarks shelf ${viewport.name} baseline`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page);
@@ -328,6 +561,19 @@ for (const viewport of viewports) {
     }
     await settleVisualSurface(page);
     await expect(page.locator('#root')).toHaveScreenshot(`bookmarks-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
+  test(`Knowledge unavailable ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page);
+    await page.goto('/e2e/visual/knowledge-unavailable.html');
+    await expect(page.getByRole('heading', { level: 1, name: /account sync is not active yet|hesap senkronu henüz aktif değil/i })).toBeVisible();
+    const width = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+    expect(width.document).toBeLessThanOrEqual(width.viewport);
+    await settleVisualSurface(page);
+    await expect(page.locator('#root')).toHaveScreenshot(`knowledge-unavailable-${viewport.name}.png`);
   });
 }
 

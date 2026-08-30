@@ -55,7 +55,7 @@ const CommandPalette = ({ open, onClose }) => {
       if (event.key === 'Escape') {
         onClose();
       } else if (event.key === 'Tab' && dialogRef.current) {
-        const focusable = [...dialogRef.current.querySelectorAll('button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')];
+        const focusable = [...dialogRef.current.querySelectorAll('button:not([disabled]):not([tabindex="-1"]), input:not([disabled]):not([tabindex="-1"]), a[href]:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])')];
         if (focusable.length) {
           const first = focusable[0];
           const last = focusable[focusable.length - 1];
@@ -104,14 +104,28 @@ const CommandPalette = ({ open, onClose }) => {
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t('search.placeholder')}
             aria-label={t('search.placeholder')}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            aria-controls="command-palette-results"
+            aria-activedescendant={results[activeIndex] ? `command-result-${results[activeIndex].id}` : undefined}
             type="search"
           />
           <kbd>ESC</kbd>
         </label>
 
-        <div className={styles.results} role="listbox" aria-label={t('search.results')}>
+        <div id="command-palette-results" className={styles.results} role="listbox" aria-label={t('search.results')}>
           {results.length ? results.map((post, index) => (
-            <button type="button" className={`${styles.result} ${index === activeIndex ? styles.resultActive : ''}`} key={post.id} onClick={() => openPost(post)} role="option" aria-selected={index === activeIndex}>
+            <button
+              type="button"
+              id={`command-result-${post.id}`}
+              className={`${styles.result} ${index === activeIndex ? styles.resultActive : ''}`}
+              key={post.id}
+              onClick={() => openPost(post)}
+              role="option"
+              aria-selected={index === activeIndex}
+              tabIndex={-1}
+            >
               <span className={styles.resultImage}>
                 <ContentImage src={post.coverImageUrl} alt="" loading="lazy" />
               </span>

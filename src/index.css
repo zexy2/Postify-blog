@@ -26,7 +26,7 @@
 
   --text-primary: #1d1b18;
   --text-secondary: #625d55;
-  --text-muted: #888077;
+  --text-muted: #6f6860;
   --text-disabled: #d4d4d4;
   --text-inverse: #fafafa;
   --text-link: #a64225;
@@ -64,15 +64,15 @@
   --neon-mint-glow: rgba(74, 222, 128, 0.15);
   --electric-violet: #5e6ad2;
   
-  --success: #22c55e;
-  --success-light: rgba(34, 197, 94, 0.12);
-  --success-subtle: rgba(34, 197, 94, 0.06);
-  --warning: #eab308;
-  --warning-light: rgba(234, 179, 8, 0.12);
-  --warning-subtle: rgba(234, 179, 8, 0.06);
-  --error: #ef4444;
-  --error-light: rgba(239, 68, 68, 0.12);
-  --error-subtle: rgba(239, 68, 68, 0.06);
+  --success: #166534;
+  --success-light: rgba(22, 101, 52, 0.12);
+  --success-subtle: rgba(22, 101, 52, 0.06);
+  --warning: #854d0e;
+  --warning-light: rgba(133, 77, 14, 0.12);
+  --warning-subtle: rgba(133, 77, 14, 0.06);
+  --error: #b91c1c;
+  --error-light: rgba(185, 28, 28, 0.12);
+  --error-subtle: rgba(185, 28, 28, 0.06);
   --info: #5e6ad2;
   --info-light: rgba(94, 106, 210, 0.12);
   --info-subtle: rgba(94, 106, 210, 0.06);
@@ -196,7 +196,7 @@
      ═══════════════════════════════════════ */
   --text-primary: #f2eee7;         /* Warm paper */
   --text-secondary: #aaa299;       /* Warm gray */
-  --text-muted: #7c746c;           /* Muted */
+  --text-muted: #938b83;           /* Muted, readable on elevated dark surfaces */
   --text-disabled: #3d3d3f;        /* Disabled */
   --text-inverse: #000000;         /* On light bg */
   --text-link: #f08a67;            /* Editorial coral */
@@ -763,6 +763,7 @@ button {
 
 .knowledge-evidence__execution { display:grid; gap:.65rem; margin:1rem 0 1.25rem; padding:1rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); }
 .knowledge-evidence__execution>p { margin:0; font-size:.78rem; }
+.knowledge-evidence__execution>small code { color:var(--text-secondary); }
 .knowledge-evidence__contract { display:grid; gap:.65rem; margin:0; }
 .knowledge-evidence__contract>div { display:grid; grid-template-columns:minmax(7.5rem,.45fr) minmax(0,1fr); gap:.75rem; align-items:baseline; }
 .knowledge-evidence__contract dt { color:var(--text-muted); font-family:var(--font-mono); font-size:.66rem; letter-spacing:.04em; text-transform:uppercase; }

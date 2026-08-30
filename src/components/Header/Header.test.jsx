@@ -51,20 +51,20 @@ describe('Header authenticated account controls', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getAllByText('Zeka Kullanıcısı')).toHaveLength(2);
     expect(screen.getByText('zeka@example.com')).toBeVisible();
-    expect(screen.getByRole('menuitem', { name: /Profil/i })).toHaveAttribute('href', '/profile');
-    expect(screen.getByRole('menuitem', { name: /Bilgi sağlığı/i })).toHaveAttribute('href', '/knowledge');
+    expect(screen.getByRole('link', { name: /Profil/i })).toHaveAttribute('href', '/profile');
+    expect(screen.getByRole('link', { name: /Bilgi sağlığı/i })).toHaveAttribute('href', '/knowledge');
 
-    fireEvent.click(screen.getByRole('menuitem', { name: /Çıkış Yap/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Çıkış Yap/i }));
     expect(logout).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('menu', { name: 'Hesap' })).not.toBeInTheDocument();
+    expect(document.getElementById('header-account-popover')).not.toBeInTheDocument();
   });
 
   it('closes the account menu with Escape', () => {
     render(<MemoryRouter><Header /></MemoryRouter>);
     fireEvent.click(screen.getByRole('button', { name: 'Hesap' }));
-    expect(screen.getByRole('menu', { name: 'Hesap' })).toBeVisible();
+    expect(document.getElementById('header-account-popover')).toBeVisible();
     fireEvent.keyDown(document, { key: 'Escape' });
-    expect(screen.queryByRole('menu', { name: 'Hesap' })).not.toBeInTheDocument();
+    expect(document.getElementById('header-account-popover')).not.toBeInTheDocument();
   });
 
   it('keeps the account control absent for signed-out users', () => {

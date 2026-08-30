@@ -48,6 +48,10 @@ test.describe('Postify UI V2', () => {
     await expect(copyCode).toBeVisible();
     expect((await copyCode.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
 
+    const mobileBookmark = page.getByRole('button', { name: /add to bookmarks|remove from bookmarks|favorilere ekle|favorilerden kaldır/i }).last();
+    await expect(mobileBookmark).toBeVisible();
+    expect((await mobileBookmark.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+
     const authorLink = page.locator('article').getByRole('link').filter({ hasText: /@postify/i }).first();
     await expect(authorLink).toBeVisible();
     expect((await authorLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
@@ -100,6 +104,14 @@ test.describe('Postify UI V2', () => {
     expect(closeBox?.height || 0).toBeGreaterThanOrEqual(44);
     await closeMenu.click();
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
+
+    await menu.focus();
+    await menu.press('Enter');
+    await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByRole('dialog').first()).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await expect(menu).toBeFocused();
   });
 
 
@@ -139,11 +151,15 @@ test.describe('Postify UI V2', () => {
     const dialog = page.getByRole('dialog');
     const close = dialog.getByRole('button', { name: /aramayı kapat|close search/i });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('searchbox')).toBeFocused();
+    const combobox = dialog.getByRole('combobox');
+    await expect(combobox).toBeFocused();
+    const initialActive = await combobox.getAttribute('aria-activedescendant');
+    await page.keyboard.press('ArrowDown');
+    expect(await combobox.getAttribute('aria-activedescendant')).not.toBe(initialActive);
     await page.keyboard.press('Shift+Tab');
     await expect(close).toBeFocused();
     await page.keyboard.press('Shift+Tab');
-    await expect(dialog.getByRole('option').last()).toBeFocused();
+    await expect(combobox).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();

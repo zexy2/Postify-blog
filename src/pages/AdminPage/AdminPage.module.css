@@ -382,10 +382,33 @@
 }
 
 .error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1rem;
   color: var(--error);
   border-top: 1px solid color-mix(in srgb, var(--error) 35%, var(--border-color));
   border-bottom: 1px solid color-mix(in srgb, var(--error) 35%, var(--border-color));
+}
+
+.error button {
+  min-height: 44px;
+  flex: 0 0 auto;
+  padding: .55rem .75rem;
+  color: var(--error);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--error) 40%, var(--border-color));
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.error button:hover,
+.error button:focus-visible {
+  background: color-mix(in srgb, var(--error) 8%, transparent);
 }
 
 .noPosts {
@@ -400,6 +423,7 @@
 }
 
 @media (max-width: 640px) {
+  .error { align-items: flex-start; flex-direction: column; }
   .roleSelect { min-height: 44px; }
   .actionBtn,
   .deleteBtn { width: 44px; height: 44px; }

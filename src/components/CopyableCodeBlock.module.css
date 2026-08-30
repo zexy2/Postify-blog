@@ -4,6 +4,7 @@
 .toolbar button { display:inline-flex; align-items:center; gap:.35rem; min-height:40px; padding:.35rem .5rem; color:#ded8cf; background:transparent; border:1px solid rgba(255,255,255,.14); border-radius:.4rem; font:inherit; cursor:pointer; }
 .toolbar button:hover { color:#fff; border-color:rgba(255,255,255,.3); }
 .codeBlock pre { margin:0 !important; border:0 !important; border-radius:0 !important; }
+.codeBlock pre code { padding:0; color:inherit; background:transparent; border-radius:0; }
 
 @media (max-width:640px) {
   .toolbar button { min-height:44px; }

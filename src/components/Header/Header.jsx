@@ -37,6 +37,7 @@ const Header = () => {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState('⌘K');
   const accountMenuRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   const { theme, toggle: toggleTheme } = useTheme();
   const { bookmarksCount } = useBookmarks();
@@ -152,8 +153,8 @@ const Header = () => {
                 className={`${styles.accountButton} ${isAccountOpen ? styles.accountButtonOpen : ''}`}
                 onClick={() => setIsAccountOpen((open) => !open)}
                 aria-label={accountLabel}
-                aria-haspopup="menu"
                 aria-expanded={isAccountOpen}
+                aria-controls="header-account-popover"
               >
                 <span className={styles.accountAvatar} aria-hidden="true">
                   {accountName.trim().charAt(0).toLocaleUpperCase(i18n.language || 'tr')}
@@ -163,25 +164,25 @@ const Header = () => {
               </button>
 
               {isAccountOpen && (
-                <div className={styles.accountPopover} role="menu" aria-label={accountLabel}>
+                <div id="header-account-popover" className={styles.accountPopover} aria-label={accountLabel}>
                   <div className={styles.accountIdentity}>
                     <strong>{accountName}</strong>
                     {accountEmail && <span>{accountEmail}</span>}
                   </div>
                   <div className={styles.accountLinks}>
-                    <Link to="/profile" role="menuitem">
+                    <Link to="/profile">
                       <FiUser size={15} /> <span>{t('user.profile')}</span>
                     </Link>
-                    <Link to="/knowledge" role="menuitem">
+                    <Link to="/knowledge">
                       <FiActivity size={15} /> <span>{knowledgeLabel}</span>
                     </Link>
                     {isAdmin && (
-                      <Link to="/admin" role="menuitem">
+                      <Link to="/admin">
                         <FiShield size={15} /> <span>{t('nav.admin')}</span>
                       </Link>
                     )}
                   </div>
-                  <button type="button" className={styles.accountLogout} onClick={handleLogout} role="menuitem">
+                  <button type="button" className={styles.accountLogout} onClick={handleLogout}>
                     <FiLogOut size={15} /> <span>{t('auth.logout')}</span>
                   </button>
                 </div>
@@ -203,6 +204,7 @@ const Header = () => {
         </div>
 
         <button
+          ref={menuButtonRef}
           type="button"
           className={`${styles.menuButton} ${isMenuOpen ? styles.menuOpen : ''}`}
           onClick={() => setIsMenuOpen((open) => !open)}
@@ -218,6 +220,10 @@ const Header = () => {
               side="right"
               className={styles.sheet}
               closeLabel={i18n.language?.startsWith('en') ? 'Close menu' : 'Menüyü kapat'}
+              onCloseAutoFocus={(event) => {
+                event.preventDefault();
+                menuButtonRef.current?.focus();
+              }}
             >
               <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
               <div className={styles.mobilePanel}>

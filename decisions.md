@@ -338,3 +338,28 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 **Decision:** A mobile control is accepted when the actual clickable/focusable surface is at least 44px in the constrained dimension; a visually small native input may remain smaller when it is correctly wrapped by a larger interactive label. Drawers and modal-like sheets must also expose an explicit visible close control rather than relying only on backdrop, Escape, or navigation side effects.
 
 **Why:** Raw element rectangles can create false positives (for example 13px checkboxes inside 48px labels or a compact search input inside a 54px label), while genuinely undersized icon/link targets remain hard to operate despite looking visually tidy. Measuring the user-operable hit area preserves compact editorial density without sacrificing touch access or recovery from overlays.
+
+## 2026-08-30 — Fallback identity is explicit, never a substitute for missing users
+**Decision:** The fallback Postify editor may resolve only from its explicit aliases/identifier. Arbitrary non-UUID routes and UUIDs that successfully resolve to no profile return no user and render the Author-not-found recovery surface. Profile-service/query failures render a separate retryable unavailable state instead of being mislabeled as not found.
+
+**Why:** A resilience fallback for public content must not fabricate identity. Showing the Postify editor when a requested author does not exist makes broken links look valid and can misattribute content. Missing identity is a distinct UI state and should be represented honestly.
+
+## 2026-08-30 — Empty and failure states are first-class visual contracts
+**Decision:** High-value work surfaces with meaningful no-data or failure branches—Bookmarks, Knowledge Health and Admin operations—must expose explicit empty/recovery UI and be covered as rendered browser states, not inferred from populated-state screenshots.
+
+**Why:** Populated routes can pass every visual gate while their empty/error paths remain blank, undersized or unrecoverable. State-specific harnesses keep those branches deterministic without weakening production auth or inventing production data.
+
+## 2026-08-30 — ARIA roles must match the implemented keyboard model
+**Decision:** Interactive UI advertises composite ARIA roles only when the corresponding keyboard behavior exists. Admin uses a real tab/tabpanel model; Command Palette uses a combobox/listbox with active-descendant navigation; the account dropdown remains a disclosure of ordinary navigation/actions instead of pretending to be a menu.
+
+**Why:** Adding `menu`, `tab` or `listbox` roles without their keyboard contract makes the accessibility tree more misleading, not more accessible. The rendered semantics, focus order and keyboard behavior must describe the same interaction users actually receive.
+
+## 2026-08-30 — Closing an overlay restores the initiating context
+**Decision:** Modal/drawer/palette UI must return keyboard focus to the control or element that initiated it when dismissed, including Escape dismissal.
+
+**Why:** A visually closed overlay is not a complete recovery if keyboard focus falls back to `body`. Restoring context prevents users from losing their place and makes repeated navigation predictable.
+
+## 2026-08-30 — Muted and semantic text colors must remain readable on every product surface
+**Decision:** Shared light/dark text and status tokens must meet at least 4.5:1 contrast against Postify’s primary, secondary and elevated surfaces when they are used for normal-size text. Decorative separators may remain visually quiet only when they are removed from the accessibility tree. Inline-code styling must not leak into dark code blocks.
+
+**Why:** The browser audit found `--text-muted` around 3.3–3.8:1 on light surfaces, green/yellow status labels below that, and a global inline-code background overriding the verified article’s dark code block. These are system-level defects: fixing tokens and containment preserves hierarchy across routes while making the contract measurable in release tests.

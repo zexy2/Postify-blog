@@ -27,14 +27,15 @@ export const userService = {
     }
 
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    if (!isUuid) return FALLBACK_AUTHOR;
+    if (!isUuid) return null;
 
     const { data, error } = await requireSupabase()
       .from('profiles')
       .select(PROFILE_FIELDS)
       .eq('id', id)
       .maybeSingle();
-    if (error || !data) return FALLBACK_AUTHOR;
+    if (error) throw error;
+    if (!data) return null;
     return normalizeProfile(data);
   },
 };

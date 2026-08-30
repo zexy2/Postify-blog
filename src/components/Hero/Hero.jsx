@@ -82,11 +82,11 @@ export default function Hero({
                 <span className={styles.featuredExcerpt}>{presentation?.outcome}</span>
                 <span className={styles.featuredMeta}>
                   <span>{featuredPost.category}</span>
-                  <span className={styles.dot}>·</span>
+                  <span className={styles.dot} aria-hidden="true">·</span>
                   <span><FiClock size={13} /> {featuredPost.readingTime} {t('common.minutes')}</span>
                   {presentation?.formattedDate && (
                     <>
-                      <span className={styles.dot}>·</span>
+                      <span className={styles.dot} aria-hidden="true">·</span>
                       <span>{presentation.dateLabel}: {presentation.formattedDate}</span>
                     </>
                   )}

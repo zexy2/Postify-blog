@@ -20,6 +20,7 @@ const AdminPage = ({ service = adminService }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Check admin access
   useEffect(() => {
@@ -58,7 +59,25 @@ const AdminPage = ({ service = adminService }) => {
     };
 
     loadData();
-  }, [activeTab, service]);
+  }, [activeTab, reloadKey, service]);
+
+
+  const handleTabKeyDown = (event) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    const tabs = [...event.currentTarget.parentElement.querySelectorAll('[role="tab"]')];
+    const currentIndex = tabs.indexOf(event.currentTarget);
+    if (currentIndex < 0 || tabs.length === 0) return;
+
+    event.preventDefault();
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    if (event.key === 'Home') nextIndex = 0;
+    if (event.key === 'End') nextIndex = tabs.length - 1;
+
+    tabs[nextIndex].focus();
+    tabs[nextIndex].click();
+  };
 
   const handleRoleChange = async (userId, newRole) => {
     try {
@@ -139,8 +158,9 @@ const AdminPage = ({ service = adminService }) => {
 
           <div className={styles.recentSection}>
             <h3>Son Kayıt Olan Kullanıcılar</h3>
-            <ul className={styles.recentList}>
-              {stats.recentUsers?.map(user => (
+            {stats.recentUsers?.length ? (
+              <ul className={styles.recentList}>
+              {stats.recentUsers.map(user => (
                 <li key={user.id} className={styles.recentItem}>
                   <img 
                     src={user.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.full_name || user.username || user.email || 'U')}`}
@@ -156,7 +176,10 @@ const AdminPage = ({ service = adminService }) => {
                   </span>
                 </li>
               ))}
-            </ul>
+              </ul>
+            ) : (
+              <p className={styles.noPosts}>Henüz yeni kullanıcı yok.</p>
+            )}
           </div>
         </>
       )}
@@ -167,20 +190,23 @@ const AdminPage = ({ service = adminService }) => {
     <div className={styles.usersSection}>
       <h2>Kullanıcı Yönetimi</h2>
       
-      <div className={styles.tableWrap}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Kullanıcı</th>
-            <th>E-posta</th>
-            <th>Rol</th>
-            <th>Kayıt Tarihi</th>
-            <th>İşlemler</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(u => (
-            <tr key={u.id}>
+      {users.length === 0 ? (
+        <p className={styles.noPosts}>Henüz kullanıcı bulunmuyor.</p>
+      ) : (
+        <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Kullanıcı</th>
+              <th>E-posta</th>
+              <th>Rol</th>
+              <th>Kayıt Tarihi</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(u => (
+              <tr key={u.id}>
               <td>
                 <div className={styles.userCell}>
                   <img 
@@ -212,10 +238,11 @@ const AdminPage = ({ service = adminService }) => {
                 </span>
               </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+            ))}
+          </tbody>
+        </table>
+        </div>
+      )}
     </div>
   );
 
@@ -305,34 +332,59 @@ const AdminPage = ({ service = adminService }) => {
 
       <div className={styles.tabs} role="tablist" aria-label="Yönetim bölümleri">
         <button
+          type="button"
+          id="admin-tab-dashboard"
           className={`${styles.tab} ${activeTab === 'dashboard' ? styles.active : ''}`}
           onClick={() => setActiveTab('dashboard')}
+          onKeyDown={handleTabKeyDown}
           role="tab"
           aria-selected={activeTab === 'dashboard'}
+          aria-controls="admin-panel-dashboard"
+          tabIndex={activeTab === 'dashboard' ? 0 : -1}
         >
           <FiActivity /> Dashboard
         </button>
         <button
+          type="button"
+          id="admin-tab-users"
           className={`${styles.tab} ${activeTab === 'users' ? styles.active : ''}`}
           onClick={() => setActiveTab('users')}
+          onKeyDown={handleTabKeyDown}
           role="tab"
           aria-selected={activeTab === 'users'}
+          aria-controls="admin-panel-users"
+          tabIndex={activeTab === 'users' ? 0 : -1}
         >
           <FiUsers /> Kullanıcılar
         </button>
         <button
+          type="button"
+          id="admin-tab-posts"
           className={`${styles.tab} ${activeTab === 'posts' ? styles.active : ''}`}
           onClick={() => setActiveTab('posts')}
+          onKeyDown={handleTabKeyDown}
           role="tab"
           aria-selected={activeTab === 'posts'}
+          aria-controls="admin-panel-posts"
+          tabIndex={activeTab === 'posts' ? 0 : -1}
         >
           <FiFileText /> Postlar
         </button>
       </div>
 
-      {error && <div className={styles.error}>{error}</div>}
+      {error && (
+        <div className={styles.error} role="alert">
+          <span>{error}</span>
+          <button type="button" onClick={() => setReloadKey((key) => key + 1)}>Tekrar dene</button>
+        </div>
+      )}
 
-      <div className={styles.content}>
+      <div
+        className={styles.content}
+        role="tabpanel"
+        id={`admin-panel-${activeTab}`}
+        aria-labelledby={`admin-tab-${activeTab}`}
+      >
         {loading ? (
           <div className={styles.loading}>Yükleniyor...</div>
         ) : (

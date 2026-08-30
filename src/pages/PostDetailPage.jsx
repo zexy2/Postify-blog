@@ -317,6 +317,7 @@ const PostDetailPage = () => {
             type="button"
             className={`${styles.mobileActionBtn} ${isBookmarked ? styles.bookmarked : ''}`}
             onClick={() => toggleBookmark(post.id, post)}
+            aria-label={isBookmarked ? t('bookmarks.removeFromBookmarks') : t('bookmarks.addToBookmarks')}
           >
             <FiBookmark size={18} />
           </button>

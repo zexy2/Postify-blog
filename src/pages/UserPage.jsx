@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
-import { FiBookOpen, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { Link, useParams } from 'react-router-dom';
+import { FiArrowLeft, FiBookOpen, FiCheckCircle, FiClock } from 'react-icons/fi';
 import { useUser, useUserPosts } from '../hooks/usePosts';
 import { useBookmarks } from '../hooks/useBookmarks';
 import EditorialFeed from '../components/EditorialFeed';
@@ -12,20 +12,37 @@ const UserPage = () => {
   const { t, i18n } = useTranslation();
   const en = i18n.language?.startsWith('en');
   const { id } = useParams();
-  const { data: user, isLoading: userLoading } = useUser(id);
-  const { data: posts = [], isLoading: postsLoading } = useUserPosts(id);
+  const { data: user, isLoading: userLoading, isError: userError, refetch: refetchUser } = useUser(id);
+  const { data: posts = [], isLoading: postsLoading, isError: postsError, refetch: refetchPosts } = useUserPosts(id);
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
 
   if (userLoading) {
-    return <div className={`container ${styles.status}`}>{t('common.loadingAuthor')}</div>;
+    return <div className={`container ${styles.routeStatus}`} aria-busy="true"><span className={styles.statusEyebrow}>{en ? 'Author index' : 'Yazar dizini'}</span><p>{t('common.loadingAuthor')}</p></div>;
+  }
+
+  if (userError) {
+    return (
+      <main className={`container ${styles.routeStatus}`}>
+        <span className={styles.statusEyebrow}>{en ? 'Author index unavailable' : 'Yazar dizinine ulaşılamıyor'}</span>
+        <h1>{en ? 'Author information is temporarily unavailable.' : 'Yazar bilgisi şu anda alınamıyor.'}</h1>
+        <p>{en ? 'The profile service could not be reached. Try the request again without losing your place.' : 'Profil servisine ulaşılamadı. Yerini kaybetmeden isteği yeniden deneyebilirsin.'}</p>
+        <button type="button" className={styles.statusAction} onClick={() => refetchUser()}>
+          {en ? 'Try again' : 'Tekrar dene'}
+        </button>
+      </main>
+    );
   }
 
   if (!user) {
     return (
-      <div className={`container ${styles.status}`}>
+      <main className={`container ${styles.routeStatus}`}>
+        <span className={styles.statusEyebrow}>{en ? 'Author index miss' : 'Yazar dizini eşleşmedi'}</span>
         <h1>{t('common.authorNotFound')}</h1>
         <p>{t('errors.userNotFound')}</p>
-      </div>
+        <Link to="/" className={styles.statusAction}>
+          <FiArrowLeft /> {en ? 'Explore useful knowledge' : 'İşe yarayan bilgileri keşfet'}
+        </Link>
+      </main>
     );
   }
 
@@ -77,7 +94,12 @@ const UserPage = () => {
           </div>
 
           {postsLoading ? (
-            <p className={styles.status}>{t('common.loading')}</p>
+            <p className={styles.inlineStatus}>{t('common.loading')}</p>
+          ) : postsError ? (
+            <div className={styles.inlineStatus} role="status">
+              <span>{en ? 'Published work is temporarily unavailable.' : 'Yayınlanan çalışmalar şu anda alınamıyor.'}</span>
+              <button type="button" onClick={() => refetchPosts()}>{en ? 'Try again' : 'Tekrar dene'}</button>
+            </div>
           ) : posts.length === 0 ? (
             <p className={styles.empty}>{t('home.noContent')}</p>
           ) : (
