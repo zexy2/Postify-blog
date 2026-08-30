@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-08-30T13:47:37.455Z",
+  "generatedAt": "2026-08-30T15:02:42.734Z",
   "scope": "checked-in deterministic verification only",
   "runs": {
     "node-json-parse-v1": {
@@ -17,8 +17,8 @@
       "reproduceCommand": "node node-json-parse-v1.mjs",
       "artifactSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
       "executionMode": "generated-artifact-file",
-      "verifiedAt": "2026-08-30T13:47:37.484Z",
-      "durationMs": 28,
+      "verifiedAt": "2026-08-30T15:02:42.767Z",
+      "durationMs": 32,
       "expectedStdout": "PASS",
       "actualStdout": "PASS",
       "codeSha256": "c301ddea5fa2ebf955b06f56a939d573ac293b7b392adc43dc699ef8bac84713",
