@@ -4,7 +4,7 @@
  * Catches JavaScript errors in child components
  */
 
-import { Component } from 'react';
+import { Component, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiRefreshCw, FiHome } from 'react-icons/fi';
 import SystemStatus from '../SystemStatus';
@@ -50,6 +50,11 @@ class ErrorBoundaryClass extends Component {
 // Functional fallback component with translations
 const ErrorFallback = ({ error, resetError }) => {
   const { t } = useTranslation();
+  const retryRef = useRef(null);
+
+  useEffect(() => {
+    retryRef.current?.focus({ preventScroll: true });
+  }, []);
 
   return (
     <SystemStatus
@@ -60,7 +65,7 @@ const ErrorFallback = ({ error, resetError }) => {
       role="alert"
       action={(
         <>
-          <button onClick={resetError}>
+          <button ref={retryRef} type="button" onClick={resetError}>
             <FiRefreshCw />
             {t('error.retry')}
           </button>

@@ -469,3 +469,5 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 - Article Back is history-aware navigation, not a hardcoded Home link: if React Router history has an in-app entry, navigate(-1) to preserve filters and scroll restoration; direct/deep-linked articles fall back to `/`. Both desktop rail and mobile action bar use button semantics for this action.
 
 - Command Palette keyboard navigation must keep the `aria-activedescendant` result visually synchronized. Active options scroll only within the existing result rail using `scrollIntoView({ block: 'nearest', inline: 'nearest' })`; the page remains scroll-locked and larger viewports do not move unnecessarily.
+
+- Full-page ErrorBoundary recovery must establish a deterministic keyboard context. When the fallback mounts, focus moves to Retry/Tekrar Dene with `preventScroll`; the assertive status still announces the error, while keyboard users land on the primary recovery action instead of `BODY`.

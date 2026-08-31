@@ -1065,6 +1065,17 @@ for (const [route, snapshotName] of publicSystemVisualRoutes) {
 }
 
 
+test('Error recovery moves keyboard focus to the retry action', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  await page.goto('/e2e/visual/error-boundary.html');
+  const retry = page.getByRole('button', { name: /try again|tekrar dene/i });
+  await expect(retry).toBeVisible();
+  await expect(retry).toBeFocused();
+  await expect(retry).toHaveAttribute('type', 'button');
+});
+
+
 for (const viewport of viewports) {
   test(`Error recovery ${viewport.name} baseline`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });

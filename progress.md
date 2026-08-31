@@ -632,3 +632,6 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Fresh Article context-return release gate PASS: 40 Vitest files / 146 tests, 46/46 functional Chromium, 105/105 visual/structural, lint/build/smoke/security all green; main entry 314,626 B remains under the 320 KB budget.
 
 - Command Palette short-viewport keyboard audit: production 3d2c7ca let ArrowDown move the active descendant to an off-screen result at 568×320 (`scrollTop=0` while the active option was ~200px below the result viewport). The active option now scrolls into the result rail with `block: nearest`; targeted Chromium confirms the sixth result stays visible and Enter opens it.
+
+- Crash-recovery keyboard audit: deterministic ErrorBoundary render left focus on `BODY` at both 390px and 1304px. The recovery fallback now moves focus to the Retry action without scrolling, and the action is explicitly non-submit (`type=button`).
+- ErrorBoundary focus final fresh release gate PASS after removing the stale Postify-only slow-mock listener that occupied port 4500: 40 Vitest files / 146 tests, functional Chromium 47/47, visual/structural Chromium 106/106, npm audit 0 vulnerabilities, lint/knowledge/build/smoke PASS, and a 314,722-byte main entry under the 320 KB budget. The only intended pixel change is the mobile recovery Retry focus ring.
