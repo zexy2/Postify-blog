@@ -523,6 +523,14 @@
   }
 }
 
+@media (max-width: 360px) {
+  .mobileActionBar {
+    max-width: calc(100vw - 16px);
+    gap: 4px;
+    padding-inline: 4px;
+  }
+}
+
 @media (max-width: 780px) {
   .quickBrief { grid-template-columns: 1fr; gap: .85rem; }
   .quickBriefMeta { max-width: 430px; }
@@ -557,6 +565,7 @@
   }
   .sectionHeading { align-items: flex-start; flex-direction: column; }
   .adjacent { grid-template-columns: 1fr; gap: 0; }
+  .adjacentLink strong { -webkit-line-clamp: 3; }
   .newer { align-items: flex-start; text-align: left; }
   .newer span { text-align: left; }
 }

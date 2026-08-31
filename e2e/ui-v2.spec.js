@@ -314,6 +314,7 @@ test.describe('Postify UI V2', () => {
 
     const touchTargets = [
       page.locator('header a').filter({ hasText: /^Postify$/ }).first(),
+      page.getByRole('searchbox'),
       page.getByRole('link', { name: /browse the library|bilgi arşivine göz at/i }),
       page.getByRole('link', { name: /contribute|katkı yap/i }),
       page.getByRole('button', { name: /add to bookmarks|favorilere ekle/i }).first(),
@@ -608,6 +609,71 @@ test.describe('Postify UI V2', () => {
     await expect(page.locator('#recovery-email')).toBeFocused();
     await expect(page.locator('#recovery-email')).toHaveAttribute('aria-invalid', 'true');
     await expect(page.locator('#recovery-email')).toHaveAttribute('aria-describedby', 'recovery-form-error');
+  });
+
+  test('200% mobile text scaling keeps core actions inside the viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.addInitScript(() => {
+      localStorage.setItem('postify_language', 'tr');
+      localStorage.setItem('postify_theme', 'light');
+    });
+
+    const routes = [
+      '/',
+      '/about',
+      '/auth/register',
+      '/auth/forgot-password',
+      '/auth/reset-password',
+      '/posts/node-json-dogrulama',
+      '/definitely-not-a-postify-route',
+      '/e2e/visual/profile-auth.html',
+      '/e2e/visual/editor.html',
+    ];
+
+    for (const route of routes) {
+      await page.goto(route);
+      await expect.poll(async () => page.locator('a[href], button, input:not([type=hidden]), select, textarea, [role=button]').count()).toBeGreaterThan(0);
+      await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+
+      const escapedControls = await page.locator('a[href], button, input:not([type=hidden]), select, textarea, [role=button]').evaluateAll((controls) => {
+        const visible = (element) => {
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          return rect.width > 0
+            && rect.height > 0
+            && style.display !== 'none'
+            && style.visibility !== 'hidden'
+            && Number(style.opacity) !== 0;
+        };
+        const insideHorizontalScroller = (element) => {
+          for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+            const style = getComputedStyle(parent);
+            if (['auto', 'scroll'].includes(style.overflowX) && parent.scrollWidth > parent.clientWidth + 2) return true;
+          }
+          return false;
+        };
+
+        return controls.filter(visible).flatMap((element) => {
+          const rect = element.getBoundingClientRect();
+          if (insideHorizontalScroller(element) || (rect.left >= -1 && rect.right <= window.innerWidth + 1)) return [];
+          return [{
+            tag: element.tagName,
+            label: (element.getAttribute('aria-label') || element.textContent || element.getAttribute('placeholder') || '').trim().replace(/\s+/g, ' ').slice(0, 80),
+            left: Number(rect.left.toFixed(1)),
+            right: Number(rect.right.toFixed(1)),
+          }];
+        });
+      });
+
+      expect(escapedControls, `${route} has horizontally clipped controls at 200% text scaling`).toEqual([]);
+
+      if (route === '/posts/node-json-dogrulama') {
+        const adjacentTitles = page.locator('nav a[href^="/posts/"] strong');
+        for (const title of await adjacentTitles.all()) {
+          expect(await title.evaluate((element) => element.scrollHeight - element.clientHeight)).toBeLessThanOrEqual(2);
+        }
+      }
+    }
   });
 
   test('Turkish auth validation never leaks translation keys', async ({ page }) => {

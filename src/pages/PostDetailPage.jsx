@@ -367,7 +367,7 @@ const PostDetailPage = () => {
             <small>{comments.length}</small>
           </a>
           <div className={styles.mobileShareWrap}>
-            <CopyLinkButton url={pageUrl} />
+            <CopyLinkButton url={pageUrl} compact />
           </div>
         </div>
       </div>

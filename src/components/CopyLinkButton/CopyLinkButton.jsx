@@ -4,7 +4,7 @@ import { FiCheck, FiLink } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import styles from './CopyLinkButton.module.css';
 
-const CopyLinkButton = ({ url }) => {
+const CopyLinkButton = ({ url, compact = false }) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
@@ -20,7 +20,12 @@ const CopyLinkButton = ({ url }) => {
   };
 
   return (
-    <button type="button" className={`${styles.button} ${copied ? styles.copied : ''}`} onClick={copyLink}>
+    <button
+      type="button"
+      className={`${styles.button} ${compact ? styles.compact : ''} ${copied ? styles.copied : ''}`}
+      onClick={copyLink}
+      aria-label={copied ? t('common.linkCopied') : t('common.copyLink')}
+    >
       {copied ? <FiCheck size={15} /> : <FiLink size={15} />}
       <span>{copied ? t('common.linkCopied') : t('common.copyLink')}</span>
     </button>

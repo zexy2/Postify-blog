@@ -495,6 +495,8 @@
   bottom: 0;
   z-index: 5;
   display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: .6rem;
@@ -507,6 +509,8 @@
 
 .cancelButton,
 .submitButton {
+  min-width: 0;
+  max-width: 100%;
   min-height: 40px;
   padding: .58rem .85rem;
   border-radius: var(--radius-md);

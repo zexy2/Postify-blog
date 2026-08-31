@@ -165,6 +165,7 @@
 
 .ctaActions {
   display: flex;
+  min-width: 0;
   flex-wrap: wrap;
   gap: .65rem;
 }
@@ -195,7 +196,7 @@
   .statement,
   .sectionHeading,
   .cta {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: .85rem;
   }
 
@@ -255,6 +256,8 @@
 
   .ctaActions a {
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     justify-content: center;
   }
 }
