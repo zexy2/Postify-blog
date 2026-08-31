@@ -462,3 +462,6 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 - Interaction hit-area rules follow the product touch breakpoint (<=960px) without changing desktop density.
 
 - Destructive or replacement confirmations must use the shared in-product `ConfirmDialog`, not `window.confirm`. The dialog must autofocus the safe Cancel action, restore focus to the invoking control when it remains mounted, honor reduced motion, remain contained in short touch viewports, and keep physical action targets >=44px throughout animations. When the invoking control is removed by the confirmed action (for example an Admin row deletion), the owning surface must explicitly move focus to a stable contextual control such as the Content tab.
+
+### 2026-08-31 — Auxiliary controls follow the Header touch breakpoint
+When the Header switches to drawer/touch navigation at 960px, secondary controls that are likely to be touched must also meet the 44px interaction target through 960px. Layout breakpoints remain independent; only hit-area rules for LanguageSwitcher, Hero actions, code/link copy actions, Verification Runbook actions, and evidence links are widened to the touch-mode boundary.

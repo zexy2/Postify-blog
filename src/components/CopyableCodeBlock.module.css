@@ -6,6 +6,6 @@
 .codeBlock pre { margin:0 !important; border:0 !important; border-radius:0 !important; }
 .codeBlock pre code { padding:0; color:inherit; background:transparent; border-radius:0; }
 
-@media (max-width:640px) {
+@media (max-width:960px) {
   .toolbar button { min-height:44px; }
 }

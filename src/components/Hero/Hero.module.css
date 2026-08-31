@@ -121,6 +121,7 @@
 .dot { color: var(--border-strong); }
 
 @media (max-width: 980px) {
+  .primaryAction, .secondaryAction { min-height: 44px; }
   .promiseLine span:nth-child(3) { display: none; }
   .masthead { grid-template-columns: 1fr; gap: .8rem; }
   .eyebrow { padding-top: 0; }

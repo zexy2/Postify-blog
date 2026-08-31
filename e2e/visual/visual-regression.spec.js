@@ -498,13 +498,35 @@ test('Tablet touch mode keeps primary work controls at least 44px', async ({ pag
     }
   };
 
-  for (const width of [820, 960]) {
+  for (const width of [600, 820, 960]) {
     await page.setViewportSize({ width, height: 844 });
 
     await page.goto('/');
     await expectTouchSafe([
       page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i }).getByRole('button').first(),
       page.getByRole('button', { name: /add to bookmarks|favorilere ekle/i }).first(),
+      page.getByRole('link', { name: /browse the library|bilgi arşivine göz at/i }),
+      page.getByRole('link', { name: /contribute|katkı yap/i }).first(),
+    ]);
+    await page.getByRole('button', { name: /toggle menu|menüyü aç\/kapat/i }).click();
+    const drawer = page.getByRole('dialog');
+    await expect(drawer).toBeVisible();
+    await expectTouchSafe([drawer.locator('button').filter({ hasText: /^(EN|TR)$/ }).first()]);
+    await page.keyboard.press('Escape');
+
+    await page.evaluate(() => {
+      localStorage.setItem('postify:runbook:v1', JSON.stringify({
+        'fallback-node-json-dogrulama': { version: 1, completed: [0], updatedAt: '2026-08-29T09:00:00.000Z' },
+      }));
+    });
+    await page.goto('/posts/node-json-dogrulama');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const runbook = page.locator('section').filter({ hasText: /Action runbook|Uygulama turu/i }).first();
+    await expectTouchSafe([
+      page.getByRole('button', { name: /^copy$|^kopyala$/i }).first(),
+      page.getByRole('button', { name: /copy link|bağlantıyı kopyala/i }).first(),
+      page.getByRole('link', { name: /nodejs\.org/i }).first(),
+      runbook.getByRole('button', { name: /reset|sıfırla/i }),
     ]);
 
     await page.goto('/e2e/visual/bookmarks-auth.html');

@@ -26,5 +26,6 @@
 .actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.5rem; }
 .actions button,.actions a { display:inline-flex; align-items:center; gap:.35rem; min-height:38px; padding:.45rem .65rem; color:var(--text-secondary); background:transparent; border:1px solid var(--border-color); border-radius:var(--radius-md); font-size:.75rem; font-weight:750; text-decoration:none; cursor:pointer; }
 .actions a { color:var(--primary); border-color:var(--primary-light); }
+@media(max-width:960px){.actions button,.actions a{min-height:44px}}
 @media(max-width:620px){.header,.footer{align-items:stretch;flex-direction:column}.progressLabel{display:flex;justify-content:flex-start;gap:.5rem}.actions{justify-content:flex-start}}
 @media(prefers-reduced-motion:reduce){.progressTrack span{transition:none}}

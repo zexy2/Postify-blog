@@ -172,12 +172,13 @@
   color: var(--text-secondary);
 }
 
-/* Responsive */
+/* Touch-mode hit area follows the Header drawer breakpoint. */
+@media (max-width: 960px) {
+  .button { min-height: 44px; }
+}
+
 @media (max-width: 640px) {
-  .button {
-    min-height: 44px;
-    padding: var(--space-xs) var(--space-sm);
-  }
+  .button { padding: var(--space-xs) var(--space-sm); }
 
   .flag {
     font-size: 1.1rem;
