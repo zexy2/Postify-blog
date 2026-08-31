@@ -460,3 +460,5 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 - Evidence context is collected inline and remains optional; persistence semantics are unchanged.
 - Evidence-result and shelf controls expose selection with `aria-pressed`; save failures use `role="alert"`, successful saves use `role="status"`.
 - Interaction hit-area rules follow the product touch breakpoint (<=960px) without changing desktop density.
+
+- Destructive or replacement confirmations must use the shared in-product `ConfirmDialog`, not `window.confirm`. The dialog must autofocus the safe Cancel action, restore focus to the invoking control when it remains mounted, honor reduced motion, remain contained in short touch viewports, and keep physical action targets >=44px throughout animations. When the invoking control is removed by the confirmed action (for example an Admin row deletion), the owning surface must explicitly move focus to a stable contextual control such as the Content tab.

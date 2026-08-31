@@ -434,6 +434,59 @@ test('Editor Markdown import/export round-trip stays local and mobile-safe', asy
 });
 
 
+test('Editor destructive confirmations stay in-product and restore focus', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  let nativeDialogs = 0;
+  page.on('dialog', async (dialog) => { nativeDialogs += 1; await dialog.dismiss(); });
+  await page.goto('/e2e/visual/editor.html');
+  await expect(page.getByRole('heading', { level: 1, name: /create new post|yeni post/i })).toBeVisible();
+
+  const title = page.locator('#title');
+  await title.fill('Unsaved confirmation draft');
+  const cancelTrigger = page.getByRole('button', { name: /^cancel$|^iptal$/i }).first();
+  await cancelTrigger.focus();
+  await cancelTrigger.click();
+
+  const leaveDialog = page.getByRole('dialog', { name: /leave without saving|kaydetmeden çıkılsın mı/i });
+  await expect(leaveDialog).toBeVisible();
+  expect(nativeDialogs).toBe(0);
+  const dialogCancel = leaveDialog.getByRole('button', { name: /^cancel$|^iptal$/i });
+  await expect(dialogCancel).toBeFocused();
+  for (const button of await leaveDialog.getByRole('button').all()) {
+    const box = await button.boundingBox();
+    if (box) expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+
+  await page.keyboard.press('Escape');
+  await expect(leaveDialog).toBeHidden();
+  await expect(cancelTrigger).toBeFocused();
+
+  const importButton = page.getByRole('button', { name: /import \.md|\.md içe al/i });
+  const chooserPromise = page.waitForEvent('filechooser');
+  await importButton.click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: 'replacement.md',
+    mimeType: 'text/markdown',
+    buffer: Buffer.from('# Replacement draft\n\n## Steps\n\n- Verify first\n'),
+  });
+
+  const replaceDialog = page.getByRole('dialog', { name: /replace current draft|mevcut taslağın üzerine yazılsın mı/i });
+  await expect(replaceDialog).toBeVisible();
+  expect(nativeDialogs).toBe(0);
+  const replaceBox = await replaceDialog.boundingBox();
+  expect(replaceBox?.y ?? -1).toBeGreaterThanOrEqual(0);
+  expect((replaceBox?.y ?? 845) + (replaceBox?.height ?? 0)).toBeLessThanOrEqual(844);
+  await replaceDialog.getByRole('button', { name: /replace and import|değiştir ve içe aktar/i }).click();
+  await expect(replaceDialog).toBeHidden();
+  await expect(title).toHaveValue('Replacement draft');
+  await expect(page.locator('.ProseMirror')).toContainText('Verify first');
+  await expect(page.getByRole('status')).toContainText(/imported|içe aktarıldı/i);
+  await expect(importButton).toBeFocused();
+  expect(nativeDialogs).toBe(0);
+});
+
 test('Tablet touch mode keeps primary work controls at least 44px', async ({ page }) => {
   await stabilize(page, { editor: true });
 
@@ -760,6 +813,89 @@ test('Admin management tables remain contained on mobile', async ({ page }) => {
   for (const name of await postActions.evaluateAll((items) => items.map((item) => item.getAttribute('aria-label')))) {
     expect(name).toBeTruthy();
   }
+});
+
+test('Admin delete confirmation is focus-safe, mobile-contained, and native-dialog free', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await stabilize(page);
+  let nativeDialogs = 0;
+  page.on('dialog', async (dialog) => { nativeDialogs += 1; await dialog.dismiss(); });
+  await page.goto('/e2e/visual/admin-auth.html');
+  await page.getByRole('tab', { name: /content|içerikler|postlar/i }).click();
+
+  const deleteTrigger = page.getByRole('button', { name: /delete: node\.js|sil: node\.js/i });
+  await deleteTrigger.scrollIntoViewIfNeeded();
+  await deleteTrigger.focus();
+  await deleteTrigger.click();
+
+  const dialog = page.getByRole('dialog', { name: /delete content|içerik silinsin mi/i });
+  await expect(dialog).toBeVisible();
+  expect(nativeDialogs).toBe(0);
+  await expect(dialog.getByRole('button', { name: /^cancel$|^iptal$/i })).toBeFocused();
+  const box = await dialog.boundingBox();
+  expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
+  expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
+  expect((box?.x ?? 391) + (box?.width ?? 0)).toBeLessThanOrEqual(390);
+  expect((box?.y ?? 845) + (box?.height ?? 0)).toBeLessThanOrEqual(844);
+  for (const button of await dialog.getByRole('button').all()) {
+    const buttonBox = await button.boundingBox();
+    if (buttonBox) expect(buttonBox.height).toBeGreaterThanOrEqual(44);
+  }
+  await settleVisualSurface(page);
+  await expect(dialog).toHaveScreenshot('confirm-dialog-mobile.png');
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(deleteTrigger).toBeFocused();
+
+  await deleteTrigger.click();
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: /^delete$|^sil$/i }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.getByText(/Node\.js doğrulama akışını tekrar üretilebilir hale getir/i)).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: /content|içerikler|postlar/i })).toBeFocused();
+  expect(nativeDialogs).toBe(0);
+});
+
+test('Confirm dialog stays contained in short touch viewports and honors reduced motion', async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 568, height: 320 },
+    locale: 'en-US',
+    timezoneId: 'UTC',
+    reducedMotion: 'reduce',
+  });
+  await context.addInitScript(() => {
+    localStorage.setItem('postify_language', 'en');
+    localStorage.setItem('postify_theme', 'light');
+  });
+  const page = await context.newPage();
+  await page.goto('/e2e/visual/admin-auth.html');
+  await page.getByRole('tab', { name: /content/i }).click();
+  const deleteTrigger = page.getByRole('button', { name: /delete: node\.js/i });
+  await deleteTrigger.scrollIntoViewIfNeeded();
+  await deleteTrigger.click();
+
+  const dialog = page.getByRole('dialog', { name: /delete content/i });
+  await expect(dialog).toBeVisible();
+  const geometry = await dialog.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { x: rect.x, y: rect.y, right: rect.right, bottom: rect.bottom, animationName: getComputedStyle(element).animationName };
+  });
+  expect(geometry.x).toBeGreaterThanOrEqual(0);
+  expect(geometry.y).toBeGreaterThanOrEqual(0);
+  expect(geometry.right).toBeLessThanOrEqual(568);
+  expect(geometry.bottom).toBeLessThanOrEqual(320);
+  expect(geometry.animationName).toBe('none');
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+  for (const button of await dialog.getByRole('button').all()) {
+    const box = await button.boundingBox();
+    if (box) expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(deleteTrigger).toBeFocused();
+  await context.close();
 });
 
 for (const viewport of viewports) {

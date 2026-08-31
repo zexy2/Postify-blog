@@ -1,0 +1,73 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) + 60);
+  background: rgba(17, 15, 14, .52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: confirmFadeIn 160ms ease-out both;
+}
+
+.content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: calc(var(--z-modal) + 70);
+  display: grid;
+  width: min(30rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  gap: 1.25rem;
+  padding: 1.35rem;
+  overflow-y: auto;
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 80px rgba(20, 18, 16, .28);
+  transform: translate(-50%, -50%);
+  animation: confirmEnter 180ms ease-out both;
+  overscroll-behavior: contain;
+}
+
+.copy { display: grid; gap: .45rem; }
+.title { margin: 0; color: var(--text-primary); font-family: var(--font-display); font-size: 1.25rem; line-height: 1.2; }
+.description { margin: 0; color: var(--text-secondary); font-size: .88rem; line-height: 1.6; }
+.actions { display: flex; justify-content: flex-end; gap: .6rem; }
+.cancel,
+.confirm {
+  min-height: 46px;
+  padding: .65rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cancel { color: var(--text-primary); background: var(--bg-secondary); }
+.confirm { color: var(--text-inverse); background: var(--primary); border-color: var(--primary); }
+.danger { color: #fff; background: var(--error); border-color: var(--error); }
+.cancel:hover:not(:disabled) { background: var(--bg-tertiary); border-color: var(--border-strong); }
+.confirm:hover:not(:disabled) { filter: brightness(.96); }
+.cancel:disabled,
+.confirm:disabled { cursor: wait; opacity: .62; }
+
+@media (max-width: 520px) {
+  .content { width: calc(100vw - 1rem); max-height: calc(100dvh - 1rem); gap: 1rem; padding: 1rem; border-radius: var(--radius-lg); }
+  .actions { flex-direction: column-reverse; }
+  .cancel, .confirm { width: 100%; }
+}
+
+@keyframes confirmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirmEnter {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(.985); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .content { animation: none; }
+}

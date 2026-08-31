@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import RichTextEditor from '../../components/RichTextEditor';
+import ConfirmDialog from '../../components/ui/confirm-dialog';
 import { useCreatePost, usePost, useUpdatePost } from '../../hooks/usePosts';
 import { EDITOR_CONFIG } from '../../constants';
 import { getWritingStarter, getWritingTemplate, getWritingTemplates } from '../../content/writingTemplates';
@@ -68,6 +69,9 @@ const CreatePostPage = () => {
   const [isDirty, setIsDirty] = useState(false);
   const [draftRestored, setDraftRestored] = useState(Boolean(initialDraft?.formData));
   const [markdownStatus, setMarkdownStatus] = useState('');
+  const [confirmIntent, setConfirmIntent] = useState(null);
+  const [pendingMarkdownFile, setPendingMarkdownFile] = useState(null);
+  const [confirmBusy, setConfirmBusy] = useState(false);
   const writingMetrics = getWritingMetrics(formData.body);
   const maxTestedDate = getLocalDateInputValue();
   const publishReadiness = getPublishReadiness({
@@ -183,24 +187,7 @@ const CreatePostPage = () => {
     setIsDirty(true);
   };
 
-  const handleMarkdownImport = async (event) => {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-    if (!file) return;
-
-    if (file.size > MAX_MARKDOWN_IMPORT_BYTES) {
-      setMarkdownStatus(i18n.language?.startsWith('en')
-        ? 'Markdown import is limited to 1 MB.'
-        : 'Markdown içe aktarma 1 MB ile sınırlıdır.');
-      return;
-    }
-
-    if ((formData.title.trim() || formData.body.trim()) && !window.confirm(
-      i18n.language?.startsWith('en')
-        ? 'Importing Markdown will replace the current title and body. Continue?'
-        : 'Markdown içe aktarma mevcut başlık ve gövdeyi değiştirecek. Devam edilsin mi?',
-    )) return;
-
+  const importMarkdownFile = async (file) => {
     try {
       const imported = splitMarkdownDocument(await file.text());
       if (!imported.title && !imported.body) {
@@ -228,6 +215,27 @@ const CreatePostPage = () => {
         ? 'Markdown could not be imported.'
         : 'Markdown içe aktarılamadı.');
     }
+  };
+
+  const handleMarkdownImport = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    if (file.size > MAX_MARKDOWN_IMPORT_BYTES) {
+      setMarkdownStatus(i18n.language?.startsWith('en')
+        ? 'Markdown import is limited to 1 MB.'
+        : 'Markdown içe aktarma 1 MB ile sınırlıdır.');
+      return;
+    }
+
+    if (formData.title.trim() || formData.body.trim()) {
+      setPendingMarkdownFile(file);
+      setConfirmIntent('markdown');
+      return;
+    }
+
+    await importMarkdownFile(file);
   };
 
   const handleMarkdownExport = () => {
@@ -294,16 +302,61 @@ const CreatePostPage = () => {
     }
   };
 
-  const handleCancel = () => {
-    if (isDirty) {
-      const confirmed = window.confirm(i18n.language?.startsWith('en')
-        ? 'Your changes are not saved. Leave this editor?'
-        : 'Değişiklikler kaydedilmedi. Bu düzenleyiciden çıkmak istiyor musun?');
-      if (!confirmed) return;
-    }
+  const leaveEditor = () => {
     if (typeof window !== 'undefined') clearDraft(window.localStorage, draftKey);
     navigate(-1);
   };
+
+  const handleCancel = () => {
+    if (isDirty) {
+      setConfirmIntent('leave');
+      return;
+    }
+    leaveEditor();
+  };
+
+  const closeConfirmDialog = () => {
+    if (confirmBusy) return;
+    setConfirmIntent(null);
+    setPendingMarkdownFile(null);
+  };
+
+  const handleConfirmDialog = async () => {
+    if (confirmIntent === 'markdown') {
+      const file = pendingMarkdownFile;
+      if (!file) {
+        closeConfirmDialog();
+        return;
+      }
+      setConfirmBusy(true);
+      await importMarkdownFile(file);
+      setConfirmBusy(false);
+      setPendingMarkdownFile(null);
+      setConfirmIntent(null);
+      return;
+    }
+
+    if (confirmIntent === 'leave') {
+      setConfirmIntent(null);
+      leaveEditor();
+    }
+  };
+
+  const confirmCopy = confirmIntent === 'markdown'
+    ? {
+      title: i18n.language?.startsWith('en') ? 'Replace current draft?' : 'Mevcut taslağın üzerine yazılsın mı?',
+      description: i18n.language?.startsWith('en')
+        ? 'Importing Markdown will replace the current title and body. Your evidence fields stay unchanged.'
+        : 'Markdown içe aktarma mevcut başlık ve gövdeyi değiştirecek. Kanıt alanların değişmeden kalır.',
+      confirm: i18n.language?.startsWith('en') ? 'Replace and import' : 'Değiştir ve içe aktar',
+    }
+    : {
+      title: i18n.language?.startsWith('en') ? 'Leave without saving?' : 'Kaydetmeden çıkılsın mı?',
+      description: i18n.language?.startsWith('en')
+        ? 'Your changes are not saved. Leaving will clear this local draft.'
+        : 'Değişiklikler kaydedilmedi. Çıkarsan bu yerel taslak temizlenecek.',
+      confirm: i18n.language?.startsWith('en') ? 'Leave editor' : 'Editörden çık',
+    };
 
   return (
     <div className="container">
@@ -596,6 +649,20 @@ const CreatePostPage = () => {
           </div>
           {!knowledgeBackendReady && <p id="verified-publish-status" className={styles.backendStatus}>{i18n.language?.startsWith('en') ? 'Drafting and autosave work now; publishing with persisted evidence activates after the production schema migration.' : 'Taslak ve otomatik kayıt çalışıyor; kalıcı kanıtla yayınlama production şema migration’ından sonra açılacak.'}</p>}
         </form>
+
+        <ConfirmDialog
+          open={Boolean(confirmIntent)}
+          onOpenChange={(open) => { if (!open) closeConfirmDialog(); }}
+          title={confirmCopy.title}
+          description={confirmCopy.description}
+          confirmLabel={confirmBusy
+            ? (i18n.language?.startsWith('en') ? 'Working…' : 'İşleniyor…')
+            : confirmCopy.confirm}
+          cancelLabel={t('common.cancel')}
+          busy={confirmBusy}
+          tone="danger"
+          onConfirm={handleConfirmDialog}
+        />
       </div>
     </div>
   );

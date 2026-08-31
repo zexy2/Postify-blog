@@ -3,13 +3,14 @@
  * Dashboard for admin users with user management and post moderation
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FiUsers, FiFileText, FiShield, FiActivity, FiTrash2, FiEdit, FiEye, FiEyeOff, FiMessageSquare } from 'react-icons/fi';
 import adminService, { USER_ROLES } from '../../services/adminService';
+import ConfirmDialog from '../../components/ui/confirm-dialog';
 import styles from './AdminPage.module.css';
 
 const ADMIN_COPY = {
@@ -22,7 +23,7 @@ const ADMIN_COPY = {
     published: 'Published', draft: 'Draft', unpublish: 'Unpublish', publish: 'Publish', edit: 'Edit', delete: 'Delete',
     loading: 'Loading…', eyebrow: 'ADMIN CONSOLE', headline: 'Manage Postify operations.', description: 'Control user roles, publishing state, and community operations from one workspace.',
     activeAdmin: 'Active administrator', tabsLabel: 'Administration sections', usersTab: 'Users', postsTab: 'Content', retry: 'Try again',
-    loadError: 'Administration data could not be loaded.', confirmDelete: 'Delete this content item? This action cannot be undone.', actionFailed: 'The admin action could not be completed.',
+    loadError: 'Administration data could not be loaded.', confirmDeleteTitle: 'Delete content?', confirmDelete: 'This action cannot be undone.', cancel: 'Cancel', deleting: 'Deleting…', actionFailed: 'The admin action could not be completed.',
   },
   tr: {
     dashboard: 'Genel bakış', totalUsers: 'Toplam kullanıcı', totalPosts: 'Toplam içerik', admin: 'Yönetici', moderator: 'Moderatör', comments: 'Yorum',
@@ -33,7 +34,7 @@ const ADMIN_COPY = {
     published: 'Yayında', draft: 'Taslak', unpublish: 'Yayından kaldır', publish: 'Yayınla', edit: 'Düzenle', delete: 'Sil',
     loading: 'Yükleniyor…', eyebrow: 'YÖNETİM KONSOLU', headline: 'Postify operasyonlarını yönet.', description: 'Kullanıcı rolleri, yayın durumu ve topluluk operasyonlarını tek çalışma alanından kontrol et.',
     activeAdmin: 'Aktif yönetici', tabsLabel: 'Yönetim bölümleri', usersTab: 'Kullanıcılar', postsTab: 'İçerikler', retry: 'Tekrar dene',
-    loadError: 'Yönetim verileri yüklenemedi.', confirmDelete: 'Bu içeriği silmek istiyor musun? Bu işlem geri alınamaz.', actionFailed: 'Yönetim işlemi tamamlanamadı.',
+    loadError: 'Yönetim verileri yüklenemedi.', confirmDeleteTitle: 'İçerik silinsin mi?', confirmDelete: 'Bu işlem geri alınamaz.', cancel: 'İptal', deleting: 'Siliniyor…', actionFailed: 'Yönetim işlemi tamamlanamadı.',
   },
 };
 
@@ -57,6 +58,9 @@ const AdminPage = ({ service = adminService }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [pendingDeletePost, setPendingDeletePost] = useState(null);
+  const [deletingPost, setDeletingPost] = useState(false);
+  const postsTabRef = useRef(null);
 
   // Check admin access
   useEffect(() => {
@@ -125,14 +129,22 @@ const AdminPage = ({ service = adminService }) => {
     }
   };
 
-  const handleDeletePost = async (postId) => {
-    if (!window.confirm(copy.confirmDelete)) return;
-    
+  const handleDeletePost = (post) => {
+    setPendingDeletePost(post);
+  };
+
+  const confirmDeletePost = async () => {
+    if (!pendingDeletePost) return;
+    setDeletingPost(true);
     try {
-      await service.deletePost(postId);
-      setPosts(posts.filter(p => p.id !== postId));
+      await service.deletePost(pendingDeletePost.id);
+      setPosts((currentPosts) => currentPosts.filter((post) => post.id !== pendingDeletePost.id));
+      setPendingDeletePost(null);
+      window.requestAnimationFrame(() => postsTabRef.current?.focus({ preventScroll: true }));
     } catch (err) {
       toast.error(err.message || copy.actionFailed);
+    } finally {
+      setDeletingPost(false);
     }
   };
 
@@ -333,7 +345,7 @@ const AdminPage = ({ service = adminService }) => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDeletePost(post.id)}
+                    onClick={() => handleDeletePost(post)}
                     className={styles.deleteBtn}
                     aria-label={`${copy.delete}: ${post.title}`}
                     title={copy.delete}
@@ -395,6 +407,7 @@ const AdminPage = ({ service = adminService }) => {
           <FiUsers /> {copy.usersTab}
         </button>
         <button
+          ref={postsTabRef}
           type="button"
           id="admin-tab-posts"
           className={`${styles.tab} ${activeTab === 'posts' ? styles.active : ''}`}
@@ -432,6 +445,18 @@ const AdminPage = ({ service = adminService }) => {
           </>
         )}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(pendingDeletePost)}
+        onOpenChange={(open) => { if (!open) setPendingDeletePost(null); }}
+        title={copy.confirmDeleteTitle}
+        description={pendingDeletePost ? `${pendingDeletePost.title}. ${copy.confirmDelete}` : copy.confirmDelete}
+        confirmLabel={deletingPost ? copy.deleting : copy.delete}
+        cancelLabel={copy.cancel}
+        busy={deletingPost}
+        tone="danger"
+        onConfirm={confirmDeletePost}
+      />
     </div>
   );
 };
