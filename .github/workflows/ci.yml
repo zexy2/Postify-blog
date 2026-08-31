@@ -38,10 +38,42 @@ jobs:
       - name: Run release verification
         run: npm run verify
 
+  docker-smoke:
+    name: Docker Image Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Build production image
+        run: docker build --tag postify:ci .
+
+      - name: Start production image
+        run: docker run --detach --name postify-ci --publish 18080:80 postify:ci
+
+      - name: Verify container health and root response
+        run: |
+          set -euo pipefail
+          for attempt in {1..30}; do
+            if [ "$(curl --fail --silent http://127.0.0.1:18080/health || true)" = "healthy" ]; then
+              curl --fail --silent --output /dev/null http://127.0.0.1:18080/
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs postify-ci
+          exit 1
+
+      - name: Stop production image
+        if: always()
+        run: docker rm --force postify-ci || true
+
   ui-e2e:
     name: Chromium Product E2E
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/playwright:v1.57.0-noble
+    container: mcr.microsoft.com/playwright:v1.57.0-noble@sha256:3bed4b1a12f2338642f3d8cba28e291deef3c66bd4a964bbeb3e57bbff511dbd
     steps:
       - name: Checkout code
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -84,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
         env:
           POSTGRES_PASSWORD: postify
           POSTGRES_DB: postify
@@ -141,7 +173,7 @@ jobs:
   deploy:
     name: Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [verify, ui-e2e, schema-verify]
+    needs: [verify, docker-smoke, ui-e2e, schema-verify]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
       contents: write
@@ -214,7 +246,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.deploy.result == 'success' && needs.deploy.outputs.deployed == 'true'
-    container: mcr.microsoft.com/playwright:v1.57.0-noble
+    container: mcr.microsoft.com/playwright:v1.57.0-noble@sha256:3bed4b1a12f2338642f3d8cba28e291deef3c66bd4a964bbeb3e57bbff511dbd
     steps:
       - name: Checkout source
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
