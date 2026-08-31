@@ -177,7 +177,9 @@ Veritabanı migration değişiklikleri de deploy öncesinde PostgreSQL 16 üzeri
 ├── scripts/                 # Verification, release ve artifact araçları
 ├── supabase/                # Migration ve DB doğrulaması
 ├── public/                  # Static asset ve machine-readable yüzeyler
-├── .github/workflows/       # CI/CD ve production migration workflow'ları
+├── project/                 # Maintainer odaklı proje kayıtları
+├── .github/workflows/       # CI/CD, güvenlik ve production workflow'ları
+├── ROADMAP.md               # Public ürün yönü
 ├── CONTRIBUTING.md          # Katkı akışı
 ├── SECURITY.md              # Güvenlik açığı bildirim politikası
 ├── SUPPORT.md               # Destek ve bildirim kanalları
@@ -197,7 +199,9 @@ Bir güvenlik açığı bildirmeden önce [SECURITY.md](SECURITY.md) dosyasını
 
 ## Katkıda bulunma
 
-Katkılar memnuniyetle karşılanır. [CONTRIBUTING.md](CONTRIBUTING.md) ile başlayın, hata/özellik taleplerinde repo issue formlarını kullanın ve pull request’leri dar kapsamlı ve test edilebilir tutun.
+Katkılar memnuniyetle karşılanır. [CONTRIBUTING.md](CONTRIBUTING.md) ile başlayın ve pull request’leri dar kapsamlı ve test edilebilir tutun.
+
+Sorular ve açık uçlu fikirler için [GitHub Discussions](https://github.com/zexy2/postify/discussions), yeniden üretilebilir hatalar veya kapsamı belirli özellik çalışmaları için repo issue formlarını kullanın. Public ürün yönünü [ROADMAP.md](ROADMAP.md) içinde görebilirsiniz.
 
 Topluluk davranış beklentileri için [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) dosyasına bakın.
 

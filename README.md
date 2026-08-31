@@ -177,7 +177,9 @@ Database migration changes are also replayed from scratch on PostgreSQL 16 and v
 ├── scripts/                 # Verification, release and artifact tooling
 ├── supabase/                # Migrations and database verification
 ├── public/                  # Static public assets and machine-readable surfaces
-├── .github/workflows/       # CI/CD and production migration workflows
+├── project/                 # Maintainer-oriented project records
+├── .github/workflows/       # CI/CD, security and production workflows
+├── ROADMAP.md               # Public product direction
 ├── CONTRIBUTING.md          # Contribution workflow
 ├── SECURITY.md              # Vulnerability reporting policy
 ├── SUPPORT.md               # Help and reporting routes
@@ -197,7 +199,9 @@ See [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 
 ## Contributing
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), use the repository’s issue forms for bugs/features, and keep pull requests focused and testable.
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and keep pull requests focused and testable.
+
+Use [GitHub Discussions](https://github.com/zexy2/postify/discussions) for questions and open-ended ideas, and the repository issue forms for reproducible bugs or scoped feature work. Public product direction lives in [ROADMAP.md](ROADMAP.md).
 
 For community behavior expectations, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 

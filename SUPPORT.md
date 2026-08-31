@@ -20,9 +20,11 @@ Do **not** open a public issue with vulnerability details. Use GitHub private vu
 
 https://github.com/zexy2/postify/security
 
-## Development questions
+## Questions and open-ended ideas
 
-For questions about contributing, start with [CONTRIBUTING.md](CONTRIBUTING.md). If the documentation is unclear, open a focused issue describing what you tried and where you got stuck.
+For implementation questions, contribution help, or ideas that are not yet scoped work, use [GitHub Discussions](https://github.com/zexy2/postify/discussions). Start with [CONTRIBUTING.md](CONTRIBUTING.md) for the local workflow.
+
+Use Issues when the conversation has become a reproducible bug or a concrete, actionable feature request.
 
 ## Production
 

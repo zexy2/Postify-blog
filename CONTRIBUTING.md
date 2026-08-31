@@ -4,8 +4,9 @@ Thanks for helping improve Postify. This project values contributions that are f
 
 ## Before you start
 
-- Search existing issues and pull requests before opening a duplicate.
-- Use the repository issue forms for bugs and feature requests.
+- Search existing issues, discussions, and pull requests before opening a duplicate.
+- Use GitHub Discussions for open-ended questions and early product ideas.
+- Use the repository issue forms for reproducible bugs and scoped feature requests.
 - For security-sensitive reports, follow [SECURITY.md](SECURITY.md) and do **not** publish exploit details in a public issue.
 - Keep changes scoped. A small PR with one clear purpose is easier to verify and safer to ship.
 
