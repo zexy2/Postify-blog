@@ -22,7 +22,7 @@ Use GitHub’s private vulnerability reporting flow:
 3. Describe the issue, affected surface, reproduction steps, impact, and any suggested mitigation.
 4. Attach only the minimum data necessary to reproduce the issue. Redact credentials and personal data.
 
-Repository security page: https://github.com/zexy2/Postify-blog/security
+Repository security page: https://github.com/zexy2/postify/security
 
 If GitHub’s private reporting control is temporarily unavailable, open a public issue containing **only** the title `Private security contact requested` and no vulnerability details. A maintainer can then establish a private channel.
 

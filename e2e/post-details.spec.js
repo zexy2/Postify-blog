@@ -36,7 +36,7 @@ test.describe('Post Details', () => {
   });
 
   test('should navigate back to home', async ({ page }) => {
-    await page.click('header a[href="/Postify-blog"]');
-    await expect(page).toHaveURL(/\/Postify-blog\/?$/);
+    await page.click('header a[href="/"]');
+    await expect(page).toHaveURL(/\/$/);
   });
 });

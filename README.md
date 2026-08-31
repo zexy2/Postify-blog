@@ -9,10 +9,10 @@ A verified knowledge network for developers and builders — combining reproduci
 
 [**Open Postify**](https://postify.zekiakgul.dev/) · [**How verification works**](#how-verification-works) · [**Contribute**](CONTRIBUTING.md) · [**Support**](SUPPORT.md) · [**Türkçe README**](README.tr.md)
 
-[![CI/CD](https://github.com/zexy2/Postify-blog/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/zexy2/Postify-blog/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/zexy2/postify/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/zexy2/postify/actions/workflows/ci.yml)
 [![Production](https://img.shields.io/website?url=https%3A%2F%2Fpostify.zekiakgul.dev&label=production)](https://postify.zekiakgul.dev/)
 [![Node 24 LTS](https://img.shields.io/badge/Node.js-24%20LTS-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![MIT License](https://img.shields.io/github/license/zexy2/Postify-blog)](LICENSE)
+[![MIT License](https://img.shields.io/github/license/zexy2/postify)](LICENSE)
 
 </div>
 
@@ -115,8 +115,8 @@ flowchart TB
 ### 1. Clone
 
 ```bash
-git clone https://github.com/zexy2/Postify-blog.git
-cd Postify-blog
+git clone https://github.com/zexy2/postify.git
+cd postify
 ```
 
 ### 2. Install dependencies

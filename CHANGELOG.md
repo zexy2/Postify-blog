@@ -30,5 +30,5 @@ This project follows [Semantic Versioning](https://semver.org/) for published Gi
 - CodeQL default code scanning enabled for JavaScript/TypeScript and GitHub Actions.
 - Main branch protected by required CI checks, pull-request flow, linear history, and force-push/deletion prevention.
 
-[Unreleased]: https://github.com/zexy2/Postify-blog/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/zexy2/Postify-blog/releases/tag/v0.1.0
+[Unreleased]: https://github.com/zexy2/postify/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/zexy2/postify/releases/tag/v0.1.0
