@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { FiArrowRight, FiChevronDown, FiSearch, FiSliders } from 'react-icons/fi';
+import { FiArrowRight, FiChevronDown, FiSearch, FiSliders, FiX } from 'react-icons/fi';
 import Hero from '../components/Hero';
 import CategoryNav from '../components/CategoryNav';
 import { getCategoryLabel } from '../lib/categoryLabels';
@@ -22,6 +22,8 @@ import { useRuntimeReleaseStatus, useVerificationRuns } from '../hooks/useAutoVe
 import { getAutomaticVerificationState } from '../lib/runtimeReleaseSignal';
 import { getWritingTemplates } from '../content/writingTemplates';
 import styles from './HomePage.module.css';
+
+const DiscoveryFilterPopover = React.lazy(() => import('../components/DiscoveryFilterPopover'));
 
 const HomePage = ({ isHistoryRestore = false }) => {
   const { t, i18n } = useTranslation();
@@ -50,7 +52,9 @@ const HomePage = ({ isHistoryRestore = false }) => {
   const [evidenceFilter, setEvidenceFilter] = useState(['author','community','postify'].includes(evidenceParam) ? evidenceParam : 'all');
   const [sortMode, setSortMode] = useState(sortParam === 'latest' ? 'latest' : 'evidence');
   const [gapSaved, setGapSaved] = useState(false);
-  const [refineOpen, setRefineOpen] = useState(() => Boolean(readingParam === 'quick' || freshnessParam === 'current' || ['author','community','postify'].includes(evidenceParam) || sortParam === 'latest'));
+  const [refineOpen, setRefineOpen] = useState(false);
+  const refineMenuRef = useRef(null);
+  const refineToggleRef = useRef(null);
 
   useScrollAnchorTransition({ active: isFallback, selector: '#knowledge-feed' });
 
@@ -111,8 +115,24 @@ const HomePage = ({ isHistoryRestore = false }) => {
   ].filter(Boolean).length;
 
   useEffect(() => {
-    if (activeRefinementCount > 0) setRefineOpen(true);
-  }, [activeRefinementCount]);
+    if (!refineOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!refineMenuRef.current?.contains(event.target)) setRefineOpen(false);
+    };
+    const handleEscape = (event) => {
+      if (event.key !== 'Escape') return;
+      setRefineOpen(false);
+      refineToggleRef.current?.focus({ preventScroll: true });
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [refineOpen]);
 
   const clearRefinements = () => {
     const nextParams = new URLSearchParams(searchParams);
@@ -121,9 +141,38 @@ const HomePage = ({ isHistoryRestore = false }) => {
     setEvidenceFilter('all');
     setSortMode('evidence');
     setReadingFilter('all');
-    setRefineOpen(false);
     setSearchParams(nextParams, { replace: true });
   };
+
+  const clearRefinement = (id) => {
+    if (id === 'freshness') {
+      setFreshnessFilter('all');
+      updateFilterParam('freshness', 'all');
+    } else if (id === 'evidence') {
+      setEvidenceFilter('all');
+      updateFilterParam('evidence', 'all');
+    } else if (id === 'sort') {
+      setSortMode('evidence');
+      updateFilterParam('sort', 'all');
+    } else if (id === 'reading') {
+      setReadingFilter('all');
+      updateFilterParam('reading', 'all');
+    }
+  };
+
+  const activeRefinements = [
+    freshnessFilter === 'current' ? { id: 'freshness', label: i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt' } : null,
+    evidenceFilter !== 'all' ? {
+      id: 'evidence',
+      label: evidenceFilter === 'author'
+        ? (i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti')
+        : evidenceFilter === 'community'
+          ? (i18n.language?.startsWith('en') ? 'Community confirmed' : 'Topluluk doğruladı')
+          : 'Postify verified',
+    } : null,
+    sortMode === 'latest' ? { id: 'sort', label: i18n.language?.startsWith('en') ? 'Latest' : 'En yeni' } : null,
+    readingFilter === 'quick' ? { id: 'reading', label: i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk' } : null,
+  ].filter(Boolean);
 
   useEffect(() => {
     setVisiblePostCount(9);
@@ -206,7 +255,7 @@ const HomePage = ({ isHistoryRestore = false }) => {
         <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Discovery filters' : 'Keşif filtreleri'}>
           <div className={styles.filterToolbar}>
             <div className={styles.filterCluster} role="group" aria-label={i18n.language?.startsWith('en') ? 'Content format' : 'İçerik biçimi'}>
-              <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'FORMAT' : 'BİÇİM'}</span>
+              <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'Format' : 'Biçim'}</span>
               <div className={styles.filterClusterControls} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
                 <button
                   type="button"
@@ -230,39 +279,63 @@ const HomePage = ({ isHistoryRestore = false }) => {
               </div>
             </div>
 
-            <button
-              type="button"
-              className={`${styles.refineToggle} ${refineOpen ? styles.refineToggleOpen : ''}`}
-              aria-label={i18n.language?.startsWith('en') ? 'Filters' : 'Filtreler'}
-              aria-expanded={refineOpen}
-              aria-controls="advanced-discovery-filters"
-              onClick={() => setRefineOpen((open) => !open)}
-            >
-              <FiSliders size={15} aria-hidden="true" />
-              <span>{i18n.language?.startsWith('en') ? 'Filters' : 'Filtreler'}</span>
-              {activeRefinementCount > 0 && <span className={styles.refineCount} aria-label={i18n.language?.startsWith('en') ? `${activeRefinementCount} active filters` : `${activeRefinementCount} aktif filtre`}>{activeRefinementCount}</span>}
-              <FiChevronDown className={styles.refineChevron} size={15} aria-hidden="true" />
-            </button>
+            <div className={styles.refineMenu} ref={refineMenuRef}>
+              <button
+                ref={refineToggleRef}
+                type="button"
+                className={`${styles.refineToggle} ${refineOpen ? styles.refineToggleOpen : ''}`}
+                aria-label={i18n.language?.startsWith('en') ? 'Filters' : 'Filtreler'}
+                aria-haspopup="dialog"
+                aria-expanded={refineOpen}
+                aria-controls="advanced-discovery-filters"
+                onClick={() => setRefineOpen((open) => !open)}
+              >
+                <FiSliders size={15} aria-hidden="true" />
+                <span>{i18n.language?.startsWith('en') ? 'Filters' : 'Filtreler'}</span>
+                {activeRefinementCount > 0 && <span className={styles.refineCount} aria-label={i18n.language?.startsWith('en') ? `${activeRefinementCount} active filters` : `${activeRefinementCount} aktif filtre`}>{activeRefinementCount}</span>}
+                <FiChevronDown className={styles.refineChevron} size={15} aria-hidden="true" />
+              </button>
+
+              {refineOpen && (
+                <React.Suspense fallback={null}>
+                  <DiscoveryFilterPopover
+                    anchorRef={refineToggleRef}
+                    isEnglish={i18n.language?.startsWith('en')}
+                    resultCount={filteredPosts.length}
+                    activeRefinementCount={activeRefinementCount}
+                    freshnessFilter={freshnessFilter}
+                    evidenceFilter={evidenceFilter}
+                    sortMode={sortMode}
+                    readingFilter={readingFilter}
+                    onFreshnessChange={handleFreshnessChange}
+                    onEvidenceChange={handleEvidenceChange}
+                    onSortChange={handleSortChange}
+                    onReadingChange={handleReadingChange}
+                    onClear={clearRefinements}
+                    onClose={() => {
+                      setRefineOpen(false);
+                      refineToggleRef.current?.focus({ preventScroll: true });
+                    }}
+                  />
+                </React.Suspense>
+              )}
+            </div>
           </div>
 
-          {refineOpen && (
-            <div id="advanced-discovery-filters" className={styles.refinePanel} role="group" aria-label={i18n.language?.startsWith('en') ? 'Evidence and ordering' : 'Kanıt ve sıralama'}>
-              <div className={styles.refineControls} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
-                <button type="button" className={freshnessFilter === 'current' ? styles.typeFilterActive : ''} aria-pressed={freshnessFilter === 'current'} onClick={handleFreshnessChange}>
-                  {i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt'}
-                </button>
-                <button type="button" className={evidenceFilter === 'author' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'author'} onClick={() => handleEvidenceChange(evidenceFilter === 'author' ? 'all' : 'author')}>{i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti'}</button>
-                <button type="button" className={evidenceFilter === 'community' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'community'} onClick={() => handleEvidenceChange(evidenceFilter === 'community' ? 'all' : 'community')}>{i18n.language?.startsWith('en') ? 'Community confirmed' : 'Topluluk doğruladı'}</button>
-                <button type="button" className={evidenceFilter === 'postify' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'postify'} onClick={() => handleEvidenceChange(evidenceFilter === 'postify' ? 'all' : 'postify')}>Postify verified</button>
-                <button type="button" className={sortMode === 'evidence' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'evidence'} onClick={() => handleSortChange('evidence')}>{i18n.language?.startsWith('en') ? 'Best evidence' : 'En güçlü kanıt'}</button>
-                <button type="button" className={sortMode === 'latest' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'latest'} onClick={() => handleSortChange('latest')}>{i18n.language?.startsWith('en') ? 'Latest' : 'En yeni'}</button>
-                <button type="button" className={readingFilter === 'quick' ? styles.typeFilterActive : ''} aria-pressed={readingFilter === 'quick'} onClick={handleReadingChange}>
-                  {i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk'}
-                </button>
+          {activeRefinements.length > 0 && (
+            <div className={styles.activeRefinements} aria-label={i18n.language?.startsWith('en') ? 'Active filters' : 'Aktif filtreler'}>
+              <span className={styles.activeRefinementLabel}>{i18n.language?.startsWith('en') ? 'Active' : 'Aktif'}</span>
+              <div className={styles.activeRefinementList}>
+                {activeRefinements.map((filter) => (
+                  <button key={filter.id} type="button" className={styles.activeRefinementChip} aria-label={i18n.language?.startsWith('en') ? `Remove ${filter.label}` : `${filter.label} filtresini kaldır`} onClick={() => clearRefinement(filter.id)}>
+                    <span>{filter.label}</span>
+                    <FiX size={13} aria-hidden="true" />
+                  </button>
+                ))}
               </div>
-              {activeRefinementCount > 0 && (
-                <button type="button" className={styles.clearRefinements} onClick={clearRefinements}>
-                  {i18n.language?.startsWith('en') ? 'Reset' : 'Sıfırla'}
+              {activeRefinements.length > 1 && (
+                <button type="button" className={styles.clearSummary} onClick={clearRefinements}>
+                  {i18n.language?.startsWith('en') ? 'Clear all' : 'Tümünü temizle'}
                 </button>
               )}
             </div>
