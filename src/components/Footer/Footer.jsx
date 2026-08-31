@@ -62,7 +62,7 @@ const Footer = () => {
             </Link>
             <p>{t('footer.description')}</p>
             <a
-              href="https://github.com/zexy2/Postify-blog"
+              href="https://github.com/zexy2/postify"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.githubLink}
