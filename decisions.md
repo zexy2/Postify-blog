@@ -454,3 +454,9 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 - The fallback-first Home catalogue is the loading strategy for public discovery. Unreachable skeleton/wake-up presentation code is removed rather than maintained as a second loading system.
 - Public Article detail keeps offline resilience only when the requested story exists in the local fallback catalogue. A backend failure for a live-only story remains a retryable service error; a successful backend lookup returning no story is the only not-found state.
 - Shared `SystemStatus` is the default semantic loading/recovery surface for protected and route-level states that need busy/error context.
+
+### Evidence feedback stays inside the product UI
+- Browser-native `prompt()` dialogs are not an acceptable evidence-capture surface: they break visual continuity, are hard to style/localize, and provide poor mobile context.
+- Evidence context is collected inline and remains optional; persistence semantics are unchanged.
+- Evidence-result and shelf controls expose selection with `aria-pressed`; save failures use `role="alert"`, successful saves use `role="status"`.
+- Interaction hit-area rules follow the product touch breakpoint (<=960px) without changing desktop density.

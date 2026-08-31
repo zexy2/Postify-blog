@@ -611,3 +611,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Corrected Article route semantics. Known fallback stories remain readable when Supabase is unavailable; live-only stories now propagate backend failure instead of being misreported as missing. Article loading uses a shared busy status, service failure is retryable, and a resolved null story receives a separate not-found recovery link to Explore.
 - Targeted regressions cover slow ProtectedRoute auth, auth/profile enrichment failure, login with profile failure, post mutation feedback, static TR/EN translation coverage, Profile recovery, Knowledge loading, Article fallback/error/not-found states and Turkish browser validation. All targeted runs are green before the full fresh release gate.
 - Fresh release gate for this closeout tranche: 39 Vitest files / 144 tests PASS, functional Chromium 44/44 PASS, visual/structural Chromium 102/102 PASS, npm audit 0 vulnerabilities, lint/knowledge/build/smoke PASS. Existing visual baselines remained unchanged. Production entry is 314,503 bytes and remains below the 320 KB release budget.
+
+### Inline evidence feedback UI closeout
+- Replaced native `window.prompt()` evidence capture with an inline, locale-aware form inside the article evidence section.
+- Added explicit pressed/expanded semantics for evidence and shelf controls, status-vs-alert messaging, and 44px tablet touch targets.
+- Verified in real Chromium at 390px and 820px in light/dark: zero native dialogs, zero horizontal overflow, 44px minimum controls, saved environment feedback rendered inline.
+- Added deterministic unit coverage and a Chromium product contract for the full inline save flow.
+- Fresh release gate: 40 files / 146 unit tests, 45/45 functional Chromium, 102/102 visual/structural, lint/security/build/smoke PASS; main entry 314,503 B under the 320 KB budget.

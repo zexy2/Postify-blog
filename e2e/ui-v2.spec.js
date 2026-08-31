@@ -251,6 +251,38 @@ test.describe('Postify UI V2', () => {
     }
   });
 
+  test('evidence feedback stays inline and tablet touch-safe', async ({ page }) => {
+    await page.setViewportSize({ width: 820, height: 900 });
+    let nativeDialogs = 0;
+    page.on('dialog', async (dialog) => { nativeDialogs += 1; await dialog.dismiss(); });
+    await page.goto('/posts/node-json-dogrulama');
+
+    const feedback = page.locator('#evidence-feedback');
+    const worked = feedback.getByRole('button', { name: /^çalıştı$|^worked$/i });
+    await expect(worked).toBeVisible();
+    await worked.click();
+    expect(nativeDialogs).toBe(0);
+
+    const environment = feedback.getByLabel(/ortam \/ sürüm|environment \/ version/i);
+    await expect(environment).toBeVisible();
+    expect((await environment.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    await environment.fill('Node.js 22 · Linux');
+
+    for (const button of await feedback.getByRole('button').all()) {
+      const box = await button.boundingBox();
+      if (box) expect(box.height).toBeGreaterThanOrEqual(44);
+    }
+
+    await feedback.getByRole('button', { name: /kanıtı kaydet|save evidence/i }).click();
+    await expect(worked).toHaveAttribute('aria-pressed', 'true');
+    await expect(feedback.getByRole('status')).toContainText(/kanıt kaydedildi|evidence saved/i);
+    await expect(feedback).toContainText('Node.js 22 · Linux');
+    expect(nativeDialogs).toBe(0);
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test('V3 public author portfolio stays mobile-safe and knowledge-first', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/users/fallback-editor');
@@ -821,12 +853,19 @@ test.describe('Verified Knowledge pre-migration compatibility', () => {
   });
 
   test('anonymous worked evidence remains useful and durable on-device', async ({ page }) => {
+    let nativeDialogs = 0;
+    page.on('dialog', async (dialog) => { nativeDialogs += 1; await dialog.dismiss(); });
     await page.goto('/posts/ai-muhendisligi');
-    page.once('dialog', async (dialog) => dialog.accept('Node 22 · Chrome'));
-    await page.getByRole('button', { name: /^çalıştı$|^worked$/i }).click();
-    await expect(page.getByRole('status').filter({ hasText: /kanıt kaydedildi|evidence saved/i })).toBeVisible();
+    const feedback = page.locator('#evidence-feedback');
+    const worked = feedback.getByRole('button', { name: /^çalıştı$|^worked$/i });
+    await worked.click();
+    await feedback.getByLabel(/ortam \/ sürüm|environment \/ version/i).fill('Node 22 · Chrome');
+    await feedback.getByRole('button', { name: /kanıtı kaydet|save evidence/i }).click();
+    await expect(feedback.getByRole('status').filter({ hasText: /kanıt kaydedildi|evidence saved/i })).toBeVisible();
+    expect(nativeDialogs).toBe(0);
     await page.reload();
-    await expect(page.getByRole('button', { name: /^çalıştı$|^worked$/i })).toHaveAttribute('data-active', 'true');
+    await expect(worked).toHaveAttribute('aria-pressed', 'true');
+    await expect(feedback).toContainText('Node 22 · Chrome');
   });
 
   test('critical public knowledge flow has no unexpected browser or network errors', async ({ page }) => {
