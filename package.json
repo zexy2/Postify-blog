@@ -8,10 +8,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zexy2/Postify-blog.git"
+    "url": "git+https://github.com/zexy2/postify.git"
   },
   "bugs": {
-    "url": "https://github.com/zexy2/Postify-blog/issues"
+    "url": "https://github.com/zexy2/postify/issues"
   },
   "engines": {
     "node": ">=24 <25"
