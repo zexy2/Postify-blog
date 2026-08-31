@@ -10,8 +10,21 @@ export function slugifyHeading(value = '', index = 0) {
   return slug ? `section-${slug}-${index}` : `section-${index}`;
 }
 
+export function splitArticleBlocks(content = '') {
+  return String(content)
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .flatMap((block) => {
+      if (!/^#{1,3}\s/.test(block)) return [block];
+      const [headingLine, ...rest] = block.split('\n');
+      const remainder = rest.join('\n').trim();
+      return remainder ? [headingLine.trim(), remainder] : [headingLine.trim()];
+    });
+}
+
 export function getArticleOutline(content = '') {
-  const blocks = String(content).split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+  const blocks = splitArticleBlocks(content);
   return blocks
     .filter((block) => /^#{1,3}\s/.test(block))
     .map((block, index) => {

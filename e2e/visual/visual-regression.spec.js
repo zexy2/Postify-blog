@@ -107,7 +107,13 @@ test('Article action bar yields to keyboard focus in short touch viewports', asy
   await expect(actionBar).toBeVisible();
 
   await page.keyboard.press('Tab');
-  const verificationLink = page.getByRole('link', { name: /verification during the build|doğrulama/i }).first();
+  const outlineDisclosure = page.locator('article details').filter({ hasText: /on this page|bu yazıda/i }).first();
+  await expect(outlineDisclosure).toBeVisible();
+  const outlineSummary = outlineDisclosure.locator('summary');
+  await outlineSummary.focus();
+  await page.keyboard.press('Enter');
+  await expect(outlineDisclosure).toHaveAttribute('open', '');
+  const verificationLink = outlineDisclosure.getByRole('link', { name: /^verification$|^doğrulama$/i });
   await verificationLink.focus();
   await expect(verificationLink).toBeFocused();
   await expect.poll(async () => Number.parseFloat(await actionBar.evaluate((element) => getComputedStyle(element).opacity))).toBeLessThan(0.1);

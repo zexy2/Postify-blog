@@ -1,11 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading } from './articleStructure';
+import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading, splitArticleBlocks } from './articleStructure';
 
 describe('articleStructure', () => {
   it('extracts markdown-style headings into a stable outline', () => {
     expect(getArticleOutline('## Kurulum\n\nMetin\n\n### Doğrulama')).toEqual([
       { text: 'Kurulum', level: 2, id: 'section-kurulum-0' },
       { text: 'Doğrulama', level: 3, id: 'section-dogrulama-1' },
+    ]);
+  });
+
+  it('separates a heading from body copy that follows on the next line', () => {
+    const source = '## Problem\nBody copy belongs in a paragraph.\n\n## Verification\nRun the check.';
+    expect(splitArticleBlocks(source)).toEqual([
+      '## Problem',
+      'Body copy belongs in a paragraph.',
+      '## Verification',
+      'Run the check.',
+    ]);
+    expect(getArticleOutline(source)).toEqual([
+      { text: 'Problem', level: 2, id: 'section-problem-0' },
+      { text: 'Verification', level: 2, id: 'section-verification-1' },
     ]);
   });
 
