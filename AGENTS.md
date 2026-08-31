@@ -1,7 +1,7 @@
 # Postify Agent Working Agreement
 
 ## Start every task
-1. Read `project-context.md`, `progress.md`, `known-issues.md`, and the relevant file under `specs/`.
+1. Read `project/project-context.md`, `project/progress.md`, `project/known-issues.md`, and the relevant file under `specs/`.
 2. Inspect the current code before changing it. Do not assume a route, service, schema, or script exists.
 3. Preserve existing authentication/Supabase behavior unless the task explicitly changes it.
 4. Separate verified facts from assumptions. Do not claim tests, browser checks, sources, or deployments that were not actually run.
@@ -21,7 +21,7 @@ Every product change should improve at least one of these outcomes:
 3. Make the smallest coherent change.
 4. Run lint and production build; run narrower tests when available.
 5. Review the diff for regressions and accidental scope creep.
-6. Update `progress.md`, `decisions.md`, and `known-issues.md` when relevant.
+6. Update `project/progress.md`, `project/decisions.md`, and `project/known-issues.md` when relevant.
 
 ## Quality rules
 - Do not add decorative UI without a reader or author job to justify it.

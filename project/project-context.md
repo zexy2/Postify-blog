@@ -94,4 +94,4 @@ Do not fabricate authenticated browser coverage, evidence counts, verification, 
 - Never invent evidence, community activity, authorship, or test results
 - Preserve exact production migration history
 - If a strategy fails twice, change strategy instead of repeating it
-- Keep `progress.md`, `decisions.md`, `backlog.md`, `known-issues.md`, and this file aligned with the actual released system
+- Keep `project/progress.md`, `project/decisions.md`, `project/backlog.md`, `project/known-issues.md`, and `project/project-context.md` aligned with the actual released system

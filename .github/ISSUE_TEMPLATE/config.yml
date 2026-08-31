@@ -3,6 +3,9 @@ contact_links:
   - name: Security vulnerability
     url: https://github.com/zexy2/postify/security/advisories/new
     about: Report security vulnerabilities privately. Do not disclose exploit details in a public issue.
+  - name: Questions and open-ended ideas
+    url: https://github.com/zexy2/postify/discussions
+    about: Use Discussions for Q&A, early ideas, and community conversations that are not yet scoped work.
   - name: Live Postify
     url: https://postify.zekiakgul.dev/
     about: Open the current production application before reporting a production-specific issue.
