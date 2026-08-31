@@ -1,0 +1,69 @@
+name: Feature request
+description: Propose a focused product or developer-experience improvement
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the user problem first, then the proposed solution. Postify prioritizes changes that strengthen useful, trustworthy, and reproducible knowledge.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched existing issues and did not find the same request.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user or contributor problem should this solve?
+      placeholder: Today, users cannot ... which causes ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest useful solution.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches or workarounds did you consider?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Primary area
+      options:
+        - Verified Knowledge / trust model
+        - Reading / discovery experience
+        - Writing / editor experience
+        - Accounts / profiles
+        - Accessibility
+        - Performance / PWA
+        - Supabase / data model
+        - Developer experience / tooling
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: success
+    attributes:
+      label: Success criteria
+      description: How would we know this feature solves the problem?
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, examples, links, constraints, or implementation notes.

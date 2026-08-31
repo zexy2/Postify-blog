@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/zexy2/Postify-blog/security
+    about: Report security vulnerabilities privately. Do not disclose exploit details in a public issue.
+  - name: Live Postify
+    url: https://postify.zekiakgul.dev/
+    about: Open the current production application before reporting a production-specific issue.

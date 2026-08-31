@@ -1,85 +1,212 @@
+<div align="center">
+  <img src="public/pwa-icon.svg" alt="Postify logo" width="88" height="88" />
+
 # Postify
 
-**Okumak için değil, uygulamak için — ve neye dayanarak güveneceğini görmek için.**
+### Knowledge you can verify, not just read.
 
-Postify, geliştiriciler ve ürün üretenler için **Verified Knowledge** odaklı bir bilgi ağıdır. Genel amaçlı bir blog klonu olmak yerine içeriği uygulanabilirlik, kanıt, güncellik ve yeniden üretilebilirlik sinyalleriyle sunar.
+A verified knowledge network for developers and builders — combining reproducible guides, evidence, freshness signals, and community validation.
 
-## İçerik biçimleri
+[**Open Postify**](https://postify.zekiakgul.dev/) · [**How verification works**](#how-verification-works) · [**Contribute**](CONTRIBUTING.md) · [**Support**](SUPPORT.md) · [**Türkçe README**](README.tr.md)
 
-- **Rehber** — somut bir işi tamamlatır.
-- **Karar notu** — seçenekleri ve ödünleşimleri görünür kılar.
-- **Açıklayıcı** — bir kavram için hızlı, doğru zihinsel model kurar.
-- **Saha notu** — gerçek bir deneyimden sonucu ve dersi kaydeder.
+[![CI/CD](https://github.com/zexy2/Postify-blog/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/zexy2/Postify-blog/actions/workflows/ci.yml)
+[![Production](https://img.shields.io/website?url=https%3A%2F%2Fpostify.zekiakgul.dev&label=production)](https://postify.zekiakgul.dev/)
+[![Node 24 LTS](https://img.shields.io/badge/Node.js-24%20LTS-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![MIT License](https://img.shields.io/github/license/zexy2/Postify-blog)](LICENSE)
 
-## Güven modeli
+</div>
 
-Postify üç farklı durumu özellikle birbirine karıştırmaz:
+![Postify production home screen](.github/assets/postify-home.png)
 
-- **Doğrulanmamış / Unverified** — yazar test iddiasında bulunmaz.
-- **Yazar test etti / Author tested** — geçerli test tarihi, anlamlı ortam/sürüm bilgisi ve doğrulama adımları vardır. Bu, yazar beyanıdır; bağımsız Postify çalıştırması değildir.
-- **Postify verified** — yazar tarafından seçilemez. Yalnız checked-in deterministik kodun release sırasında gerçekten çalıştırılması, gösterilen kodla artifactın birebir eşleşmesi ve takip edilen runtime güncelliğinin hâlâ `current` olmasıyla türetilir.
+## Why Postify?
 
-Topluluk `Çalıştı / Çalışmadı` kanıtı authenticated kullanıcılar için Supabase'e kalıcı yazılır; bir kullanıcı bir postun sayacını tekrar tekrar şişiremez. Public yüzeyler ham kullanıcı kimliği/notu yerine privacy-safe aggregate gösterir. Girişsiz geri bildirim cihazda kalır.
+Most technical content tells you what somebody wrote. Postify is designed to also show **what was tested, when it was tested, under which environment, and whether that evidence is still current**.
+
+| | Postify signal | What it answers |
+|---|---|---|
+| 🧪 | **Reproducible verification** | Can this claim be executed and checked? |
+| 🧾 | **Evidence & provenance** | What supports the claim? |
+| 🕒 | **Freshness** | Is the verification still current for the tracked runtime? |
+| 👥 | **Community validation** | Did it work for other authenticated users? |
+
+Postify is not trying to be another generic blog clone. Its core product idea is **Verified Knowledge**: practical technical knowledge with explicit trust states instead of an undifferentiated “published = trustworthy” model.
+
+## Knowledge formats
+
+Postify treats different kinds of technical writing differently:
+
+- **Guide** — completes a concrete task.
+- **Decision note** — makes options, constraints, and trade-offs visible.
+- **Explainer** — builds a fast, accurate mental model.
+- **Field note** — records the result and lesson from a real experience.
+
+## How verification works
+
+Postify deliberately separates author claims from platform-derived verification.
+
+```mermaid
+flowchart LR
+    A[Unverified] -->|Author adds test date, environment and steps| B[Author tested]
+    B -->|Checked-in deterministic verifier runs during release| C[Postify verified]
+    C -->|Tracked runtime becomes stale or uncertain| D[Recheck required]
+    D -->|Verifier runs successfully on a current tracked runtime| C
+```
+
+### Trust states
+
+- **Unverified** — the author does not claim a test was performed.
+- **Author tested** — the post includes meaningful environment/version information, a valid test date, and verification steps. This remains an author assertion.
+- **Postify verified** — cannot be selected by an author. It is derived only when checked-in deterministic verification code actually runs, the displayed code matches the verified artifact, and the tracked runtime freshness remains current.
+
+Authenticated users can submit **Worked / Didn’t work** evidence to Supabase. Public surfaces expose privacy-safe aggregates rather than raw user identities or private notes. Signed-out feedback remains local to the device.
+
+![Postify verification experience in production](.github/assets/postify-verification.png)
 
 ## Production
 
-- Site: `https://postify.zekiakgul.dev/`
-- Backend: Supabase/PostgreSQL + RLS
-- Production Verified Knowledge migrations aktiftir.
-- Machine-readable trust artifactları: `/verification-runs.json`, `/runtime-release-status.json`, `/knowledge/<slug>.<locale>.json`
-- Otomatik Node doğrulaması Node 24 LTS hattını takip eder. Yeni LTS çıktığında veya freshness sinyali güvenilir değilse mevcut historical execution korunur ama güncel `Postify verified` rozeti geri çekilir.
+**Live app:** https://postify.zekiakgul.dev/
 
-## Stack
+Machine-readable trust surfaces are published alongside the UI:
 
-React 19, Vite 7, React Router 7, Redux Toolkit, TanStack Query, TipTap, Supabase/PostgreSQL, Vitest, Playwright, PWA/Workbox ve GitHub Actions.
+- `/verification-runs.json`
+- `/runtime-release-status.json`
+- `/knowledge-backend-status.json`
+- `/knowledge/<slug>.<locale>.json`
+- `/llms.txt`
 
-Hosted verify/build/deploy runtime'ı Node **24.20.0**'dır. Playwright package/container parity ve npm audit release gate tarafından fail-closed kontrol edilir.
+The production pipeline stamps every deployment with its source commit and waits for the **exact source SHA** to become observable before the final Chromium smoke suite runs.
 
-## Local development
+## Architecture
+
+```mermaid
+flowchart TB
+    UI[React 19 + Vite 7] --> DATA[Supabase client]
+    DATA --> DB[(PostgreSQL + RLS)]
+    UI --> KNOWLEDGE[Verified Knowledge artifacts]
+    VERIFY[Deterministic Node verifiers] --> KNOWLEDGE
+    CI[GitHub Actions release gates] --> VERIFY
+    CI --> TESTS[Vitest + Playwright + visual regression]
+    CI --> SCHEMA[Fresh PostgreSQL 16 migration + RLS verification]
+    TESTS --> DEPLOY[GitHub Pages deployment]
+    SCHEMA --> DEPLOY
+    DEPLOY --> PROD[postify.zekiakgul.dev]
+    PROD --> SMOKE[Exact-SHA production Chromium smoke]
+```
+
+### Stack
+
+- **Frontend:** React 19, Vite 7, React Router 7
+- **State & data:** Redux Toolkit, TanStack Query, Supabase
+- **Editor:** TipTap
+- **Database:** PostgreSQL + Row Level Security
+- **Testing:** Vitest, Testing Library, Playwright
+- **PWA:** Workbox / Vite PWA
+- **Delivery:** GitHub Actions + GitHub Pages
+- **Hosted verification runtime:** Node 24 LTS (`24.20.0` in the current workflow)
+
+## Quick start
+
+### Prerequisites
+
+- Node.js 24 LTS recommended
+- npm
+- A Supabase project if you want authenticated/backend-backed features locally
+
+### 1. Clone
+
+```bash
+git clone https://github.com/zexy2/Postify-blog.git
+cd Postify-blog
+```
+
+### 2. Install dependencies
 
 ```bash
 npm ci
+```
+
+### 3. Configure environment
+
+```bash
+cp .env.example .env.local
+```
+
+Then provide your local values:
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_APP_URL=http://localhost:5173
+VITE_APP_NAME=Postify
+```
+
+Never place a Supabase `service_role` secret or any other server secret in the browser bundle.
+
+### 4. Run locally
+
+```bash
 npm run dev
 ```
 
-Gerekli environment değişkenleri:
-
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_anon_or_publishable_key
-```
-
-Secret/service-role değerlerini browser bundle'a koymayın.
-
 ## Quality gates
 
-Deterministik uygulama doğrulaması:
+The repository uses fail-closed release checks rather than treating a successful build as sufficient proof of quality.
 
 ```bash
+# Knowledge verification + unit tests + lint + build + build smoke
 npm run verify
-```
 
-Hosted/release supply-chain kontrolü:
-
-```bash
+# Dependency/security and browser-runner parity checks
 npm run verify:security
-```
 
-Browser ürün testi:
-
-```bash
+# Chromium product tests
 npm run test:e2e:ui
+
+# Deterministic visual regression
+npm run test:e2e:visual
 ```
 
-DB migration değişiklikleri ayrıca fresh PostgreSQL 16 üzerinde tüm migration zinciri ve `supabase/verify-verified-knowledge.sql` ile doğrulanır. Production migration history repair edilmez; yeni migration'lar additive uygulanır ve remote ledger sürümü repository ile birebir hizalanır.
+Database migration changes are also replayed from scratch on PostgreSQL 16 and verified with `supabase/verify-verified-knowledge.sql` before deployment is allowed.
 
-## Önemli sınırlar
+## Repository map
 
-- Otomatik verifier arbitrary/untrusted kod sandbox'ı değildir; checked-in deterministik Node snippet'leriyle sınırlıdır.
-- `Postify verified` hiçbir zaman author-writable DB metadata değildir.
-- Kanıt/topluluk sayıları veya authenticated browser coverage uydurulmaz.
-- GitHub Pages deep-link ilk HTTP 404 davranışı hosting sınırıdır; browser fallback ve production Chromium smoke bunu ayrı doğrular.
+```text
+.
+├── src/                     # React application, features and content
+├── e2e/                     # Chromium product tests
+├── scripts/                 # Verification, release and artifact tooling
+├── supabase/                # Migrations and database verification
+├── public/                  # Static public assets and machine-readable surfaces
+├── .github/workflows/       # CI/CD and production migration workflows
+├── CONTRIBUTING.md          # Contribution workflow
+├── SECURITY.md              # Vulnerability reporting policy
+├── SUPPORT.md               # Help and reporting routes
+└── CODE_OF_CONDUCT.md       # Community standards
+```
+
+## Security model & important boundaries
+
+- The automatic verifier is **not** a sandbox for arbitrary or untrusted code. It is restricted to checked-in deterministic verification snippets.
+- `Postify verified` is never author-writable database metadata.
+- Evidence counts and authenticated browser coverage must come from real persisted data; they are not synthesized for presentation.
+- Supabase Row Level Security is verified as part of the CI schema gate.
+- Browser-exposed environment values must never contain service-role or other server secrets.
+- GitHub Pages deep-link first-request behavior is treated as a hosting constraint and tested separately from the browser fallback path.
+
+See [SECURITY.md](SECURITY.md) before reporting a vulnerability.
+
+## Contributing
+
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), use the repository’s issue forms for bugs/features, and keep pull requests focused and testable.
+
+For community behavior expectations, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## License
 
-MIT
+Postify is released under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+  <strong>Read less blindly. Verify more deliberately.</strong>
+</div>
