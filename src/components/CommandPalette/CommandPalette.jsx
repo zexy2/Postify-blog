@@ -63,6 +63,12 @@ const CommandPalette = ({ open, onClose }) => {
 
   useEffect(() => setActiveIndex(0), [query]);
 
+  useEffect(() => {
+    if (!open || !results[activeIndex]) return;
+    const activeOption = document.getElementById(`command-result-${results[activeIndex].id}`);
+    activeOption?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [activeIndex, open, results]);
+
   const openPost = useCallback((post) => {
     navigate(`/posts/${post.slug || post.id}`);
     onClose();

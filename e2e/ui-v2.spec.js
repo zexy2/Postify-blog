@@ -444,6 +444,33 @@ test.describe('Postify UI V2', () => {
     await expect(trigger).toBeFocused();
   });
 
+  test('command palette keeps keyboard selection visible in a short viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 568, height: 320 });
+    await page.goto('/');
+    await expect(page.locator('#knowledge-feed')).toBeVisible();
+    await page.keyboard.press('Control+K');
+
+    const dialog = page.getByRole('dialog');
+    const combobox = dialog.getByRole('combobox');
+    const results = page.locator('#command-palette-results');
+    await expect(combobox).toBeFocused();
+    expect(await dialog.getByRole('option').count()).toBeGreaterThanOrEqual(6);
+
+    for (let index = 0; index < 5; index += 1) await page.keyboard.press('ArrowDown');
+
+    const activeId = await combobox.getAttribute('aria-activedescendant');
+    expect(activeId).toBeTruthy();
+    const activeOption = page.locator(`#${activeId}`);
+    await expect(activeOption).toHaveAttribute('aria-selected', 'true');
+    const geometry = await Promise.all([results.boundingBox(), activeOption.boundingBox()]);
+    expect(geometry[1]?.y ?? -1).toBeGreaterThanOrEqual((geometry[0]?.y ?? 0) - 1);
+    expect((geometry[1]?.y ?? 0) + (geometry[1]?.height ?? 0)).toBeLessThanOrEqual((geometry[0]?.y ?? 0) + (geometry[0]?.height ?? 0) + 1);
+    expect(await results.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/\/posts\//);
+  });
+
   test('command palette locks background scroll and restores the reading position', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');

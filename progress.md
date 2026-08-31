@@ -630,3 +630,5 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 
 - Article context-return audit: production 04e2cc8 confirmed the old Article Back control always reset to `/` and lost filtered Home URL/scroll context. The pending history-aware Back control now returns through in-app history when available and falls back safely to Home for direct deep links; functional release coverage passed 46/46 before the visual selector contract was updated from link to button semantics.
 - Fresh Article context-return release gate PASS: 40 Vitest files / 146 tests, 46/46 functional Chromium, 105/105 visual/structural, lint/build/smoke/security all green; main entry 314,626 B remains under the 320 KB budget.
+
+- Command Palette short-viewport keyboard audit: production 3d2c7ca let ArrowDown move the active descendant to an off-screen result at 568×320 (`scrollTop=0` while the active option was ~200px below the result viewport). The active option now scrolls into the result rail with `block: nearest`; targeted Chromium confirms the sixth result stays visible and Enter opens it.
