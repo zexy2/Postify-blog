@@ -1,0 +1,11 @@
+# Default repository ownership
+* @zexy2
+
+# Security- and release-sensitive surfaces
+/.github/ @zexy2
+/supabase/ @zexy2
+/scripts/ @zexy2
+/package.json @zexy2
+/package-lock.json @zexy2
+/Dockerfile @zexy2
+/.env.example @zexy2
