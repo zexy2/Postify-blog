@@ -20,8 +20,8 @@ Thanks for helping improve Postify. This project values contributions that are f
 ### Install
 
 ```bash
-git clone https://github.com/zexy2/Postify-blog.git
-cd Postify-blog
+git clone https://github.com/zexy2/postify.git
+cd postify
 npm ci
 cp .env.example .env.local
 npm run dev
