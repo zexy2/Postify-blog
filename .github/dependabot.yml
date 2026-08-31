@@ -7,23 +7,106 @@ updates:
       day: "monday"
       time: "04:00"
       timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 8
+    cooldown:
+      semver-minor-days: 7
+      semver-patch-days: 3
+    labels:
+      - "dependencies"
     allow:
       - dependency-name: "*"
         update-types:
           - "version-update:semver-minor"
           - "version-update:semver-patch"
     groups:
-      production-version-updates:
+      tiptap:
         applies-to: "version-updates"
-        dependency-type: "production"
+        patterns:
+          - "@tiptap/*"
         update-types:
           - "minor"
           - "patch"
-      development-version-updates:
+      react-platform:
+        applies-to: "version-updates"
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-is"
+          - "react-redux"
+          - "@reduxjs/toolkit"
+          - "redux-persist"
+        update-types:
+          - "minor"
+          - "patch"
+      data-platform:
+        applies-to: "version-updates"
+        patterns:
+          - "@supabase/*"
+          - "@tanstack/react-query"
+          - "axios"
+        update-types:
+          - "minor"
+          - "patch"
+      content-and-i18n:
+        applies-to: "version-updates"
+        patterns:
+          - "i18next"
+          - "react-i18next"
+          - "react-markdown"
+          - "react-helmet-async"
+          - "rehype-highlight"
+          - "remark-gfm"
+        update-types:
+          - "minor"
+          - "patch"
+      ui-runtime:
+        applies-to: "version-updates"
+        patterns:
+          - "@radix-ui/*"
+          - "framer-motion"
+          - "react-icons"
+          - "react-hot-toast"
+          - "class-variance-authority"
+          - "clsx"
+          - "tailwind-merge"
+          - "gradflow"
+        update-types:
+          - "minor"
+          - "patch"
+      linting:
         applies-to: "version-updates"
         dependency-type: "development"
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@eslint/*"
+          - "globals"
+        update-types:
+          - "minor"
+          - "patch"
+      test-tooling:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        patterns:
+          - "@testing-library/*"
+          - "vitest"
+          - "jsdom"
         exclude-patterns:
           - "@playwright/test"
+        update-types:
+          - "minor"
+          - "patch"
+      build-tooling:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "vite-plugin-pwa"
+          - "workbox-window"
+          - "gh-pages"
+          - "@types/react"
+          - "@types/react-dom"
         update-types:
           - "minor"
           - "patch"
@@ -35,6 +118,10 @@ updates:
       day: "monday"
       time: "04:30"
       timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "github_actions"
     allow:
       - dependency-name: "*"
         update-types:
