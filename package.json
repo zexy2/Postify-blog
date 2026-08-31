@@ -1,9 +1,21 @@
 {
-  "name": "blog",
+  "name": "postify",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Verified knowledge network for developers — reproducible guides, evidence, freshness signals, and community validation.",
   "type": "module",
   "homepage": "https://postify.zekiakgul.dev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zexy2/Postify-blog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zexy2/Postify-blog/issues"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
