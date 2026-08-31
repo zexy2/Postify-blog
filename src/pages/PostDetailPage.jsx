@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiArrowLeft, FiArrowRight, FiMessageCircle, FiBookmark, FiClock } from 'react-icons/fi';
 import { usePost, usePosts } from '../hooks/usePosts';
@@ -55,11 +55,21 @@ const PlainArticleBody = ({ content }) => {
 const PostDetailPage = () => {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
+  const navigate = useNavigate();
   const articleRef = useRef(null);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const { post, comments, isLoading, isError, refetch, commentsUnavailable } = usePost(id);
   const { posts } = usePosts();
   const { bookmarkedIds, toggle: toggleBookmark } = useBookmarks();
+
+  const handleBack = () => {
+    const historyIndex = typeof window !== 'undefined' ? window.history.state?.idx : 0;
+    if (typeof historyIndex === 'number' && historyIndex > 0) {
+      navigate(-1);
+      return;
+    }
+    navigate('/');
+  };
 
   useEffect(() => {
     if (!post?.id || typeof IntersectionObserver === 'undefined') return undefined;
@@ -153,10 +163,10 @@ const PostDetailPage = () => {
             {/* Left Floating Rail Tools Widget */}
             <aside className={styles.rail} aria-label={t('article.tools')}>
               <div className={styles.railWidget}>
-                <Link to="/" className={styles.backBtn} title={t('common.back')}>
+                <button type="button" className={styles.backBtn} title={t('common.back')} onClick={handleBack}>
                   <FiArrowLeft size={16} />
                   <span>{t('common.back')}</span>
-                </Link>
+                </button>
 
                 <div className={styles.railDivider} />
 
@@ -341,9 +351,9 @@ const PostDetailPage = () => {
 
         {/* Mobile Sticky Action Bar */}
         <div data-mobile-article-tools className={`${styles.mobileActionBar} ${isFooterVisible ? styles.mobileActionBarHidden : ''}`} aria-label={t('article.tools')}>
-          <Link to="/" className={styles.mobileActionBtn} aria-label={t('common.back')}>
+          <button type="button" className={styles.mobileActionBtn} aria-label={t('common.back')} onClick={handleBack}>
             <FiArrowLeft size={18} />
-          </Link>
+          </button>
           <button
             type="button"
             className={`${styles.mobileActionBtn} ${isBookmarked ? styles.bookmarked : ''}`}

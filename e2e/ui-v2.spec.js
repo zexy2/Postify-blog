@@ -96,11 +96,24 @@ test.describe('Postify UI V2', () => {
       await expect(page.locator('[data-mobile-article-tools]')).toBeAttached();
       await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
 
-      await page.goBack();
+      const back = page.getByRole('button', { name: /^back$|^geri$/i }).first();
+      await expect(back).toBeVisible();
+      await back.click();
       await expect(page).toHaveURL(/type=guide.*sort=latest$/);
       await expect(feed).toBeVisible();
       await expect.poll(() => page.evaluate((top) => Math.abs(window.scrollY - top), beforeArticle), { timeout: 3000 }).toBeLessThanOrEqual(1);
     }
+  });
+
+  test('article Back falls home safely when there is no in-app history', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/posts/node-json-dogrulama');
+    await expect(page.locator('[data-mobile-article-tools]')).toBeAttached();
+    const historyIndex = await page.evaluate(() => window.history.state?.idx ?? 0);
+    expect(historyIndex).toBe(0);
+    await page.getByRole('button', { name: /^back$|^geri$/i }).first().click();
+    await expect(page).toHaveURL('/');
+    await expect(page.locator('#knowledge-feed')).toBeVisible();
   });
 
   test('footer controls stay touch-safe across the tablet navigation range', async ({ page }) => {

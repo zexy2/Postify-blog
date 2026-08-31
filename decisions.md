@@ -465,3 +465,5 @@ Routine version-update automation is limited to SemVer minor/patch releases. Maj
 
 ### 2026-08-31 — Auxiliary controls follow the Header touch breakpoint
 When the Header switches to drawer/touch navigation at 960px, secondary controls that are likely to be touched must also meet the 44px interaction target through 960px. Layout breakpoints remain independent; only hit-area rules for LanguageSwitcher, Hero actions, code/link copy actions, Verification Runbook actions, and evidence links are widened to the touch-mode boundary.
+
+- Article Back is history-aware navigation, not a hardcoded Home link: if React Router history has an in-app entry, navigate(-1) to preserve filters and scroll restoration; direct/deep-linked articles fall back to `/`. Both desktop rail and mobile action bar use button semantics for this action.

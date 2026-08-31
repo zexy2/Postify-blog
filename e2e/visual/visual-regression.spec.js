@@ -113,7 +113,7 @@ test('Article action bar yields to keyboard focus in short touch viewports', asy
   await expect.poll(async () => Number.parseFloat(await actionBar.evaluate((element) => getComputedStyle(element).opacity))).toBeLessThan(0.1);
   await expect.poll(async () => actionBar.evaluate((element) => getComputedStyle(element).pointerEvents)).toBe('none');
 
-  const back = actionBar.getByRole('link', { name: /^back$|^geri$/i });
+  const back = actionBar.getByRole('button', { name: /^back$|^geri$/i });
   await back.focus();
   await expect(back).toBeFocused();
   await expect.poll(async () => Number.parseFloat(await actionBar.evaluate((element) => getComputedStyle(element).opacity))).toBeGreaterThan(0.9);

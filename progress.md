@@ -627,3 +627,6 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Aligned only interaction hit areas (not layout/reflow) to the Header touch-mode breakpoint: LanguageSwitcher, Hero actions, CopyableCodeBlock, CopyLinkButton, VerificationRunbook actions, and evidence links are now at least 44px through 960px.
 - Extended the existing deterministic tablet touch contract to 600/820/960 and pre-seeded runbook progress so the Reset action is measured without asynchronous fallback/query state affecting the test.
 - Targeted Playwright visual/structural contract: 1/1 PASS.
+
+- Article context-return audit: production 04e2cc8 confirmed the old Article Back control always reset to `/` and lost filtered Home URL/scroll context. The pending history-aware Back control now returns through in-app history when available and falls back safely to Home for direct deep links; functional release coverage passed 46/46 before the visual selector contract was updated from link to button semantics.
+- Fresh Article context-return release gate PASS: 40 Vitest files / 146 tests, 46/46 functional Chromium, 105/105 visual/structural, lint/build/smoke/security all green; main entry 314,626 B remains under the 320 KB budget.
