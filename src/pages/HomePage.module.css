@@ -31,102 +31,121 @@
 
 
 .typeFilter {
+  position: relative;
   margin-bottom: 1rem;
 }
 
 .filterToolbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
-  gap: .75rem;
-  padding: .5rem .55rem;
-  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .25rem 0 .6rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .filterCluster {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: .45rem;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .72rem;
 }
 
 .filterClusterLabel {
-  padding: 0 .5rem;
+  flex: 0 0 auto;
   color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: .7rem;
-  font-weight: 820;
-  letter-spacing: .085em;
-}
-
-.filterClusterControls,
-.refineControls {
-  display: flex;
-  align-items: center;
-  gap: .15rem;
-  min-width: 0;
+  font-size: .73rem;
+  font-weight: 720;
+  letter-spacing: .01em;
 }
 
 .filterClusterControls {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .12rem;
   overflow-x: auto;
+  padding: .22rem;
+  background: color-mix(in srgb, var(--bg-secondary) 74%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
 
 .filterClusterControls::-webkit-scrollbar,
-.refineControls::-webkit-scrollbar { display: none; }
+.activeRefinementList::-webkit-scrollbar { display: none; }
 
-.typeFilter button {
+.filterClusterControls button {
   flex: 0 0 auto;
-  min-height: 40px;
-  padding: .45rem .7rem;
+  min-height: 36px;
+  padding: .42rem .72rem;
   color: var(--text-secondary);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  border-radius: calc(var(--radius-lg) - 2px);
   font: inherit;
-  font-size: .8rem;
-  font-weight: 690;
+  font-size: .79rem;
+  font-weight: 680;
   white-space: nowrap;
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.typeFilter button:hover {
+.filterClusterControls button:hover {
   color: var(--text-primary);
-  background: var(--bg-elevated);
-  border-color: var(--border-color);
+  background: color-mix(in srgb, var(--bg-primary) 70%, transparent);
 }
 
-.typeFilter button:focus-visible {
+.filterClusterControls button:focus-visible,
+.refineToggle:focus-visible,
+.activeRefinementChip:focus-visible,
+.clearSummary:focus-visible {
   outline: 3px solid var(--primary-light);
-  outline-offset: 1px;
+  outline-offset: 2px;
 }
 
-.typeFilter .typeFilterActive {
+.filterClusterControls .typeFilterActive {
   color: var(--text-primary);
-  background: var(--bg-elevated);
+  background: var(--bg-primary);
   border-color: var(--border-color);
-  font-weight: 790;
+  box-shadow: var(--shadow-xs);
+  font-weight: 780;
+}
+
+.refineMenu {
+  position: relative;
+  flex: 0 0 auto;
 }
 
 .refineToggle {
+  min-height: 40px;
   display: inline-flex;
   align-items: center;
-  gap: .45rem;
-  min-width: max-content;
-  color: var(--text-primary) !important;
-  background: var(--bg-primary) !important;
-  border-color: var(--border-color) !important;
+  justify-content: center;
+  gap: .48rem;
+  padding: .48rem .7rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 760;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .refineToggle:hover,
 .refineToggleOpen {
-  border-color: var(--border-strong) !important;
-  background: var(--bg-elevated) !important;
+  background: var(--bg-secondary);
+  border-color: var(--border-strong);
+}
+
+.refineToggleOpen {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 16%, transparent);
 }
 
 .refineCount {
@@ -134,12 +153,12 @@
   height: 1.25rem;
   display: inline-grid;
   place-items: center;
-  padding: 0 .25rem;
+  padding-inline: .24rem;
   color: var(--bg-primary);
   background: var(--text-primary);
   border-radius: var(--radius-full);
   font-family: var(--font-mono);
-  font-size: .62rem;
+  font-size: .61rem;
   font-weight: 850;
 }
 
@@ -150,86 +169,117 @@
 
 .refineToggleOpen .refineChevron { transform: rotate(180deg); }
 
-.refinePanel {
+.clearSummary {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: .35rem .55rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: .7rem;
+  font-weight: 730;
+  cursor: pointer;
+}
+
+.clearSummary:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.activeRefinements {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: .65rem;
-  margin-top: .4rem;
-  padding: .45rem .55rem;
-  background: color-mix(in srgb, var(--bg-secondary) 48%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
+  gap: .5rem;
+  min-width: 0;
+  padding-top: .55rem;
 }
 
-.refineControls {
-  flex-wrap: wrap;
+.activeRefinementLabel {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: .66rem;
+  font-weight: 720;
 }
 
-.clearRefinements {
-  color: var(--text-muted) !important;
-  background: transparent !important;
-  border-color: transparent !important;
-  text-decoration: underline;
-  text-decoration-color: var(--border-strong);
-  text-underline-offset: 3px;
+.activeRefinementList {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .32rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-.clearRefinements:hover { color: var(--text-primary) !important; }
+.activeRefinementChip {
+  flex: 0 0 auto;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: .36rem;
+  padding: .35rem .55rem;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--primary-subtle) 48%, var(--bg-secondary));
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-color));
+  border-radius: var(--radius-full);
+  font: inherit;
+  font-size: .7rem;
+  font-weight: 710;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.activeRefinementChip:hover {
+  background: color-mix(in srgb, var(--primary-subtle) 72%, var(--bg-secondary));
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border-color));
+}
+
 
 @media (max-width: 960px) {
-  .filterToolbar {
-    gap: .4rem;
-    padding: .35rem;
-  }
-
-  .filterCluster {
-    display: block;
-    min-width: 0;
-  }
-
+  .filterToolbar { gap: .5rem; }
+  .filterCluster { min-width: 0; flex: 1 1 auto; }
   .filterClusterLabel { display: none; }
-
-  .filterClusterControls,
-  .refineControls {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  .typeFilter button { min-height: 44px; }
-
-  .refineToggle {
-    min-width: 44px;
-    justify-content: center;
-  }
-
-  .refinePanel {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .clearRefinements { align-self: flex-start; }
+  .filterClusterControls button,
+  .refineToggle { min-height: 44px; }
+  .refineToggle { padding-inline: .65rem; }
+  .activeRefinementChip { min-height: 40px; }
 }
 
 @media (max-width: 560px) {
   .filterToolbar {
-    margin-inline: -.15rem;
-    padding: .25rem;
+    gap: .38rem;
+    padding-bottom: .5rem;
+  }
+
+  .filterClusterControls {
+    padding: .16rem;
     border-radius: var(--radius-lg);
   }
 
-  .filterClusterControls { padding-left: .05rem; }
+  .filterClusterControls button { padding-inline: .62rem; }
+
+  .refineToggle {
+    min-width: 44px;
+    padding-inline: .55rem;
+  }
 
   .refineToggle > span:not(.refineCount) { display: none; }
 
-  .refinePanel {
-    margin-inline: -.15rem;
-    padding: .3rem;
+  .activeRefinements {
+    gap: .38rem;
+    padding-top: .45rem;
   }
+
+  .activeRefinementLabel { display: none; }
+  .activeRefinementChip { min-height: 44px; }
+  .clearSummary { min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .typeFilter button,
+  .filterClusterControls button,
+  .refineToggle,
   .refineChevron { transition: none; }
 }
 

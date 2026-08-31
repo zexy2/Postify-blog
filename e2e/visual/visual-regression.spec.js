@@ -236,6 +236,26 @@ test('Mobile command palette open baseline', async ({ page }) => {
 });
 
 for (const viewport of viewports) {
+  test(`Discovery filter popover ${viewport.name} baseline`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await stabilize(page, { theme: 'dark', locale: 'tr' });
+    await page.goto('/');
+    const filters = page.getByRole('group', { name: /keşif filtreleri/i });
+    const toggle = filters.getByRole('button', { name: /^filtreler$/i });
+    await toggle.click();
+    const dialog = filters.getByRole('dialog', { name: /^filtreler$/i });
+    await expect(dialog).toBeVisible();
+    const box = await dialog.boundingBox();
+    expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
+    expect((box?.x ?? viewport.width + 1) + (box?.width ?? 0)).toBeLessThanOrEqual(viewport.width);
+    expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
+    expect((box?.y ?? viewport.height + 1) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+    await settleVisualSurface(page);
+    await expect(dialog).toHaveScreenshot(`discovery-filter-popover-${viewport.name}.png`);
+  });
+}
+
+for (const viewport of viewports) {
   test(`Home ${viewport.name} baseline`, async ({ page }) => {
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await stabilize(page);

@@ -80,7 +80,7 @@ test.describe('Postify UI V2', () => {
       await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
       await expect(feed).toBeInViewport();
 
-      const refineToggle = page.getByRole('button', { name: /filters|filtreler/i });
+      const refineToggle = page.getByRole('button', { name: /^filters$|^filtreler$/i });
       await refineToggle.click();
       await expect(refineToggle).toHaveAttribute('aria-expanded', 'true');
       const latest = page.getByRole('button', { name: /^latest$|^en yeni$/i });
@@ -89,6 +89,10 @@ test.describe('Postify UI V2', () => {
       await latest.click();
       await expect(page).toHaveURL(/type=guide.*sort=latest$/);
       await expect.poll(() => page.evaluate((top) => Math.abs(window.scrollY - top), beforeFilter)).toBeLessThanOrEqual(1);
+      await page.keyboard.press('Escape');
+      await expect(refineToggle).toHaveAttribute('aria-expanded', 'false');
+      await expect(refineToggle).toBeFocused();
+      await expect(page.getByRole('button', { name: /remove latest|en yeni filtresini kaldır/i })).toBeVisible();
 
       const card = feed.locator('[data-card-variant]').last();
       await card.scrollIntoViewIfNeeded();
@@ -776,7 +780,7 @@ test.describe('Postify UI V2', () => {
 
     const filters = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
     const formatGroup = filters.getByRole('group', { name: /content format|içerik biçimi/i });
-    const toggle = filters.getByRole('button', { name: /filters|filtreler/i });
+    const toggle = filters.getByRole('button', { name: /^filters$|^filtreler$/i });
 
     await expect(formatGroup).toBeVisible();
     await expect(toggle).toBeVisible();
@@ -790,12 +794,24 @@ test.describe('Postify UI V2', () => {
     expect(desktop.rows).toBe(1);
     expect(desktop.labelSize).toBeGreaterThanOrEqual(11);
 
+    const beforeOpenHeight = await filters.evaluate((element) => element.getBoundingClientRect().height);
     await toggle.click();
-    const refineGroup = filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
+    const dialog = filters.getByRole('dialog', { name: /^filters$|^filtreler$/i });
+    const refineGroup = dialog.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-    await expect(refineGroup).toBeVisible();
+    await expect(dialog).toBeVisible();
     await expect(refineGroup.getByRole('button', { name: /current evidence|güncel kanıt/i })).toBeVisible();
     await expect(refineGroup.getByRole('button', { name: /best evidence|en güçlü kanıt/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(await filters.evaluate((element) => element.getBoundingClientRect().height)).toBe(beforeOpenHeight);
+
+    await refineGroup.getByRole('button', { name: /current evidence|güncel kanıt/i }).click();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(toggle).toBeFocused();
+    const activeChip = filters.getByRole('button', { name: /remove current evidence|güncel kanıt filtresini kaldır/i });
+    await expect(activeChip).toBeVisible();
+    await activeChip.click();
+    await expect(activeChip).toHaveCount(0);
   });
 
   test('mobile discovery keeps the primary format strip compact and opens refinements on demand', async ({ page }) => {
@@ -804,7 +820,7 @@ test.describe('Postify UI V2', () => {
 
     const filters = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
     const formatGroup = filters.getByRole('group', { name: /content format|içerik biçimi/i });
-    const toggle = filters.getByRole('button', { name: /filters|filtreler/i });
+    const toggle = filters.getByRole('button', { name: /^filters$|^filtreler$/i });
     await expect(formatGroup.getByRole('button', { name: /tüm biçimler|all formats/i })).toBeVisible();
 
     const primaryGeometry = await formatGroup.evaluate((element) => {
@@ -818,23 +834,70 @@ test.describe('Postify UI V2', () => {
     expect(primaryGeometry.minHeight).toBeGreaterThanOrEqual(44);
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 
+    const beforeOpenHeight = await filters.evaluate((element) => element.getBoundingClientRect().height);
     await toggle.click();
-    const refineGroup = filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
+    const dialog = filters.getByRole('dialog', { name: /^filters$|^filtreler$/i });
+    const refineGroup = dialog.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
     await expect(refineGroup).toBeVisible();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
-    const refineGeometry = await refineGroup.evaluate((element) => {
+    const refineGeometry = await dialog.evaluate((element) => {
       const buttons = [...element.querySelectorAll('button')];
+      const rect = element.getBoundingClientRect();
       return {
         minHeight: Math.min(...buttons.map((button) => button.getBoundingClientRect().height)),
-        right: element.getBoundingClientRect().right,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
       };
     });
     expect(refineGeometry.minHeight).toBeGreaterThanOrEqual(44);
+    expect(refineGeometry.left).toBeGreaterThanOrEqual(0);
     expect(refineGeometry.right).toBeLessThanOrEqual(390);
+    expect(refineGeometry.top).toBeGreaterThanOrEqual(0);
+    expect(refineGeometry.bottom).toBeLessThanOrEqual(844);
+    expect(await filters.evaluate((element) => element.getBoundingClientRect().height)).toBe(beforeOpenHeight);
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(toggle).toBeFocused();
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
+  });
+
+
+  test('discovery filter popover stays contained at 200% text scaling', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto('/');
+    await page.addStyleTag({ content: 'html{font-size:200%!important}' });
+
+    const filters = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
+    const toggle = filters.getByRole('button', { name: /^filters$|^filtreler$/i });
+    await toggle.click();
+    const dialog = filters.getByRole('dialog', { name: /^filters$|^filtreler$/i });
+    await expect(dialog).toBeVisible();
+
+    const geometry = await dialog.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const escaped = [...element.querySelectorAll('button')]
+        .filter((button) => button.offsetParent !== null)
+        .filter((button) => {
+          const box = button.getBoundingClientRect();
+          return box.left < -1 || box.right > window.innerWidth + 1;
+        }).length;
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, escaped };
+    });
+    expect(geometry.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.right).toBeLessThanOrEqual(320);
+    expect(geometry.top).toBeGreaterThanOrEqual(0);
+    expect(geometry.bottom).toBeLessThanOrEqual(700);
+    expect(geometry.escaped).toBe(0);
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(toggle).toBeFocused();
   });
 
   test('mobile format navigation closes the drawer and lands on the selected feed', async ({ page }) => {
@@ -896,7 +959,7 @@ test.describe('Verified Knowledge V1', () => {
   test('discovery exposes evidence and freshness controls', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText(/yazar test etti|author tested/i).first()).toBeVisible();
-    await page.getByRole('button', { name: /filters|filtreler/i }).click();
+    await page.getByRole('button', { name: /^filters$|^filtreler$/i }).click();
     await expect(page.getByRole('button', { name: /güncel kanıt|current evidence/i })).toBeVisible();
   });
 
@@ -979,7 +1042,7 @@ test.describe('Verified Knowledge execution', () => {
     const runtimeJson = await request.get('/runtime-release-status.json').then((response) => response.json());
     const current = runtimeJson.checks?.['node-json-parse-v1']?.status === 'current';
     await page.goto('/');
-    await page.getByRole('button', { name: /filters|filtreler/i }).click();
+    await page.getByRole('button', { name: /^filters$|^filtreler$/i }).click();
     await page.getByRole('button', { name: /postify verified/i }).click();
     const article = page.getByRole('heading', { name: /Node.js örneğini|Verify a Node.js example/i });
     if (current) await expect(article).toBeVisible();
