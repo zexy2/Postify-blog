@@ -12,16 +12,19 @@ on:
 env:
   NODE_VERSION: "24.20.0"
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     name: Test, Lint, Build & Smoke
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -41,7 +44,7 @@ jobs:
     container: mcr.microsoft.com/playwright:v1.57.0-noble
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Install dependencies
         run: npm ci
@@ -95,7 +98,7 @@ jobs:
     env:
       PGPASSWORD: postify
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Install PostgreSQL client
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client
       - name: Bootstrap Supabase auth roles for dry-run
@@ -149,10 +152,10 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -200,7 +203,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         if: steps.prereq.outputs.ready == 'true'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
@@ -214,7 +217,7 @@ jobs:
     container: mcr.microsoft.com/playwright:v1.57.0-noble
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Install dependencies
         run: npm ci
