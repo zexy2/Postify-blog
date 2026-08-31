@@ -80,6 +80,9 @@ test.describe('Postify UI V2', () => {
       await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
       await expect(feed).toBeInViewport();
 
+      const refineToggle = page.getByRole('button', { name: /filters|filtreler/i });
+      await refineToggle.click();
+      await expect(refineToggle).toHaveAttribute('aria-expanded', 'true');
       const latest = page.getByRole('button', { name: /^latest$|^en yeni$/i });
       await latest.scrollIntoViewIfNeeded();
       const beforeFilter = await page.evaluate(() => window.scrollY);
@@ -365,11 +368,11 @@ test.describe('Postify UI V2', () => {
 
 
 
-  test('V3 topic index changes discovery context without mobile overflow', async ({ page }) => {
+  test('V3 topic navigation changes discovery context without mobile overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    const topicNav = page.locator('nav').filter({ hasText: /konu dizini|topic index/i }).first();
-    await expect(topicNav.getByText(/konu dizini|topic index/i)).toBeVisible();
+    const topicNav = page.locator('nav').filter({ has: page.getByRole('button', { name: /^tümü$|^all$/i }) }).first();
+    await expect(topicNav.getByText(/^konular$|^topics$/i)).toBeVisible();
     const topicButtons = topicNav.getByRole('button');
     expect(await topicButtons.count()).toBeGreaterThan(1);
     await expect(topicButtons.first()).toHaveAttribute('aria-pressed', 'true');
@@ -767,55 +770,71 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
-  test('discovery filter hierarchy groups desktop controls and flattens for touch', async ({ page }) => {
+  test('discovery filters keep advanced controls behind a clear disclosure', async ({ page }) => {
     await page.setViewportSize({ width: 1304, height: 844 });
     await page.goto('/');
 
     const filters = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
     const formatGroup = filters.getByRole('group', { name: /content format|içerik biçimi/i });
-    const refineGroup = filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
+    const toggle = filters.getByRole('button', { name: /filters|filtreler/i });
+
     await expect(formatGroup).toBeVisible();
-    await expect(refineGroup).toBeVisible();
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i })).toHaveCount(0);
 
-    const desktop = await filters.evaluate((element) => ({
-      display: getComputedStyle(element).display,
-      clusterRows: new Set([...element.querySelectorAll('[role="group"]')].map((cluster) => Math.round(cluster.getBoundingClientRect().top))).size,
-      labelSizes: [...element.querySelectorAll('[aria-hidden="true"]')].map((label) => parseFloat(getComputedStyle(label).fontSize)),
-    }));
-    expect(desktop.display).toBe('grid');
-    expect(desktop.clusterRows).toBe(2);
-    expect(Math.min(...desktop.labelSizes)).toBeGreaterThanOrEqual(11);
-
-    await page.setViewportSize({ width: 820, height: 844 });
-    const touch = await filters.evaluate((element) => ({
-      display: getComputedStyle(element).display,
-      overflowX: getComputedStyle(element).overflowX,
+    const desktop = await formatGroup.evaluate((element) => ({
       rows: new Set([...element.querySelectorAll('button')].map((button) => Math.round(button.getBoundingClientRect().top))).size,
-      clientWidth: element.clientWidth,
-      scrollWidth: element.scrollWidth,
+      labelSize: parseFloat(getComputedStyle(element.querySelector('[aria-hidden="true"]')).fontSize),
     }));
-    expect(touch.display).toBe('flex');
-    expect(touch.overflowX).toBe('auto');
-    expect(touch.rows).toBe(1);
-    expect(touch.scrollWidth).toBeGreaterThan(touch.clientWidth);
+    expect(desktop.rows).toBe(1);
+    expect(desktop.labelSize).toBeGreaterThanOrEqual(11);
+
+    await toggle.click();
+    const refineGroup = filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(refineGroup).toBeVisible();
+    await expect(refineGroup.getByRole('button', { name: /current evidence|güncel kanıt/i })).toBeVisible();
+    await expect(refineGroup.getByRole('button', { name: /best evidence|en güçlü kanıt/i })).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('mobile discovery filters stay in one scrollable row', async ({ page }) => {
+  test('mobile discovery keeps the primary format strip compact and opens refinements on demand', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    const filter = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
-    await expect(filter.getByRole('button', { name: /tüm biçimler|all formats/i })).toBeVisible();
-    const geometry = await filter.evaluate((element) => ({
-      wrap: getComputedStyle(element).flexWrap,
-      overflowX: getComputedStyle(element).overflowX,
-      clientWidth: element.clientWidth,
-      scrollWidth: element.scrollWidth,
-      rows: new Set([...element.querySelectorAll('button')].map((button) => Math.round(button.getBoundingClientRect().top))).size,
-    }));
-    expect(geometry.wrap).toBe('nowrap');
-    expect(geometry.overflowX).toBe('auto');
-    expect(geometry.scrollWidth).toBeGreaterThan(geometry.clientWidth);
-    expect(geometry.rows).toBe(1);
+
+    const filters = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
+    const formatGroup = filters.getByRole('group', { name: /content format|içerik biçimi/i });
+    const toggle = filters.getByRole('button', { name: /filters|filtreler/i });
+    await expect(formatGroup.getByRole('button', { name: /tüm biçimler|all formats/i })).toBeVisible();
+
+    const primaryGeometry = await formatGroup.evaluate((element) => {
+      const buttons = [...element.querySelectorAll('button')];
+      return {
+        rows: new Set(buttons.map((button) => Math.round(button.getBoundingClientRect().top))).size,
+        minHeight: Math.min(...buttons.map((button) => button.getBoundingClientRect().height)),
+      };
+    });
+    expect(primaryGeometry.rows).toBe(1);
+    expect(primaryGeometry.minHeight).toBeGreaterThanOrEqual(44);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    await toggle.click();
+    const refineGroup = filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
+    await expect(refineGroup).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    const refineGeometry = await refineGroup.evaluate((element) => {
+      const buttons = [...element.querySelectorAll('button')];
+      return {
+        minHeight: Math.min(...buttons.map((button) => button.getBoundingClientRect().height)),
+        right: element.getBoundingClientRect().right,
+      };
+    });
+    expect(refineGeometry.minHeight).toBeGreaterThanOrEqual(44);
+    expect(refineGeometry.right).toBeLessThanOrEqual(390);
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
   });
 
   test('mobile format navigation closes the drawer and lands on the selected feed', async ({ page }) => {
@@ -877,6 +896,7 @@ test.describe('Verified Knowledge V1', () => {
   test('discovery exposes evidence and freshness controls', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText(/yazar test etti|author tested/i).first()).toBeVisible();
+    await page.getByRole('button', { name: /filters|filtreler/i }).click();
     await expect(page.getByRole('button', { name: /güncel kanıt|current evidence/i })).toBeVisible();
   });
 
@@ -959,6 +979,7 @@ test.describe('Verified Knowledge execution', () => {
     const runtimeJson = await request.get('/runtime-release-status.json').then((response) => response.json());
     const current = runtimeJson.checks?.['node-json-parse-v1']?.status === 'current';
     await page.goto('/');
+    await page.getByRole('button', { name: /filters|filtreler/i }).click();
     await page.getByRole('button', { name: /postify verified/i }).click();
     const article = page.getByRole('heading', { name: /Node.js örneğini|Verify a Node.js example/i });
     if (current) await expect(article).toBeVisible();

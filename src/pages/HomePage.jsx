@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { FiArrowRight, FiSearch } from 'react-icons/fi';
+import { FiArrowRight, FiChevronDown, FiSearch, FiSliders } from 'react-icons/fi';
 import Hero from '../components/Hero';
 import CategoryNav from '../components/CategoryNav';
 import { getCategoryLabel } from '../lib/categoryLabels';
@@ -50,6 +50,7 @@ const HomePage = ({ isHistoryRestore = false }) => {
   const [evidenceFilter, setEvidenceFilter] = useState(['author','community','postify'].includes(evidenceParam) ? evidenceParam : 'all');
   const [sortMode, setSortMode] = useState(sortParam === 'latest' ? 'latest' : 'evidence');
   const [gapSaved, setGapSaved] = useState(false);
+  const [refineOpen, setRefineOpen] = useState(() => Boolean(readingParam === 'quick' || freshnessParam === 'current' || ['author','community','postify'].includes(evidenceParam) || sortParam === 'latest'));
 
   useScrollAnchorTransition({ active: isFallback, selector: '#knowledge-feed' });
 
@@ -100,6 +101,28 @@ const HomePage = ({ isHistoryRestore = false }) => {
     const next = readingFilter === 'quick' ? 'all' : 'quick';
     setReadingFilter(next);
     updateFilterParam('reading', next);
+  };
+
+  const activeRefinementCount = [
+    freshnessFilter === 'current',
+    evidenceFilter !== 'all',
+    sortMode === 'latest',
+    readingFilter === 'quick',
+  ].filter(Boolean).length;
+
+  useEffect(() => {
+    if (activeRefinementCount > 0) setRefineOpen(true);
+  }, [activeRefinementCount]);
+
+  const clearRefinements = () => {
+    const nextParams = new URLSearchParams(searchParams);
+    ['freshness', 'evidence', 'sort', 'reading'].forEach((key) => nextParams.delete(key));
+    setFreshnessFilter('all');
+    setEvidenceFilter('all');
+    setSortMode('evidence');
+    setReadingFilter('all');
+    setRefineOpen(false);
+    setSearchParams(nextParams, { replace: true });
   };
 
   useEffect(() => {
@@ -180,53 +203,70 @@ const HomePage = ({ isHistoryRestore = false }) => {
       <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
       <section id="knowledge-feed" className={`container ${styles.postsSection}`}>
-        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Discovery filters' : 'Keşif filtreleri'} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
-          <div className={styles.filterCluster} role="group" aria-label={i18n.language?.startsWith('en') ? 'Content format' : 'İçerik biçimi'}>
-            <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'FORMAT' : 'BİÇİM'}</span>
-            <div className={styles.filterClusterControls}>
-              <button
-                type="button"
-                className={activeType === 'all' ? styles.typeFilterActive : ''}
-                aria-pressed={activeType === 'all'}
-                onClick={() => handleTypeChange('all')}
-              >
-                {i18n.language?.startsWith('en') ? 'All formats' : 'Tüm biçimler'}
-              </button>
-              {contentTypes.map((type) => (
+        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Discovery filters' : 'Keşif filtreleri'}>
+          <div className={styles.filterToolbar}>
+            <div className={styles.filterCluster} role="group" aria-label={i18n.language?.startsWith('en') ? 'Content format' : 'İçerik biçimi'}>
+              <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'FORMAT' : 'BİÇİM'}</span>
+              <div className={styles.filterClusterControls} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
                 <button
-                  key={type.id}
                   type="button"
-                  className={activeType === type.id ? styles.typeFilterActive : ''}
-                  aria-pressed={activeType === type.id}
-                  onClick={() => handleTypeChange(type.id)}
+                  className={activeType === 'all' ? styles.typeFilterActive : ''}
+                  aria-pressed={activeType === 'all'}
+                  onClick={() => handleTypeChange('all')}
                 >
-                  {type.label}
+                  {i18n.language?.startsWith('en') ? 'All formats' : 'Tüm biçimler'}
                 </button>
-              ))}
+                {contentTypes.map((type) => (
+                  <button
+                    key={type.id}
+                    type="button"
+                    className={activeType === type.id ? styles.typeFilterActive : ''}
+                    aria-pressed={activeType === type.id}
+                    onClick={() => handleTypeChange(type.id)}
+                  >
+                    {type.label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            <button
+              type="button"
+              className={`${styles.refineToggle} ${refineOpen ? styles.refineToggleOpen : ''}`}
+              aria-label={i18n.language?.startsWith('en') ? 'Filters' : 'Filtreler'}
+              aria-expanded={refineOpen}
+              aria-controls="advanced-discovery-filters"
+              onClick={() => setRefineOpen((open) => !open)}
+            >
+              <FiSliders size={15} aria-hidden="true" />
+              <span>{i18n.language?.startsWith('en') ? 'Filters' : 'Filtreler'}</span>
+              {activeRefinementCount > 0 && <span className={styles.refineCount} aria-label={i18n.language?.startsWith('en') ? `${activeRefinementCount} active filters` : `${activeRefinementCount} aktif filtre`}>{activeRefinementCount}</span>}
+              <FiChevronDown className={styles.refineChevron} size={15} aria-hidden="true" />
+            </button>
           </div>
 
-          <div className={styles.filterCluster} role="group" aria-label={i18n.language?.startsWith('en') ? 'Evidence and ordering' : 'Kanıt ve sıralama'}>
-            <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'REFINE' : 'DARALT'}</span>
-            <div className={styles.filterClusterControls}>
-              <button type="button" className={freshnessFilter === 'current' ? styles.typeFilterActive : ''} aria-pressed={freshnessFilter === 'current'} onClick={handleFreshnessChange}>
-                {i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt'}
-              </button>
-              <button type="button" className={evidenceFilter === 'author' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'author'} onClick={() => handleEvidenceChange(evidenceFilter === 'author' ? 'all' : 'author')}>{i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti'}</button>
-              <button type="button" className={evidenceFilter === 'community' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'community'} onClick={() => handleEvidenceChange(evidenceFilter === 'community' ? 'all' : 'community')}>{i18n.language?.startsWith('en') ? 'Community confirmed' : 'Topluluk doğruladı'}</button>
-              <button type="button" className={evidenceFilter === 'postify' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'postify'} onClick={() => handleEvidenceChange(evidenceFilter === 'postify' ? 'all' : 'postify')}>Postify verified</button>
-              <button type="button" className={sortMode === 'evidence' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'evidence'} onClick={() => handleSortChange('evidence')}>{i18n.language?.startsWith('en') ? 'Best evidence' : 'En güçlü kanıt'}</button>
-              <button type="button" className={sortMode === 'latest' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'latest'} onClick={() => handleSortChange('latest')}>{i18n.language?.startsWith('en') ? 'Latest' : 'En yeni'}</button>
-              <button
-                type="button"
-                className={readingFilter === 'quick' ? styles.typeFilterActive : ''}
-                aria-pressed={readingFilter === 'quick'}
-                onClick={handleReadingChange}
-              >
-                {i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk'}
-              </button>
+          {refineOpen && (
+            <div id="advanced-discovery-filters" className={styles.refinePanel} role="group" aria-label={i18n.language?.startsWith('en') ? 'Evidence and ordering' : 'Kanıt ve sıralama'}>
+              <div className={styles.refineControls} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
+                <button type="button" className={freshnessFilter === 'current' ? styles.typeFilterActive : ''} aria-pressed={freshnessFilter === 'current'} onClick={handleFreshnessChange}>
+                  {i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt'}
+                </button>
+                <button type="button" className={evidenceFilter === 'author' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'author'} onClick={() => handleEvidenceChange(evidenceFilter === 'author' ? 'all' : 'author')}>{i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti'}</button>
+                <button type="button" className={evidenceFilter === 'community' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'community'} onClick={() => handleEvidenceChange(evidenceFilter === 'community' ? 'all' : 'community')}>{i18n.language?.startsWith('en') ? 'Community confirmed' : 'Topluluk doğruladı'}</button>
+                <button type="button" className={evidenceFilter === 'postify' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'postify'} onClick={() => handleEvidenceChange(evidenceFilter === 'postify' ? 'all' : 'postify')}>Postify verified</button>
+                <button type="button" className={sortMode === 'evidence' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'evidence'} onClick={() => handleSortChange('evidence')}>{i18n.language?.startsWith('en') ? 'Best evidence' : 'En güçlü kanıt'}</button>
+                <button type="button" className={sortMode === 'latest' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'latest'} onClick={() => handleSortChange('latest')}>{i18n.language?.startsWith('en') ? 'Latest' : 'En yeni'}</button>
+                <button type="button" className={readingFilter === 'quick' ? styles.typeFilterActive : ''} aria-pressed={readingFilter === 'quick'} onClick={handleReadingChange}>
+                  {i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk'}
+                </button>
+              </div>
+              {activeRefinementCount > 0 && (
+                <button type="button" className={styles.clearRefinements} onClick={clearRefinements}>
+                  {i18n.language?.startsWith('en') ? 'Reset' : 'Sıfırla'}
+                </button>
+              )}
             </div>
-          </div>
+          )}
         </div>
         <div className={styles.sectionHeader}>
           <div>

@@ -10,13 +10,9 @@ const CategoryNav = ({ categories, activeCategory, onChange }) => {
   return (
     <nav className={styles.nav} aria-label={t('home.categoriesLabel')}>
       <div className={styles.inner}>
-        <div className={styles.heading}>
-          <span className={styles.kicker}>{isEnglish ? 'TOPIC INDEX' : 'KONU DİZİNİ'}</span>
-          <span className={styles.current}>{activeCategory === 'all' ? t('home.allCategories') : getCategoryLabel(activeCategory, i18n.language)}</span>
-        </div>
-
+        <span className={styles.label}>{isEnglish ? 'Topics' : 'Konular'}</span>
         <div className={styles.items} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
-          {topics.map((topic, index) => {
+          {topics.map((topic) => {
             const isActive = activeCategory === topic.value;
             return (
               <button
@@ -26,8 +22,7 @@ const CategoryNav = ({ categories, activeCategory, onChange }) => {
                 key={topic.value}
                 onClick={() => onChange(topic.value)}
               >
-                <span className={styles.index}>{String(index + 1).padStart(2, '0')}</span>
-                <span>{topic.label}</span>
+                {topic.label}
               </button>
             );
           })}

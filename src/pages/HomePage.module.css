@@ -31,31 +31,30 @@
 
 
 .typeFilter {
-  display: grid;
-  gap: .3rem;
   margin-bottom: 1rem;
-  padding: .55rem;
-  background: color-mix(in srgb, var(--bg-secondary) 72%, transparent);
+}
+
+.filterToolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .75rem;
+  padding: .5rem .55rem;
+  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-2xl);
-  box-shadow: 0 10px 30px color-mix(in srgb, var(--text-primary) 4%, transparent);
+  border-radius: var(--radius-xl);
 }
 
 .filterCluster {
   display: grid;
-  grid-template-columns: 86px minmax(0, 1fr);
-  width: 100%;
-  max-width: 100%;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: .35rem;
-  padding: .12rem;
-  background: transparent;
-  border-radius: var(--radius-lg);
+  gap: .45rem;
+  min-width: 0;
 }
 
 .filterClusterLabel {
-  flex: 0 0 auto;
-  padding: 0 .55rem;
+  padding: 0 .5rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: .7rem;
@@ -63,55 +62,175 @@
   letter-spacing: .085em;
 }
 
-.filterClusterControls {
+.filterClusterControls,
+.refineControls {
   display: flex;
-  flex-wrap: wrap;
-  gap: .18rem;
+  align-items: center;
+  gap: .15rem;
   min-width: 0;
 }
 
+.filterClusterControls {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filterClusterControls::-webkit-scrollbar,
+.refineControls::-webkit-scrollbar { display: none; }
+
 .typeFilter button {
-  min-height: 38px;
-  padding: .42rem .72rem;
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: .45rem .7rem;
   color: var(--text-secondary);
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   font: inherit;
-  font-size: .82rem;
-  font-weight: 680;
+  font-size: .8rem;
+  font-weight: 690;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
-.typeFilter button:hover { color: var(--text-primary); background: var(--bg-elevated); border-color: var(--border-color); }
-.typeFilter button:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 1px; }
-.typeFilter .typeFilterActive {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary-subtle) 76%, var(--bg-elevated));
-  border-color: color-mix(in srgb, var(--primary) 30%, var(--border-color));
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--text-primary) 5%, transparent);
+.typeFilter button:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border-color: var(--border-color);
 }
+
+.typeFilter button:focus-visible {
+  outline: 3px solid var(--primary-light);
+  outline-offset: 1px;
+}
+
+.typeFilter .typeFilterActive {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border-color: var(--border-color);
+  font-weight: 790;
+}
+
+.refineToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-width: max-content;
+  color: var(--text-primary) !important;
+  background: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.refineToggle:hover,
+.refineToggleOpen {
+  border-color: var(--border-strong) !important;
+  background: var(--bg-elevated) !important;
+}
+
+.refineCount {
+  min-width: 1.25rem;
+  height: 1.25rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 .25rem;
+  color: var(--bg-primary);
+  background: var(--text-primary);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  font-weight: 850;
+}
+
+.refineChevron {
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.refineToggleOpen .refineChevron { transform: rotate(180deg); }
+
+.refinePanel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .65rem;
+  margin-top: .4rem;
+  padding: .45rem .55rem;
+  background: color-mix(in srgb, var(--bg-secondary) 48%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+}
+
+.refineControls {
+  flex-wrap: wrap;
+}
+
+.clearRefinements {
+  color: var(--text-muted) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+}
+
+.clearRefinements:hover { color: var(--text-primary) !important; }
 
 @media (max-width: 960px) {
-  .typeFilter {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: .18rem;
-    overflow-x: auto;
-    margin-inline: calc(var(--space-lg) * -1);
-    padding: .35rem var(--space-lg);
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+  .filterToolbar {
+    gap: .4rem;
+    padding: .35rem;
   }
-  .typeFilter::-webkit-scrollbar { display: none; }
-  .filterCluster, .filterClusterControls { display: contents; }
+
+  .filterCluster {
+    display: block;
+    min-width: 0;
+  }
+
   .filterClusterLabel { display: none; }
-  .typeFilter button { flex: 0 0 auto; min-height: 44px; white-space: nowrap; border-radius: var(--radius-md); }
+
+  .filterClusterControls,
+  .refineControls {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .typeFilter button { min-height: 44px; }
+
+  .refineToggle {
+    min-width: 44px;
+    justify-content: center;
+  }
+
+  .refinePanel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .clearRefinements { align-self: flex-start; }
+}
+
+@media (max-width: 560px) {
+  .filterToolbar {
+    margin-inline: -.15rem;
+    padding: .25rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .filterClusterControls { padding-left: .05rem; }
+
+  .refineToggle > span:not(.refineCount) { display: none; }
+
+  .refinePanel {
+    margin-inline: -.15rem;
+    padding: .3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typeFilter button,
+  .refineChevron { transition: none; }
 }
 
 @media (max-width: 620px) {
