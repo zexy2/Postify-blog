@@ -18,7 +18,7 @@ import VerificationRunbook from '../components/VerificationRunbook';
 import EvidenceBadge from '../components/EvidenceBadge';
 import CopyableCodeBlock from '../components/CopyableCodeBlock';
 import SystemStatus from '../components/SystemStatus';
-import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading } from '../lib/articleStructure';
+import { extractExternalReferences, getArticleOutline, parseFencedCodeBlock, slugifyHeading, splitArticleBlocks } from '../lib/articleStructure';
 
 const initials = (name = '') => name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase() || 'P';
 
@@ -28,7 +28,7 @@ const formatDate = (value, locale) => {
 };
 
 const PlainArticleBody = ({ content }) => {
-  const blocks = content.split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+  const blocks = splitArticleBlocks(content);
 
   return (
     <div className={styles.plainBody}>
@@ -170,11 +170,6 @@ const PostDetailPage = () => {
 
                 <div className={styles.railDivider} />
 
-                <div className={styles.readStat}>
-                  <FiClock size={14} className={styles.statIcon} />
-                  <span>{readingMinutes ?? 1} {t('common.minutes')}</span>
-                </div>
-
                 <button
                   type="button"
                   className={`${styles.railActionBtn} ${isBookmarked ? styles.bookmarked : ''}`}
@@ -197,6 +192,11 @@ const PostDetailPage = () => {
                 <div className={styles.meta}>
                   <span className={styles.contentType}>{presentation.typeLabel}</span>
                   <span className={styles.category}>{getCategoryLabel(post.category, i18n.language)}</span>
+                  <span className={styles.metaDot}>•</span>
+                  <span className={styles.readingMeta}>
+                    <FiClock size={12} aria-hidden="true" />
+                    {readingMinutes ?? 1} {t('common.minutes')}
+                  </span>
                   <span className={styles.metaDot}>•</span>
                   <time dateTime={post.publishedAt}>{publishedDate}</time>
                   {isUpdated && <span>({t('article.updated')} {updatedDate})</span>}
@@ -235,20 +235,6 @@ const PostDetailPage = () => {
                   <strong>{t('article.expectedOutcome')}</strong>
                   <p>{presentation.outcome}</p>
                 </div>
-                <dl className={styles.quickBriefMeta}>
-                  <div>
-                    <dt>{t('article.contentType')}</dt>
-                    <dd>{presentation.typeLabel}</dd>
-                  </div>
-                  <div>
-                    <dt>{t('posts.readingTime')}</dt>
-                    <dd>{readingMinutes ?? 1} {t('common.minutes')}</dd>
-                  </div>
-                  <div>
-                    <dt>{t('article.lastTouch')}</dt>
-                    <dd>{presentation.formattedDate || publishedDate}</dd>
-                  </div>
-                </dl>
               </section>
 
               {/* Cover Image SECOND */}
@@ -270,14 +256,29 @@ const PostDetailPage = () => {
                 )}
 
                 {outline.length >= 2 && (
-                  <nav className={styles.articleOutline} aria-label={i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}>
-                    <span>{i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}</span>
-                    <ol>
-                      {outline.map((item) => (
-                        <li key={item.id} data-level={item.level}><a href={`#${item.id}`}>{item.text}</a></li>
-                      ))}
-                    </ol>
-                  </nav>
+                  <>
+                    <nav className={styles.articleOutline} aria-label={i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}>
+                      <span>{i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}</span>
+                      <ol>
+                        {outline.map((item) => (
+                          <li key={item.id} data-level={item.level}><a href={`#${item.id}`}>{item.text}</a></li>
+                        ))}
+                      </ol>
+                    </nav>
+                    <details className={styles.articleOutlineDisclosure}>
+                      <summary>
+                        <span>{i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}</span>
+                        <small>{outline.length}</small>
+                      </summary>
+                      <nav aria-label={i18n.language?.startsWith('en') ? 'On this page' : 'Bu yazıda'}>
+                        <ol>
+                          {outline.map((item) => (
+                            <li key={item.id} data-level={item.level}><a href={`#${item.id}`}>{item.text}</a></li>
+                          ))}
+                        </ol>
+                      </nav>
+                    </details>
+                  </>
                 )}
                 <div className={styles.body}>
                   <PlainArticleBody content={articleBody} />

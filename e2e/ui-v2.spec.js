@@ -190,11 +190,14 @@ test.describe('Postify UI V2', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
     await expect(article.getByText(/undefined\s*(dk|min)/i)).toHaveCount(0);
+    await expect(article.locator('header').getByText(/\d+\s*(dk|min)/i).first()).toBeVisible();
+    await expect(article.locator(':scope > section dl')).toHaveCount(0);
   });
 
   test('mobile article and editor controls stay touch-safe and contained', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/posts/node-json-dogrulama');
+    const article = page.locator('article').first();
 
     const feedbackButtons = page.locator('#evidence-feedback button');
     await expect(feedbackButtons.first()).toBeVisible();
@@ -218,7 +221,15 @@ test.describe('Postify UI V2', () => {
       expect((await artifactLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
     }
 
-    const outlineCodeLink = page.getByRole('link', { name: 'Code', exact: true });
+    const outlineDisclosure = article.locator('details').filter({ hasText: /on this page|bu yazıda/i }).first();
+    await expect(outlineDisclosure).toBeVisible();
+    await expect(outlineDisclosure).not.toHaveAttribute('open', '');
+    const outlineSummary = outlineDisclosure.locator('summary');
+    expect((await outlineSummary.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    await outlineSummary.click();
+    await expect(outlineDisclosure).toHaveAttribute('open', '');
+
+    const outlineCodeLink = outlineDisclosure.getByRole('link', { name: 'Code', exact: true });
     const evidenceSourceLink = page.getByRole('link', { name: 'nodejs.org', exact: true });
     for (const target of [outlineCodeLink, evidenceSourceLink]) {
       await expect(target).toBeVisible();
