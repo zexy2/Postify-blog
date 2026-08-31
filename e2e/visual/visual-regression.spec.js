@@ -503,7 +503,7 @@ test('Tablet touch mode keeps primary work controls at least 44px', async ({ pag
 
     await page.goto('/');
     await expectTouchSafe([
-      page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i }).getByRole('button').first(),
+      page.getByRole('group', { name: /discovery filters|keşif filtreleri/i }).getByRole('button').first(),
       page.getByRole('button', { name: /add to bookmarks|favorilere ekle/i }).first(),
       page.getByRole('link', { name: /browse the library|bilgi arşivine göz at/i }),
       page.getByRole('link', { name: /contribute|katkı yap/i }).first(),

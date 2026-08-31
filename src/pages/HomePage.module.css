@@ -5,7 +5,7 @@
 .fallbackNotice strong { color: var(--text-primary); }
 
 .errorCard { max-width: 520px; margin: 4rem auto; padding: clamp(1.5rem, 4vw, 3rem); background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); }
-.errorKicker, .sectionEyebrow { color: var(--primary); font-family: var(--font-mono); font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.errorKicker, .sectionEyebrow { color: var(--primary); font-family: var(--font-mono); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .errorCard h1 { margin: .7rem 0; color: var(--text-primary); font-size: var(--text-2xl); }
 .errorCard p { margin: 0 0 1.5rem; color: var(--text-secondary); line-height: 1.6; }
 .retryButton, .noResults button { min-height: 44px; padding: .75rem 1.1rem; color: #fff; background: var(--primary); border: 0; border-radius: var(--radius-md); font: inherit; font-weight: 700; cursor: pointer; }
@@ -31,57 +31,78 @@
 
 
 .typeFilter {
+  display: grid;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+
+.filterCluster {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  gap: .2rem;
+  padding: .22rem;
+  background: color-mix(in srgb, var(--bg-secondary) 76%, transparent);
+  border-radius: var(--radius-lg);
+}
+
+.filterClusterLabel {
+  flex: 0 0 auto;
+  padding: 0 .55rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+}
+
+.filterClusterControls {
   display: flex;
   flex-wrap: wrap;
-  gap: .1rem .18rem;
-  margin-bottom: .85rem;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  border-bottom: 0;
-  border-radius: 0;
+  gap: .12rem;
+  min-width: 0;
 }
 
 .typeFilter button {
-  min-height: 40px;
-  margin-bottom: -1px;
-  padding: .45rem .72rem;
+  min-height: 38px;
+  padding: .42rem .68rem;
   color: var(--text-secondary);
   background: transparent;
   border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
+  border-radius: var(--radius-md);
   font: inherit;
-  font-size: var(--text-sm);
-  font-weight: 650;
+  font-size: .82rem;
+  font-weight: 680;
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
 }
 
-.typeFilter button:hover { color: var(--text-primary); background: var(--bg-secondary); }
-.typeFilter button:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 2px; }
-.typeFilter .typeFilterActive { color: var(--text-primary); background: transparent; border-bottom-color: var(--primary); box-shadow: none; }
+.typeFilter button:hover { color: var(--text-primary); background: var(--bg-elevated); }
+.typeFilter button:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 1px; }
+.typeFilter .typeFilterActive {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  box-shadow: inset 0 0 0 1px var(--border-strong), 0 1px 2px color-mix(in srgb, var(--text-primary) 7%, transparent);
+}
 
-
-.filterDivider { display: none; }
-@media (max-width: 600px) { .filterDivider { display: none; } }
-
-@media (max-width: 620px) {
+@media (max-width: 960px) {
   .typeFilter {
+    display: flex;
     flex-wrap: nowrap;
+    gap: .12rem;
     overflow-x: auto;
     margin-inline: calc(var(--space-lg) * -1);
     padding: 0 var(--space-lg);
-    border-radius: 0;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
   .typeFilter::-webkit-scrollbar { display: none; }
-  .typeFilter button { flex: 0 0 auto; white-space: nowrap; min-height: 44px; }
-  .sectionTitle { font-size: clamp(1.9rem, 10vw, 2.6rem); }
+  .filterCluster, .filterClusterControls { display: contents; }
+  .filterClusterLabel { display: none; }
+  .typeFilter button { flex: 0 0 auto; min-height: 44px; white-space: nowrap; border-radius: var(--radius-md); }
 }
 
-
-@media (max-width: 960px) {
-  .typeFilter button { min-height: 44px; }
+@media (max-width: 620px) {
+  .sectionTitle { font-size: clamp(1.9rem, 10vw, 2.6rem); }
 }

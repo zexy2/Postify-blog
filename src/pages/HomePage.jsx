@@ -180,44 +180,53 @@ const HomePage = ({ isHistoryRestore = false }) => {
       <CategoryNav categories={categories} activeCategory={activeCategory} onChange={handleCategoryChange} />
 
       <section id="knowledge-feed" className={`container ${styles.postsSection}`}>
-        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Filter by content format' : 'İçerik biçimine göre filtrele'} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
-          <button
-            type="button"
-            className={activeType === 'all' ? styles.typeFilterActive : ''}
-            aria-pressed={activeType === 'all'}
-            onClick={() => handleTypeChange('all')}
-          >
-            {i18n.language?.startsWith('en') ? 'All formats' : 'Tüm biçimler'}
-          </button>
-          {contentTypes.map((type) => (
-            <button
-              key={type.id}
-              type="button"
-              className={activeType === type.id ? styles.typeFilterActive : ''}
-              aria-pressed={activeType === type.id}
-              onClick={() => handleTypeChange(type.id)}
-            >
-              {type.label}
-            </button>
-          ))}
-          <span className={styles.filterDivider} aria-hidden="true" />
-          <button type="button" className={freshnessFilter === 'current' ? styles.typeFilterActive : ''} aria-pressed={freshnessFilter === 'current'} onClick={handleFreshnessChange}>
-            {i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt'}
-          </button>
-          <button type="button" className={evidenceFilter === 'author' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'author'} onClick={() => handleEvidenceChange(evidenceFilter === 'author' ? 'all' : 'author')}>{i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti'}</button>
-          <button type="button" className={evidenceFilter === 'community' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'community'} onClick={() => handleEvidenceChange(evidenceFilter === 'community' ? 'all' : 'community')}>{i18n.language?.startsWith('en') ? 'Community confirmed' : 'Topluluk doğruladı'}</button>
-          <button type="button" className={evidenceFilter === 'postify' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'postify'} onClick={() => handleEvidenceChange(evidenceFilter === 'postify' ? 'all' : 'postify')}>Postify verified</button>
-          <span className={styles.filterDivider} aria-hidden="true" />
-          <button type="button" className={sortMode === 'evidence' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'evidence'} onClick={() => handleSortChange('evidence')}>{i18n.language?.startsWith('en') ? 'Best evidence' : 'En güçlü kanıt'}</button>
-          <button type="button" className={sortMode === 'latest' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'latest'} onClick={() => handleSortChange('latest')}>{i18n.language?.startsWith('en') ? 'Latest' : 'En yeni'}</button>
-          <button
-            type="button"
-            className={readingFilter === 'quick' ? styles.typeFilterActive : ''}
-            aria-pressed={readingFilter === 'quick'}
-            onClick={handleReadingChange}
-          >
-            {i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk'}
-          </button>
+        <div className={styles.typeFilter} role="group" aria-label={i18n.language?.startsWith('en') ? 'Discovery filters' : 'Keşif filtreleri'} onFocusCapture={(event) => event.target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })}>
+          <div className={styles.filterCluster} role="group" aria-label={i18n.language?.startsWith('en') ? 'Content format' : 'İçerik biçimi'}>
+            <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'FORMAT' : 'BİÇİM'}</span>
+            <div className={styles.filterClusterControls}>
+              <button
+                type="button"
+                className={activeType === 'all' ? styles.typeFilterActive : ''}
+                aria-pressed={activeType === 'all'}
+                onClick={() => handleTypeChange('all')}
+              >
+                {i18n.language?.startsWith('en') ? 'All formats' : 'Tüm biçimler'}
+              </button>
+              {contentTypes.map((type) => (
+                <button
+                  key={type.id}
+                  type="button"
+                  className={activeType === type.id ? styles.typeFilterActive : ''}
+                  aria-pressed={activeType === type.id}
+                  onClick={() => handleTypeChange(type.id)}
+                >
+                  {type.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.filterCluster} role="group" aria-label={i18n.language?.startsWith('en') ? 'Evidence and ordering' : 'Kanıt ve sıralama'}>
+            <span className={styles.filterClusterLabel} aria-hidden="true">{i18n.language?.startsWith('en') ? 'REFINE' : 'DARALT'}</span>
+            <div className={styles.filterClusterControls}>
+              <button type="button" className={freshnessFilter === 'current' ? styles.typeFilterActive : ''} aria-pressed={freshnessFilter === 'current'} onClick={handleFreshnessChange}>
+                {i18n.language?.startsWith('en') ? 'Current evidence' : 'Güncel kanıt'}
+              </button>
+              <button type="button" className={evidenceFilter === 'author' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'author'} onClick={() => handleEvidenceChange(evidenceFilter === 'author' ? 'all' : 'author')}>{i18n.language?.startsWith('en') ? 'Author tested' : 'Yazar test etti'}</button>
+              <button type="button" className={evidenceFilter === 'community' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'community'} onClick={() => handleEvidenceChange(evidenceFilter === 'community' ? 'all' : 'community')}>{i18n.language?.startsWith('en') ? 'Community confirmed' : 'Topluluk doğruladı'}</button>
+              <button type="button" className={evidenceFilter === 'postify' ? styles.typeFilterActive : ''} aria-pressed={evidenceFilter === 'postify'} onClick={() => handleEvidenceChange(evidenceFilter === 'postify' ? 'all' : 'postify')}>Postify verified</button>
+              <button type="button" className={sortMode === 'evidence' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'evidence'} onClick={() => handleSortChange('evidence')}>{i18n.language?.startsWith('en') ? 'Best evidence' : 'En güçlü kanıt'}</button>
+              <button type="button" className={sortMode === 'latest' ? styles.typeFilterActive : ''} aria-pressed={sortMode === 'latest'} onClick={() => handleSortChange('latest')}>{i18n.language?.startsWith('en') ? 'Latest' : 'En yeni'}</button>
+              <button
+                type="button"
+                className={readingFilter === 'quick' ? styles.typeFilterActive : ''}
+                aria-pressed={readingFilter === 'quick'}
+                onClick={handleReadingChange}
+              >
+                {i18n.language?.startsWith('en') ? '≤ 5 min' : '≤ 5 dk'}
+              </button>
+            </div>
+          </div>
         </div>
         <div className={styles.sectionHeader}>
           <div>

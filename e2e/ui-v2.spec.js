@@ -32,7 +32,7 @@ test.describe('Postify UI V2', () => {
       await expect(link).toHaveAttribute('aria-current', 'page');
       await expect(explore).not.toHaveAttribute('aria-current', 'page');
 
-      const activeFilter = page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i })
+      const activeFilter = page.getByRole('group', { name: /content format|içerik biçimi/i })
         .getByRole('button', { name: item.filter });
       await expect(activeFilter).toHaveAttribute('aria-pressed', 'true');
       await expect(page.locator('#knowledge-feed')).toBeInViewport();
@@ -332,7 +332,7 @@ test.describe('Postify UI V2', () => {
 
     for (const railButton of [
       page.getByRole('navigation', { name: /topics|konu başlıkları/i }).getByRole('button').last(),
-      page.getByRole('group', { name: /filter by content format|içerik biçimine göre filtrele/i }).getByRole('button').last(),
+      page.getByRole('group', { name: /discovery filters|keşif filtreleri/i }).getByRole('button').last(),
     ]) {
       await railButton.focus();
       const railBox = await railButton.boundingBox();
@@ -701,14 +701,55 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
+  test('discovery filter hierarchy groups desktop controls and flattens for touch', async ({ page }) => {
+    await page.setViewportSize({ width: 1304, height: 844 });
+    await page.goto('/');
+
+    const filters = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
+    const formatGroup = filters.getByRole('group', { name: /content format|içerik biçimi/i });
+    const refineGroup = filters.getByRole('group', { name: /evidence and ordering|kanıt ve sıralama/i });
+    await expect(formatGroup).toBeVisible();
+    await expect(refineGroup).toBeVisible();
+
+    const desktop = await filters.evaluate((element) => ({
+      display: getComputedStyle(element).display,
+      clusterRows: new Set([...element.querySelectorAll('[role="group"]')].map((cluster) => Math.round(cluster.getBoundingClientRect().top))).size,
+      labelSizes: [...element.querySelectorAll('[aria-hidden="true"]')].map((label) => parseFloat(getComputedStyle(label).fontSize)),
+    }));
+    expect(desktop.display).toBe('grid');
+    expect(desktop.clusterRows).toBe(2);
+    expect(Math.min(...desktop.labelSizes)).toBeGreaterThanOrEqual(11);
+
+    await page.setViewportSize({ width: 820, height: 844 });
+    const touch = await filters.evaluate((element) => ({
+      display: getComputedStyle(element).display,
+      overflowX: getComputedStyle(element).overflowX,
+      rows: new Set([...element.querySelectorAll('button')].map((button) => Math.round(button.getBoundingClientRect().top))).size,
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+    }));
+    expect(touch.display).toBe('flex');
+    expect(touch.overflowX).toBe('auto');
+    expect(touch.rows).toBe(1);
+    expect(touch.scrollWidth).toBeGreaterThan(touch.clientWidth);
+  });
+
   test('mobile discovery filters stay in one scrollable row', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    const allFormats = page.getByRole('button', { name: /tüm biçimler|all formats/i });
-    await expect(allFormats).toBeVisible();
-    const filter = allFormats.locator('..');
-    const wrap = await filter.evaluate((element) => getComputedStyle(element).flexWrap);
-    expect(wrap).toBe('nowrap');
+    const filter = page.getByRole('group', { name: /discovery filters|keşif filtreleri/i });
+    await expect(filter.getByRole('button', { name: /tüm biçimler|all formats/i })).toBeVisible();
+    const geometry = await filter.evaluate((element) => ({
+      wrap: getComputedStyle(element).flexWrap,
+      overflowX: getComputedStyle(element).overflowX,
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      rows: new Set([...element.querySelectorAll('button')].map((button) => Math.round(button.getBoundingClientRect().top))).size,
+    }));
+    expect(geometry.wrap).toBe('nowrap');
+    expect(geometry.overflowX).toBe('auto');
+    expect(geometry.scrollWidth).toBeGreaterThan(geometry.clientWidth);
+    expect(geometry.rows).toBe(1);
   });
 
   test('mobile format navigation closes the drawer and lands on the selected feed', async ({ page }) => {

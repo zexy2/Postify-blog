@@ -13,7 +13,7 @@
   color: var(--text-muted);
   border-bottom: 1px solid var(--border-color);
   font-family: var(--font-mono);
-  font-size: .61rem;
+  font-size: .7rem;
   font-weight: 750;
   letter-spacing: .075em;
   text-transform: uppercase;
@@ -36,7 +36,7 @@
   padding-top: .45rem;
   color: var(--primary);
   font-family: var(--font-mono);
-  font-size: .67rem;
+  font-size: .7rem;
   font-weight: 800;
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -89,7 +89,7 @@
 .searchIcon { flex: 0 0 auto; }
 .searchInput { min-width: 0; color: var(--text-primary); background: transparent; border: 0; outline: 0; font: inherit; font-size: .88rem; }
 .searchInput::placeholder { color: var(--text-muted); }
-.searchHint { padding: .22rem .38rem; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; font-family: var(--font-mono); font-size: .57rem; }
+.searchHint { padding: .22rem .38rem; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; font-family: var(--font-mono); font-size: .7rem; }
 
 .heroActions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
 .primaryAction, .secondaryAction { display: inline-flex; align-items: center; gap: .4rem; min-height: 38px; color: var(--text-secondary); font-size: .76rem; font-weight: 760; text-decoration: none; }
@@ -108,15 +108,15 @@
 .featuredVisual { position: relative; overflow: hidden; aspect-ratio: 16 / 11; background: var(--bg-secondary); border-radius: var(--radius-lg); }
 .featuredImage { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.82) contrast(.97); transition: transform var(--transition-base), filter var(--transition-base); }
 .featured:hover .featuredImage { transform: scale(1.015); filter: saturate(1); }
-.featuredType { position: absolute; top: .7rem; left: .7rem; padding: .28rem .42rem; color: var(--text-primary); background: color-mix(in srgb, var(--bg-primary) 92%, transparent); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: .58rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.featuredType { position: absolute; top: .7rem; left: .7rem; padding: .28rem .42rem; color: var(--text-primary); background: color-mix(in srgb, var(--bg-primary) 92%, transparent); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
 .featuredContent { display: flex; flex-direction: column; min-width: 0; padding: .15rem 0; }
 .featuredTopline { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: auto; }
-.featuredLabel { color: var(--primary); font-family: var(--font-mono); font-size: .61rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.featuredLabel { color: var(--primary); font-family: var(--font-mono); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .arrow { color: var(--text-muted); transition: transform var(--transition-fast), color var(--transition-fast); }
 .featured:hover .arrow { color: var(--primary); transform: translate(2px, -2px); }
 .featuredContent strong { display: block; margin-top: 1rem; color: var(--text-primary); font-family: var(--font-display); font-size: clamp(1.48rem, 2.1vw, 2.15rem); font-weight: 600; letter-spacing: -.04em; line-height: 1.05; }
 .featuredExcerpt { display: -webkit-box; max-width: 52ch; margin-top: .65rem; overflow: hidden; color: var(--text-secondary); font-size: .86rem; line-height: 1.58; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-.featuredMeta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin-top: auto; padding-top: .75rem; color: var(--text-muted); font-size: .66rem; }
+.featuredMeta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin-top: auto; padding-top: .75rem; color: var(--text-muted); font-size: .7rem; }
 .featuredMeta span { display: inline-flex; align-items: center; gap: .25rem; }
 .dot { color: var(--border-strong); }
 

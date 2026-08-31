@@ -471,3 +471,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 - Command Palette keyboard navigation must keep the `aria-activedescendant` result visually synchronized. Active options scroll only within the existing result rail using `scrollIntoView({ block: 'nearest', inline: 'nearest' })`; the page remains scroll-locked and larger viewports do not move unnecessarily.
 
 - Full-page ErrorBoundary recovery must establish a deterministic keyboard context. When the fallback mounts, focus moves to Retry/Tekrar Dene with `preventScroll`; the assertive status still announces the error, while keyboard users land on the primary recovery action instead of `BODY`.
+
+## 2026-08-31 — Discovery filters express hierarchy before density
+**Decision:** Desktop discovery controls are presented as two semantic clusters—content format and evidence/order refinement—rather than relying on incidental flex wrapping. At the product touch breakpoint (<=960px), those clusters flatten into one horizontally scrollable rail with 44px controls. Critical discovery microcopy should remain around an 11px visual floor unless it is purely decorative.
+
+**Why:** The live 1304px toolbar happened to wrap as 9+3 unrelated buttons, which made a working filter system look unfinished. At the same time, important evidence/topic labels dropped below 10px. Intentional grouping clarifies the control model without adding dashboard-style dividers, while the single touch rail preserves compact mobile/tablet navigation and keeps useful content close to the first viewport.
