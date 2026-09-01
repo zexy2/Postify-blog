@@ -59,6 +59,13 @@ const HomePage = ({ isHistoryRestore = false }) => {
   useScrollAnchorTransition({ active: isFallback, selector: '#knowledge-feed' });
 
   useEffect(() => {
+    const root = document.documentElement;
+    const previous = root.style.overflowAnchor;
+    root.style.overflowAnchor = 'none';
+    return () => { root.style.overflowAnchor = previous; };
+  }, []);
+
+  useEffect(() => {
     setActiveCategory(categoryParam || 'all');
   }, [categoryParam]);
 

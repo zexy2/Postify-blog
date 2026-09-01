@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { findScrollAnchor, readViewportScrollAnchor } from './scrollRestoration';
+import { findScrollAnchor, readElementScrollAnchor, readViewportScrollAnchor } from './scrollRestoration';
 
 const addAnchor = (key, top, height = 120) => {
   const element = document.createElement('article');
@@ -20,6 +20,12 @@ describe('scrollRestoration', () => {
     addAnchor('/posts/current', -24, 180);
     addAnchor('/posts/next', 180, 140);
     expect(readViewportScrollAnchor(document, 700)).toEqual({ key: '/posts/current', viewportTop: -24 });
+  });
+
+  it('captures an explicitly activated card even when another card crosses the viewport top', () => {
+    addAnchor('/posts/current', -24, 180);
+    const target = addAnchor('/posts/target', 218.5, 200);
+    expect(readElementScrollAnchor(target)).toEqual({ key: '/posts/target', viewportTop: 218.5 });
   });
 
   it('falls forward to the first visible card and resolves it again by key', () => {

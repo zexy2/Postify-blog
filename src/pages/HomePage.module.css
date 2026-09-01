@@ -14,7 +14,7 @@
 .postsSection { scroll-margin-top: 76px; padding-top: clamp(1.45rem, 2.6vw, 2.2rem); padding-bottom: var(--space-3xl); }
 .sectionHeader { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin: clamp(1.35rem, 2.8vw, 2.2rem) 0 clamp(1.1rem, 2vw, 1.55rem); }
 .sectionTitle { display: flex; align-items: center; gap: .55rem; margin: .42rem 0 .4rem; color: var(--text-primary); font-family: var(--font-display); font-size: clamp(2rem, 3.3vw, 3rem); font-weight: 560; letter-spacing: -.045em; line-height: .96; text-wrap: balance; }
-.sectionSubtitle { display: inline-flex; align-items: center; min-height: 28px; margin: 0; padding: .28rem .55rem; color: var(--text-muted); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-full); font-family: var(--font-mono); font-size: .66rem; font-weight: 760; letter-spacing: .03em; }
+.sectionSubtitle { display: inline-flex; align-items: center; margin: 0; padding: 0; color: var(--text-muted); font-family: var(--font-mono); font-size: .68rem; font-weight: 720; letter-spacing: .035em; }
 
 .noResults { display: grid; justify-items: center; gap: .6rem; padding: 4rem 1.5rem; color: var(--text-muted); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); text-align: center; }
 .noResults h3 { margin: 0; color: var(--text-primary); }

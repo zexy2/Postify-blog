@@ -2,7 +2,7 @@
  * App Component
  * Main application component with routing
  */
-import { findScrollAnchor, readViewportScrollAnchor } from './lib/scrollRestoration';
+import { findScrollAnchor, readElementScrollAnchor, readViewportScrollAnchor } from './lib/scrollRestoration';
 
 import { Navigate, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { useEffect, useLayoutEffect, useRef, Suspense, lazy } from 'react';
@@ -78,6 +78,25 @@ function App() {
     }
     activeLocationKeyRef.current = location.key;
   }, [location.key]);
+
+  useEffect(() => {
+    const captureNavigationAnchor = (event) => {
+      if (event.defaultPrevented || event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest('a[href^="/posts/"]');
+      const card = link?.closest('[data-scroll-anchor-key]');
+      const anchor = readElementScrollAnchor(card);
+      if (!link || !anchor) return;
+      scrollPositionsRef.current.set(activeLocationKeyRef.current, {
+        left: window.scrollX,
+        top: window.scrollY,
+        anchor,
+      });
+    };
+
+    document.addEventListener('click', captureNavigationAnchor, true);
+    return () => document.removeEventListener('click', captureNavigationAnchor, true);
+  }, []);
 
   useEffect(() => {
     const locationKey = location.key;
