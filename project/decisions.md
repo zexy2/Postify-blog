@@ -518,3 +518,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Create/Edit knowledge uses one document-like writing canvas for title, body and evidence, paired with a visually distinct readiness inspector on wide screens. Writing-mode selection is an editorial chooser, the rich-text toolbar belongs to the writing surface, and Publish is the single primary accent action. Mobile stacks the inspector after the document and keeps actions touch-safe rather than shrinking the desktop layout.
 
 **Why:** The previous editor was functionally strong but visually read as a long sequence of form fields and divider lines. Grouping the writing flow into a calm document surface and separating readiness/status information improves hierarchy at first glance without hiding evidence requirements or adding card-within-card chrome.
+
+## 2026-09-01 — Home opens as an editorial front page, not a card dashboard
+**Decision:** The Home masthead prioritizes display typography, one prominent discovery/search control and a rule-based featured cover story. The featured story does not use a rounded elevated outer card; image framing and typographic hierarchy provide separation instead. Browse is the primary accent action, while contribution stays secondary.
+
+**Why:** Discovery controls and feed cards had already been simplified, but the first screen still mixed a premium masthead with an elevated product-card featured story. Removing that outer card and strengthening the search/title hierarchy makes the product feel intentionally editorial at first glance without changing information architecture or adding decorative complexity.
