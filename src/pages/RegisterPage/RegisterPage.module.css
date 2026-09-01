@@ -3,11 +3,11 @@
 .container {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--auth-card-width);
-  gap: clamp(3rem, 5vw, 5rem);
+  gap: clamp(3.5rem, 7vw, 7.5rem);
   align-items: start;
-  width: min(1180px, calc(100% - 2rem));
+  width: min(1220px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: clamp(2.4rem, 4vw, 3.75rem) 0 clamp(3rem, 5vw, 4rem);
+  padding: clamp(3rem, 5.2vw, 4.8rem) 0 clamp(3.5rem, 6vw, 5rem);
 }
 
 .context {
@@ -53,37 +53,47 @@
 }
 
 .contextList {
+  counter-reset: auth-benefits;
   display: grid;
-  gap: .55rem;
+  gap: 0;
   max-width: 58ch;
-  margin: 1.5rem 0 0;
-  padding: 1.1rem 0 0;
+  margin: 1.65rem 0 0;
+  padding: 0;
   border-top: 1px solid var(--border-strong);
   list-style: none;
-  color: var(--text-muted);
-  font-size: .69rem;
+  color: var(--text-secondary);
+  font-size: .7rem;
   line-height: 1.55;
 }
 
 .contextList li {
+  counter-increment: auth-benefits;
   display: grid;
-  grid-template-columns: 1.4rem 1fr;
-  gap: .4rem;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  gap: .6rem;
+  align-items: start;
+  padding: .72rem 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .contextList li::before {
-  content: '↳';
-  color: var(--primary);
+  content: counter(auth-benefits, decimal-leading-zero);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  font-weight: 800;
+  letter-spacing: .08em;
 }
 
 .card {
   width: 100%;
   min-width: 0;
-  padding: clamp(1.25rem, 2.2vw, 1.65rem);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xs);
+  padding: .2rem 0 .3rem clamp(2rem, 3.2vw, 3.35rem);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--border-strong);
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .header {
@@ -95,10 +105,10 @@
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(2.7rem, 5vw, 4.3rem);
-  font-weight: 600;
-  letter-spacing: -.06em;
-  line-height: .92;
+  font-size: clamp(3rem, 5vw, 4.55rem);
+  font-weight: 500;
+  letter-spacing: -.062em;
+  line-height: .9;
 }
 
 .subtitle {
@@ -229,12 +239,12 @@
 }
 
 .submitButton {
-  min-height: 48px;
-  padding: .7rem .9rem;
-  color: var(--bg-primary);
-  background: var(--text-primary);
-  border: 1px solid var(--text-primary);
-  border-radius: var(--radius-md);
+  min-height: 50px;
+  padding: .72rem 1rem;
+  color: #fff;
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
   font: inherit;
   font-size: .8rem;
   font-weight: 800;
@@ -278,41 +288,48 @@
 .socialButtons {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .65rem;
+  gap: 0;
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .socialButton {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  min-height: 44px;
-  padding: .6rem .7rem;
+  justify-content: flex-start;
+  gap: .6rem;
+  min-height: 48px;
+  padding: .65rem .75rem;
   color: var(--text-secondary);
   background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border: 0;
+  border-right: 1px solid var(--border-color);
+  border-radius: 0;
   font: inherit;
   font-size: .75rem;
   font-weight: 750;
   cursor: pointer;
 }
 
+.socialButton:last-child {
+  border-right: 0;
+}
+
 .socialButton:hover:not(:disabled),
 .socialButton:focus-visible {
   color: var(--text-primary);
-  border-color: var(--auth-social-accent, var(--border-strong));
+  background: var(--bg-secondary);
 }
 
 .google { --auth-social-accent: #4285f4; }
 .github { --auth-social-accent: var(--text-primary); }
 
 .footer {
-  margin: 1.35rem 0 0;
+  margin: 1.25rem 0 0;
   color: var(--text-muted);
   font-size: .76rem;
   line-height: 1.55;
-  text-align: center;
+  text-align: left;
 }
 
 .row {
@@ -355,7 +372,11 @@
     display: none;
   }
 
-  .card { padding: 1.1rem; }
+  .card {
+    padding: 1.3rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--border-strong);
+  }
 
   .row {
     grid-template-columns: 1fr;
