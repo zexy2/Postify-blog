@@ -488,3 +488,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Why:** Production measurements showed that repeated pre-reading chrome pushed the cover/body substantially down the page, especially on mobile. Removing duplicate metadata and collapsing the mobile outline shortens the path from title to useful content without hiding information or weakening evidence/trust signals.
 
 **Parser invariant:** Markdown heading lines must be normalized separately from body copy that follows on the next line. Outline labels and rendered heading IDs come from the same normalized block sequence. A paragraph must never become part of a heading merely because the source omitted an extra blank line after `## Heading`.
+
+## 2026-09-01 — Trust verdicts stay visible; technical evidence uses progressive disclosure
+**Decision:** Article trust status and runtime freshness remain visible without interaction, but dense technical evidence—execution contract, environment, verification steps, caveats and sources—lives inside one native disclosure. The disclosure must remain keyboard-native, >=44px in touch mode, and safe at 200% text scaling; expanding it must reveal the exact same evidence rather than a reduced summary.
+
+**Why:** The verified Article evidence section was nearly 1,000px tall on mobile even though most readers first need the verdict and freshness state, not every execution field simultaneously. Collapsing the technical layer reduces reading interruption while preserving inspectability and avoids turning the article tail into an admin/report surface.
