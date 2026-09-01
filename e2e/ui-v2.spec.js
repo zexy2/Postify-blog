@@ -194,6 +194,39 @@ test.describe('Postify UI V2', () => {
     await expect(article.locator(':scope > section dl')).toHaveCount(0);
   });
 
+  test('article evidence disclosure stays compact and text-safe', async ({ page }) => {
+    for (const config of [
+      { width: 390, height: 844, scale: false },
+      { width: 320, height: 700, scale: true },
+    ]) {
+      await page.setViewportSize({ width: config.width, height: config.height });
+      await page.goto('/posts/node-json-dogrulama');
+      if (config.scale) await page.addStyleTag({ content: 'html{font-size:200%!important}' });
+
+      const evidence = page.locator('.knowledge-evidence');
+      await expect(evidence.locator('.knowledge-evidence__header h2')).toBeVisible();
+      await expect(evidence.locator('.knowledge-evidence__header > strong')).toBeVisible();
+      const details = evidence.locator('details.knowledge-evidence__details');
+      const summary = details.locator('summary');
+      await expect(details).not.toHaveAttribute('open', '');
+      expect((await summary.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+      await expect(evidence.getByText(/test environment|test ortamı/i)).toBeHidden();
+
+      await summary.click();
+      await expect(details).toHaveAttribute('open', '');
+      await expect(evidence.getByText(/test environment|test ortamı/i)).toBeVisible();
+      for (const link of await evidence.getByRole('link').all()) {
+        const box = await link.boundingBox();
+        if (!box) continue;
+        expect(box.height).toBeGreaterThanOrEqual(44);
+        expect(box.x).toBeGreaterThanOrEqual(-1);
+        expect(box.x + box.width).toBeLessThanOrEqual(config.width + 1);
+      }
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(1);
+    }
+  });
+
   test('mobile article and editor controls stay touch-safe and contained', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/posts/node-json-dogrulama');
@@ -216,10 +249,17 @@ test.describe('Postify UI V2', () => {
     const authorLink = page.locator('article').getByRole('link').filter({ hasText: /@postify/i }).first();
     await expect(authorLink).toBeVisible();
     expect((await authorLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
-    const artifactLink = page.getByRole('link', { name: /exact executed \.mjs|çalıştırılan \.mjs/i });
-    if (await artifactLink.count()) {
-      expect((await artifactLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
-    }
+    const evidenceDisclosure = article.locator('details.knowledge-evidence__details').first();
+    await expect(evidenceDisclosure).toBeVisible();
+    await expect(evidenceDisclosure).not.toHaveAttribute('open', '');
+    const evidenceSummary = evidenceDisclosure.locator('summary');
+    expect((await evidenceSummary.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
+    const artifactLink = evidenceDisclosure.getByRole('link', { name: /exact executed \.mjs|çalıştırılan \.mjs/i });
+    await expect(artifactLink).toBeHidden();
+    await evidenceSummary.click();
+    await expect(evidenceDisclosure).toHaveAttribute('open', '');
+    await expect(artifactLink).toBeVisible();
+    expect((await artifactLink.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
 
     const outlineDisclosure = article.locator('details').filter({ hasText: /on this page|bu yazıda/i }).first();
     await expect(outlineDisclosure).toBeVisible();
@@ -523,6 +563,7 @@ test.describe('Postify UI V2', () => {
   test('command palette stays contained and touch-safe on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
+    await expect(page.locator('#knowledge-feed')).toBeVisible();
     await page.keyboard.press('Control+K');
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -999,13 +1040,18 @@ test.describe('Verified Knowledge execution', () => {
     await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toBeVisible();
     await expect(page.getByText(/execution passed|çalıştırma geçti/i)).toBeVisible();
-    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
+    const evidence = page.locator('.knowledge-evidence');
+    const evidenceDetails = evidence.locator('details.knowledge-evidence__details');
+    await expect(evidenceDetails).not.toHaveAttribute('open', '');
+    await expect(evidence.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeHidden();
+    await evidenceDetails.locator('summary').click();
+    await expect(evidenceDetails).toHaveAttribute('open', '');
+    await expect(evidence.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
     await expect(page.getByText(/ci gerçek çıktısı|ci actual stdout/i).locator('..').getByText('PASS')).toBeVisible();
     await expect(page.getByText(/yerelde çalıştır|run locally/i).locator('..').getByText('node node-json-parse-v1.mjs')).toBeVisible();
     const verifierDownload = page.getByRole('link', { name: /çalıştırılan \.mjs dosyasını indir|download the exact executed \.mjs/i });
     await expect(verifierDownload).toHaveAttribute('href', '/verification/node-json-parse-v1.mjs');
     await expect(page.getByText(/makale ve artifact sözleşmesi eşleşti|article and artifact contract matched/i)).toBeVisible();
-    const evidence = page.locator('.knowledge-evidence');
     await expect(evidence.locator('small').filter({ hasText: /güvenlik sandbox’ı değildir|not a security sandbox/i })).toBeVisible();
   });
 
@@ -1070,8 +1116,11 @@ test.describe('Verified Knowledge execution', () => {
     await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { name: /postify re-check required|postify yeniden kontrol etmeli/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Postify verified', exact: true })).toHaveCount(0);
-    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
     await expect(page.getByText(newerVersion, { exact: false })).toBeVisible();
+    const evidenceDetails = page.locator('.knowledge-evidence details.knowledge-evidence__details');
+    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeHidden();
+    await evidenceDetails.locator('summary').click();
+    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
   });
 
 });
@@ -1133,8 +1182,12 @@ test.describe('Verified Knowledge pre-migration compatibility', () => {
     consoleErrors.length = 0;
     const articleResponse = await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.locator('.knowledge-evidence')).toBeVisible();
-    await expect(page.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
+    const evidence = page.locator('.knowledge-evidence');
+    await expect(evidence).toBeVisible();
+    const evidenceDetails = evidence.locator('details.knowledge-evidence__details');
+    await expect(evidence.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeHidden();
+    await evidenceDetails.locator('summary').click();
+    await expect(evidence.getByText(/çalıştırılan sözleşme|executed contract/i)).toBeVisible();
 
     let ignoredExpectedDocument404 = false;
     const unexpectedConsoleErrors = consoleErrors.filter((message) => {

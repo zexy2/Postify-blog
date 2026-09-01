@@ -758,6 +758,16 @@ body:has([role="dialog"]) [data-rht-toaster] {
 .knowledge-evidence p,.knowledge-evidence li { color:var(--text-secondary); font-size:.9rem; line-height:1.6; }
 .knowledge-evidence ul,.knowledge-evidence ol { margin:.45rem 0 1rem; padding-left:1.25rem; }
 .knowledge-evidence small { display:block; color:var(--text-muted); line-height:1.5; }
+.knowledge-evidence__details { margin:.9rem 0 .85rem; border-block:1px solid var(--border-color); }
+.knowledge-evidence__details>summary { position:relative; display:grid; gap:.18rem; min-height:52px; padding:.65rem 2.4rem .65rem 0; color:var(--text-primary); cursor:pointer; list-style:none; }
+.knowledge-evidence__details>summary::-webkit-details-marker { display:none; }
+.knowledge-evidence__details>summary>span { font-size:.82rem; font-weight:850; }
+.knowledge-evidence__details>summary>small { font-size:.7rem; }
+.knowledge-evidence__details>summary::after { content:'+'; position:absolute; top:50%; right:.2rem; width:1.6rem; height:1.6rem; display:grid; place-items:center; transform:translateY(-50%); color:var(--text-muted); background:var(--bg-secondary); border-radius:var(--radius-full); font-size:1rem; font-weight:500; }
+.knowledge-evidence__details[open]>summary::after { content:'−'; }
+.knowledge-evidence__details>summary:hover>span,.knowledge-evidence__details>summary:focus-visible>span { color:var(--primary); }
+.knowledge-evidence__details-body { padding:.2rem 0 .5rem; }
+.knowledge-evidence__details-body>p:first-child { margin-top:.4rem; }
 .local-evidence-actions { max-width:68ch; margin:2.5rem 0; padding:1.25rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); }
 .local-evidence-actions>div:first-child { display:flex; justify-content:space-between; gap:1rem; align-items:baseline; }
 .local-evidence-actions span { font-weight:800; color:var(--text-primary); }
@@ -796,4 +806,4 @@ body:has([role="dialog"]) [data-rht-toaster] {
 .knowledge-evidence__contract code { overflow-wrap:anywhere; }
 .knowledge-evidence__artifact { width:fit-content; color:var(--primary); font-size:.76rem; font-weight:800; text-decoration:underline; text-underline-offset:3px; }
 @media(max-width:960px){.knowledge-evidence a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}.knowledge-evidence__artifact{display:inline-flex;align-items:center;min-height:44px}}
-@media(max-width:620px){.knowledge-evidence__contract>div{grid-template-columns:1fr;gap:.2rem}}
+@media(max-width:620px){.knowledge-evidence__details>summary>small{display:none}.knowledge-evidence__contract>div{grid-template-columns:1fr;gap:.2rem}}
