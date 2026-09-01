@@ -508,3 +508,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** While Home is mounted, native browser scroll anchoring is disabled because Postify already compensates the fallback→live layout transition and history restoration. Before an internal article navigation, the exact clicked knowledge card is stored as the semantic return anchor (`key + viewportTop`); generic viewport-anchor capture remains the fallback. Article/navigation pages restore the browser default anchoring behavior when Home unmounts.
 
 **Why:** Production repetition showed double compensation of the ~74px fallback banner and occasional restoration to the previous card instead of the opened card. Capturing the reader's actual click target and preventing competing browser anchoring makes Back restoration deterministic while still yielding immediately to subsequent user scroll/touch/keyboard input.
+
+## 2026-09-01 — Article reading quality comes from measure and hierarchy, not more cards
+**Decision:** The Article reading surface uses a lighter display-title weight, a framed cover, ~64ch desktop prose measure, larger editorial section headings, rule-based contents/references sections, and typographic previous/next navigation. Mobile keeps its own compact disclosure/stacking model. We do not turn each reading section into an elevated card or introduce decorative effects.
+
+**Why:** The Article header had become strong, but the lower reading flow still looked like a sequence of utility blocks. Improving type scale, reading measure, whitespace and section boundaries makes the page visibly more mature while preserving Postify's calm editorial/developer-tool direction and avoiding card-inside-card visual noise.
