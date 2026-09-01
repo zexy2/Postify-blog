@@ -138,9 +138,10 @@ const Header = () => {
             aria-current={isHome && !activeType ? 'page' : undefined}
             onClick={handleHomeNavigation}
           >
-            {t('nav.home')}
+            <small className={styles.desktopNavIndex} aria-hidden="true">01</small>
+            <span>{t('nav.home')}</span>
           </Link>
-          {formatLinks.map(([type, label]) => {
+          {formatLinks.map(([type, label], index) => {
             const isActive = isHome && activeType === type;
             return (
               <Link
@@ -149,7 +150,8 @@ const Header = () => {
                 className={isActive ? styles.active : ''}
                 aria-current={isActive ? 'page' : undefined}
               >
-                {label}
+                <small className={styles.desktopNavIndex} aria-hidden="true">{String(index + 2).padStart(2, '0')}</small>
+                <span>{label}</span>
               </Link>
             );
           })}
@@ -262,6 +264,7 @@ const Header = () => {
               <SheetTitle className="sr-only">{t('common.toggleMenu')}</SheetTitle>
               <div className={styles.mobilePanel}>
               <div className={styles.mobileTop}>
+                <span className={styles.mobileKicker}>POSTIFY / {t('home.edition')}</span>
                 <Link to="/" className={styles.logo} onClick={handleHomeNavigation}>
                   <BrandMark size="md" /><span>Postify</span>
                 </Link>
@@ -273,6 +276,7 @@ const Header = () => {
                 <span>{t('home.searchPlaceholder')}</span>
               </button>
 
+              <span className={styles.mobileNavLabel}>{i18n.language?.startsWith('en') ? 'Browse' : 'Gezin'}</span>
               <nav className={styles.mobileNav}>
                 <Link
                   to="/"
