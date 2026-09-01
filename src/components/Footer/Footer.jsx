@@ -93,9 +93,27 @@ const Footer = () => {
         </div>
 
         <div className={styles.systemLine} aria-label={isEnglish ? 'Postify trust model' : 'Postify güven modeli'}>
-          <div><span>01</span><strong>{isEnglish ? 'Evidence' : 'Kanıt'}</strong></div>
-          <div><span>02</span><strong>{isEnglish ? 'Freshness' : 'Güncellik'}</strong></div>
-          <div><span>03</span><strong>{isEnglish ? 'Reproducibility' : 'Tekrarlanabilirlik'}</strong></div>
+          <div>
+            <span>01</span>
+            <div className={styles.systemCopy}>
+              <strong>{isEnglish ? 'Evidence' : 'Kanıt'}</strong>
+              <small>{isEnglish ? 'See what supports the claim.' : 'İddianın neye dayandığını gör.'}</small>
+            </div>
+          </div>
+          <div>
+            <span>02</span>
+            <div className={styles.systemCopy}>
+              <strong>{isEnglish ? 'Freshness' : 'Güncellik'}</strong>
+              <small>{isEnglish ? 'Know when the context changed.' : 'Bağlamın ne zaman değiştiğini bil.'}</small>
+            </div>
+          </div>
+          <div>
+            <span>03</span>
+            <div className={styles.systemCopy}>
+              <strong>{isEnglish ? 'Reproducibility' : 'Tekrarlanabilirlik'}</strong>
+              <small>{isEnglish ? 'Repeat the work, not the promise.' : 'Vaadi değil, uygulamayı tekrar et.'}</small>
+            </div>
+          </div>
         </div>
 
         <div className={styles.bottomBar}>
