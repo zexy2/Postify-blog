@@ -528,3 +528,10 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Keep the shared header height stable while changing its hierarchy: Postify brand first, numbered content-format navigation second, search/account/language/theme as quiet utilities, and write/login as the single primary action. On mobile, use a full-height editorial index with a masthead, search surface, numbered routes, and separated utilities instead of compressing desktop controls into a drawer.
 
 **Why:** The prior header was functionally complete but every control carried similar visual weight, which made the shell feel like application chrome rather than a publication/knowledge product. A stable-height editorial hierarchy creates a visible quality jump across the entire product without shifting page content or changing navigation semantics.
+
+## 2026-09-01 — The footer is a product close, not a sitemap block
+**Decision:** The shared footer closes with one large editorial product statement, one accent discovery CTA, quiet indexed navigation, and a three-part trust rail. Desktop may explain Evidence / Freshness / Reproducibility in one sentence each; mobile keeps the same trust model compact. Footer controls must remain >=44px in touch mode and must not escape the viewport at 200% text scaling.
+
+**Why:** The previous footer already exposed the right information, but brand, CTAs, navigation and trust labels carried similar visual weight. Making the reader promise dominant and the sitemap secondary creates a visible end-of-page hierarchy without hiding product routes or fabricating trust. The 200% regression also showed that CSS Grid min-content behavior must be constrained explicitly in responsive CTA rows.
+
+**Performance constraint:** The eager main entry is now 319,496 bytes against the existing 320 KB gate. Further visible UI work should prefer CSS or already-lazy surfaces; new eager JavaScript should be avoided unless equivalent entry weight is removed or moved behind a lazy boundary.
