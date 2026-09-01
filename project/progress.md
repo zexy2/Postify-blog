@@ -752,3 +752,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Replaced the PersistGate bootstrap spinner with the existing shared `SystemStatus` loading surface, so first hydration, lazy route loading and recovery states now speak one visual language instead of switching to a generic circular app spinner.
 - Tightened the shared recovery treatment with a stronger editorial top rule, flat underlined recovery actions and a ruled debug-details panel; focus, retry/home behavior and reduced-motion progress semantics remain unchanged.
 - Dedicated bootstrap-equivalent Chromium geometry passes at 1440, 390, 320 dark and 320 at 200% text scaling (4/4); recovery focus/visual targeted coverage passes 5/5. The simplification reduces the eager entry from 319,496 B to 319,234 B.
+
+### 2026-09-02 — Discovery refinement sheet editorial polish
+- Flattened the advanced Discovery Filters surface from a rounded SaaS popover / nested option-card treatment into a ruled editorial refinement sheet: strong top rule, separated option rows, square state markers and display typography for the refinement heading.
+- Preserved the existing progressive-disclosure behavior, URL/shareable filter state, lazy loading and mobile bottom-sheet interaction; this tranche is CSS-only and adds no eager JavaScript.
+- Raised close/reset controls to a 44px minimum target on all viewports and kept the mobile option list single-column for 320/390 and 200% text scaling containment.

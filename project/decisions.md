@@ -565,3 +565,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** PersistGate bootstrap loading reuses `SystemStatus` rather than maintaining a separate circular spinner implementation. System-state recovery actions use flat rule-based controls and debug details use a ruled panel rather than rounded card chrome.
 
 **Why:** A first-load spinner is one of the earliest product impressions and the old generic loader visibly broke the editorial knowledge language established across Postify. Reusing the existing status primitive improves coherence and removes eager code instead of adding another visual primitive.
+
+## 2026-09-02 — Advanced discovery refinement is a sheet, not a settings-card grid
+**Decision:** Keep advanced discovery behind the existing progressive disclosure, but render the opened surface as a flat editorial refinement sheet with ruled rows and compact state marks instead of a large rounded popover containing many rounded option cards.
+
+**Why:** Discovery is the product's primary knowledge-index surface. Opening refinements should preserve that publication/index language rather than switching to generic dashboard settings chrome. The change is intentionally CSS-only so filtering behavior, URL state and the tight eager bundle budget remain untouched.
