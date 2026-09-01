@@ -498,3 +498,13 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Discovery-to-article return state is anchored to the visible article card identity and its viewport offset, not only to saved `scrollY`. Raw coordinates remain a fallback until the semantic card exists. During POP restoration Postify may compensate async feed reflow for a short bounded period, but any pointer, wheel, touch or keyboard interaction immediately cancels automatic restoration.
 
 **Why:** Production data can replace fallback cards or change feed geometry after navigation returns. A raw pixel coordinate therefore describes the old document, not necessarily the reader's place in the new one. Preserving the same content card at the same visual offset better matches user intent and remains stable across async data replacement.
+
+## 2026-09-01 — Discovery cards should read like an editorial index, not a dashboard
+**Decision:** Knowledge-card hierarchy uses typography, rhythm and one restrained evidence rule before decorative containers. Sequence ordinals are quiet mono indices rather than badges; trust facts share a borderless rail; featured records may be contained but must not rely on elevation/lift effects; standard and compact records remain row-like. On <=360px standard cards keep the two primary trust signals visible and defer lower-priority facts to the article.
+
+**Why:** After modernizing discovery controls, the feed itself still looked like a component/dashboard collection because every record carried badges, boxed trust cells and card-like elevation. Removing that chrome makes the content title and evidence hierarchy visually dominant and is immediately visible without sacrificing trust information or mobile usability.
+
+## 2026-09-01 — Home scroll restoration owns anchoring and captures reader intent
+**Decision:** While Home is mounted, native browser scroll anchoring is disabled because Postify already compensates the fallback→live layout transition and history restoration. Before an internal article navigation, the exact clicked knowledge card is stored as the semantic return anchor (`key + viewportTop`); generic viewport-anchor capture remains the fallback. Article/navigation pages restore the browser default anchoring behavior when Home unmounts.
+
+**Why:** Production repetition showed double compensation of the ~74px fallback banner and occasional restoration to the previous card instead of the opened card. Capturing the reader's actual click target and preventing competing browser anchoring makes Back restoration deterministic while still yielding immediately to subsequent user scroll/touch/keyboard input.
