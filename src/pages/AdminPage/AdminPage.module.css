@@ -34,10 +34,10 @@
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 5.4vw, 5rem);
-  font-weight: 600;
-  letter-spacing: -.06em;
-  line-height: .94;
+  font-size: clamp(3rem, 5.6vw, 5.2rem);
+  font-weight: 500;
+  letter-spacing: -.065em;
+  line-height: .91;
   text-wrap: balance;
 }
 
@@ -115,43 +115,54 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   border-top: 1px solid var(--border-strong);
-  border-left: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .statCard {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: .7rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'value icon' 'label icon';
+  gap: .32rem .8rem;
+  align-content: center;
   min-width: 0;
-  min-height: 104px;
-  padding: 1rem;
+  min-height: 118px;
+  padding: 1.15rem 1.15rem 1.15rem 0;
   border-right: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+}
+
+.statCard + .statCard {
+  padding-left: 1.15rem;
+}
+
+.statCard:last-child {
+  border-right: 0;
 }
 
 .statIcon {
-  width: 1.15rem;
-  height: 1.15rem;
-  color: var(--primary);
+  grid-area: icon;
+  align-self: start;
+  width: 1rem;
+  height: 1rem;
+  margin-top: .18rem;
+  color: var(--text-muted);
 }
 
 .statInfo {
-  display: grid;
-  gap: .2rem;
-  min-width: 0;
+  display: contents;
 }
 
 .statNumber {
+  grid-area: value;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
-  font-weight: 600;
-  letter-spacing: -.05em;
-  line-height: .9;
+  font-size: clamp(2.15rem, 3.4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -.055em;
+  line-height: .86;
 }
 
 .statLabel {
+  grid-area: label;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -231,16 +242,15 @@
   width: fit-content;
   align-items: center;
   min-height: 24px;
-  padding: .25rem .45rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  padding: .2rem 0;
+  border: 0;
+  border-radius: 0;
   color: var(--text-secondary);
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 .roleBadge.admin {
   color: var(--error);
-  border-color: color-mix(in srgb, var(--error) 35%, var(--border-color));
 }
 
 .roleBadge.moderator {
@@ -269,15 +279,17 @@
 
 .table th,
 .table td {
-  padding: .9rem .75rem;
+  padding: 1rem .65rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
 }
 
 .table th {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
   color: var(--text-muted);
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 .table tr:last-child td {
@@ -285,7 +297,7 @@
 }
 
 .table tbody tr:hover td {
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  background: color-mix(in srgb, var(--bg-secondary) 38%, transparent);
 }
 
 .userCell {
@@ -299,11 +311,12 @@
 
 .roleSelect {
   min-height: 36px;
-  padding: .4rem .55rem;
+  padding: .4rem 1.75rem .4rem .15rem;
   color: var(--text-primary);
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
   font: inherit;
   font-size: .76rem;
 }
@@ -339,15 +352,15 @@
   place-items: center;
   color: var(--text-muted);
   background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  border: 0;
+  border-radius: 0;
   cursor: pointer;
 }
 
 .actionBtn:hover,
 .actionBtn:focus-visible {
   color: var(--text-primary);
-  border-color: var(--border-strong);
+  background: var(--bg-secondary);
 }
 
 .deleteBtn {
@@ -357,7 +370,6 @@
 .deleteBtn:hover,
 .deleteBtn:focus-visible {
   background: color-mix(in srgb, var(--error) 8%, transparent);
-  border-color: color-mix(in srgb, var(--error) 40%, var(--border-color));
 }
 
 .deleteBtn:disabled {
@@ -442,8 +454,12 @@
   }
 
   .statCard {
-    min-height: 92px;
-    padding: .85rem;
+    min-height: 96px;
+    padding: .9rem .8rem .9rem 0;
+  }
+
+  .statCard + .statCard {
+    padding-left: .8rem;
   }
 
   .recentItem {
@@ -462,7 +478,19 @@
 
 @media (max-width: 390px) {
   .statsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statCard:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .statCard:nth-child(n + 3) {
+    border-top: 1px solid var(--border-color);
+  }
+
+  .statCard:last-child {
+    grid-column: 1 / -1;
   }
 }
 
@@ -476,4 +504,22 @@
   font-weight: 750;
   line-height: 1.35;
   text-transform: uppercase;
+}
+
+@media (max-width: 390px) {
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    overflow: visible;
+  }
+
+  .tab {
+    min-width: 0;
+    width: 100%;
+    justify-content: center;
+    padding-inline: .35rem;
+    text-align: center;
+    white-space: normal;
+  }
 }
