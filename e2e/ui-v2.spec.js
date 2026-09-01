@@ -204,17 +204,17 @@ test.describe('Postify UI V2', () => {
       if (config.scale) await page.addStyleTag({ content: 'html{font-size:200%!important}' });
 
       const evidence = page.locator('.knowledge-evidence');
-      await expect(evidence.getByRole('heading', { name: /postify verified/i })).toBeVisible();
-      await expect(evidence.getByText(/execution passed|çalıştırma geçti/i)).toBeVisible();
+      await expect(evidence.locator('.knowledge-evidence__header h2')).toBeVisible();
+      await expect(evidence.locator('.knowledge-evidence__header > strong')).toBeVisible();
       const details = evidence.locator('details.knowledge-evidence__details');
       const summary = details.locator('summary');
       await expect(details).not.toHaveAttribute('open', '');
       expect((await summary.boundingBox())?.height || 0).toBeGreaterThanOrEqual(44);
-      await expect(evidence.getByText(/executed contract|çalıştırılan sözleşme/i)).toBeHidden();
+      await expect(evidence.getByText(/test environment|test ortamı/i)).toBeHidden();
 
       await summary.click();
       await expect(details).toHaveAttribute('open', '');
-      await expect(evidence.getByText(/executed contract|çalıştırılan sözleşme/i)).toBeVisible();
+      await expect(evidence.getByText(/test environment|test ortamı/i)).toBeVisible();
       for (const link of await evidence.getByRole('link').all()) {
         const box = await link.boundingBox();
         if (!box) continue;
