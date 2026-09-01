@@ -523,3 +523,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The Home masthead prioritizes display typography, one prominent discovery/search control and a rule-based featured cover story. The featured story does not use a rounded elevated outer card; image framing and typographic hierarchy provide separation instead. Browse is the primary accent action, while contribution stays secondary.
 
 **Why:** Discovery controls and feed cards had already been simplified, but the first screen still mixed a premium masthead with an elevated product-card featured story. Removing that outer card and strengthening the search/title hierarchy makes the product feel intentionally editorial at first glance without changing information architecture or adding decorative complexity.
+
+## 2026-09-01 — Global navigation should behave like an editorial index, not a toolbar
+**Decision:** Keep the shared header height stable while changing its hierarchy: Postify brand first, numbered content-format navigation second, search/account/language/theme as quiet utilities, and write/login as the single primary action. On mobile, use a full-height editorial index with a masthead, search surface, numbered routes, and separated utilities instead of compressing desktop controls into a drawer.
+
+**Why:** The prior header was functionally complete but every control carried similar visual weight, which made the shell feel like application chrome rather than a publication/knowledge product. A stable-height editorial hierarchy creates a visible quality jump across the entire product without shifting page content or changing navigation semantics.
