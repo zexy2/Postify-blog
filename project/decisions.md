@@ -513,3 +513,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The Article reading surface uses a lighter display-title weight, a framed cover, ~64ch desktop prose measure, larger editorial section headings, rule-based contents/references sections, and typographic previous/next navigation. Mobile keeps its own compact disclosure/stacking model. We do not turn each reading section into an elevated card or introduce decorative effects.
 
 **Why:** The Article header had become strong, but the lower reading flow still looked like a sequence of utility blocks. Improving type scale, reading measure, whitespace and section boundaries makes the page visibly more mature while preserving Postify's calm editorial/developer-tool direction and avoiding card-inside-card visual noise.
+
+## 2026-09-01 — The editor is a publishing workspace, not a settings form
+**Decision:** Create/Edit knowledge uses one document-like writing canvas for title, body and evidence, paired with a visually distinct readiness inspector on wide screens. Writing-mode selection is an editorial chooser, the rich-text toolbar belongs to the writing surface, and Publish is the single primary accent action. Mobile stacks the inspector after the document and keeps actions touch-safe rather than shrinking the desktop layout.
+
+**Why:** The previous editor was functionally strong but visually read as a long sequence of form fields and divider lines. Grouping the writing flow into a calm document surface and separating readiness/status information improves hierarchy at first glance without hiding evidence requirements or adding card-within-card chrome.
