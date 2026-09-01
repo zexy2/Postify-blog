@@ -79,15 +79,25 @@ export default function KnowledgeEvidencePanel({ post }) {
         <div><span>{en ? 'Evidence' : 'Kanıt durumu'}</span><h2 id="knowledge-evidence-title">{heading}</h2></div>
         <strong data-freshness={freshness}>{freshnessLabel}</strong>
       </div>
-      {executionPassed && <ExecutionContract auto={auto} en={en} />}
       {recheckRequired && <p>{en ? `Historical execution passed on ${auto.runtimeVersion}, but ${autoState.signal?.latestLtsVersion || 'a newer LTS release'} is now the current Node LTS. Re-run before restoring Postify Verified.` : `Geçmiş çalıştırma ${auto.runtimeVersion} üzerinde geçti; ancak güncel Node LTS artık ${autoState.signal?.latestLtsVersion || 'daha yeni bir sürüm'}. Postify Verified geri gelmeden önce yeniden çalıştırılmalı.`}</p>}
       {freshnessUnknown && <p>{en ? 'The historical execution still exists, but Postify cannot currently prove that its runtime is still the latest LTS. The Verified badge is withheld.' : 'Geçmiş çalıştırma kanıtı duruyor; ancak Postify runtime’ın hâlâ en güncel LTS olduğunu şu anda kanıtlayamıyor. Verified rozeti bu yüzden gösterilmiyor.'}</p>}
-      {evidence.testedAt && <p>{en ? 'Author last tested' : 'Yazarın son testi'}: <time dateTime={evidence.testedAt}>{new Intl.DateTimeFormat(en ? 'en-US' : 'tr-TR', { dateStyle: 'medium' }).format(new Date(evidence.testedAt))}</time></p>}
-      {evidence.environment.length > 0 && <div><h3>{en ? 'Test environment' : 'Test ortamı'}</h3><ul>{evidence.environment.map((item) => <li key={item}>{item}</li>)}</ul></div>}
-      {evidence.prerequisites.length > 0 && <div><h3>{en ? 'Before you start' : 'Başlamadan önce'}</h3><ul>{evidence.prerequisites.map((item) => <li key={item}>{item}</li>)}</ul></div>}
-      {evidence.verificationSteps.length > 0 && <div><h3>{en ? 'How to verify' : 'Nasıl doğrulanır?'}</h3><ol>{evidence.verificationSteps.map((item) => <li key={item}>{item}</li>)}</ol></div>}
-      {evidence.caveats.length > 0 && <div><h3>{en ? 'Known caveats' : 'Bilinen sınırlar'}</h3><ul>{evidence.caveats.map((item) => <li key={item}>{item}</li>)}</ul></div>}
-      {evidence.sources.length > 0 && <div><h3>{en ? 'Evidence sources' : 'Kanıt kaynakları'}</h3><ol>{evidence.sources.map((source) => { const url = safeSource(source); return url ? <li key={source}><a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname.replace(/^www\./, '')}</a></li> : <li key={source}>{source}</li>; })}</ol></div>}
+      {(executionPassed || evidence.testedAt || evidence.environment.length > 0 || evidence.prerequisites.length > 0 || evidence.verificationSteps.length > 0 || evidence.caveats.length > 0 || evidence.sources.length > 0) && (
+        <details className="knowledge-evidence__details">
+          <summary>
+            <span>{en ? 'Verification details' : 'Doğrulama ayrıntıları'}</span>
+            <small>{en ? 'Execution, environment, steps and sources' : 'Çalıştırma, ortam, adımlar ve kaynaklar'}</small>
+          </summary>
+          <div className="knowledge-evidence__details-body">
+            {executionPassed && <ExecutionContract auto={auto} en={en} />}
+            {evidence.testedAt && <p>{en ? 'Author last tested' : 'Yazarın son testi'}: <time dateTime={evidence.testedAt}>{new Intl.DateTimeFormat(en ? 'en-US' : 'tr-TR', { dateStyle: 'medium' }).format(new Date(evidence.testedAt))}</time></p>}
+            {evidence.environment.length > 0 && <div><h3>{en ? 'Test environment' : 'Test ortamı'}</h3><ul>{evidence.environment.map((item) => <li key={item}>{item}</li>)}</ul></div>}
+            {evidence.prerequisites.length > 0 && <div><h3>{en ? 'Before you start' : 'Başlamadan önce'}</h3><ul>{evidence.prerequisites.map((item) => <li key={item}>{item}</li>)}</ul></div>}
+            {evidence.verificationSteps.length > 0 && <div><h3>{en ? 'How to verify' : 'Nasıl doğrulanır?'}</h3><ol>{evidence.verificationSteps.map((item) => <li key={item}>{item}</li>)}</ol></div>}
+            {evidence.caveats.length > 0 && <div><h3>{en ? 'Known caveats' : 'Bilinen sınırlar'}</h3><ul>{evidence.caveats.map((item) => <li key={item}>{item}</li>)}</ul></div>}
+            {evidence.sources.length > 0 && <div><h3>{en ? 'Evidence sources' : 'Kanıt kaynakları'}</h3><ol>{evidence.sources.map((source) => { const url = safeSource(source); return url ? <li key={source}><a href={url.href} target="_blank" rel="noopener noreferrer">{url.hostname.replace(/^www\./, '')}</a></li> : <li key={source}>{source}</li>; })}</ol></div>}
+          </div>
+        </details>
+      )}
       <small>{postifyVerified
         ? (en ? 'Postify Verified applies only to the displayed deterministic execution scope; it does not certify unrelated external systems.' : 'Postify Verified yalnız gösterilen deterministik çalıştırma kapsamı için geçerlidir; dış sistemleri genel olarak sertifikalandırmaz.')
         : executionPassed

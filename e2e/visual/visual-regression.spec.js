@@ -57,6 +57,19 @@ async function settleVisualSurface(page) {
   }));
 }
 
+async function waitForStableGeometry(locator, { samples = 3, maxAttempts = 12 } = {}) {
+  let previous = null;
+  let stable = 0;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const box = await locator.boundingBox();
+    const signature = box ? `${Math.round(box.width * 10)}:${Math.round(box.height * 10)}` : 'missing';
+    stable = signature === previous ? stable + 1 : 0;
+    if (stable >= samples) return;
+    previous = signature;
+    await locator.evaluate(() => new Promise((resolve) => setTimeout(resolve, 90)));
+  }
+}
+
 function parseRgb(value) {
   const normalized = String(value).trim();
   const hex = normalized.match(/^#([0-9a-f]{6})$/i);
@@ -268,6 +281,7 @@ for (const viewport of viewports) {
     await page.goto('/');
     await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible({ timeout: 15_000 });
     await settleVisualSurface(page);
+    await waitForStableGeometry(page.locator('#main-content'));
     await expect(page.locator('#main-content')).toHaveScreenshot(`home-${viewport.name}.png`);
   });
 
@@ -548,10 +562,14 @@ test('Tablet touch mode keeps primary work controls at least 44px', async ({ pag
     await page.goto('/posts/node-json-dogrulama');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     const runbook = page.locator('section').filter({ hasText: /Action runbook|Uygulama turu/i }).first();
+    const evidenceDetails = page.locator('.knowledge-evidence details.knowledge-evidence__details');
+    await expect(evidenceDetails).toBeVisible();
+    await evidenceDetails.locator('summary').click();
+    await expect(evidenceDetails).toHaveAttribute('open', '');
     await expectTouchSafe([
       page.getByRole('button', { name: /^copy$|^kopyala$/i }).first(),
       page.getByRole('button', { name: /copy link|bağlantıyı kopyala/i }).first(),
-      page.getByRole('link', { name: /nodejs\.org/i }).first(),
+      evidenceDetails.getByRole('link', { name: /nodejs\.org/i }).first(),
       runbook.getByRole('button', { name: /reset|sıfırla/i }),
     ]);
 
@@ -1122,6 +1140,7 @@ for (const viewport of viewports) {
     await expect(page.locator('#knowledge-feed [data-card-variant="featured"]')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await settleVisualSurface(page);
+    await waitForStableGeometry(page.locator('#main-content'));
     await expect(page.locator('#main-content')).toHaveScreenshot(`home-dark-${viewport.name}.png`);
   });
 
