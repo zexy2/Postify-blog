@@ -13,35 +13,15 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 
 import App from './App';
+import SystemStatus from './components/SystemStatus';
 import { store, persistor } from './store';
 import { queryClient } from './lib/queryClient';
 import SmoothScrollProvider from './providers/SmoothScrollProvider';
 import './lib/i18n'; // Initialize i18n
 import './index.css';
 
-// Loading component for PersistGate
-const LoadingScreen = () => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      background: 'var(--bg-primary)',
-    }}
-  >
-    <div
-      style={{
-        width: '40px',
-        height: '40px',
-        border: '3px solid var(--border-color)',
-        borderTopColor: 'var(--gradient-start)',
-        borderRadius: '50%',
-        animation: 'spin 0.8s linear infinite',
-      }}
-    />
-  </div>
-);
+// Keep bootstrap hydration in the same editorial system-state language as route transitions.
+const LoadingScreen = () => <SystemStatus eyebrow="POSTIFY / LOADING" loading fullPage />;
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

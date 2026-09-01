@@ -747,3 +747,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - After exact production closeout at `de0c6ef2b5f11f51631fe7d0c6221ab9a972dcc3`, selected the public author portfolio as the next visible consistency gap; Bookmarks and Knowledge Health are already using the current rule-based editorial system.
 - Reworked only `UserPage.module.css`: the social-profile-like circular monogram became a compact folio marker with a typographic top rule, and the icon-led three-stat strip became a quieter metadata ledger. Public author data, evidence counts, bookmark behavior and the shared EditorialFeed remain unchanged.
 - Graphify impact query/update completed. Targeted visual baselines show the intended change on desktop/mobile; compare-only rerun passes 2/2. Dedicated 390 light, 320 dark and 320 at 200% text scaling QA passes 3/3 with no horizontal overflow or escaped controls and >=44px bookmark touch targets.
+
+### 2026-09-02 — Unified editorial system states
+- Replaced the PersistGate bootstrap spinner with the existing shared `SystemStatus` loading surface, so first hydration, lazy route loading and recovery states now speak one visual language instead of switching to a generic circular app spinner.
+- Tightened the shared recovery treatment with a stronger editorial top rule, flat underlined recovery actions and a ruled debug-details panel; focus, retry/home behavior and reduced-motion progress semantics remain unchanged.
+- Dedicated bootstrap-equivalent Chromium geometry passes at 1440, 390, 320 dark and 320 at 200% text scaling (4/4); recovery focus/visual targeted coverage passes 5/5. The simplification reduces the eager entry from 319,496 B to 319,234 B.

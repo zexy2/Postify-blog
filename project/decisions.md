@@ -560,3 +560,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Keep the public author route focused on authorship and published knowledge. The author initial is a small editorial folio marker rather than a circular avatar surrogate, and publication/reading/evidence totals are rendered as a ruled metadata ledger without decorative icons.
 
 **Why:** Postify's reader-facing identity is a verified knowledge product, not a social network. The previous circular monogram and icon-led stats reintroduced profile-dashboard language after the rest of the product had moved to a calmer editorial system. This CSS-only treatment strengthens continuity without changing author data, trust semantics, or bundle behavior.
+
+## 2026-09-02 — Bootstrap/loading/recovery share one system-status surface
+**Decision:** PersistGate bootstrap loading reuses `SystemStatus` rather than maintaining a separate circular spinner implementation. System-state recovery actions use flat rule-based controls and debug details use a ruled panel rather than rounded card chrome.
+
+**Why:** A first-load spinner is one of the earliest product impressions and the old generic loader visibly broke the editorial knowledge language established across Postify. Reusing the existing status primitive improves coherence and removes eager code instead of adding another visual primitive.
