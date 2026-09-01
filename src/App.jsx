@@ -2,6 +2,7 @@
  * App Component
  * Main application component with routing
  */
+import { findScrollAnchor, readViewportScrollAnchor } from './lib/scrollRestoration';
 
 import { Navigate, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { useEffect, useLayoutEffect, useRef, Suspense, lazy } from 'react';
@@ -84,11 +85,18 @@ function App() {
     const savePosition = () => {
       const currentSignature = `${window.location.pathname}${window.location.search}${window.location.hash}`;
       if (activeLocationKeyRef.current !== locationKey || currentSignature !== locationSignature) return;
-      scrollPositionsRef.current.set(locationKey, { left: window.scrollX, top: window.scrollY });
+      scrollPositionsRef.current.set(locationKey, {
+        left: window.scrollX,
+        top: window.scrollY,
+        anchor: readViewportScrollAnchor(),
+      });
     };
     savePosition();
     window.addEventListener('scroll', savePosition, { passive: true });
-    return () => window.removeEventListener('scroll', savePosition);
+    return () => {
+      savePosition();
+      window.removeEventListener('scroll', savePosition);
+    };
   }, [location.hash, location.key, location.pathname, location.search]);
 
   // Preserve history-entry scroll positions without interfering with in-page filters.
@@ -97,20 +105,32 @@ function App() {
     const savedPosition = isHistoryRestore ? scrollPositionsRef.current.get(location.key) : null;
     let restoreTimer;
     let restoreFrame;
+    let restoreCleanup;
 
     if (savedPosition) {
       let attempts = 0;
+      let cancelledByUser = false;
+      const cancelRestore = () => { cancelledByUser = true; };
+      const userEvents = ['pointerdown', 'wheel', 'touchstart', 'keydown'];
+      userEvents.forEach((eventName) => window.addEventListener(eventName, cancelRestore, { passive: true, once: true }));
+
       const restore = () => {
-        const maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-        window.scrollTo(savedPosition.left, Math.min(savedPosition.top, maxTop));
-        attempts += 1;
-        if (Math.abs(window.scrollY - savedPosition.top) > 1 && attempts < 40) {
-          restoreTimer = window.setTimeout(restore, 50);
+        if (cancelledByUser) return;
+        const anchorElement = findScrollAnchor(savedPosition.anchor?.key);
+        if (anchorElement && savedPosition.anchor) {
+          const delta = anchorElement.getBoundingClientRect().top - savedPosition.anchor.viewportTop;
+          if (Math.abs(delta) > 0.5) window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
+        } else {
+          const maxTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+          window.scrollTo(savedPosition.left, Math.min(savedPosition.top, maxTop));
         }
+        attempts += 1;
+        if (attempts < 40) restoreTimer = window.setTimeout(restore, 50);
       };
       restoreFrame = window.requestAnimationFrame(() => {
         restoreFrame = window.requestAnimationFrame(restore);
       });
+      restoreCleanup = () => userEvents.forEach((eventName) => window.removeEventListener(eventName, cancelRestore));
     } else if (navigationType !== 'POP' && pathnameChanged) {
       window.scrollTo(0, 0);
       document.body.scrollTop = 0;
@@ -123,6 +143,7 @@ function App() {
     previousPathnameRef.current = location.pathname;
 
     return () => {
+      restoreCleanup?.();
       if (restoreFrame) window.cancelAnimationFrame(restoreFrame);
       if (restoreTimer) window.clearTimeout(restoreTimer);
     };

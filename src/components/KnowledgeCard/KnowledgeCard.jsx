@@ -51,7 +51,7 @@ const KnowledgeCard = ({
   ].filter(Boolean);
 
   return (
-    <article className={`${styles.card} ${styles[safeVariant]}`} data-card-variant={safeVariant}>
+    <article className={`${styles.card} ${styles[safeVariant]}`} data-card-variant={safeVariant} data-scroll-anchor-key={href}>
       <div className={styles.ordinal} aria-hidden="true">{ordinal}</div>
 
       <div className={styles.content}>
