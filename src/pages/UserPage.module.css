@@ -89,7 +89,7 @@
 
 .authorHeader {
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
+  grid-template-columns: 4.25rem minmax(0, 1fr);
   gap: clamp(1.25rem, 4vw, 2.5rem);
   align-items: start;
   padding-bottom: clamp(1.75rem, 4vw, 2.75rem);
@@ -98,15 +98,17 @@
 
 .monogram {
   display: grid;
-  width: 5.5rem;
-  height: 5.5rem;
-  place-items: center;
-  color: var(--bg-primary);
-  background: var(--text-primary);
-  border-radius: 50%;
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 600;
+  width: 4.25rem;
+  height: 4.25rem;
+  place-items: start;
+  padding-top: .15rem;
+  color: var(--text-primary);
+  background: transparent;
+  border-top: 2px solid var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
 }
 
 .identity {
@@ -161,16 +163,16 @@
 .authorStats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 900px;
+  max-width: 980px;
   border-bottom: 1px solid var(--border-strong);
 }
 
 .authorStats > div {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: .15rem .65rem;
-  align-items: center;
-  padding: 1.1rem 1.1rem 1.1rem 0;
+  grid-template-columns: 1fr;
+  gap: .28rem;
+  align-items: start;
+  padding: 1.05rem 1.2rem 1.05rem 0;
   border-right: 1px solid var(--border-color);
 }
 
@@ -182,15 +184,12 @@
   border-right: 0;
 }
 
-.authorStats svg {
-  grid-row: 1 / span 2;
-  color: var(--text-muted);
-}
+.authorStats svg { display: none; }
 
 .authorStats strong {
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 1.85rem;
   font-weight: 600;
   line-height: 1;
 }
@@ -242,14 +241,14 @@
 
 @media (max-width: 720px) {
   .authorHeader {
-    grid-template-columns: 3.75rem minmax(0, 1fr);
+    grid-template-columns: 3rem minmax(0, 1fr);
     gap: .9rem;
   }
 
   .monogram {
-    width: 3.75rem;
-    height: 3.75rem;
-    font-size: 1.45rem;
+    width: 3rem;
+    height: 3rem;
+    font-size: .72rem;
   }
 
   .identity h1 {
@@ -265,12 +264,10 @@
 
   .authorStats > div,
   .authorStats > div + div {
-    display: flex;
+    display: grid;
     min-width: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: .25rem;
-    padding: .75rem .55rem;
+    gap: .22rem;
+    padding: .72rem .55rem;
     border-top: 0;
     border-right: 1px solid var(--border-color);
   }

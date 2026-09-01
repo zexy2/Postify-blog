@@ -555,3 +555,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The global command search keeps its modal/focus-trap behavior, but its visible surface uses publication-like rules, one underlined search rail and separated result rows rather than a large rounded elevated container with nested rounded controls. Result imagery may stay compact and framed; active selection is communicated by a restrained directional background treatment. Mobile keeps >=44px close/result targets and horizontal containment at 200% text scaling.
 
 **Why:** After the global shell, Home, Article, Editor, Auth, Profile and Admin moved to Postify's editorial knowledge language, Command Search remained one of the most visible generic application-modal surfaces. Flattening only its CSS creates a visible cross-product quality gain while preserving the mature keyboard/focus/scroll behavior and adding zero eager JavaScript weight.
+
+## 2026-09-02 — Public authors are presented as knowledge folios, not social profiles
+**Decision:** Keep the public author route focused on authorship and published knowledge. The author initial is a small editorial folio marker rather than a circular avatar surrogate, and publication/reading/evidence totals are rendered as a ruled metadata ledger without decorative icons.
+
+**Why:** Postify's reader-facing identity is a verified knowledge product, not a social network. The previous circular monogram and icon-led stats reintroduced profile-dashboard language after the rest of the product had moved to a calmer editorial system. This CSS-only treatment strengthens continuity without changing author data, trust semantics, or bundle behavior.
