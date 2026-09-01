@@ -22,6 +22,12 @@ export function readViewportScrollAnchor(root = document, viewportHeight = windo
   } : null;
 }
 
+export function readElementScrollAnchor(element) {
+  const key = element?.getAttribute?.(ANCHOR_ATTRIBUTE);
+  if (!key) return null;
+  return { key, viewportTop: element.getBoundingClientRect().top };
+}
+
 export function findScrollAnchor(key, root = document) {
   if (!key) return null;
   return Array.from(root.querySelectorAll(ANCHOR_SELECTOR))

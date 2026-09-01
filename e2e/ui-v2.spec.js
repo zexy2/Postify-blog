@@ -91,6 +91,7 @@ test.describe('Postify UI V2', () => {
 
       const feed = page.locator('#knowledge-feed');
       await expect(feed).toBeVisible();
+      await expect.poll(() => page.evaluate(() => document.documentElement.style.overflowAnchor)).toBe('none');
       await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
       await expect(feed).toBeInViewport();
 
@@ -120,6 +121,7 @@ test.describe('Postify UI V2', () => {
       await articleLink.click();
       await expect(page).toHaveURL(/\/posts\//);
       await expect(page.locator('[data-mobile-article-tools]')).toBeAttached();
+      await expect.poll(() => page.evaluate(() => document.documentElement.style.overflowAnchor)).not.toBe('none');
       await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
 
       const back = page.getByRole('button', { name: /^back$|^geri$/i }).first();
