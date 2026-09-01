@@ -1,5 +1,19 @@
 import { test, expect } from '@playwright/test';
 
+async function waitForStableFeed(feed, { samples = 3, maxAttempts = 15 } = {}) {
+  let previous = null;
+  let stable = 0;
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    const signature = await feed.locator('[data-card-variant] a[href^="/posts/"]').evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href')).filter(Boolean).join('|'));
+    stable = signature && signature === previous ? stable + 1 : 0;
+    if (stable >= samples) return;
+    previous = signature;
+    await feed.evaluate(() => new Promise((resolve) => setTimeout(resolve, 100)));
+  }
+  throw new Error('Discovery feed did not stabilize');
+}
+
 test.describe('Postify UI V2', () => {
   test('desktop discovery has the editorial hierarchy and practical navigation', async ({ page }) => {
     await page.goto('/');
@@ -85,19 +99,24 @@ test.describe('Postify UI V2', () => {
       await expect(refineToggle).toHaveAttribute('aria-expanded', 'true');
       const latest = page.getByRole('button', { name: /^latest$|^en yeni$/i });
       await latest.scrollIntoViewIfNeeded();
-      const beforeFilter = await page.evaluate(() => window.scrollY);
+      const beforeFilterTop = await feed.evaluate((element) => element.getBoundingClientRect().top);
       await latest.click();
       await expect(page).toHaveURL(/type=guide.*sort=latest$/);
-      await expect.poll(() => page.evaluate((top) => Math.abs(window.scrollY - top), beforeFilter)).toBeLessThanOrEqual(1);
+      await expect.poll(() => feed.evaluate((element, top) => Math.abs(element.getBoundingClientRect().top - top), beforeFilterTop)).toBeLessThanOrEqual(2);
       await page.keyboard.press('Escape');
       await expect(refineToggle).toHaveAttribute('aria-expanded', 'false');
       await expect(refineToggle).toBeFocused();
       await expect(page.getByRole('button', { name: /remove latest|en yeni filtresini kaldır/i })).toBeVisible();
 
-      const card = feed.locator('[data-card-variant]').last();
-      await card.scrollIntoViewIfNeeded();
-      const beforeArticle = await page.evaluate(() => window.scrollY);
-      const articleLink = card.locator('a[href^="/posts/"]').filter({ hasText: /./ }).first();
+      await waitForStableFeed(feed);
+      const articleLink = feed.locator('[data-card-variant] a[href^="/posts/"]').filter({ hasText: /./ }).last();
+      await expect(articleLink).toBeVisible();
+      await articleLink.click({ trial: true });
+      const articleHref = await articleLink.getAttribute('href');
+      expect(articleHref).toMatch(/^\/posts\//);
+      const articleCard = page.locator(`[data-scroll-anchor-key="${articleHref}"]`);
+      const beforeArticleTop = (await articleCard.boundingBox())?.y;
+      expect(beforeArticleTop).not.toBeUndefined();
       await articleLink.click();
       await expect(page).toHaveURL(/\/posts\//);
       await expect(page.locator('[data-mobile-article-tools]')).toBeAttached();
@@ -108,7 +127,10 @@ test.describe('Postify UI V2', () => {
       await back.click();
       await expect(page).toHaveURL(/type=guide.*sort=latest$/);
       await expect(feed).toBeVisible();
-      await expect.poll(() => page.evaluate((top) => Math.abs(window.scrollY - top), beforeArticle), { timeout: 3000 }).toBeLessThanOrEqual(1);
+      await waitForStableFeed(feed);
+      const restoredCard = page.locator(`[data-scroll-anchor-key="${articleHref}"]`);
+      await expect(restoredCard).toBeVisible();
+      await expect.poll(async () => Math.abs(((await restoredCard.boundingBox())?.y ?? 0) - beforeArticleTop), { timeout: 4000 }).toBeLessThanOrEqual(2);
     }
   });
 

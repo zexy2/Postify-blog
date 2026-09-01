@@ -493,3 +493,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Article trust status and runtime freshness remain visible without interaction, but dense technical evidence—execution contract, environment, verification steps, caveats and sources—lives inside one native disclosure. The disclosure must remain keyboard-native, >=44px in touch mode, and safe at 200% text scaling; expanding it must reveal the exact same evidence rather than a reduced summary.
 
 **Why:** The verified Article evidence section was nearly 1,000px tall on mobile even though most readers first need the verdict and freshness state, not every execution field simultaneously. Collapsing the technical layer reduces reading interruption while preserving inspectability and avoids turning the article tail into an admin/report surface.
+
+## 2026-09-01 — History restoration is semantic before pixel-perfect
+**Decision:** Discovery-to-article return state is anchored to the visible article card identity and its viewport offset, not only to saved `scrollY`. Raw coordinates remain a fallback until the semantic card exists. During POP restoration Postify may compensate async feed reflow for a short bounded period, but any pointer, wheel, touch or keyboard interaction immediately cancels automatic restoration.
+
+**Why:** Production data can replace fallback cards or change feed geometry after navigation returns. A raw pixel coordinate therefore describes the old document, not necessarily the reader's place in the new one. Preserving the same content card at the same visual offset better matches user intent and remains stable across async data replacement.
