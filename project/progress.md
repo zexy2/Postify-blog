@@ -788,3 +788,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Continued the mobile navigation cleanup after the first-open latency fix: the drawer search surface is now a ruled editorial search rail instead of a rounded elevated control, and the hamburger active/hover state uses a flat underline rather than a mini-card background.
 - Flattened the drawer login/logout and utility actions into ruled actions and reduced the drawer shadow so the numbered navigation remains the dominant hierarchy instead of nested app controls.
 - Dedicated 390 light, 320 light, 320 dark and 320 at 200% text-scaling QA found a real footer overflow in the first pass: Login extended about 9.6px beyond the 320px viewport. The mobile footer now wraps safely, and the rerun passes 4/4 with zero horizontal overflow, no escaped controls, >=44px controls, a 0px search/login radius and a 2px editorial search rule.
+
+### 2026-09-02 — Mobile article reading action rail
+- Reframed the mobile Article floating tools from a rounded, shadow-heavy application pill into a flat reading action rail with a strong top rule, restrained bottom rule and square 44px actions.
+- Kept Back, Bookmark, Comments and Copy Link behavior unchanged, including footer auto-hide, keyboard-focus yielding and toast collision handling; this tranche is CSS-only and adds no eager JavaScript.
+- Dedicated Chromium QA passes at 390 light, 320 light, 320 dark and 320 at 200% text scaling with zero horizontal overflow, no escaped controls, radius 0, shadow none, 2px top rule and >=44px targets.

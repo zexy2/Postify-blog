@@ -600,3 +600,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Inside the mobile drawer, search and session actions use flat ruled treatments rather than rounded elevated controls. The numbered navigation remains the strongest visual structure; mobile footer actions may wrap at <=520px so 200% text scaling never pushes controls outside the viewport.
 
 **Why:** After the drawer itself became fast, its remaining rounded search/login chrome still broke the publication-like visual system established on Home, discovery and publishing. Keeping the interaction model unchanged while flattening only the control chrome makes the mobile shell feel coherent and preserves the strict accessibility/touch constraints.
+
+## 2026-09-02 — Mobile article tools are a reading rail, not a floating app pill
+**Decision:** The mobile Article action bar uses a flat rule-based rail with square 44px actions. Bookmark and Copy Link state is communicated through color/underline emphasis rather than rounded filled controls or a shadowed capsule.
+
+**Why:** The Article body and evidence surfaces are now editorial and document-led; a large floating rounded toolbar reintroduced generic application chrome at the most visible mobile reading moment. A restrained reading rail preserves touch safety and focus/toast behavior while matching the publication system.
