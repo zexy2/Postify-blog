@@ -23,9 +23,10 @@ import { useBookmarks } from '../../hooks/useBookmarks';
 import { useAuth } from '../../hooks/useAuth';
 import LanguageSwitcher from '../LanguageSwitcher';
 import BrandMark from '../BrandMark';
-const Sheet = lazy(() => import('../ui/sheet').then((module) => ({ default: module.Sheet })));
-const SheetContent = lazy(() => import('../ui/sheet').then((module) => ({ default: module.SheetContent })));
-const SheetTitle = lazy(() => import('../ui/sheet').then((module) => ({ default: module.SheetTitle })));
+const sheetModulePromise = import('../ui/sheet');
+const Sheet = lazy(() => sheetModulePromise.then((module) => ({ default: module.Sheet })));
+const SheetContent = lazy(() => sheetModulePromise.then((module) => ({ default: module.SheetContent })));
+const SheetTitle = lazy(() => sheetModulePromise.then((module) => ({ default: module.SheetTitle })));
 
 const CommandPalette = lazy(() => import('../CommandPalette'));
 

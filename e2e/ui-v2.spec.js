@@ -387,6 +387,22 @@ test.describe('Postify UI V2', () => {
     expect(overflow).toBeLessThanOrEqual(1);
   });
 
+  test('mobile menu sheet is prewarmed before the first hamburger click', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await expect(page.locator('header')).toBeVisible();
+
+    await expect.poll(async () => page.evaluate(() => performance
+      .getEntriesByType('resource')
+      .some((entry) => /(\/assets\/sheet-[^/]+\.js(?:$|\?))|(\/src\/components\/ui\/sheet\.jsx(?:$|\?))/.test(entry.name))), { timeout: 5_000 })
+      .toBe(true);
+
+    const menuButton = page.locator('header button[aria-expanded]').first();
+    await menuButton.click();
+    await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByRole('link', { name: /^hakkında$|^about$/i })).toBeVisible({ timeout: 750 });
+  });
+
   test('mobile home does not overflow and menu remains operable', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
