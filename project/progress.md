@@ -783,3 +783,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - The Sheet chunk remains dynamically imported and prewarmed, but Header now stores the resolved module and renders its Sheet exports directly once ready. The hamburger path therefore bypasses first-render Suspense while retaining code splitting.
 - Tightened the browser regression contract to measure the actual click event → visible drawer mount and require it below 250 ms in CI.
 - Production-style local Chromium measurement after removing first-use Suspense: click → `aria-expanded`, dialog mount and close-button mount all converge at ~60.5 ms, down from the measured ~650 ms mount delay in the prewarm-only release. Full release gate passes 150/150 unit, 52/52 functional Chromium and 108/108 visual/structural with entry 319,057 B.
+
+### 2026-09-02 — Mobile drawer editorial control polish
+- Continued the mobile navigation cleanup after the first-open latency fix: the drawer search surface is now a ruled editorial search rail instead of a rounded elevated control, and the hamburger active/hover state uses a flat underline rather than a mini-card background.
+- Flattened the drawer login/logout and utility actions into ruled actions and reduced the drawer shadow so the numbered navigation remains the dominant hierarchy instead of nested app controls.
+- Dedicated 390 light, 320 light, 320 dark and 320 at 200% text-scaling QA found a real footer overflow in the first pass: Login extended about 9.6px beyond the 320px viewport. The mobile footer now wraps safely, and the rerun passes 4/4 with zero horizontal overflow, no escaped controls, >=44px controls, a 0px search/login radius and a 2px editorial search rule.
