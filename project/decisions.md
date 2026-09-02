@@ -590,3 +590,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Keep the Radix Sheet implementation as a separate Vite chunk, but start its dynamic import when the Header module loads and share the resulting promise across Sheet, SheetContent, and SheetTitle.
 
 **Why:** The mobile navigation is a primary control and cannot have a cold first-click wait, but the main entry remains under a strict 320 KB budget. Prewarming the existing split chunk removes the user-visible latency while preserving code splitting and avoiding a multi-kilobyte eager bundle increase.
+
+## 2026-09-02 — Resolve the prewarmed mobile Sheet before interaction
+**Decision:** Keep `ui/sheet` dynamically imported, but resolve the module into Header state before the hamburger interaction and render the resolved exports directly rather than wrapping first-use Sheet exports in `React.lazy`.
+
+**Why:** Network prewarming removed the cold chunk download, yet first-use Suspense still delayed the actual dialog mount by ~650 ms after `aria-expanded` changed. Resolving the already split module ahead of interaction keeps the bundle budget intact while making the drawer mount synchronous with the user's click.

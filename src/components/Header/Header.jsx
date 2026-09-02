@@ -24,9 +24,6 @@ import { useAuth } from '../../hooks/useAuth';
 import LanguageSwitcher from '../LanguageSwitcher';
 import BrandMark from '../BrandMark';
 const sheetModulePromise = import('../ui/sheet');
-const Sheet = lazy(() => sheetModulePromise.then((module) => ({ default: module.Sheet })));
-const SheetContent = lazy(() => sheetModulePromise.then((module) => ({ default: module.SheetContent })));
-const SheetTitle = lazy(() => sheetModulePromise.then((module) => ({ default: module.SheetTitle })));
 
 const CommandPalette = lazy(() => import('../CommandPalette'));
 
@@ -36,6 +33,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [sheetModule, setSheetModule] = useState(null);
   const [shortcutLabel, setShortcutLabel] = useState('⌘K');
   const accountMenuRef = useRef(null);
   const accountButtonRef = useRef(null);
@@ -79,6 +77,14 @@ const Header = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    let active = true;
+    sheetModulePromise.then((module) => {
+      if (active) setSheetModule(module);
+    });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
     if (!isAccountOpen) return undefined;
 
     const handlePointerDown = (event) => {
@@ -115,6 +121,10 @@ const Header = () => {
       setShortcutLabel(isMac ? '⌘K' : 'Ctrl K');
     }
   }, []);
+
+  const SheetRoot = sheetModule?.Sheet;
+  const SheetContent = sheetModule?.SheetContent;
+  const SheetTitle = sheetModule?.SheetTitle;
 
   const handleLogout = () => {
     setIsAccountOpen(false);
@@ -251,8 +261,8 @@ const Header = () => {
           <span /><span /><span />
         </button>
 
-        {isMenuOpen && <Suspense fallback={null}>
-          <Sheet open onOpenChange={setIsMenuOpen} modal>
+        {isMenuOpen && SheetRoot && SheetContent && SheetTitle && (
+          <SheetRoot open onOpenChange={setIsMenuOpen} modal>
             <SheetContent
               side="right"
               className={styles.sheet}
@@ -329,8 +339,8 @@ const Header = () => {
               </div>
               </div>
             </SheetContent>
-          </Sheet>
-        </Suspense>}
+          </SheetRoot>
+        )}
       </div>
     </header>
   );
