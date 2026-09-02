@@ -398,9 +398,25 @@ test.describe('Postify UI V2', () => {
       .toBe(true);
 
     const menuButton = page.locator('header button[aria-expanded]').first();
+    await page.evaluate(() => {
+      window.__postifyMenuLatency = {};
+      const button = document.querySelector('header button[aria-expanded]');
+      button?.addEventListener('click', () => {
+        window.__postifyMenuLatency.click = performance.now();
+        const observer = new MutationObserver(() => {
+          const close = [...document.querySelectorAll('button')].find((candidate) => /menüyü kapat|close menu/i.test(candidate.getAttribute('aria-label') || candidate.textContent || ''));
+          if (!close || close.getBoundingClientRect().width <= 0) return;
+          window.__postifyMenuLatency.visible = performance.now();
+          observer.disconnect();
+        });
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+      }, { once: true, capture: true });
+    });
     await menuButton.click();
     await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.getByRole('link', { name: /^hakkında$|^about$/i })).toBeVisible({ timeout: 750 });
+    await expect(page.getByRole('link', { name: /^hakkında$|^about$/i })).toBeVisible({ timeout: 500 });
+    const clickToMount = await page.evaluate(() => window.__postifyMenuLatency.visible - window.__postifyMenuLatency.click);
+    expect(clickToMount).toBeLessThan(250);
   });
 
   test('mobile home does not overflow and menu remains operable', async ({ page }) => {
