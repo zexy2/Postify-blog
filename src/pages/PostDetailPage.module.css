@@ -582,18 +582,20 @@
 
   .mobileActionBar {
     position: fixed;
-    bottom: 1rem;
+    bottom: max(.7rem, env(safe-area-inset-bottom));
     left: 50%;
     z-index: calc(var(--z-modal) + 30);
     display: flex;
     align-items: center;
-    gap: .45rem;
-    padding: .4rem .55rem;
-    background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-full);
-    box-shadow: var(--shadow-lg);
-    backdrop-filter: blur(14px);
+    gap: .2rem;
+    padding: .28rem .15rem;
+    background: color-mix(in srgb, var(--bg-primary) 94%, transparent);
+    border: 0;
+    border-top: 2px solid var(--text-primary);
+    border-bottom: 1px solid var(--border-strong);
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: blur(10px);
     transform: translateX(-50%);
     transition: opacity var(--transition-fast), transform var(--transition-fast);
   }
@@ -610,18 +612,42 @@
     height: 44px;
     gap: .28rem;
     padding: 0 .55rem;
-    border-radius: var(--radius-full);
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
     font-size: .7rem;
     font-weight: 750;
     text-decoration: none;
+  }
+
+  .mobileActionBtn:hover,
+  .mobileActionBtn.bookmarked {
+    background: transparent;
+    border-bottom-color: var(--primary);
+  }
+
+  .mobileShareWrap button {
+    min-width: 44px;
+    height: 44px;
+    padding-inline: .55rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+  }
+
+  .mobileShareWrap button:hover,
+  .mobileShareWrap button:focus-visible {
+    background: transparent;
+    border-bottom-color: var(--primary);
   }
 }
 
 @media (max-width: 360px) {
   .mobileActionBar {
     max-width: calc(100vw - 16px);
-    gap: 4px;
-    padding-inline: 4px;
+    gap: 0;
+    padding-inline: 2px;
   }
 }
 
