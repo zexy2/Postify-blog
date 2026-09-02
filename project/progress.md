@@ -793,3 +793,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Reframed the mobile Article floating tools from a rounded, shadow-heavy application pill into a flat reading action rail with a strong top rule, restrained bottom rule and square 44px actions.
 - Kept Back, Bookmark, Comments and Copy Link behavior unchanged, including footer auto-hide, keyboard-focus yielding and toast collision handling; this tranche is CSS-only and adds no eager JavaScript.
 - Dedicated Chromium QA passes at 390 light, 320 light, 320 dark and 320 at 200% text scaling with zero horizontal overflow, no escaped controls, radius 0, shadow none, 2px top rule and >=44px targets.
+
+### 2026-09-02 — Editorial account index popover
+- Reworked the authenticated desktop Header account menu from a rounded dropdown/card treatment into a flat editorial account index: square folio marker, underlined trigger, strong popover top rule and separated 44px navigation/logout rows.
+- Preserved profile, Knowledge Health, identity, Escape/focus restoration and logout behavior; this tranche is CSS-only and adds no eager JavaScript.
+- Targeted Chromium baseline compare passes 1/1; Header unit behavior passes 3/3; dedicated 1440 light, 1024 dark and 1024 at 200% text scaling containment passes 3/3 with radius 0, 2px top rule, >=44px rows and zero horizontal overflow.

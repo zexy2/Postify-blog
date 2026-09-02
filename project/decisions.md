@@ -605,3 +605,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The mobile Article action bar uses a flat rule-based rail with square 44px actions. Bookmark and Copy Link state is communicated through color/underline emphasis rather than rounded filled controls or a shadowed capsule.
 
 **Why:** The Article body and evidence surfaces are now editorial and document-led; a large floating rounded toolbar reintroduced generic application chrome at the most visible mobile reading moment. A restrained reading rail preserves touch safety and focus/toast behavior while matching the publication system.
+
+## 2026-09-02 — The authenticated account menu is an index, not a profile card
+**Decision:** Desktop account navigation uses a square folio marker, flat trigger underline and ruled account rows inside a top-ruled popover instead of circular avatar, rounded menu shell and nested rounded actions.
+
+**Why:** The authenticated header was one of the last places where Postify switched back to generic account-card chrome. A quiet index treatment keeps identity and navigation legible while matching the editorial knowledge system already used by Profile, Admin and the public shell.
