@@ -585,3 +585,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The dominant Home search control uses a strong top rule, quiet bottom rule and flat focus wash instead of a rounded elevated input container. Its Browse/Contribute actions are ruled text actions rather than pill/card buttons, and the featured cover frame is square.
 
 **Why:** The masthead had already become an editorial knowledge-product surface, but the most important interaction still reverted to generic startup-search/card language. Flattening this high-visibility interaction keeps hierarchy and focus clarity while removing decorative chrome and adding zero eager JavaScript.
+
+## 2026-09-02 — Prewarm the mobile navigation chunk instead of making it eager
+**Decision:** Keep the Radix Sheet implementation as a separate Vite chunk, but start its dynamic import when the Header module loads and share the resulting promise across Sheet, SheetContent, and SheetTitle.
+
+**Why:** The mobile navigation is a primary control and cannot have a cold first-click wait, but the main entry remains under a strict 320 KB budget. Prewarming the existing split chunk removes the user-visible latency while preserving code splitting and avoiding a multi-kilobyte eager bundle increase.
