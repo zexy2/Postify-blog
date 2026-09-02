@@ -595,3 +595,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Keep `ui/sheet` dynamically imported, but resolve the module into Header state before the hamburger interaction and render the resolved exports directly rather than wrapping first-use Sheet exports in `React.lazy`.
 
 **Why:** Network prewarming removed the cold chunk download, yet first-use Suspense still delayed the actual dialog mount by ~650 ms after `aria-expanded` changed. Resolving the already split module ahead of interaction keeps the bundle budget intact while making the drawer mount synchronous with the user's click.
+
+## 2026-09-02 — Mobile navigation controls follow the same editorial rail language as Home
+**Decision:** Inside the mobile drawer, search and session actions use flat ruled treatments rather than rounded elevated controls. The numbered navigation remains the strongest visual structure; mobile footer actions may wrap at <=520px so 200% text scaling never pushes controls outside the viewport.
+
+**Why:** After the drawer itself became fast, its remaining rounded search/login chrome still broke the publication-like visual system established on Home, discovery and publishing. Keeping the interaction model unchanged while flattening only the control chrome makes the mobile shell feel coherent and preserves the strict accessibility/touch constraints.
