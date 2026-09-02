@@ -580,3 +580,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The Create/Edit writing column uses a top editorial rule with no rounded container/background, and the readiness inspector behaves as a ruled margin note instead of a secondary card. Readiness states use typographic underlines rather than status pills.
 
 **Why:** The workspace structure was already document-first, but the remaining large rounded containers visually pulled it back toward a generic form/dashboard. Removing those shells makes the authoring surface feel more like a focused knowledge manuscript while preserving every existing publishing and evidence behavior.
+
+## 2026-09-02 — The Home search entry is a publication rail, not a search card
+**Decision:** The dominant Home search control uses a strong top rule, quiet bottom rule and flat focus wash instead of a rounded elevated input container. Its Browse/Contribute actions are ruled text actions rather than pill/card buttons, and the featured cover frame is square.
+
+**Why:** The masthead had already become an editorial knowledge-product surface, but the most important interaction still reverted to generic startup-search/card language. Flattening this high-visibility interaction keeps hierarchy and focus clarity while removing decorative chrome and adding zero eager JavaScript.

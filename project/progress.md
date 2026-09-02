@@ -767,3 +767,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Removed the remaining large rounded-panel chrome from the Create/Edit writing canvas so the title, body editor and evidence fields read as one continuous manuscript beneath a strong editorial rule rather than as a form card.
 - Flattened the readiness inspector into a ruled margin column and converted readiness state pills into quiet monospace status underlines. The publish/readiness logic, evidence fields, editor behavior and primary action semantics are unchanged.
 - Mobile/tablet collapse removes the inspector side rule and manuscript side padding instead of reintroducing rounded cards; targeted 320/390/200% text scaling and full Chromium gates are required before release.
+
+### 2026-09-02 — Home hero search/action rail polish
+- Removed the remaining rounded/shadow application-card treatment from the Home masthead search control and converted it into a rule-based editorial search rail while preserving the same search state and Command Search hint.
+- Flattened the masthead's primary/secondary actions into publication-style ruled actions rather than rounded app buttons, and squared the cover-story image frame so the public entry surface remains visually coherent with the editorial knowledge index.
+- Kept the tranche CSS-only; no eager JavaScript or search behavior changed. Graphify impact/update, desktop/mobile Chromium screenshots, dark/200% text geometry, functional search state and exact release gates remain required before release.
