@@ -610,3 +610,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Desktop account navigation uses a square folio marker, flat trigger underline and ruled account rows inside a top-ruled popover instead of circular avatar, rounded menu shell and nested rounded actions.
 
 **Why:** The authenticated header was one of the last places where Postify switched back to generic account-card chrome. A quiet index treatment keeps identity and navigation legible while matching the editorial knowledge system already used by Profile, Admin and the public shell.
+
+## 2026-09-02 — Desktop article tools are a reading rail, not social buttons
+**Decision:** The desktop sticky Article tools keep the same Back / Bookmark / Copy Link behavior, but render as a flat ruled editorial rail with square 44px action rows instead of circular icon buttons. Copy Link retains its aria-label while the visible text is collapsed in the narrow rail.
+
+**Why:** The Article body, mobile tools and surrounding knowledge surfaces are now editorial, while the desktop action rail still read as generic social-product chrome. Aligning both article tool surfaces removes that remaining cross-breakpoint inconsistency without adding JavaScript or changing reading/navigation semantics.

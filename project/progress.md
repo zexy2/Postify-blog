@@ -798,3 +798,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Reworked the authenticated desktop Header account menu from a rounded dropdown/card treatment into a flat editorial account index: square folio marker, underlined trigger, strong popover top rule and separated 44px navigation/logout rows.
 - Preserved profile, Knowledge Health, identity, Escape/focus restoration and logout behavior; this tranche is CSS-only and adds no eager JavaScript.
 - Targeted Chromium baseline compare passes 1/1; Header unit behavior passes 3/3; dedicated 1440 light, 1024 dark and 1024 at 200% text scaling containment passes 3/3 with radius 0, 2px top rule, >=44px rows and zero horizontal overflow.
+
+### 2026-09-02 — Desktop article reading-tools rail polish
+- Reworked the desktop PostDetail sticky tools rail from circular social-app controls into the same ruled editorial reading-tools language as the production mobile action rail.
+- Back, bookmark and copy-link actions now sit in a 2px-top-rule / 1px-bottom-rule index with square 44px minimum interaction rows; Copy Link keeps its accessible name while its label is visually collapsed inside the narrow rail.
+- Graphify impact query covered PostDetailPage, CopyLinkButton, bookmarks and visual-regression surfaces; code graph was updated after the CSS change.
+- Targeted Article desktop light/dark snapshots pass compare-only 2/2. Dedicated rail geometry passes 1440 light, 1024 dark and 1024 at 200% text scaling 3/3 with radius 0, top rule 2px, no shadow, >=44px controls and horizontal overflow 0.
