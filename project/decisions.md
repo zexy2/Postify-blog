@@ -570,3 +570,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Keep advanced discovery behind the existing progressive disclosure, but render the opened surface as a flat editorial refinement sheet with ruled rows and compact state marks instead of a large rounded popover containing many rounded option cards.
 
 **Why:** Discovery is the product's primary knowledge-index surface. Opening refinements should preserve that publication/index language rather than switching to generic dashboard settings chrome. The change is intentionally CSS-only so filtering behavior, URL state and the tight eager bundle budget remain untouched.
+
+## 2026-09-02 — Confirmation is a decision panel, not a generic modal card
+**Decision:** Shared confirmation dialogs use a flat ruled editorial panel. Cancellation is a quiet underlined action; the actual decision remains the sole filled action, including the existing danger tone for destructive operations.
+
+**Why:** Confirmation is a high-attention moment. Rounded shadow-heavy modal chrome looked like generic application UI and competed with the decision itself. A flatter panel preserves hierarchy, reduces decoration and keeps the destructive/default semantics obvious.
