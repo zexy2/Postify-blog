@@ -804,3 +804,15 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Back, bookmark and copy-link actions now sit in a 2px-top-rule / 1px-bottom-rule index with square 44px minimum interaction rows; Copy Link keeps its accessible name while its label is visually collapsed inside the narrow rail.
 - Graphify impact query covered PostDetailPage, CopyLinkButton, bookmarks and visual-regression surfaces; code graph was updated after the CSS change.
 - Targeted Article desktop light/dark snapshots pass compare-only 2/2. Dedicated rail geometry passes 1440 light, 1024 dark and 1024 at 200% text scaling 3/3 with radius 0, top rule 2px, no shadow, >=44px controls and horizontal overflow 0.
+
+### 2026-09-02 — Desktop header utility rail polish
+- Reworked the global desktop Header utility cluster so Search, language, theme and Saved controls read as flat underline actions rather than rounded hover cards; authenticated New Content and anonymous Login remain strong accent actions but use square editorial geometry.
+- The bookmark count marker is now a square mono count tab instead of a pill. Mobile drawer-specific login/footer rules remain untouched; the existing mobile drawer screenshot did not drift.
+- Graphify query covered Header, LanguageSwitcher, App, auth/bookmarks/theme hooks, Header unit coverage and authenticated visual fixtures; the source graph was updated after the CSS change.
+- Targeted Header unit behavior passes 3/3; authenticated header + mobile drawer visual compare passes 2/2. Dedicated 1440 public, 1180 authenticated, 1024 dark authenticated and 1024 at 200% text scaling QA passes 4/4 with radius 0, >=42px desktop controls and zero horizontal overflow.
+
+### 2026-09-03 — Desktop header utility rail polish
+- Reworked desktop Search, Language, Theme and Saved controls from rounded hover cards into flat underline utilities; New Content/Login remain primary actions but now use square editorial CTA geometry.
+- Preserved mobile drawer styling and all Header auth/bookmark/theme/language behaviors; no eager JavaScript was added.
+- Targeted Header behavior passes 3/3, authenticated header + mobile drawer visual compare passes 2/2, and 1440 public / 1180 auth / 1024 dark / 1024 at 200% text scaling geometry passes 4/4 with >=42px controls and zero horizontal overflow.
+- The stateful tablet visual contract was isolated per viewport after reproducing a cross-viewport SPA-state race; the unchanged control checks pass three consecutive isolated runs and the complete visual/structural suite passes 108/108. Security/audit is 0, unit 150/150, functional Chromium 52/52, and the eager entry remains 319,057 bytes.

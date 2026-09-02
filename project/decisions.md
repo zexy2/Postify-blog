@@ -615,3 +615,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** The desktop sticky Article tools keep the same Back / Bookmark / Copy Link behavior, but render as a flat ruled editorial rail with square 44px action rows instead of circular icon buttons. Copy Link retains its aria-label while the visible text is collapsed in the narrow rail.
 
 **Why:** The Article body, mobile tools and surrounding knowledge surfaces are now editorial, while the desktop action rail still read as generic social-product chrome. Aligning both article tool surfaces removes that remaining cross-breakpoint inconsistency without adding JavaScript or changing reading/navigation semantics.
+
+## 2026-09-02 — Global desktop utilities are a quiet rail, not mini app buttons
+**Decision:** Search, language, theme and Saved controls in the desktop Header use transparent square controls with underline feedback. New Content and Login keep primary accent priority but drop rounded geometry and hover lift. Numeric bookmark state uses a square mono count marker.
+
+**Why:** After the navigation, account menu and mobile drawer adopted Postify's editorial language, the always-visible desktop utility cluster still read as a row of generic startup buttons. Flattening it removes that final header-level inconsistency without adding JavaScript or changing navigation, auth, keyboard or theme behavior.
