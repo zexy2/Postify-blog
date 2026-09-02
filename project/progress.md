@@ -762,3 +762,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Reframed the shared destructive/default confirmation dialog from a rounded shadow-heavy app modal into a flat editorial decision panel with a strong top rule, restrained lower rule and quieter overlay.
 - Kept the cancel action visually secondary as an underlined text action while preserving one strong confirm/destructive action; Radix focus restoration, Escape/outside-click handling, busy-state blocking and reduced-motion behavior remain unchanged.
 - This shared surface affects Admin content deletion and Create/Edit confirmation flows without adding JavaScript behavior or a new visual primitive.
+
+### 2026-09-02 — Manuscript canvas + margin inspector polish
+- Removed the remaining large rounded-panel chrome from the Create/Edit writing canvas so the title, body editor and evidence fields read as one continuous manuscript beneath a strong editorial rule rather than as a form card.
+- Flattened the readiness inspector into a ruled margin column and converted readiness state pills into quiet monospace status underlines. The publish/readiness logic, evidence fields, editor behavior and primary action semantics are unchanged.
+- Mobile/tablet collapse removes the inspector side rule and manuscript side padding instead of reintroducing rounded cards; targeted 320/390/200% text scaling and full Chromium gates are required before release.

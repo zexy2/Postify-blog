@@ -248,10 +248,9 @@
 
 .writingColumn {
   min-width: 0;
-  padding: clamp(1.35rem, 2.8vw, 2.15rem);
-  background: color-mix(in srgb, var(--bg-elevated) 76%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-2xl);
+  padding: clamp(1.15rem, 2.2vw, 1.65rem) clamp(.15rem, 1vw, .65rem) 0;
+  background: transparent;
+  border-top: 2px solid var(--text-primary);
 }
 
 .formGroup {
@@ -409,10 +408,11 @@
   top: calc(var(--header-height) + 1.25rem);
   display: grid;
   gap: 1rem;
-  padding: 1rem 1.05rem 1.1rem;
-  background: color-mix(in srgb, var(--bg-secondary) 72%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl);
+  padding: 1rem 0 1.1rem 1rem;
+  background: transparent;
+  border-top: 2px solid var(--text-primary);
+  border-bottom: 1px solid var(--border-strong);
+  border-left: 1px solid var(--border-color);
 }
 
 .readinessGrid { display: grid; gap: 1rem; }
@@ -432,16 +432,21 @@
 .draftBadge,
 .neutralBadge {
   flex: 0 0 auto;
-  padding: .26rem .48rem;
-  border-radius: var(--radius-full);
-  font-size: .61rem;
+  padding: .22rem 0 .3rem;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: .59rem;
   font-weight: 820;
+  letter-spacing: .03em;
   line-height: 1.25;
 }
 
-.readyBadge { color: var(--success); background: var(--success-subtle); }
-.draftBadge { color: var(--warning); background: var(--warning-subtle); }
-.neutralBadge { color: var(--text-secondary); background: var(--bg-elevated); border: 1px solid var(--border-color); }
+.readyBadge { color: var(--success); }
+.draftBadge { color: var(--warning); }
+.neutralBadge { color: var(--text-secondary); }
 
 .readinessList {
   display: grid;
@@ -577,7 +582,7 @@
   .header { grid-template-columns: 1fr; gap: .75rem; }
   .subtitle { max-width: 62ch; }
   .editorWorkspace { grid-template-columns: 1fr; gap: 1.25rem; }
-  .readinessPanel { position: static; grid-row: auto; grid-template-columns: 1fr; margin-top: .25rem; margin-bottom: 0; border-radius: var(--radius-lg); }
+  .readinessPanel { position: static; grid-row: auto; grid-template-columns: 1fr; margin-top: .25rem; margin-bottom: 0; padding-inline: 0; border-left: 0; border-radius: 0; }
   .readinessGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
   .readinessTrack + .readinessTrack { padding: 0 0 0 1.1rem; border-top: 0; border-left: 1px solid var(--border-color); }
 }
@@ -600,7 +605,7 @@
   .evidenceGrid { grid-template-columns: 1fr; gap: .85rem; }
   .evidenceFields input,
   .evidenceFields select { min-height: 44px; }
-  .writingColumn { padding: 1rem .9rem 1.15rem; border-radius: var(--radius-xl); }
+  .writingColumn { padding: 1rem 0 1.15rem; border-radius: 0; }
   .input { font-size: clamp(1.95rem, 10vw, 2.85rem); }
   .actions { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.25fr); margin-inline: 0; padding-inline: 0; }
   .cancelButton, .submitButton { width: 100%; min-height: 46px; justify-content: center; }
