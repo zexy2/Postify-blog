@@ -757,3 +757,8 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Flattened the advanced Discovery Filters surface from a rounded SaaS popover / nested option-card treatment into a ruled editorial refinement sheet: strong top rule, separated option rows, square state markers and display typography for the refinement heading.
 - Preserved the existing progressive-disclosure behavior, URL/shareable filter state, lazy loading and mobile bottom-sheet interaction; this tranche is CSS-only and adds no eager JavaScript.
 - Raised close/reset controls to a 44px minimum target on all viewports and kept the mobile option list single-column for 320/390 and 200% text scaling containment.
+
+### 2026-09-02 — Editorial confirmation decision panel
+- Reframed the shared destructive/default confirmation dialog from a rounded shadow-heavy app modal into a flat editorial decision panel with a strong top rule, restrained lower rule and quieter overlay.
+- Kept the cancel action visually secondary as an underlined text action while preserving one strong confirm/destructive action; Radix focus restoration, Escape/outside-click handling, busy-state blocking and reduced-motion behavior remain unchanged.
+- This shared surface affects Admin content deletion and Create/Edit confirmation flows without adding JavaScript behavior or a new visual primitive.
