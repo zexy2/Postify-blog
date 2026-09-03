@@ -527,8 +527,7 @@ test('Editor destructive confirmations stay in-product and restore focus', async
   expect(nativeDialogs).toBe(0);
 });
 
-test('Tablet touch mode keeps primary work controls at least 44px', async ({ page }) => {
-  await stabilize(page, { editor: true });
+test('Tablet touch mode keeps primary work controls at least 44px', async ({ browser }) => {
 
   const expectTouchSafe = async (targets) => {
     for (const target of targets) {
@@ -539,7 +538,8 @@ test('Tablet touch mode keeps primary work controls at least 44px', async ({ pag
   };
 
   for (const width of [600, 820, 960]) {
-    await page.setViewportSize({ width, height: 844 });
+    const page = await browser.newPage({ viewport: { width, height: 844 } });
+    await stabilize(page, { editor: true });
 
     await page.goto('/');
     await expectTouchSafe([
@@ -603,6 +603,7 @@ test('Tablet touch mode keeps primary work controls at least 44px', async ({ pag
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
+    await page.close();
   }
 });
 
