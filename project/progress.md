@@ -822,3 +822,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Reworked the feed hierarchy itself: the featured story is now a top-ruled lead story instead of a rounded card; standard/compact stories are flat ledger rows; card images and bookmark controls are square; load-more and error/retry actions now follow the same ruled/square interaction language.
 - Preserved discovery/filter behavior, bookmark semantics, feed variants and mobile layouts. Targeted Home behavior passes 3/3; light/dark Home + Discovery visual compare passes 6/6 with only the four Home baselines intentionally changed.
 - Dedicated 1440 light, 390 light, 320 dark and 320 at 200% text scaling geometry passes 4/4: lead/filter/action/image radii 0, featured top rule 2px, mobile touch controls >=44px and horizontal overflow 0.
+
+### 2026-09-03 — Home shell editorial polish
+- Removed the remaining decorative radial/linear Hero glow treatment so the Home masthead is carried by typography and rules rather than ambient gradient chrome; search and hero actions keep their existing behavior with flat ruled feedback.
+- Converted the Topics strip from rounded hover tabs into a square underline index rail, and converted the advanced Discovery surface from a blurred shadow popover into an opaque flat sheet. On mobile the filter sheet is edge-to-edge at the bottom with safe-area padding.
+- Targeted Home/discovery behavior passes 4/4 and targeted light/dark visual compare passes 6/6 with only the Discovery desktop/mobile baselines intentionally changed. Dedicated 1440 light, 390 light, 320 dark and 320 at 200% text scaling QA passes 4/4 with zero document overflow, >=44px mobile topic/filter targets, radius 0 and no popover shadow/backdrop blur.
+- Full release gate passes: security/audit 0, unit 150/150, functional Chromium 52/52, visual/structural Chromium 108/108, eager entry 319,057 bytes.

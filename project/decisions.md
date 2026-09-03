@@ -625,3 +625,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Home format filters use a flat tab rail, advanced refinement state uses square ruled tags, and KnowledgeCard variants use lead-story / ledger-row treatments with square imagery and actions instead of rounded cards, pills and circular bookmark controls.
 
 **Why:** Home is the product's highest-traffic surface. Leaving rounded segmented controls and card shells there made the interface feel like a generic app even after the masthead, command search and article surfaces had moved to an editorial knowledge-product language. The new index keeps hierarchy strong without changing discovery or bookmark behavior.
+
+## 2026-09-03 — Home chrome is rule-led, not ambient or floating
+**Decision:** The Home masthead uses a plain page background with typographic hierarchy and hard editorial rules; Topics are underline tabs; advanced filters use an opaque square sheet with no blur/shadow and become an edge-to-edge bottom ledger on small screens.
+
+**Why:** After the feed itself became a lead-story/ledger index, the remaining glow, rounded topic tabs and floating filter sheet made the top half of Home feel like a different design system. Removing those effects aligns the first screen with the rest of the editorial knowledge surface while preserving search, category and filter behavior.

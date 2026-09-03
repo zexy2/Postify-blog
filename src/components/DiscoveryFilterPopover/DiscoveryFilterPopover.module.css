@@ -8,12 +8,11 @@
   overflow: auto;
   padding: .95rem 1.05rem .85rem;
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--bg-primary) 97%, transparent);
-  border: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
   border-top: 2px solid var(--text-primary);
-  border-bottom: 1px solid var(--border-strong);
-  box-shadow: 0 16px 44px rgba(27, 25, 23, .14);
-  backdrop-filter: blur(12px);
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .header {
@@ -127,14 +126,14 @@
 
 .option:hover {
   color: var(--text-primary);
-  background: linear-gradient(90deg, var(--primary-subtle), transparent 78%);
+  background: color-mix(in srgb, var(--bg-secondary) 54%, transparent);
   border-color: var(--border-strong);
 }
 
 .optionActive {
   color: var(--text-primary);
-  background: linear-gradient(90deg, color-mix(in srgb, var(--primary-subtle) 72%, var(--bg-primary)), transparent 82%);
-  border-color: color-mix(in srgb, var(--primary) 42%, var(--border-color));
+  background: color-mix(in srgb, var(--primary-subtle) 34%, var(--bg-primary));
+  border-color: var(--primary);
 }
 
 .optionMark {
@@ -146,7 +145,7 @@
   color: var(--bg-primary);
   background: transparent;
   border: 1px solid var(--border-color);
-  border-radius: 2px;
+  border-radius: 0;
 }
 
 .optionActive .optionMark {
@@ -208,12 +207,15 @@
   .popover {
     position: fixed;
     top: auto;
-    right: .75rem;
-    bottom: calc(.75rem + env(safe-area-inset-bottom));
-    left: .75rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
     width: auto;
-    max-height: min(72vh, 580px);
-    padding: .85rem .95rem;
+    max-height: min(78dvh, 620px);
+    padding: .9rem 1rem calc(.9rem + env(safe-area-inset-bottom));
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
     border-radius: 0;
   }
 
