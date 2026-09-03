@@ -24,7 +24,7 @@
 
 .items {
   display: flex;
-  gap: .15rem;
+  gap: 0;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -42,7 +42,8 @@
   color: var(--text-secondary);
   background: transparent;
   border: 0;
-  border-radius: var(--radius-md);
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
   font: inherit;
   font-size: .8rem;
   font-weight: 670;
@@ -53,25 +54,14 @@
 
 .item:hover {
   color: var(--text-primary);
-  background: var(--bg-secondary);
+  border-bottom-color: var(--border-strong);
 }
 
 .item.active {
-  position: relative;
   color: var(--text-primary);
   background: transparent;
+  border-bottom-color: var(--primary);
   font-weight: 790;
-}
-
-.item.active::after {
-  content: '';
-  position: absolute;
-  right: .7rem;
-  bottom: .22rem;
-  left: .7rem;
-  height: 2px;
-  background: var(--primary);
-  border-radius: var(--radius-full);
 }
 
 @media (max-width: 960px) {
