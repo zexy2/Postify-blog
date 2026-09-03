@@ -53,7 +53,7 @@
 
 .titleLink { color: inherit; text-decoration: none; }
 .titleLink:hover { color: var(--primary); }
-.titleLink:focus-visible { border-radius: var(--radius-sm); outline: 3px solid var(--primary-light); outline-offset: 3px; }
+.titleLink:focus-visible { border-radius: 0; outline: 3px solid var(--primary-light); outline-offset: 3px; }
 
 .title {
   margin: .62rem 0 .55rem;
@@ -151,7 +151,7 @@
   color: var(--text-muted);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 50%;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -169,7 +169,7 @@
   align-self: stretch;
   overflow: hidden;
   background: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  border-radius: 0;
 }
 
 .image {
@@ -187,16 +187,19 @@
   grid-template-columns: 30px minmax(0, 1fr) minmax(0, 36%);
   gap: clamp(1.15rem, 3vw, 2.35rem);
   margin: 0 0 1.1rem;
-  padding: clamp(1.45rem, 2.8vw, 2.25rem);
-  background: color-mix(in srgb, var(--bg-elevated) 68%, transparent);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-xl);
+  padding: clamp(1.45rem, 2.8vw, 2.25rem) 0;
+  background: transparent;
+  border: 0;
+  border-top: 2px solid var(--text-primary);
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
   box-shadow: none;
 }
 
 .featured:hover {
-  background: color-mix(in srgb, var(--bg-elevated) 92%, var(--bg-secondary));
-  border-color: color-mix(in srgb, var(--primary) 22%, var(--border-strong));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary-subtle) 34%, transparent), transparent 62%);
+  border-top-color: var(--primary);
+  border-bottom-color: var(--border-strong);
   box-shadow: none;
   transform: none;
 }
@@ -217,11 +220,11 @@
   grid-template-columns: 26px minmax(0, 1fr) clamp(138px, 17vw, 204px);
   gap: clamp(1.05rem, 2.6vw, 1.9rem);
   align-items: center;
-  margin-inline: -.65rem;
-  padding: 1.5rem .65rem;
-  border-radius: var(--radius-lg);
+  margin-inline: 0;
+  padding: 1.5rem .08rem;
+  border-radius: 0;
 }
-.standard:hover { background: color-mix(in srgb, var(--bg-secondary) 48%, transparent); }
+.standard:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--primary-subtle) 28%, transparent), transparent 70%); }
 
 .standard .title { max-width: 31ch; font-size: clamp(1.42rem, 2.25vw, 1.9rem); }
 .standard .outcome { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
@@ -232,11 +235,11 @@
 .compact {
   grid-template-columns: 26px minmax(0, 1fr);
   gap: clamp(.9rem, 2vw, 1.45rem);
-  margin-inline: -.65rem;
-  padding: 1.18rem .65rem;
-  border-radius: var(--radius-lg);
+  margin-inline: 0;
+  padding: 1.18rem .08rem;
+  border-radius: 0;
 }
-.compact:hover { background: color-mix(in srgb, var(--bg-secondary) 42%, transparent); }
+.compact:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--primary-subtle) 24%, transparent), transparent 72%); }
 
 .compact .content {
   display: grid;
@@ -273,7 +276,7 @@
     gap: .75rem;
   }
 
-  .featured { margin-inline: 0; padding: .65rem .65rem 1.15rem; }
+  .featured { margin-inline: 0; padding: .65rem 0 1.15rem; }
   .featured .imageLink {
     grid-column: 1 / -1;
     grid-row: 1;
@@ -289,7 +292,7 @@
     display: flex;
     flex-wrap: nowrap;
     gap: .85rem;
-    margin-right: -.15rem;
+    margin-right: 0;
     padding: .7rem 0 0;
     overflow-x: auto;
     border-top: 1px solid var(--border-color);
@@ -310,7 +313,7 @@
     scroll-snap-align: start;
   }
 
-  .standard { margin-inline: -.35rem; padding: 1.05rem .35rem; }
+  .standard { margin-inline: 0; padding: 1.05rem .08rem; }
   .standard .imageLink { display: none; }
   .standard .title { font-size: 1.2rem; }
   .date { display: none; }
@@ -336,7 +339,7 @@
   .standard .trustStrip > div:first-child,
   .standard .trustStrip > div:nth-child(odd) { padding: 0; border: 0; }
 
-  .compact { margin-inline: -.35rem; padding: 1rem .35rem; }
+  .compact { margin-inline: 0; padding: 1rem .08rem; }
   .compact .content {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:

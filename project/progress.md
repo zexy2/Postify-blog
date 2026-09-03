@@ -816,3 +816,9 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Preserved mobile drawer styling and all Header auth/bookmark/theme/language behaviors; no eager JavaScript was added.
 - Targeted Header behavior passes 3/3, authenticated header + mobile drawer visual compare passes 2/2, and 1440 public / 1180 auth / 1024 dark / 1024 at 200% text scaling geometry passes 4/4 with >=42px controls and zero horizontal overflow.
 - The stateful tablet visual contract was isolated per viewport after reproducing a cross-viewport SPA-state race; the unchanged control checks pass three consecutive isolated runs and the complete visual/structural suite passes 108/108. Security/audit is 0, unit 150/150, functional Chromium 52/52, and the eager entry remains 319,057 bytes.
+
+### 2026-09-03 — Home editorial feed index polish
+- Reworked the Home discovery toolbar from a rounded segmented-control strip into a flat editorial format rail with underlined active state, square refinement count, ruled Filters action and square removable refinement tags.
+- Reworked the feed hierarchy itself: the featured story is now a top-ruled lead story instead of a rounded card; standard/compact stories are flat ledger rows; card images and bookmark controls are square; load-more and error/retry actions now follow the same ruled/square interaction language.
+- Preserved discovery/filter behavior, bookmark semantics, feed variants and mobile layouts. Targeted Home behavior passes 3/3; light/dark Home + Discovery visual compare passes 6/6 with only the four Home baselines intentionally changed.
+- Dedicated 1440 light, 390 light, 320 dark and 320 at 200% text scaling geometry passes 4/4: lead/filter/action/image radii 0, featured top rule 2px, mobile touch controls >=44px and horizontal overflow 0.

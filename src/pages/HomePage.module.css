@@ -4,11 +4,11 @@
 .fallbackNotice { display: flex; flex-wrap: wrap; gap: .35rem .75rem; align-items: baseline; margin: 1.25rem auto 0; padding: .85rem 0; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); line-height: 1.5; }
 .fallbackNotice strong { color: var(--text-primary); }
 
-.errorCard { max-width: 520px; margin: 4rem auto; padding: clamp(1.5rem, 4vw, 3rem); background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-md); }
+.errorCard { max-width: 560px; margin: 4rem auto; padding: clamp(1.5rem, 4vw, 3rem) 0; background: transparent; border: 0; border-top: 2px solid var(--text-primary); border-bottom: 1px solid var(--border-strong); border-radius: 0; box-shadow: none; }
 .errorKicker, .sectionEyebrow { color: var(--primary); font-family: var(--font-mono); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .errorCard h1 { margin: .7rem 0; color: var(--text-primary); font-size: var(--text-2xl); }
 .errorCard p { margin: 0 0 1.5rem; color: var(--text-secondary); line-height: 1.6; }
-.retryButton, .noResults button { min-height: 44px; padding: .75rem 1.1rem; color: #fff; background: var(--primary); border: 0; border-radius: var(--radius-md); font: inherit; font-weight: 700; cursor: pointer; }
+.retryButton, .noResults button { min-height: 44px; padding: .72rem .9rem; color: #fff; background: var(--primary); border: 1px solid var(--primary); border-radius: 0; font: inherit; font-weight: 760; cursor: pointer; }
 .retryButton:hover, .noResults button:hover { background: var(--primary-hover); }
 
 .postsSection { scroll-margin-top: 76px; padding-top: clamp(1.45rem, 2.6vw, 2.2rem); padding-bottom: var(--space-3xl); }
@@ -21,8 +21,8 @@
 .noResults p { margin: 0 0 .5rem; color: var(--text-secondary); }
 
 .loadMore { display: flex; justify-content: center; margin-top: var(--space-2xl); }
-.loadMoreButton { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .75rem 1.1rem; color: var(--text-primary); background: transparent; border: 1px solid var(--border-strong); border-radius: var(--radius-md); font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; }
-.loadMoreButton:hover { border-color: var(--primary); color: var(--primary); }
+.loadMoreButton { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .72rem .18rem .62rem; color: var(--text-primary); background: transparent; border: 0; border-bottom: 2px solid var(--border-strong); border-radius: 0; font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; }
+.loadMoreButton:hover { border-bottom-color: var(--primary); color: var(--primary); }
 
 @media (max-width: 620px) {
   .fallbackNotice { margin-top: 1rem; }
@@ -63,12 +63,13 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: .12rem;
+  gap: 0;
   overflow-x: auto;
-  padding: .22rem;
-  background: color-mix(in srgb, var(--bg-secondary) 74%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
@@ -82,19 +83,21 @@
   padding: .42rem .72rem;
   color: var(--text-secondary);
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: calc(var(--radius-lg) - 2px);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
   font: inherit;
   font-size: .79rem;
   font-weight: 680;
   white-space: nowrap;
   cursor: pointer;
-  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .filterClusterControls button:hover {
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--bg-primary) 70%, transparent);
+  background: transparent;
+  border-bottom-color: var(--border-strong);
 }
 
 .filterClusterControls button:focus-visible,
@@ -107,9 +110,9 @@
 
 .filterClusterControls .typeFilterActive {
   color: var(--text-primary);
-  background: var(--bg-primary);
-  border-color: var(--border-color);
-  box-shadow: var(--shadow-xs);
+  background: transparent;
+  border-bottom-color: var(--primary);
+  box-shadow: none;
   font-weight: 780;
 }
 
@@ -124,29 +127,28 @@
   align-items: center;
   justify-content: center;
   gap: .48rem;
-  padding: .48rem .7rem;
+  padding: .48rem .12rem .42rem;
   color: var(--text-primary);
   background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xs);
+  border: 0;
+  border-bottom: 2px solid var(--border-strong);
+  border-radius: 0;
+  box-shadow: none;
   font: inherit;
   font-size: .78rem;
   font-weight: 760;
   white-space: nowrap;
   cursor: pointer;
-  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .refineToggle:hover,
 .refineToggleOpen {
-  background: var(--bg-secondary);
-  border-color: var(--border-strong);
+  background: transparent;
+  border-bottom-color: var(--primary);
 }
 
-.refineToggleOpen {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 16%, transparent);
-}
+.refineToggleOpen { box-shadow: none; }
 
 .refineCount {
   min-width: 1.25rem;
@@ -156,7 +158,7 @@
   padding-inline: .24rem;
   color: var(--bg-primary);
   background: var(--text-primary);
-  border-radius: var(--radius-full);
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: .61rem;
   font-weight: 850;
@@ -176,7 +178,7 @@
   color: var(--text-muted);
   background: transparent;
   border: 0;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   font: inherit;
   font-size: .7rem;
   font-weight: 730;
@@ -185,7 +187,9 @@
 
 .clearSummary:hover {
   color: var(--text-primary);
-  background: var(--bg-secondary);
+  background: transparent;
+  text-decoration: underline;
+  text-underline-offset: .2em;
 }
 
 .activeRefinements {
@@ -221,9 +225,10 @@
   gap: .36rem;
   padding: .35rem .55rem;
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--primary-subtle) 48%, var(--bg-secondary));
-  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-color));
-  border-radius: var(--radius-full);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-top: 2px solid var(--primary);
+  border-radius: 0;
   font: inherit;
   font-size: .7rem;
   font-weight: 710;
@@ -232,8 +237,8 @@
 }
 
 .activeRefinementChip:hover {
-  background: color-mix(in srgb, var(--primary-subtle) 72%, var(--bg-secondary));
-  border-color: color-mix(in srgb, var(--primary) 38%, var(--border-color));
+  background: color-mix(in srgb, var(--primary-subtle) 48%, transparent);
+  border-color: var(--primary);
 }
 
 
@@ -254,8 +259,8 @@
   }
 
   .filterClusterControls {
-    padding: .16rem;
-    border-radius: var(--radius-lg);
+    padding: 0;
+    border-radius: 0;
   }
 
   .filterClusterControls button { padding-inline: .62rem; }
