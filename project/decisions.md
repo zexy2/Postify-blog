@@ -620,3 +620,8 @@ When the Header switches to drawer/touch navigation at 960px, secondary controls
 **Decision:** Search, language, theme and Saved controls in the desktop Header use transparent square controls with underline feedback. New Content and Login keep primary accent priority but drop rounded geometry and hover lift. Numeric bookmark state uses a square mono count marker.
 
 **Why:** After the navigation, account menu and mobile drawer adopted Postify's editorial language, the always-visible desktop utility cluster still read as a row of generic startup buttons. Flattening it removes that final header-level inconsistency without adding JavaScript or changing navigation, auth, keyboard or theme behavior.
+
+## 2026-09-03 — Home discovery and feed use an editorial index, not segmented cards
+**Decision:** Home format filters use a flat tab rail, advanced refinement state uses square ruled tags, and KnowledgeCard variants use lead-story / ledger-row treatments with square imagery and actions instead of rounded cards, pills and circular bookmark controls.
+
+**Why:** Home is the product's highest-traffic surface. Leaving rounded segmented controls and card shells there made the interface feel like a generic app even after the masthead, command search and article surfaces had moved to an editorial knowledge-product language. The new index keeps hierarchy strong without changing discovery or bookmark behavior.
