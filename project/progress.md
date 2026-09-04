@@ -828,3 +828,10 @@ Production check after the batch: root returned HTTP 200 and serves the newer Po
 - Converted the Topics strip from rounded hover tabs into a square underline index rail, and converted the advanced Discovery surface from a blurred shadow popover into an opaque flat sheet. On mobile the filter sheet is edge-to-edge at the bottom with safe-area padding.
 - Targeted Home/discovery behavior passes 4/4 and targeted light/dark visual compare passes 6/6 with only the Discovery desktop/mobile baselines intentionally changed. Dedicated 1440 light, 390 light, 320 dark and 320 at 200% text scaling QA passes 4/4 with zero document overflow, >=44px mobile topic/filter targets, radius 0 and no popover shadow/backdrop blur.
 - Full release gate passes: security/audit 0, unit 150/150, functional Chromium 52/52, visual/structural Chromium 108/108, eager entry 319,057 bytes.
+
+### 2026-09-04 — Home first-screen density polish
+- Reduced the Home masthead/lead-story vertical footprint without removing search, primary actions or the featured record. Desktop Hero height dropped from about 697px to 559px and the first feed card now begins around 888px instead of 1082px at 1440×900.
+- Reworked the <=640px featured story into a compact horizontal lead record; at 390×844 the Hero dropped from about 1007px to 541px and the first feed card moved from about 1470px to 943px. At 320×700 the first feed card moved from about 1433px to 931px.
+- Dedicated 1440 light, 390 light, 320 dark and 320 at 200% text scaling QA passes with zero horizontal overflow and >=44px primary actions. Targeted Home/discovery behavior passes 5/5 and visual compare passes 6/6.
+- The visual harness also now clips the mobile command-palette baseline to the stable integer CSS-pixel dialog height. This removes a single fractional bottom-row dependency on the underlying Home scroll height while keeping the entire dialog content, focus and >=44px option checks intact; three isolated runs and the full visual suite pass deterministically.
+- Release gate: security/audit 0, unit 150/150, functional Chromium 52/52, visual/structural Chromium 108/108, eager entry 319,057 bytes.

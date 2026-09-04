@@ -251,7 +251,16 @@ test('Mobile command palette open baseline', async ({ page }) => {
   await page.keyboard.press('Tab');
   await expect(combobox).toBeFocused();
   await settleVisualSurface(page);
-  await expect(palette).toHaveScreenshot('mobile-command-palette.png');
+  const paletteBox = await palette.boundingBox();
+  expect(paletteBox).not.toBeNull();
+  await expect(page).toHaveScreenshot('mobile-command-palette.png', {
+    clip: {
+      x: Math.round(paletteBox.x),
+      y: Math.round(paletteBox.y),
+      width: Math.round(paletteBox.width),
+      height: Math.floor(paletteBox.height),
+    },
+  });
 });
 
 for (const viewport of viewports) {
